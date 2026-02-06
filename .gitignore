@@ -1,1 +1,4 @@
 .codex/
+cache/
+POI/__pycache__/
+*.csv_partial
