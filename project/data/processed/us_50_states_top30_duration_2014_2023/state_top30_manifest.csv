@@ -1,0 +1,51 @@
+state,order,file_name,rows_written,source
+Alabama,1,01_alabama_top30_duration_2014_2023.csv,30,generated
+Alaska,2,02_alaska_top30_duration_2014_2023.csv,30,generated
+Arizona,3,03_arizona_top30_duration_2014_2023.csv,30,moved_existing
+Arkansas,4,04_arkansas_top30_duration_2014_2023.csv,30,generated
+California,5,05_california_top30_duration_2014_2023.csv,30,generated
+Colorado,6,06_colorado_top30_duration_2014_2023.csv,30,generated
+Connecticut,7,07_connecticut_top30_duration_2014_2023.csv,30,generated
+Delaware,8,08_delaware_top30_duration_2014_2023.csv,30,generated
+Florida,9,09_florida_top30_duration_2014_2023.csv,30,generated
+Georgia,10,10_georgia_top30_duration_2014_2023.csv,30,generated
+Hawaii,11,11_hawaii_top30_duration_2014_2023.csv,30,generated
+Idaho,12,12_idaho_top30_duration_2014_2023.csv,30,generated
+Illinois,13,13_illinois_top30_duration_2014_2023.csv,30,generated
+Indiana,14,14_indiana_top30_duration_2014_2023.csv,30,generated
+Iowa,15,15_iowa_top30_duration_2014_2023.csv,30,generated
+Kansas,16,16_kansas_top30_duration_2014_2023.csv,30,generated
+Kentucky,17,17_kentucky_top30_duration_2014_2023.csv,30,generated
+Louisiana,18,18_louisiana_top30_duration_2014_2023.csv,30,generated
+Maine,19,19_maine_top30_duration_2014_2023.csv,30,generated
+Maryland,20,20_maryland_top30_duration_2014_2023.csv,30,generated
+Massachusetts,21,21_massachusetts_top30_duration_2014_2023.csv,30,generated
+Michigan,22,22_michigan_top30_duration_2014_2023.csv,30,generated
+Minnesota,23,23_minnesota_top30_duration_2014_2023.csv,30,generated
+Mississippi,24,24_mississippi_top30_duration_2014_2023.csv,30,generated
+Missouri,25,25_missouri_top30_duration_2014_2023.csv,30,generated
+Montana,26,26_montana_top30_duration_2014_2023.csv,30,generated
+Nebraska,27,27_nebraska_top30_duration_2014_2023.csv,30,generated
+Nevada,28,28_nevada_top30_duration_2014_2023.csv,30,generated
+New Hampshire,29,29_new_hampshire_top30_duration_2014_2023.csv,30,generated
+New Jersey,30,30_new_jersey_top30_duration_2014_2023.csv,30,generated
+New Mexico,31,31_new_mexico_top30_duration_2014_2023.csv,30,generated
+New York,32,32_new_york_top30_duration_2014_2023.csv,30,generated
+North Carolina,33,33_north_carolina_top30_duration_2014_2023.csv,30,generated
+North Dakota,34,34_north_dakota_top30_duration_2014_2023.csv,30,generated
+Ohio,35,35_ohio_top30_duration_2014_2023.csv,30,generated
+Oklahoma,36,36_oklahoma_top30_duration_2014_2023.csv,30,generated
+Oregon,37,37_oregon_top30_duration_2014_2023.csv,30,generated
+Pennsylvania,38,38_pennsylvania_top30_duration_2014_2023.csv,30,generated
+Rhode Island,39,39_rhode_island_top30_duration_2014_2023.csv,30,generated
+South Carolina,40,40_south_carolina_top30_duration_2014_2023.csv,30,generated
+South Dakota,41,41_south_dakota_top30_duration_2014_2023.csv,30,generated
+Tennessee,42,42_tennessee_top30_duration_2014_2023.csv,30,generated
+Texas,43,43_texas_top30_duration_2014_2023.csv,30,generated
+Utah,44,44_utah_top30_duration_2014_2023.csv,30,generated
+Vermont,45,45_vermont_top30_duration_2014_2023.csv,30,generated
+Virginia,46,46_virginia_top30_duration_2014_2023.csv,30,generated
+Washington,47,47_washington_top30_duration_2014_2023.csv,30,generated
+West Virginia,48,48_west_virginia_top30_duration_2014_2023.csv,30,generated
+Wisconsin,49,49_wisconsin_top30_duration_2014_2023.csv,30,generated
+Wyoming,50,50_wyoming_top30_duration_2014_2023.csv,30,generated

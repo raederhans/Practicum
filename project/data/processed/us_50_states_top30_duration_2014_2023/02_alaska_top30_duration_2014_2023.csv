@@ -1,0 +1,31 @@
+fips,state,county,start_time,duration,min_customers,max_customers,mean_customers,year,source_file,duration_numeric
+2170,Alaska,Matanuska-Susitna,2019-08-20 06:15:00,177.5,334.0,2646.0,597.0197183098592,2019,eaglei_outages_2019_merged.csv,177.5
+2122,Alaska,Kenai Peninsula,2022-03-29 01:00:00,118.0,639.0,741.0,643.7245762711865,2022,eaglei_outages_2022_merged.csv,118.0
+2122,Alaska,Kenai Peninsula,2021-12-10 03:30:00,116.0,719.0,1062.0,750.7801724137931,2021,eaglei_outages_2021_merged.csv,116.0
+2090,Alaska,Fairbanks North Star,2021-12-26 20:00:00,100.25,224.0,14188.0,3569.411471321696,2021,eaglei_outages_2021_merged.csv,100.25
+2170,Alaska,Matanuska-Susitna,2022-01-02 22:00:00,83.75,439.0,25042.0,9468.23880597015,2022,eaglei_outages_2022_merged.csv,83.75
+2122,Alaska,Kenai Peninsula,2020-12-25 15:00:00,82.25,709.0,713.0,709.9756838905776,2020,eaglei_outages_2020_merged.csv,82.25
+2090,Alaska,Fairbanks North Star,2022-07-26 00:30:00,75.75,234.0,27643.0,5586.155115511551,2022,eaglei_outages_2022_merged.csv,75.75
+2122,Alaska,Kenai Peninsula,2020-12-22 14:00:00,72.75,709.0,1380.0,759.6838487972509,2020,eaglei_outages_2020_merged.csv,72.75
+2122,Alaska,Kenai Peninsula,2019-11-27 21:30:00,67.75,301.0,571.0,553.2214022140222,2019,eaglei_outages_2019_merged.csv,67.75
+2122,Alaska,Kenai Peninsula,2021-01-08 22:15:00,67.5,205.0,509.0,213.8592592592593,2021,eaglei_outages_2021_merged.csv,67.5
+2020,Alaska,Anchorage,2023-11-09 04:00:00,59.25,247.0,7321.0,2253.1476793248944,2023,eaglei_outages_2023_merged.csv,59.25
+2122,Alaska,Kenai Peninsula,2023-11-09 08:00:00,55.75,253.0,504.0,351.5695067264574,2023,eaglei_outages_2023_merged.csv,55.75
+2122,Alaska,Kenai Peninsula,2019-12-03 10:30:00,52.5,219.0,3702.0,1237.0857142857142,2019,eaglei_outages_2019_merged.csv,52.5
+2122,Alaska,Kenai Peninsula,2022-01-01 17:45:00,52.0,708.0,5741.0,2113.0,2022,eaglei_outages_2022_merged.csv,52.0
+2122,Alaska,Kenai Peninsula,2020-12-01 00:15:00,46.75,234.0,1577.0,700.4919786096257,2020,eaglei_outages_2020_merged.csv,46.75
+2170,Alaska,Matanuska-Susitna,2022-12-23 10:15:00,46.5,230.0,18365.0,3846.467741935484,2022,eaglei_outages_2022_merged.csv,46.5
+2122,Alaska,Kenai Peninsula,2018-03-17 13:15:00,46.0,284.0,288.0,287.0,2018,eaglei_outages_2018_merged.csv,46.0
+2122,Alaska,Kenai Peninsula,2023-09-01 14:15:00,43.25,200.0,9716.0,3196.3815028901736,2023,eaglei_outages_2023_merged.csv,43.25
+2170,Alaska,Matanuska-Susitna,2023-11-13 12:15:00,42.0,225.0,11300.0,4029.875,2023,eaglei_outages_2023_merged.csv,42.0
+2090,Alaska,Fairbanks North Star,2018-02-12 16:15:00,41.75,239.0,4164.0,1227.37125748503,2018,eaglei_outages_2018_merged.csv,41.75
+2122,Alaska,Kenai Peninsula,2021-12-08 00:45:00,41.0,711.0,799.0,715.3719512195122,2021,eaglei_outages_2021_merged.csv,41.0
+2170,Alaska,Matanuska-Susitna,2019-08-18 15:00:00,36.0,258.0,3852.0,1032.625,2019,eaglei_outages_2019_merged.csv,36.0
+2068,Alaska,Denali,2022-01-01 23:45:00,35.75,224.0,252.0,230.35664335664336,2022,eaglei_outages_2022_merged.csv,35.75
+2122,Alaska,Kenai Peninsula,2015-11-08 06:15:00,34.0,207.0,1260.0,630.7941176470588,2015,eaglei_outages_2015_merged.csv,34.0
+2122,Alaska,Kenai Peninsula,2016-05-01 05:30:00,34.0,551.0,553.0,552.6029411764706,2016,eaglei_outages_2016_merged.csv,34.0
+2090,Alaska,Fairbanks North Star,2021-10-03 09:15:00,34.0,284.0,7237.0,2098.419117647059,2021,eaglei_outages_2021_merged.csv,34.0
+2170,Alaska,Matanuska-Susitna,2021-09-21 01:30:00,33.0,274.0,5920.0,2603.757575757576,2021,eaglei_outages_2021_merged.csv,33.0
+2170,Alaska,Matanuska-Susitna,2021-10-30 19:00:00,31.5,213.0,8286.0,3733.119047619048,2021,eaglei_outages_2021_merged.csv,31.5
+2020,Alaska,Anchorage,2019-11-28 04:00:00,31.25,209.0,8116.0,1465.696,2019,eaglei_outages_2019_merged.csv,31.25
+2020,Alaska,Anchorage,2021-09-24 15:00:00,31.25,210.0,6413.0,1930.216,2021,eaglei_outages_2021_merged.csv,31.25

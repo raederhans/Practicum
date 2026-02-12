@@ -1,0 +1,31 @@
+fips,state,county,start_time,duration,min_customers,max_customers,mean_customers,year,source_file,duration_numeric
+38057,North Dakota,Mercer,2023-07-25 14:30:00,193.5,621.0,630.0,627.5426356589147,2023,eaglei_outages_2023_merged.csv,193.5
+38041,North Dakota,Hettinger,2022-06-05 21:30:00,173.25,354.0,362.0,360.0461760461761,2022,eaglei_outages_2022_merged.csv,173.25
+38017,North Dakota,Cass,2023-12-25 22:15:00,145.75,241.0,3831.0,1210.0137221269297,2023,eaglei_outages_2023_merged.csv,145.75
+38003,North Dakota,Barnes,2023-12-26 04:00:00,140.0,217.0,2040.0,1189.6553571428572,2023,eaglei_outages_2023_merged.csv,140.0
+38045,North Dakota,LaMoure,2023-12-26 09:45:00,131.75,200.0,2359.0,911.2675521821632,2023,eaglei_outages_2023_merged.csv,131.75
+38073,North Dakota,Ransom,2023-12-26 00:30:00,116.75,211.0,2462.0,835.728051391863,2023,eaglei_outages_2023_merged.csv,116.75
+38023,North Dakota,Divide,2022-04-23 23:30:00,99.5,258.0,846.0,801.7286432160804,2022,eaglei_outages_2022_merged.csv,99.5
+38021,North Dakota,Dickey,2023-12-26 05:00:00,92.25,208.0,651.0,437.0108401084011,2023,eaglei_outages_2023_merged.csv,92.25
+38081,North Dakota,Sargent,2022-11-10 08:15:00,83.0,207.0,698.0,403.6144578313253,2022,eaglei_outages_2022_merged.csv,83.0
+38081,North Dakota,Sargent,2023-12-25 23:45:00,73.5,204.0,476.0,328.7619047619048,2023,eaglei_outages_2023_merged.csv,73.5
+38041,North Dakota,Hettinger,2022-06-03 02:45:00,66.5,355.0,1017.0,378.6278195488722,2022,eaglei_outages_2022_merged.csv,66.5
+38017,North Dakota,Cass,2022-04-29 20:00:00,64.25,454.0,2451.0,489.3852140077821,2022,eaglei_outages_2022_merged.csv,64.25
+38093,North Dakota,Stutsman,2023-12-26 12:00:00,63.5,215.0,9685.0,6664.925196850394,2023,eaglei_outages_2023_merged.csv,63.5
+38017,North Dakota,Cass,2022-08-26 20:15:00,62.0,454.0,491.0,455.2016129032258,2022,eaglei_outages_2022_merged.csv,62.0
+38027,North Dakota,Eddy,2022-06-24 23:15:00,61.5,1278.0,1281.0,1278.8292682926829,2022,eaglei_outages_2022_merged.csv,61.5
+38047,North Dakota,Logan,2023-12-26 17:45:00,59.75,221.0,513.0,374.5523012552301,2023,eaglei_outages_2023_merged.csv,59.75
+38105,North Dakota,Williams,2022-04-23 22:45:00,54.5,212.0,9469.0,2916.743119266055,2022,eaglei_outages_2022_merged.csv,54.5
+38069,North Dakota,Pierce,2023-12-26 20:00:00,49.5,585.0,589.0,585.1818181818181,2023,eaglei_outages_2023_merged.csv,49.5
+38093,North Dakota,Stutsman,2022-06-21 17:15:00,47.0,572.0,588.0,572.718085106383,2022,eaglei_outages_2022_merged.csv,47.0
+38057,North Dakota,Mercer,2023-07-23 16:00:00,46.25,625.0,630.0,628.4216216216216,2023,eaglei_outages_2023_merged.csv,46.25
+38045,North Dakota,LaMoure,2022-09-11 16:15:00,34.0,251.0,255.0,251.21323529411765,2022,eaglei_outages_2022_merged.csv,34.0
+38055,North Dakota,McLean,2020-06-01 16:00:00,32.0,439.0,439.0,439.0,2020,eaglei_outages_2020_merged.csv,32.0
+38047,North Dakota,Logan,2022-02-04 13:30:00,31.75,287.0,360.0,290.8346456692913,2022,eaglei_outages_2022_merged.csv,31.75
+38031,North Dakota,Foster,2023-12-27 15:00:00,30.5,278.0,1098.0,1056.6475409836066,2023,eaglei_outages_2023_merged.csv,30.5
+38033,North Dakota,Golden Valley,2022-04-23 20:45:00,29.75,626.0,706.0,693.8655462184873,2022,eaglei_outages_2022_merged.csv,29.75
+38013,North Dakota,Burke,2022-04-23 22:30:00,28.0,333.0,568.0,532.0625,2022,eaglei_outages_2022_merged.csv,28.0
+38095,North Dakota,Towner,2022-11-08 15:15:00,25.5,501.0,501.0,501.0,2022,eaglei_outages_2022_merged.csv,25.5
+38097,North Dakota,Traill,2021-06-05 22:30:00,23.5,452.0,1599.0,622.7446808510638,2021,eaglei_outages_2021_merged.csv,23.5
+38017,North Dakota,Cass,2020-06-08 00:15:00,23.25,217.0,8456.0,3328.1397849462364,2020,eaglei_outages_2020_merged.csv,23.25
+38061,North Dakota,Mountrail,2022-04-24 18:00:00,23.25,748.0,1703.0,806.8279569892474,2022,eaglei_outages_2022_merged.csv,23.25
