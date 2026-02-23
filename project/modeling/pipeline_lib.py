@@ -44,6 +44,7 @@ CONFIG_DEFAULTS = MODELING_DIR / "config" / "model_defaults.json"
 PANEL_PATH = PIXEL_DIR / "all_events_pixel_panel_v1.parquet"
 PANEL_NLCD_PATH = PIXEL_DIR / "all_events_pixel_panel_v1_with_nlcd.parquet"
 RECOVERY_PATH = PIXEL_DIR / "recovery_daily_panel_v1.parquet"
+CLOUD_SUMMARY_PATH = OUTPUT_DIR / "cloud_feature_summary.csv"
 
 BUFFER_RADII = {"aerodrome": 1250}
 DEFAULT_BUFFER = 750
@@ -196,6 +197,174 @@ def _parse_date_from_name(path: Path) -> str:
 def list_daily_tifs(directory: Path) -> List[Path]:
     tifs = [p for p in directory.glob("*.tif") if "composite" not in p.name.lower()]
     return sorted(tifs, key=lambda x: _parse_date_from_name(x))
+
+
+def _find_cloud_screening_file(event_id: str) -> Optional[Path]:
+    script_dir = PROJECT_DIR / "script"
+    if not script_dir.exists():
+        return None
+
+    candidates = {
+        "maria_sanjuan": [
+            "maria_sanjuan_cloud_screening.csv",
+            "hurricane_maria_sanjuan_cloud_screening.csv",
+        ],
+        "michael_panamacity": [
+            "michael_panamacity_cloud_screening.csv",
+            "Michael_FL_cloud_screening.csv",
+        ],
+        "earthquake_sanjuan": [
+            "earthquake_sanjuan_cloud_screening.csv",
+            "Earthquake_sanjuan_cloud_screening.csv",
+        ],
+        "ida_neworleans": [
+            "ida_neworleans_cloud_screening.csv",
+            "hurricane_ida_neworleans_cloud_screening.csv",
+        ],
+        "laura_lakecharles": [
+            "laura_lakecharles_cloud_screening.csv",
+        ],
+        "irma_miami": [
+            "irma_miami_cloud_screening.csv",
+        ],
+    }
+    for name in candidates.get(event_id, []):
+        p = script_dir / name
+        if p.exists():
+            return p
+    return None
+
+
+def attach_cloud_features(
+    ctx: RunContext,
+    panel_path: Path = PANEL_PATH,
+    output_path: Path = PANEL_PATH,
+) -> pd.DataFrame:
+    panel = pd.read_parquet(panel_path).copy()
+
+    feature_cols = [
+        "pre_valid_ratio",
+        "post_valid_ratio",
+        "cloud_pre_mean",
+        "cloud_post_mean",
+        "cloud_window_mean",
+        "missing_weather_flag",
+    ]
+    for col in feature_cols:
+        if col not in panel.columns:
+            panel[col] = np.nan
+
+    events_cfg = load_json(CONFIG_EVENTS)
+    summary_rows: List[Dict[str, object]] = []
+
+    for event_id in events_cfg.keys():
+        event_mask = panel["event_id"] == event_id
+        if event_mask.sum() == 0:
+            continue
+
+        csv_path = _find_cloud_screening_file(event_id)
+        if csv_path is None:
+            panel.loc[event_mask, "missing_weather_flag"] = 1
+            summary_rows.append(
+                {
+                    "event_id": event_id,
+                    "cloud_file": "",
+                    "n_rows": 0,
+                    "pre_valid_ratio": np.nan,
+                    "post_valid_ratio": np.nan,
+                    "cloud_pre_mean": np.nan,
+                    "cloud_post_mean": np.nan,
+                    "cloud_window_mean": np.nan,
+                    "missing_weather_flag": 1,
+                }
+            )
+            log_issue(
+                ctx,
+                stage="attach_cloud_features",
+                model="all",
+                event_id=event_id,
+                issue_type="missing_cloud_screening",
+                symptom="No cloud screening CSV found under project/script",
+                fix_action="set missing_weather_flag=1 and continue",
+                impact="weather controls unavailable for this event",
+                status="monitor",
+            )
+            continue
+
+        df = pd.read_csv(csv_path)
+        if "period" not in df.columns or "cloud_fraction" not in df.columns:
+            panel.loc[event_mask, "missing_weather_flag"] = 1
+            summary_rows.append(
+                {
+                    "event_id": event_id,
+                    "cloud_file": str(csv_path),
+                    "n_rows": len(df),
+                    "pre_valid_ratio": np.nan,
+                    "post_valid_ratio": np.nan,
+                    "cloud_pre_mean": np.nan,
+                    "cloud_post_mean": np.nan,
+                    "cloud_window_mean": np.nan,
+                    "missing_weather_flag": 1,
+                }
+            )
+            log_issue(
+                ctx,
+                stage="attach_cloud_features",
+                model="all",
+                event_id=event_id,
+                issue_type="malformed_cloud_screening",
+                symptom=f"Missing required columns in {csv_path.name}",
+                fix_action="set missing_weather_flag=1 and continue",
+                impact="weather controls unavailable for this event",
+                status="monitor",
+            )
+            continue
+
+        work = df.copy()
+        work["period"] = work["period"].astype(str).str.lower().str.strip()
+        if "usable" in work.columns:
+            usable = work["usable"].astype(str).str.lower().map(
+                {"true": 1, "false": 0, "1": 1, "0": 0}
+            )
+        else:
+            usable = pd.Series(np.nan, index=work.index)
+
+        pre = work[work["period"] == "pre"]
+        post = work[work["period"] == "post"]
+
+        pre_valid_ratio = float(usable.loc[pre.index].mean()) if len(pre) else np.nan
+        post_valid_ratio = float(usable.loc[post.index].mean()) if len(post) else np.nan
+        cloud_pre_mean = float(pre["cloud_fraction"].mean()) if len(pre) else np.nan
+        cloud_post_mean = float(post["cloud_fraction"].mean()) if len(post) else np.nan
+        cloud_window_mean = float(work["cloud_fraction"].mean()) if len(work) else np.nan
+
+        panel.loc[event_mask, "pre_valid_ratio"] = pre_valid_ratio
+        panel.loc[event_mask, "post_valid_ratio"] = post_valid_ratio
+        panel.loc[event_mask, "cloud_pre_mean"] = cloud_pre_mean
+        panel.loc[event_mask, "cloud_post_mean"] = cloud_post_mean
+        panel.loc[event_mask, "cloud_window_mean"] = cloud_window_mean
+        panel.loc[event_mask, "missing_weather_flag"] = 0
+
+        summary_rows.append(
+            {
+                "event_id": event_id,
+                "cloud_file": str(csv_path),
+                "n_rows": len(work),
+                "pre_valid_ratio": pre_valid_ratio,
+                "post_valid_ratio": post_valid_ratio,
+                "cloud_pre_mean": cloud_pre_mean,
+                "cloud_post_mean": cloud_post_mean,
+                "cloud_window_mean": cloud_window_mean,
+                "missing_weather_flag": 0,
+            }
+        )
+
+    panel.to_parquet(output_path, index=False)
+    pd.DataFrame(summary_rows).to_csv(CLOUD_SUMMARY_PATH, index=False)
+    append_progress(
+        f"Attached cloud features to panel. Summary saved to {CLOUD_SUMMARY_PATH.relative_to(ROOT)}"
+    )
+    return panel
 
 
 def _read_stack_mean(paths: Sequence[Path]) -> Tuple[np.ndarray, rasterio.Affine, str]:
@@ -512,7 +681,33 @@ def attach_nlcd(
 
         pre_dir = ROOT / cfg["pre_dir"]
         pre_tifs = list_daily_tifs(pre_dir)
-        if not pre_tifs:
+        sub = panel.loc[event_mask, ["row", "col", "lon", "lat"]].copy()
+        nodata_val = np.nan
+
+        if pre_tifs:
+            with rasterio.open(pre_tifs[0]) as target_src, rasterio.open(nlcd_file) as nlcd_src:
+                target_shape = (target_src.height, target_src.width)
+                dst = np.full(target_shape, np.nan, dtype="float32")
+
+                reproject(
+                    source=rasterio.band(nlcd_src, 1),
+                    destination=dst,
+                    src_transform=nlcd_src.transform,
+                    src_crs=nlcd_src.crs,
+                    dst_transform=target_src.transform,
+                    dst_crs=target_src.crs,
+                    resampling=Resampling.nearest,
+                )
+
+                land_use_full = dst.ravel()
+                nodata_val = nlcd_src.nodata if nlcd_src.nodata is not None else np.nan
+
+            idx = (sub["row"].astype(int) * target_shape[1] + sub["col"].astype(int)).to_numpy()
+            vals = np.full(len(idx), np.nan, dtype="float64")
+            valid_idx = (idx >= 0) & (idx < land_use_full.size)
+            if valid_idx.any():
+                vals[valid_idx] = land_use_full[idx[valid_idx]]
+        else:
             log_issue(
                 ctx,
                 stage="attach_nlcd",
@@ -520,32 +715,27 @@ def attach_nlcd(
                 event_id=event_id,
                 issue_type="missing_pre_tif",
                 symptom="cannot infer target raster grid for NLCD align",
-                fix_action="skip NLCD attach for this event",
-                impact="land_use missing for event",
-                status="open",
+                fix_action="fallback to lon/lat sampling from panel coordinates",
+                impact="land_use attached without event-grid reprojection",
+                status="resolved",
             )
-            coverage_rows.append({"event_id": event_id, "nlcd_file": str(nlcd_file), "coverage": 0.0})
-            continue
+            with rasterio.open(nlcd_file) as nlcd_src:
+                nodata_val = nlcd_src.nodata if nlcd_src.nodata is not None else np.nan
+                coords = sub[["lon", "lat"]].astype(float).to_numpy()
+                if coords.size == 0:
+                    vals = np.array([], dtype="float64")
+                else:
+                    if nlcd_src.crs and str(nlcd_src.crs).upper() not in {"EPSG:4326", "OGC:CRS84"}:
+                        transformer = Transformer.from_crs("EPSG:4326", nlcd_src.crs, always_xy=True)
+                        xs, ys = transformer.transform(coords[:, 0], coords[:, 1])
+                        sample_coords = list(zip(xs, ys))
+                    else:
+                        sample_coords = [tuple(v) for v in coords]
+                    vals = np.array([float(v[0]) for v in nlcd_src.sample(sample_coords)], dtype="float64")
 
-        with rasterio.open(pre_tifs[0]) as target_src, rasterio.open(nlcd_file) as nlcd_src:
-            target_shape = (target_src.height, target_src.width)
-            dst = np.full(target_shape, np.nan, dtype="float32")
-
-            reproject(
-                source=rasterio.band(nlcd_src, 1),
-                destination=dst,
-                src_transform=nlcd_src.transform,
-                src_crs=nlcd_src.crs,
-                dst_transform=target_src.transform,
-                dst_crs=target_src.crs,
-                resampling=Resampling.nearest,
-            )
-
-            land_use_full = dst.ravel()
-
-        sub = panel.loc[event_mask, ["row", "col"]].copy()
-        idx = (sub["row"].astype(int) * target_shape[1] + sub["col"].astype(int)).to_numpy()
-        vals = land_use_full[idx]
+        if np.isfinite(nodata_val):
+            vals[np.isclose(vals, nodata_val)] = np.nan
+        vals[vals <= 0] = np.nan
         panel.loc[event_mask, "land_use"] = vals
 
         valid = np.isfinite(vals)
@@ -1007,7 +1197,21 @@ def run_robustness(
 
     # Recovery threshold sensitivity on Cox
     for rthr in defaults["recovery_threshold_scenarios"]:
-        rec = build_recovery_panel(ctx=ctx, panel=base_panel, threshold=float(rthr), output_path=None)
+        try:
+            rec = build_recovery_panel(ctx=ctx, panel=base_panel, threshold=float(rthr), output_path=None)
+        except Exception as e_rec:
+            log_issue(
+                ctx,
+                stage="robustness",
+                model="Cox",
+                event_id="all",
+                issue_type="recovery_panel_unavailable",
+                symptom=f"recovery_threshold={rthr}: {e_rec}",
+                fix_action="skip this recovery-threshold scenario",
+                impact="partial robustness table for Cox recovery thresholds",
+                status="open",
+            )
+            continue
         cox_res = fit_cox(ctx=ctx, recovery_df=rec, variant=f"robust_recovery_{rthr}", include_land_use=False)
         coef = cox_res["coef"]
         if not coef.empty and "in_buffer" in coef["covariate"].values:
@@ -1319,9 +1523,18 @@ def _build_problem_section(model_name: str) -> str:
         )
 
     lines = []
-    for _, r in issues.iterrows():
+    keys = ["issue_type", "symptom", "fix_action", "impact", "status"]
+    grouped = (
+        issues.groupby(keys, dropna=False)
+        .size()
+        .reset_index(name="count")
+        .sort_values(["count", "issue_type"], ascending=[False, True])
+    )
+
+    for _, r in grouped.iterrows():
         lines.append(
-            f"- 症状 Symptom: {r['symptom']}\n"
+            f"- 发生次数 Count: {int(r['count'])}\n"
+            f"  症状 Symptom: {r['symptom']}\n"
             f"  原因 Cause: {r['issue_type']}\n"
             f"  修复 Fix: {r['fix_action']}\n"
             f"  影响 Impact: {r['impact']}\n"
@@ -1455,24 +1668,25 @@ def build_model_summary_for_report() -> pd.DataFrame:
                     }
                 )
 
-    roc_file = OUTPUT_DIR / "logit_roc_no_nlcd.csv"
-    if roc_file.exists():
-        roc = pd.read_csv(roc_file)
-        if not roc.empty:
-            rows.append(
-                {
-                    "model": "Logit",
-                    "variant": "no_nlcd",
-                    "key_metric": "auc",
-                    "term": "AUC",
-                    "value": roc["auc"].iloc[0],
-                    "p_value": np.nan,
-                    "ci_low": np.nan,
-                    "ci_high": np.nan,
-                    "n_obs": np.nan,
-                    "notes": "ROC AUC",
-                }
-            )
+    for variant in ["no_nlcd", "with_nlcd"]:
+        roc_file = OUTPUT_DIR / f"logit_roc_{variant}.csv"
+        if roc_file.exists():
+            roc = pd.read_csv(roc_file)
+            if not roc.empty:
+                rows.append(
+                    {
+                        "model": "Logit",
+                        "variant": variant,
+                        "key_metric": "auc",
+                        "term": "AUC",
+                        "value": roc["auc"].iloc[0],
+                        "p_value": np.nan,
+                        "ci_low": np.nan,
+                        "ci_high": np.nan,
+                        "n_obs": np.nan,
+                        "notes": "ROC AUC",
+                    }
+                )
 
     # Cox
     cox_file = OUTPUT_DIR / "cox_results.csv"
@@ -1517,18 +1731,39 @@ def build_model_summary_for_report() -> pd.DataFrame:
 def generate_reports() -> None:
     summary = pd.read_csv(OUTPUT_DIR / "model_summary_for_report.csv")
 
+    def _metric(model: str, variant: str, key_metric: str) -> Tuple[float, float]:
+        sub = summary[
+            (summary["model"] == model)
+            & (summary["variant"] == variant)
+            & (summary["key_metric"] == key_metric)
+        ]
+        if sub.empty:
+            return np.nan, np.nan
+        row = sub.iloc[0]
+        return row.get("value", np.nan), row.get("p_value", np.nan)
+
+    def _fmt(v: float, digits: int = 4) -> str:
+        return "N/A" if pd.isna(v) else f"{v:.{digits}f}"
+
+    def _fmt_p(v: float) -> str:
+        return "N/A" if pd.isna(v) else f"{v:.4g}"
+
     # OLS report
-    ols_main = summary[(summary["model"] == "OLS") & (summary["variant"] == "no_nlcd")]
-    ols_coef = ols_main["value"].iloc[0] if not ols_main.empty else np.nan
-    ols_p = ols_main["p_value"].iloc[0] if not ols_main.empty else np.nan
+    ols_coef_no, ols_p_no = _metric("OLS", "no_nlcd", "coef_in_buffer")
+    ols_coef_lu, ols_p_lu = _metric("OLS", "with_nlcd", "coef_in_buffer")
+    ols_delta = ols_coef_lu - ols_coef_no if pd.notna(ols_coef_lu) and pd.notna(ols_coef_no) else np.nan
 
     _write_model_report(
         filename=REPORT_DIR / "01_ols_report.md",
         title="OLS Model Report / OLS 模型报告",
         objective="评估在控制基线亮度与事件差异后，缓冲区像素是否表现出更高韧性 (resilience).",
-        data_features="使用 `all_events_pixel_panel_v1.parquet`，核心变量为 `delta_ntl`, `in_buffer`, `pre_mean_ntl`, `event_id`。",
-        model_spec="`delta_ntl ~ in_buffer * pre_mean_ntl + C(event_id)` (HC1 robust SE)",
-        results_text=f"核心系数 `in_buffer` = {ols_coef:.4f}, p-value = {ols_p:.4g} (no_nlcd baseline).",
+        data_features="`no_nlcd` 使用 `all_events_pixel_panel_v1.parquet`；`with_nlcd` 使用 `all_events_pixel_panel_v1_with_nlcd.parquet` 并加入 `land_use`。",
+        model_spec="`no_nlcd`: `delta_ntl ~ in_buffer * pre_mean_ntl + C(event_id)`; `with_nlcd`: `+ C(land_use)` (HC1 robust SE).",
+        results_text=(
+            f"`in_buffer` (no_nlcd) = {_fmt(ols_coef_no)}, p={_fmt_p(ols_p_no)}; "
+            f"(with_nlcd) = {_fmt(ols_coef_lu)}, p={_fmt_p(ols_p_lu)}; "
+            f"change(with-no) = {_fmt(ols_delta)}."
+        ),
         figures=[
             ("系数图 Coefficient Plot", "project/modeling_report/figures/ols/ols_coefficients.png"),
             ("预测-实际 Predicted vs Actual", "project/modeling_report/figures/ols/ols_pred_vs_actual.png"),
@@ -1541,17 +1776,21 @@ def generate_reports() -> None:
     )
 
     # Mixed report
-    mixed_main = summary[(summary["model"] == "MixedLM") & (summary["variant"] == "no_nlcd")]
-    mixed_coef = mixed_main["value"].iloc[0] if not mixed_main.empty else np.nan
-    mixed_p = mixed_main["p_value"].iloc[0] if not mixed_main.empty else np.nan
+    mixed_coef_no, mixed_p_no = _metric("MixedLM", "no_nlcd", "coef_in_buffer")
+    mixed_coef_lu, mixed_p_lu = _metric("MixedLM", "with_nlcd", "coef_in_buffer")
+    mixed_delta = mixed_coef_lu - mixed_coef_no if pd.notna(mixed_coef_lu) and pd.notna(mixed_coef_no) else np.nan
 
     _write_model_report(
         filename=REPORT_DIR / "02_mixedlm_report.md",
         title="Mixed-Effects Model Report / 混合效应模型报告",
         objective="在事件层级随机截距下估计缓冲区效应，处理像素嵌套结构。",
-        data_features="同 OLS 数据，但模型引入 `event_id` random intercept。",
-        model_spec="`delta_ntl ~ in_buffer * pre_mean_ntl` with `groups=event_id`.",
-        results_text=f"核心系数 `in_buffer` = {mixed_coef:.4f}, p-value = {mixed_p:.4g} (no_nlcd baseline).",
+        data_features="同 OLS 两个数据版本，模型在 `event_id` 层加入 random intercept。",
+        model_spec="`no_nlcd`: `delta_ntl ~ in_buffer * pre_mean_ntl`; `with_nlcd`: `+ C(land_use)`, `groups=event_id`.",
+        results_text=(
+            f"`in_buffer` (no_nlcd) = {_fmt(mixed_coef_no)}, p={_fmt_p(mixed_p_no)}; "
+            f"(with_nlcd) = {_fmt(mixed_coef_lu)}, p={_fmt_p(mixed_p_lu)}; "
+            f"change(with-no) = {_fmt(mixed_delta)}."
+        ),
         figures=[
             ("固定效应系数 Fixed Effects", "project/modeling_report/figures/mixedlm/mixedlm_fixed_effects.png"),
             ("随机截距 Random Intercepts", "project/modeling_report/figures/mixedlm/mixedlm_random_effects.png"),
@@ -1564,19 +1803,23 @@ def generate_reports() -> None:
     )
 
     # Logit report
-    logit_main = summary[(summary["model"] == "Logit") & (summary["variant"] == "no_nlcd") & (summary["key_metric"] == "odds_ratio_in_buffer")]
-    auc_main = summary[(summary["model"] == "Logit") & (summary["variant"] == "no_nlcd") & (summary["key_metric"] == "auc")]
-    logit_or = logit_main["value"].iloc[0] if not logit_main.empty else np.nan
-    logit_p = logit_main["p_value"].iloc[0] if not logit_main.empty else np.nan
-    auc_val = auc_main["value"].iloc[0] if not auc_main.empty else np.nan
+    logit_or_no, logit_p_no = _metric("Logit", "no_nlcd", "odds_ratio_in_buffer")
+    logit_or_lu, logit_p_lu = _metric("Logit", "with_nlcd", "odds_ratio_in_buffer")
+    auc_no, _ = _metric("Logit", "no_nlcd", "auc")
+    auc_lu, _ = _metric("Logit", "with_nlcd", "auc")
+    logit_delta = logit_or_lu - logit_or_no if pd.notna(logit_or_lu) and pd.notna(logit_or_no) else np.nan
 
     _write_model_report(
         filename=REPORT_DIR / "03_logit_report.md",
         title="Logistic Model Report / Logit 模型报告",
         objective="评估缓冲区位置是否降低像素受损概率 (damage probability).",
         data_features="因变量 `is_damaged = 1(delta_ntl < threshold)`，阈值基线 -10%。",
-        model_spec="`is_damaged ~ in_buffer * pre_mean_ntl + C(event_id)`.",
-        results_text=f"`in_buffer` odds ratio = {logit_or:.4f}, p-value = {logit_p:.4g}; ROC AUC = {auc_val:.4f}.",
+        model_spec="`no_nlcd`: `is_damaged ~ in_buffer * pre_mean_ntl + C(event_id)`; `with_nlcd`: `+ C(land_use)`.",
+        results_text=(
+            f"`in_buffer` OR (no_nlcd) = {_fmt(logit_or_no)}, p={_fmt_p(logit_p_no)}, AUC={_fmt(auc_no)}; "
+            f"(with_nlcd) = {_fmt(logit_or_lu)}, p={_fmt_p(logit_p_lu)}, AUC={_fmt(auc_lu)}; "
+            f"OR change(with-no) = {_fmt(logit_delta)}."
+        ),
         figures=[
             ("优势比图 Odds Ratio Plot", "project/modeling_report/figures/logit/logit_odds_ratio.png"),
             ("ROC 曲线 ROC Curve", "project/modeling_report/figures/logit/logit_roc_curve.png"),
@@ -1589,17 +1832,21 @@ def generate_reports() -> None:
     )
 
     # Cox report
-    cox_main = summary[(summary["model"] == "Cox") & (summary["variant"] == "no_nlcd")]
-    cox_hr = cox_main["value"].iloc[0] if not cox_main.empty else np.nan
-    cox_p = cox_main["p_value"].iloc[0] if not cox_main.empty else np.nan
+    cox_hr_no, cox_p_no = _metric("Cox", "no_nlcd", "hazard_ratio_in_buffer")
+    cox_hr_lu, cox_p_lu = _metric("Cox", "with_nlcd", "hazard_ratio_in_buffer")
+    cox_delta = cox_hr_lu - cox_hr_no if pd.notna(cox_hr_lu) and pd.notna(cox_hr_no) else np.nan
 
     _write_model_report(
         filename=REPORT_DIR / "04_cox_report.md",
         title="Cox PH Model Report / Cox 生存模型报告",
         objective="比较缓冲区与非缓冲区像素恢复速度 (recovery speed) 差异。",
         data_features="使用 `recovery_days` 与 `event_observed`（右删失处理）。",
-        model_spec="Cox proportional hazards on in_buffer + baseline + event dummies.",
-        results_text=f"`in_buffer` hazard ratio = {cox_hr:.4f}, p-value = {cox_p:.4g} (threshold 90%).",
+        model_spec="Cox proportional hazards on in_buffer + baseline + event dummies; `with_nlcd` 额外加入 land-use dummies.",
+        results_text=(
+            f"`in_buffer` HR (no_nlcd) = {_fmt(cox_hr_no)}, p={_fmt_p(cox_p_no)}; "
+            f"(with_nlcd) = {_fmt(cox_hr_lu)}, p={_fmt_p(cox_p_lu)}; "
+            f"HR change(with-no) = {_fmt(cox_delta)} (threshold 90%)."
+        ),
         figures=[
             ("Kaplan-Meier 曲线", "project/modeling_report/figures/cox/cox_km_curve.png"),
             ("风险比图 Hazard Ratio Plot", "project/modeling_report/figures/cox/cox_hazard_ratio.png"),
@@ -1629,6 +1876,25 @@ def generate_reports() -> None:
             f"- {r['model']} ({r['variant']}): {r['key_metric']} = {r['value']:.4f}"
             + (f", p={r['p_value']:.4g}" if pd.notna(r['p_value']) else "")
         )
+
+    idx_lines.extend(
+        [
+            "",
+            "## Land-use Control Delta (with_nlcd - no_nlcd)",
+        ]
+    )
+
+    compare_targets = [
+        ("OLS", "coef_in_buffer"),
+        ("MixedLM", "coef_in_buffer"),
+        ("Logit", "odds_ratio_in_buffer"),
+        ("Cox", "hazard_ratio_in_buffer"),
+    ]
+    for model_name, metric in compare_targets:
+        v0, _ = _metric(model_name, "no_nlcd", metric)
+        v1, _ = _metric(model_name, "with_nlcd", metric)
+        diff = v1 - v0 if pd.notna(v0) and pd.notna(v1) else np.nan
+        idx_lines.append(f"- {model_name} `{metric}`: no_nlcd={_fmt(v0)}, with_nlcd={_fmt(v1)}, delta={_fmt(diff)}")
 
     idx_lines.extend(
         [
@@ -1724,7 +1990,32 @@ def run_pipeline() -> None:
     rec_thr = float(defaults["recovery_threshold"])
 
     # Stage 1: baseline panel and models
-    panel = build_pixel_panel(ctx, pre_threshold=pre_thr, damage_threshold=dmg_thr, exclude_types=None, output_path=PANEL_PATH)
+    try:
+        panel = build_pixel_panel(
+            ctx,
+            pre_threshold=pre_thr,
+            damage_threshold=dmg_thr,
+            exclude_types=None,
+            output_path=PANEL_PATH,
+        )
+    except Exception as e_panel:
+        if PANEL_PATH.exists():
+            panel = pd.read_parquet(PANEL_PATH)
+            log_issue(
+                ctx,
+                stage="run_pipeline",
+                model="all",
+                event_id="all",
+                issue_type="panel_build_failed_use_cached",
+                symptom=str(e_panel),
+                fix_action="load existing all_events_pixel_panel_v1.parquet",
+                impact="pipeline continues without raw pre/post rebuild",
+                status="resolved",
+            )
+        else:
+            raise
+
+    panel = attach_cloud_features(ctx=ctx, panel_path=PANEL_PATH, output_path=PANEL_PATH)
 
     ols_mixed_tables: List[Dict[str, pd.DataFrame]] = []
     logit_tables: List[Dict[str, pd.DataFrame]] = []
@@ -1738,7 +2029,24 @@ def run_pipeline() -> None:
     logit_base["roc"].to_csv(OUTPUT_DIR / "logit_roc_no_nlcd.csv", index=False)
     logit_base["calibration"].to_csv(OUTPUT_DIR / "logit_calibration_no_nlcd.csv", index=False)
 
-    rec_base = build_recovery_panel(ctx, panel, threshold=rec_thr, output_path=RECOVERY_PATH)
+    try:
+        rec_base = build_recovery_panel(ctx, panel, threshold=rec_thr, output_path=RECOVERY_PATH)
+    except Exception as e_rec:
+        if RECOVERY_PATH.exists():
+            rec_base = pd.read_parquet(RECOVERY_PATH)
+            log_issue(
+                ctx,
+                stage="run_pipeline",
+                model="Cox",
+                event_id="all",
+                issue_type="recovery_build_failed_use_cached",
+                symptom=str(e_rec),
+                fix_action="load existing recovery_daily_panel_v1.parquet",
+                impact="cox baseline runs on cached recovery panel",
+                status="resolved",
+            )
+        else:
+            raise
     cox_base = fit_cox(ctx, rec_base, variant="no_nlcd", include_land_use=False)
     cox_tables.append(cox_base)
     cox_base["km"].to_csv(OUTPUT_DIR / "cox_km_no_nlcd.csv", index=False)
@@ -1759,7 +2067,26 @@ def run_pipeline() -> None:
         logit_lu["roc"].to_csv(OUTPUT_DIR / "logit_roc_with_nlcd.csv", index=False)
         logit_lu["calibration"].to_csv(OUTPUT_DIR / "logit_calibration_with_nlcd.csv", index=False)
 
-        rec_lu = build_recovery_panel(ctx, panel_nlcd, threshold=rec_thr, output_path=None)
+        try:
+            rec_lu = build_recovery_panel(ctx, panel_nlcd, threshold=rec_thr, output_path=None)
+        except Exception as e_rec_lu:
+            if RECOVERY_PATH.exists():
+                rec_lu = pd.read_parquet(RECOVERY_PATH).copy()
+                lu = panel_nlcd[["pixel_id", "land_use"]].drop_duplicates(subset=["pixel_id"])
+                rec_lu = rec_lu.merge(lu, on="pixel_id", how="left")
+                log_issue(
+                    ctx,
+                    stage="run_pipeline",
+                    model="Cox",
+                    event_id="all",
+                    issue_type="recovery_build_failed_use_cached_with_land_use",
+                    symptom=str(e_rec_lu),
+                    fix_action="merge cached recovery panel with panel_nlcd land_use by pixel_id",
+                    impact="cox with_nlcd runs without rebuilding post-event stacks",
+                    status="resolved",
+                )
+            else:
+                raise
         cox_lu = fit_cox(ctx, rec_lu, variant="with_nlcd", include_land_use=True)
         cox_tables.append(cox_lu)
         cox_lu["km"].to_csv(OUTPUT_DIR / "cox_km_with_nlcd.csv", index=False)

@@ -2,3 +2,23 @@
 cache/
 POI/__pycache__/
 *.csv_partial
+
+# Python env/cache
+.venv/
+.venv_modeling/
+__pycache__/
+*.pyc
+
+# Generated modeling artifacts (reproducible)
+project/modeling/output/*.csv
+project/modeling/output/*.parquet
+project/modeling/pixel_data/*.parquet
+project/modeling_report/figures/feature_upgrade/
+
+# Large reusable data (pull/download on demand)
+project/data/nlcd/
+project/data/processed/*-VNP46A2-pre/
+project/data/processed/*-VNP46A2-post/
+project/result/*_critical_infra_poi.csv
+project/script/*cloud_screening*.csv
+project/script/multi_event_ntl_download.ipynb
