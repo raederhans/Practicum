@@ -7,7 +7,7 @@
 使用 `recovery_days` 与 `event_observed`（右删失处理）。
 
 ## Model Spec
-Cox proportional hazards on in_buffer + baseline + event dummies.
+Cox proportional hazards on in_buffer + baseline + event dummies; `with_nlcd` 额外加入 land-use dummies.
 
 ## Problems & Fixes
 No critical issue observed.
@@ -15,7 +15,7 @@ No critical issue observed.
 Residual risk: sample composition and unobserved confounders may still influence effect size; this risk is tracked in robustness outputs.
 
 ## Results
-`in_buffer` hazard ratio = 1.1261, p-value = 4.527e-07 (threshold 90%).
+`in_buffer` HR (no_nlcd) = 1.1261, p=4.527e-07; (with_nlcd) = 1.0536, p=0.06921; HR change(with-no) = -0.0726 (threshold 90%).
 
 ## Figures
 - Kaplan-Meier 曲线: `project/modeling_report/figures/cox/cox_km_curve.png`

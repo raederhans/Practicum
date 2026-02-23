@@ -1,9 +1,3 @@
 stage,model,event_id,issue_type,symptom,fix_action,impact,status
 fit_mixedlm,MixedLM,all,random_effect_extraction_failed,Cannot predict random effects from singular covariance structure.,keep fixed effects and predictions; skip random-intercept export,random-effect chart unavailable for this variant,monitor
-attach_nlcd,all,maria_sanjuan,missing_nlcd,No NLCD raster found for event,keep land_use as NaN and continue,NLCD-enhanced model skipped for this event,open
-attach_nlcd,all,michael_panamacity,missing_nlcd,No NLCD raster found for event,keep land_use as NaN and continue,NLCD-enhanced model skipped for this event,open
-attach_nlcd,all,earthquake_sanjuan,missing_nlcd,No NLCD raster found for event,keep land_use as NaN and continue,NLCD-enhanced model skipped for this event,open
-attach_nlcd,all,ida_neworleans,missing_nlcd,No NLCD raster found for event,keep land_use as NaN and continue,NLCD-enhanced model skipped for this event,open
-attach_nlcd,all,laura_lakecharles,missing_nlcd,No NLCD raster found for event,keep land_use as NaN and continue,NLCD-enhanced model skipped for this event,open
-attach_nlcd,all,irma_miami,missing_nlcd,No NLCD raster found for event,keep land_use as NaN and continue,NLCD-enhanced model skipped for this event,open
-run_pipeline,all,all,insufficient_nlcd_coverage,land_use coverage <= 20%,skip with_nlcd model reruns,only no_nlcd model variant available,open
+fit_mixedlm,MixedLM,all,random_effect_extraction_failed,Cannot predict random effects from singular covariance structure.,keep fixed effects and predictions; skip random-intercept export,random-effect chart unavailable for this variant,monitor

@@ -25,3 +25,37 @@
 - [2026-02-23 16:29:34 UTC] Pipeline finished
 - [2026-02-23 16:30:25 UTC] Generated model figures for OLS, MixedLM, Logit, and Cox
 - [2026-02-23 16:30:40 UTC] Generated four standalone model reports and report index
+- [2026-02-23 17:47:24 UTC] Pipeline started
+- [2026-02-23 17:51:55 UTC] Pipeline started
+- [2026-02-23 17:51:56 UTC] Attached NLCD to panel. Coverage summary saved to project/modeling/output/nlcd_coverage.csv
+- [2026-02-23 17:51:56 UTC] NLCD coverage sufficient; reran all 4 models with land_use controls
+- [2026-02-23 17:51:57 UTC] Completed robustness scenarios and exported robustness_summary.csv
+- [2026-02-23 17:51:59 UTC] Generated model figures for OLS, MixedLM, Logit, and Cox
+- [2026-02-23 17:51:59 UTC] Generated four standalone model reports and report index
+- [2026-02-23 17:51:59 UTC] Pipeline finished
+- [2026-02-23 17:53:23 UTC] Pipeline started
+- [2026-02-23 17:53:25 UTC] Attached NLCD to panel. Coverage summary saved to project/modeling/output/nlcd_coverage.csv
+- [2026-02-23 17:53:25 UTC] NLCD coverage sufficient; reran all 4 models with land_use controls
+- [2026-02-23 17:53:25 UTC] Completed robustness scenarios and exported robustness_summary.csv
+- [2026-02-23 17:53:28 UTC] Generated model figures for OLS, MixedLM, Logit, and Cox
+- [2026-02-23 17:53:28 UTC] Generated four standalone model reports and report index
+- [2026-02-23 17:53:28 UTC] Pipeline finished
+- [2026-02-23 17:55:25 UTC] Generated four standalone model reports and report index
+- [2026-02-23 23:01:53 UTC] Pipeline started
+- [2026-02-23 23:01:56 UTC] Built pixel panel project/modeling/pixel_data/all_events_pixel_panel_v1.parquet with 10,306 rows across 6 events
+- [2026-02-23 23:01:56 UTC] Attached cloud features to panel. Summary saved to project/modeling/output/cloud_feature_summary.csv
+- [2026-02-23 23:01:59 UTC] Attached NLCD to panel. Coverage summary saved to project/modeling/output/nlcd_coverage.csv
+- [2026-02-23 23:02:01 UTC] NLCD coverage sufficient; reran all 4 models with land_use controls
+- [2026-02-23 23:02:08 UTC] Completed robustness scenarios and exported robustness_summary.csv
+- [2026-02-23 23:02:10 UTC] Generated model figures for OLS, MixedLM, Logit, and Cox
+- [2026-02-23 23:02:10 UTC] Generated four standalone model reports and report index
+- [2026-02-23 23:02:10 UTC] Pipeline finished
+- [2026-02-23 23:03:01 UTC] Pipeline started
+- [2026-02-23 23:03:03 UTC] Built pixel panel project/modeling/pixel_data/all_events_pixel_panel_v1.parquet with 10,306 rows across 6 events
+- [2026-02-23 23:03:04 UTC] Attached cloud features to panel. Summary saved to project/modeling/output/cloud_feature_summary.csv
+- [2026-02-23 23:03:06 UTC] Attached NLCD to panel. Coverage summary saved to project/modeling/output/nlcd_coverage.csv
+- [2026-02-23 23:03:08 UTC] NLCD coverage sufficient; reran all 4 models with land_use controls
+- [2026-02-23 23:03:16 UTC] Completed robustness scenarios and exported robustness_summary.csv
+- [2026-02-23 23:03:18 UTC] Generated model figures for OLS, MixedLM, Logit, and Cox
+- [2026-02-23 23:03:18 UTC] Generated four standalone model reports and report index
+- [2026-02-23 23:03:18 UTC] Pipeline finished

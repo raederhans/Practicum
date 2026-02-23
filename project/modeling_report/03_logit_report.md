@@ -7,7 +7,7 @@
 因变量 `is_damaged = 1(delta_ntl < threshold)`，阈值基线 -10%。
 
 ## Model Spec
-`is_damaged ~ in_buffer * pre_mean_ntl + C(event_id)`.
+`no_nlcd`: `is_damaged ~ in_buffer * pre_mean_ntl + C(event_id)`; `with_nlcd`: `+ C(land_use)`.
 
 ## Problems & Fixes
 No critical issue observed.
@@ -15,7 +15,7 @@ No critical issue observed.
 Residual risk: sample composition and unobserved confounders may still influence effect size; this risk is tracked in robustness outputs.
 
 ## Results
-`in_buffer` odds ratio = 0.6831, p-value = 1.022e-07; ROC AUC = 0.7192.
+`in_buffer` OR (no_nlcd) = 0.6831, p=1.022e-07, AUC=0.7192; (with_nlcd) = 1.1777, p=0.1049, AUC=0.7490; OR change(with-no) = 0.4946.
 
 ## Figures
 - 优势比图 Odds Ratio Plot: `project/modeling_report/figures/logit/logit_odds_ratio.png`

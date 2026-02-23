@@ -4,10 +4,10 @@
 评估在控制基线亮度与事件差异后，缓冲区像素是否表现出更高韧性 (resilience).
 
 ## Data & Features
-使用 `all_events_pixel_panel_v1.parquet`，核心变量为 `delta_ntl`, `in_buffer`, `pre_mean_ntl`, `event_id`。
+`no_nlcd` 使用 `all_events_pixel_panel_v1.parquet`；`with_nlcd` 使用 `all_events_pixel_panel_v1_with_nlcd.parquet` 并加入 `land_use`。
 
 ## Model Spec
-`delta_ntl ~ in_buffer * pre_mean_ntl + C(event_id)` (HC1 robust SE)
+`no_nlcd`: `delta_ntl ~ in_buffer * pre_mean_ntl + C(event_id)`; `with_nlcd`: `+ C(land_use)` (HC1 robust SE).
 
 ## Problems & Fixes
 No critical issue observed.
@@ -15,7 +15,7 @@ No critical issue observed.
 Residual risk: sample composition and unobserved confounders may still influence effect size; this risk is tracked in robustness outputs.
 
 ## Results
-核心系数 `in_buffer` = 0.0283, p-value = 0.07015 (no_nlcd baseline).
+`in_buffer` (no_nlcd) = 0.0283, p=0.07015; (with_nlcd) = -0.0238, p=0.122; change(with-no) = -0.0521.
 
 ## Figures
 - 系数图 Coefficient Plot: `project/modeling_report/figures/ols/ols_coefficients.png`
