@@ -1,3 +1,1 @@
 stage,model,event_id,issue_type,symptom,fix_action,impact,status
-fit_mixedlm,MixedLM,all,random_effect_extraction_failed,Cannot predict random effects from singular covariance structure.,keep fixed effects and predictions; skip random-intercept export,random-effect chart unavailable for this variant,monitor
-fit_mixedlm,MixedLM,all,random_effect_extraction_failed,Cannot predict random effects from singular covariance structure.,keep fixed effects and predictions; skip random-intercept export,random-effect chart unavailable for this variant,monitor

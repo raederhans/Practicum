@@ -148,3 +148,109 @@ All issues here correspond to `project/modeling/output/model_issue_log.csv`.
 ## Update 2026-02-23 23:03:16 UTC
 - [MixedLM] all | random_effect_extraction_failed | symptom=Cannot predict random effects from singular covariance structure. | fix=keep fixed effects and predictions; skip random-intercept export | impact=random-effect chart unavailable for this variant | status=monitor
 - [MixedLM] all | random_effect_extraction_failed | symptom=Cannot predict random effects from singular covariance structure. | fix=keep fixed effects and predictions; skip random-intercept export | impact=random-effect chart unavailable for this variant | status=monitor
+
+## Update 2026-02-24 00:16:56 UTC
+- [MixedLM] all | model_fit_failed | symptom=Cannot predict random effects from singular covariance structure. | fix=skip mixedlm for this variant | impact=mixed-effect result unavailable | status=open
+- [MixedLM] all | model_fit_failed | symptom=Singular matrix | fix=skip mixedlm for this variant | impact=mixed-effect result unavailable | status=open
+- [Logit] all | model_fit_failed | symptom=Singular matrix | fix=skip logit for this variant | impact=logit result unavailable | status=open
+- [Cox] all | base_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=try event strata model | impact=fallback sequence triggered | status=monitor
+- [Cox] all | strata_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=try time-interaction model | impact=fallback sequence triggered | status=monitor
+- [Cox] all | time_interaction_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=use best available cox candidate | impact=partial PH repair | status=monitor
+- [MixedLM] earthquake_sanjuan | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for MixedLM | status=monitor
+- [Logit] earthquake_sanjuan | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for Logit | status=monitor
+- [Cox] earthquake_sanjuan | fold_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=record NaN metrics | impact=partial LOEO for Cox | status=monitor
+- [MixedLM] earthquake_sanjuan | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for MixedLM | status=monitor
+- [Logit] earthquake_sanjuan | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for Logit | status=monitor
+- [Cox] earthquake_sanjuan | fold_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=record NaN metrics | impact=partial LOEO for Cox | status=monitor
+- [MixedLM] ida_neworleans | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for MixedLM | status=monitor
+- [Logit] ida_neworleans | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for Logit | status=monitor
+- [Cox] ida_neworleans | fold_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=record NaN metrics | impact=partial LOEO for Cox | status=monitor
+- [MixedLM] ida_neworleans | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for MixedLM | status=monitor
+- [Logit] ida_neworleans | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for Logit | status=monitor
+- [Cox] ida_neworleans | fold_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=record NaN metrics | impact=partial LOEO for Cox | status=monitor
+- [MixedLM] irma_miami | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for MixedLM | status=monitor
+- [Logit] irma_miami | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for Logit | status=monitor
+- [Cox] irma_miami | fold_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=record NaN metrics | impact=partial LOEO for Cox | status=monitor
+- [MixedLM] irma_miami | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for MixedLM | status=monitor
+- [Logit] irma_miami | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for Logit | status=monitor
+- [Cox] irma_miami | fold_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=record NaN metrics | impact=partial LOEO for Cox | status=monitor
+- [MixedLM] laura_lakecharles | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for MixedLM | status=monitor
+- [Logit] laura_lakecharles | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for Logit | status=monitor
+- [Cox] laura_lakecharles | fold_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=record NaN metrics | impact=partial LOEO for Cox | status=monitor
+- [MixedLM] laura_lakecharles | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for MixedLM | status=monitor
+- [Logit] laura_lakecharles | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for Logit | status=monitor
+- [Cox] laura_lakecharles | fold_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=record NaN metrics | impact=partial LOEO for Cox | status=monitor
+- [MixedLM] maria_sanjuan | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for MixedLM | status=monitor
+- [Logit] maria_sanjuan | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for Logit | status=monitor
+- [Cox] maria_sanjuan | fold_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=record NaN metrics | impact=partial LOEO for Cox | status=monitor
+- [MixedLM] maria_sanjuan | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for MixedLM | status=monitor
+- [Logit] maria_sanjuan | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for Logit | status=monitor
+- [Cox] maria_sanjuan | fold_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=record NaN metrics | impact=partial LOEO for Cox | status=monitor
+- [MixedLM] michael_panamacity | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for MixedLM | status=monitor
+- [Logit] michael_panamacity | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for Logit | status=monitor
+- [Cox] michael_panamacity | fold_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=record NaN metrics | impact=partial LOEO for Cox | status=monitor
+- [MixedLM] michael_panamacity | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for MixedLM | status=monitor
+- [Logit] michael_panamacity | fold_fit_failed | symptom=Singular matrix | fix=record NaN metrics | impact=partial LOEO for Logit | status=monitor
+- [Cox] michael_panamacity | fold_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=record NaN metrics | impact=partial LOEO for Cox | status=monitor
+
+## Update 2026-02-24 00:20:09 UTC
+- [MixedLM] all | random_effect_extraction_failed | symptom=Cannot predict random effects from singular covariance structure. | fix=keep fixed effects and predictions | impact=random-effect table unavailable | status=monitor
+- [MixedLM] all | formula_fallback | symptom=failed full formula for full_locked | fix=use reduced mixed formula: delta_ntl ~ in_buffer * pre_mean_ntl + C(land_use_group) | impact=mixedlm kept with reduced controls | status=resolved
+- [Logit] all | formula_fallback | symptom=failed full formula for full_locked | fix=use reduced formula: is_damaged ~ in_buffer * pre_mean_ntl + C(event_id) + C(land_use_group) | impact=logit kept with reduced controls | status=resolved
+- [Cox] all | base_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=try event strata model | impact=fallback sequence triggered | status=monitor
+- [Cox] all | strata_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=try time-interaction model | impact=fallback sequence triggered | status=monitor
+- [Cox] all | time_interaction_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=use best available cox candidate | impact=partial PH repair | status=monitor
+- [Logit] earthquake_sanjuan | fold_fit_failed | symptom=predict requires that you use a DataFrame when predicting from a model
+that was created using the formula api.
+
+The original error message returned by patsy is:
+Error converting data to categorical: observation with value 'earthquake_sanjuan' does not match any of the expected levels (expected: ['ida_neworleans', 'irma_miami', ..., 'maria_sanjuan', 'michael_panamacity'])
+    is_damaged ~ in_buffer * pre_mean_ntl + C(event_id) + C(land_use_group)
+                                            ^^^^^^^^^^^ | fix=record NaN metrics | impact=partial LOEO for Logit | status=monitor
+- [Logit] ida_neworleans | fold_fit_failed | symptom=predict requires that you use a DataFrame when predicting from a model
+that was created using the formula api.
+
+The original error message returned by patsy is:
+Error converting data to categorical: observation with value 'ida_neworleans' does not match any of the expected levels (expected: ['earthquake_sanjuan', 'irma_miami', ..., 'maria_sanjuan', 'michael_panamacity'])
+    is_damaged ~ in_buffer * pre_mean_ntl + C(event_id) + C(land_use_group)
+                                            ^^^^^^^^^^^ | fix=record NaN metrics | impact=partial LOEO for Logit | status=monitor
+- [Logit] irma_miami | fold_fit_failed | symptom=predict requires that you use a DataFrame when predicting from a model
+that was created using the formula api.
+
+The original error message returned by patsy is:
+Error converting data to categorical: observation with value 'irma_miami' does not match any of the expected levels (expected: ['earthquake_sanjuan', 'ida_neworleans', ..., 'maria_sanjuan', 'michael_panamacity'])
+    is_damaged ~ in_buffer * pre_mean_ntl + C(event_id) + C(land_use_group)
+                                            ^^^^^^^^^^^ | fix=record NaN metrics | impact=partial LOEO for Logit | status=monitor
+- [Logit] laura_lakecharles | fold_fit_failed | symptom=predict requires that you use a DataFrame when predicting from a model
+that was created using the formula api.
+
+The original error message returned by patsy is:
+Error converting data to categorical: observation with value 'laura_lakecharles' does not match any of the expected levels (expected: ['earthquake_sanjuan', 'ida_neworleans', ..., 'maria_sanjuan', 'michael_panamacity'])
+    is_damaged ~ in_buffer * pre_mean_ntl + C(event_id) + C(land_use_group)
+                                            ^^^^^^^^^^^ | fix=record NaN metrics | impact=partial LOEO for Logit | status=monitor
+- [Logit] maria_sanjuan | fold_fit_failed | symptom=predict requires that you use a DataFrame when predicting from a model
+that was created using the formula api.
+
+The original error message returned by patsy is:
+Error converting data to categorical: observation with value 'maria_sanjuan' does not match any of the expected levels (expected: ['earthquake_sanjuan', 'ida_neworleans', ..., 'laura_lakecharles', 'michael_panamacity'])
+    is_damaged ~ in_buffer * pre_mean_ntl + C(event_id) + C(land_use_group)
+                                            ^^^^^^^^^^^ | fix=record NaN metrics | impact=partial LOEO for Logit | status=monitor
+- [Logit] michael_panamacity | fold_fit_failed | symptom=predict requires that you use a DataFrame when predicting from a model
+that was created using the formula api.
+
+The original error message returned by patsy is:
+Error converting data to categorical: observation with value 'michael_panamacity' does not match any of the expected levels (expected: ['earthquake_sanjuan', 'ida_neworleans', ..., 'laura_lakecharles', 'maria_sanjuan'])
+    is_damaged ~ in_buffer * pre_mean_ntl + C(event_id) + C(land_use_group)
+                                            ^^^^^^^^^^^ | fix=record NaN metrics | impact=partial LOEO for Logit | status=monitor
+
+## Update 2026-02-24 00:21:22 UTC
+- [MixedLM] all | random_effect_extraction_failed | symptom=Cannot predict random effects from singular covariance structure. | fix=keep fixed effects and predictions | impact=random-effect table unavailable | status=monitor
+- [MixedLM] all | formula_fallback | symptom=failed full formula for full_locked | fix=use reduced mixed formula: delta_ntl ~ in_buffer * pre_mean_ntl + C(land_use_group) | impact=mixedlm kept with reduced controls | status=resolved
+- [Logit] all | formula_fallback | symptom=failed full formula for full_locked | fix=use reduced formula: is_damaged ~ in_buffer * pre_mean_ntl + C(event_id) + C(land_use_group) | impact=logit kept with reduced controls | status=resolved
+- [Cox] all | base_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=try event strata model | impact=fallback sequence triggered | status=monitor
+- [Cox] all | strata_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=try time-interaction model | impact=fallback sequence triggered | status=monitor
+- [Cox] all | time_interaction_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=use best available cox candidate | impact=partial PH repair | status=monitor
+- [Cox] all | formula_fallback | symptom=full Cox failed for full_locked | fix=fallback to nlcd-level cox design | impact=full_locked uses reduced Cox controls | status=resolved
+
+## Update 2026-02-24 00:48:24 UTC
+- No critical issue observed in this run.
