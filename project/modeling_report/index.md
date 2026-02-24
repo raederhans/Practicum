@@ -7,6 +7,7 @@
 - `project/modeling_report/04_cox_report.md`
 - `project/modeling_report/05_iteration_summary.md`
 - `project/modeling_report/06_feature_upgrade_report.md`
+- `project/modeling_report/07_logo_validation_report.md`
 
 ## Reuse-first Upgrade (Current Round)
 - Reuse outputs:
@@ -46,3 +47,8 @@
 
 ## Citation-ready statement
 - 在六事件统一像素框架下，控制基线亮度与事件异质性后，关键设施缓冲区在夜光恢复/损伤概率上展现出可检验的韧性差异。
+- Strict V2 outputs: `project/modeling/output/model_summary_feature_upgrade_v2_strict.csv`, `project/modeling/output/logo_aggregate_metrics_v2_strict.csv`
+- `project/modeling_report/08_cross_event_model_report.md`
+- V3 cross-event outputs: `project/modeling/output/model_summary_cross_event_v3.csv`, `project/modeling/output/cross_event_aggregate_metrics_v3.csv`
+- `project/modeling_report/09_cross_event_stabilization_report.md`
+- V3 stabilization outputs: `project/modeling/output/cross_event_round_comparison_v3x.csv`, `project/modeling/output/cross_event_stop_decision_v3x.json`

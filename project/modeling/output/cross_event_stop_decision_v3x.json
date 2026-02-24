@@ -1,0 +1,38 @@
+{
+  "created_at_utc": "2026-02-24T01:41:27.822905+00:00",
+  "policy": "Balanced",
+  "thresholds": {
+    "delta_logit_auc": 0.02,
+    "delta_survival_best_c_index": 0.01
+  },
+  "max_rounds": 3,
+  "stopped_at_round": "r1",
+  "reason": "marginal_improvement",
+  "marginal_improvement_stop": true,
+  "baseline_round": "r0",
+  "baseline_metrics": {
+    "logit_auc": 0.4896629077391274,
+    "logit_brier": 0.3110050671939704,
+    "cox_c_index": 0.4641479930440278,
+    "aft_c_index": 0.5354466838366854,
+    "ols_rmse": 0.5242969348922796,
+    "mixedlm_rmse": 0.4842346889096327,
+    "hgb_auc": 0.568759780355526,
+    "hgb_rmse": 0.5116928533983766,
+    "survival_best_c_index": 0.5354466838366854
+  },
+  "final_metrics": {
+    "logit_auc": 0.4827375101952784,
+    "logit_brier": 0.26580669514284894,
+    "survival_best_c_index": 0.5213379750676524,
+    "cox_c_index": 0.5213379750676524,
+    "aft_c_index": 0.4773447838464176,
+    "ols_rmse": 0.4118520834784245,
+    "mixedlm_rmse": 0.4682862683890155,
+    "hgb_auc": 0.5377040881695015,
+    "hgb_rmse": 0.4586327884813428
+  },
+  "executed_rounds": [
+    "r1"
+  ]
+}
