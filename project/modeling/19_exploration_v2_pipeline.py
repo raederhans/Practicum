@@ -18,5 +18,5 @@ def _load_main(rel_path: str):
 
 
 if __name__ == '__main__':
-    main = _load_main('pipelines/02_cross_event_pipeline.py')
-    raise SystemExit(main(['stabilize-v3', *sys.argv[1:]]))
+    main = _load_main('pipelines/03_exploration_pipeline.py')
+    raise SystemExit(main(['run-v2', *sys.argv[1:]]))

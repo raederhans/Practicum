@@ -1,7 +1,7 @@
 {
   "strict_v2_logo_path": "project/modeling/output/logo_aggregate_metrics_v2_strict.csv",
   "strict_v2_summary_path": "project/modeling/output/model_summary_feature_upgrade_v2_strict.csv",
-  "created_at_utc": "2026-02-24T01:20:27.846928+00:00",
+  "created_at_utc": "2026-02-27T14:28:53.834170+00:00",
   "strict_v2_logo_transport": {
     "Cox": {
       "rmse": NaN,

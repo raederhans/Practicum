@@ -6,6 +6,7 @@
 - Report language: Chinese main text + English technical terms
 
 ## Execution Log
+- Consolidated legacy `15-19` into `project/modeling/pipelines/01-03`; root numbered files are now direct-import shims and pre-merge implementations moved to `project/modeling/legacy/archive_premerge/`.
 - [2026-02-23 16:25:34 UTC] Pipeline started
 - [2026-02-23 16:25:38 UTC] Built pixel panel project/modeling/pixel_data/all_events_pixel_panel_v1.parquet with 10,306 rows across 6 events
 - [2026-02-23 16:26:32 UTC] Pipeline started
@@ -68,3 +69,52 @@
 - [2026-02-24 00:21:22 UTC] Feature-upgrade pipeline finished
 - [2026-02-24 00:48:18 UTC] Strict V2 pipeline started
 - [2026-02-24 00:48:24 UTC] Strict V2 pipeline finished
+- [2026-02-27 03:58:17 UTC] Exploration V2 pipeline started
+- [2026-02-27 03:59:24 UTC] Exploration V2: cloud ablation
+- [2026-02-27 03:59:45 UTC] Exploration V2: noise masking
+- [2026-02-27 04:00:04 UTC] Exploration V2: urban-rural + population
+- [2026-02-27 04:00:11 UTC] Exploration V2: spatial diagnostics + contribution
+- [2026-02-27 04:00:14 UTC] Exploration V2: extreme-event sensitivity
+- [2026-02-27 04:00:22 UTC] Exploration V2: write plan docs/report/index
+- [2026-02-27 04:00:23 UTC] Exploration V2 pipeline completed
+- [2026-02-27 04:02:10 UTC] Exploration V2 pipeline started
+- [2026-02-27 04:02:20 UTC] Exploration V2: cloud ablation
+- [2026-02-27 04:02:43 UTC] Exploration V2: noise masking
+- [2026-02-27 04:02:59 UTC] Exploration V2: urban-rural + population
+- [2026-02-27 04:03:09 UTC] Exploration V2: spatial diagnostics + contribution
+- [2026-02-27 04:03:12 UTC] Exploration V2: extreme-event sensitivity
+- [2026-02-27 04:03:32 UTC] Exploration V2: write plan docs/report/index
+- [2026-02-27 04:03:33 UTC] Exploration V2 pipeline completed
+- [2026-02-27 04:06:59 UTC] Exploration V2 pipeline started
+- [2026-02-27 04:08:30 UTC] Exploration V2: cloud ablation
+- [2026-02-27 04:08:56 UTC] Exploration V2: noise masking
+- [2026-02-27 04:09:10 UTC] Exploration V2: urban-rural + population
+- [2026-02-27 04:09:22 UTC] Exploration V2: spatial diagnostics + contribution
+- [2026-02-27 04:09:25 UTC] Exploration V2: extreme-event sensitivity
+- [2026-02-27 04:09:51 UTC] Exploration V2: write plan docs/report/index
+- [2026-02-27 04:09:51 UTC] Exploration V2 pipeline completed
+- [2026-02-27 04:11:00 UTC] Exploration V2 pipeline started
+- [2026-02-27 04:11:22 UTC] Exploration V2: cloud ablation
+- [2026-02-27 04:11:45 UTC] Exploration V2: noise masking
+- [2026-02-27 04:11:59 UTC] Exploration V2: urban-rural + population
+- [2026-02-27 04:12:12 UTC] Exploration V2: spatial diagnostics + contribution
+- [2026-02-27 04:12:15 UTC] Exploration V2: extreme-event sensitivity
+- [2026-02-27 04:12:39 UTC] Exploration V2: write plan docs/report/index
+- [2026-02-27 04:12:39 UTC] Exploration V2 pipeline completed
+- [2026-02-27 04:20:00 UTC] Modeling entrypoints refactored: active pipelines consolidated under `project/modeling/pipelines/`, historical scripts archived under `project/modeling/legacy/`, root numbered scripts reduced to compatibility shims.
+- [2026-02-27 13:55:07 UTC] Strict V2 pipeline started
+- [2026-02-27 13:55:14 UTC] Strict V2 pipeline finished
+- [2026-02-27 14:03:21 UTC] Exploration V2 pipeline started
+- [2026-02-27 14:05:44 UTC] Exploration V2: cloud ablation
+- [2026-02-27 14:11:52 UTC] Exploration V2: noise masking
+- [2026-02-27 14:15:28 UTC] Exploration V2: urban-rural + population
+- [2026-02-27 14:17:47 UTC] Exploration V2: spatial diagnostics + contribution
+- [2026-02-27 14:17:52 UTC] Exploration V2: extreme-event sensitivity
+- [2026-02-27 14:23:09 UTC] Exploration V2: write plan docs/report/index
+- [2026-02-27 14:23:10 UTC] Exploration V2 pipeline completed
+- [2026-02-27 14:28:46 UTC] Strict V2 pipeline started
+- [2026-02-27 14:29:09 UTC] Strict V2 pipeline finished
+- [2026-02-27 14:33:07 UTC] Exploration V2 pipeline started
+- [2026-02-27 14:33:34 UTC] Exploration V2: cloud ablation
+- [2026-02-27 14:36:43 UTC] Exploration V2 pipeline started
+- [2026-02-27 14:37:37 UTC] Exploration V2: cloud ablation

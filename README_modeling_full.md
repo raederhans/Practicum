@@ -1,5 +1,20 @@
 # 六事件建模总览 README（Modeling Full Summary）
 
+## 0) 当前目录结构（Refactor Status）
+为减少 `project/modeling` 顶层脚本堆积，当前维护入口已收缩为 3 条主线，且 `15-19` 的真实实现已经并入其中：
+
+- `project/modeling/pipelines/01_in_sample_pipeline.py`
+  - 事件内 / in-sample / baseline / feature-upgrade / strict-v2 / reports / figures
+- `project/modeling/pipelines/02_cross_event_pipeline.py`
+  - cross-event V3 与 stabilization
+- `project/modeling/pipelines/03_exploration_pipeline.py`
+  - exploration V2 与敏感性实验
+
+兼容说明：
+- 根目录 `project/modeling/run_pipeline.py`、`project/modeling/15_feature_upgrade_pipeline.py`、`project/modeling/16_strict_v2_pipeline.py`、`project/modeling/17_cross_event_v3_pipeline.py`、`project/modeling/18_cross_event_v3_stabilization.py`、`project/modeling/19_exploration_v2_pipeline.py` 现在都是兼容壳（shim）。
+- 历史阶段脚本已归档到 `project/modeling/legacy/`，其中 `15-19` 的合并前实现保留在 `project/modeling/legacy/archive_premerge/`。
+- 资产复用工具位于 `project/modeling/support/reuse_teammate_assets.py`。
+
 ## 1) 项目目标与建模口径
 本项目围绕“关键设施缓冲区（buffer）是否体现更强韧性（resilience）”展开，使用六事件像素级夜光（NTL）数据进行多模型建模与对照验证。
 

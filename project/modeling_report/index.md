@@ -1,5 +1,12 @@
 # Modeling Report Index
 
+## Pipeline Entry Points
+- `project/modeling/pipelines/01_in_sample_pipeline.py`
+- `project/modeling/pipelines/02_cross_event_pipeline.py`
+- `project/modeling/pipelines/03_exploration_pipeline.py`
+- Compatibility shims remain at `project/modeling/run_pipeline.py`, `project/modeling/15_feature_upgrade_pipeline.py`, `project/modeling/16_strict_v2_pipeline.py`, `project/modeling/17_cross_event_v3_pipeline.py`, `project/modeling/18_cross_event_v3_stabilization.py`, `project/modeling/19_exploration_v2_pipeline.py`
+- Historical stage-specific scripts are archived under `project/modeling/legacy/`, with pre-merge `15-19` kept only as reference under `project/modeling/legacy/archive_premerge/`
+
 ## Deliverables
 - `project/modeling_report/01_ols_report.md`
 - `project/modeling_report/02_mixedlm_report.md`
@@ -52,3 +59,5 @@
 - V3 cross-event outputs: `project/modeling/output/model_summary_cross_event_v3.csv`, `project/modeling/output/cross_event_aggregate_metrics_v3.csv`
 - `project/modeling_report/09_cross_event_stabilization_report.md`
 - V3 stabilization outputs: `project/modeling/output/cross_event_round_comparison_v3x.csv`, `project/modeling/output/cross_event_stop_decision_v3x.json`
+- `project/modeling_report/10_exploration_upgrade_report.md`
+- Exploration V2 outputs: `project/modeling/output/cloud_ablation_aggregate_metrics.csv`, `project/modeling/output/noise_mask_experiment_metrics.csv`, `project/modeling/output/urban_rural_model_comparison.csv`, `project/modeling/output/spatial_autocorr_morans_i.csv`, `project/modeling/output/extreme_event_drop_aggregate_v1.csv`
