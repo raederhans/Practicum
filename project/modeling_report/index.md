@@ -61,3 +61,7 @@
 - V3 stabilization outputs: `project/modeling/output/cross_event_round_comparison_v3x.csv`, `project/modeling/output/cross_event_stop_decision_v3x.json`
 - `project/modeling_report/10_exploration_upgrade_report.md`
 - Exploration V2 outputs: `project/modeling/output/cloud_ablation_aggregate_metrics.csv`, `project/modeling/output/noise_mask_experiment_metrics.csv`, `project/modeling/output/urban_rural_model_comparison.csv`, `project/modeling/output/spatial_autocorr_morans_i.csv`, `project/modeling/output/extreme_event_drop_aggregate_v1.csv`
+- `project/modeling_report/11_quality_matched_report.md`
+- Quality/matched outputs: `project/modeling/output/quality_transport_aggregate_metrics_v1.csv`, `project/modeling/output/facility_centered_model_summary.csv`, `project/modeling/output/spatial_block_cv_metrics_v1.csv`
+- `project/modeling_report/12_hazard_exposure_transport_report.md`
+- Hazard mainline outputs: `project/modeling/output/hazard_transport_aggregate_metrics_v1.csv`, `project/modeling/output/event_selection_scorecard_v1.csv`

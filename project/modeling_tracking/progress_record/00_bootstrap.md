@@ -118,3 +118,25 @@
 - [2026-02-27 14:33:34 UTC] Exploration V2: cloud ablation
 - [2026-02-27 14:36:43 UTC] Exploration V2 pipeline started
 - [2026-02-27 14:37:37 UTC] Exploration V2: cloud ablation
+- [2026-02-27 23:54:00 UTC] Quality+matched V1 started
+- [2026-02-27 23:54:01 UTC] Quality+matched V1: build quality-adjusted targets and recovery v2
+- [2026-02-27 23:54:06 UTC] Quality+matched V1: LOEO quality-aware transport
+- [2026-02-27 23:54:13 UTC] Quality+matched V1: spatial block CV
+- [2026-02-27 23:54:20 UTC] Quality+matched V1: facility-centered matched design
+- [2026-02-27 23:54:32 UTC] Quality+matched V1: role matrix and report
+- [2026-02-27 23:54:32 UTC] Quality+matched V1 completed
+- [2026-02-28 00:25:11 UTC] Hazard mainline V1 started
+- [2026-02-28 00:25:11 UTC] Hazard mainline V1: attach hazard/exposure features
+- [2026-02-28 00:25:11 UTC] Hazard mainline V1: LOEO transport
+- [2026-02-28 00:25:19 UTC] Hazard mainline V1: summarize features and event selection
+- [2026-02-28 00:25:20 UTC] Hazard mainline V1 completed
+- [2026-02-28 00:26:18 UTC] Hazard mainline V1 started
+- [2026-02-28 00:26:18 UTC] Hazard mainline V1: attach hazard/exposure features
+- [2026-02-28 00:26:18 UTC] Hazard mainline V1: LOEO transport
+- [2026-02-28 00:26:28 UTC] Hazard mainline V1: summarize features and event selection
+- [2026-02-28 00:26:29 UTC] Hazard mainline V1 completed
+- [2026-02-28 00:27:26 UTC] Hazard mainline V1 started
+- [2026-02-28 00:27:26 UTC] Hazard mainline V1: attach hazard/exposure features
+- [2026-02-28 00:27:26 UTC] Hazard mainline V1: LOEO transport
+- [2026-02-28 00:27:37 UTC] Hazard mainline V1: summarize features and event selection
+- [2026-02-28 00:27:37 UTC] Hazard mainline V1 completed
