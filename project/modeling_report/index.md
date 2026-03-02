@@ -65,3 +65,5 @@
 - Quality/matched outputs: `project/modeling/output/quality_transport_aggregate_metrics_v1.csv`, `project/modeling/output/facility_centered_model_summary.csv`, `project/modeling/output/spatial_block_cv_metrics_v1.csv`
 - `project/modeling_report/12_hazard_exposure_transport_report.md`
 - Hazard mainline outputs: `project/modeling/output/hazard_transport_aggregate_metrics_v1.csv`, `project/modeling/output/event_selection_scorecard_v1.csv`
+- `project/modeling_report/13_event_increment_report.md`
+- `project/modeling_report/14_intl_stage_repair_report.md`

@@ -22,3 +22,8 @@ project/data/processed/*-VNP46A2-post/
 project/result/*_critical_infra_poi.csv
 project/script/*cloud_screening*.csv
 project/script/multi_event_ntl_download.ipynb
+# WorldPop cache and experiment figures
+project/data/external/worldpop/
+project/modeling_report/figures/event_increment/
+project/modeling_report/figures/intl_stage_repair_v1/
+project/script/multi_event_ntl_download_v2.ipynb.checkpoints/

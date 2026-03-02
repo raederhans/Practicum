@@ -9,8 +9,15 @@ if str(MODELING_DIR) not in sys.path:
 
 import json
 import math
+import re
+import shutil
+import subprocess
+import tempfile
 import warnings
+from contextlib import contextmanager
 from dataclasses import dataclass
+from datetime import datetime
+import importlib.util
 from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 from urllib.request import urlopen
 
@@ -19,6 +26,7 @@ import matplotlib
 import numpy as np
 import pandas as pd
 import rasterio
+import requests
 import seaborn as sns
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
@@ -26,12 +34,14 @@ from lifelines import CoxPHFitter, WeibullAFTFitter
 from lifelines.utils import concordance_index
 from pyproj import Transformer
 from scipy.spatial import cKDTree
+from shapely.geometry import box
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import brier_score_loss, mean_absolute_error, mean_squared_error, roc_auc_score
 from sklearn.model_selection import GroupKFold
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import pipeline_lib as pipeline_lib_mod
 
 from pipeline_lib import (
     BUFFER_RADII,
@@ -129,6 +139,60 @@ EVENT_SELECTION_PATH = OUTPUT_DIR / "event_selection_scorecard_v1.csv"
 HAZARD_REPORT_PATH = REPORT_DIR / "12_hazard_exposure_transport_report.md"
 HAZARD_FIG_PATH = FIG_EXP_DIR / "hazard_transport_compare_v1.png"
 
+# Event-increment outputs
+EVENTS10_PATH = MODELING_DIR / "config" / "events_10.json"
+EVENT_INCREMENT_PLAN_PATH = MODELING_DIR / "config" / "event_increment_plan_v1.json"
+REMOTE_REF = "teammate/main"
+FIG_EVENT_INCREMENT_DIR = FIG_DIR / "event_increment"
+EVENT_INCREMENT_REPORT_PATH = REPORT_DIR / "13_event_increment_report.md"
+
+NEW_EVENT_SYNC_MANIFEST_PATH = OUTPUT_DIR / "new_event_sync_manifest_v1.csv"
+NEW_EVENT_SYNC_LOG_PATH = OUTPUT_DIR / "new_event_sync_log_v1.csv"
+NEW_EVENT_INPUT_GATE_PATH = OUTPUT_DIR / "new_event_input_gate_v1.csv"
+NEW_EVENT_ACQ_MANIFEST_PATH = OUTPUT_DIR / "new_event_acquisition_manifest_v1.csv"
+NEW_EVENT_POI_QUALITY_PATH = OUTPUT_DIR / "new_event_poi_quality_v1.csv"
+COVARIATE_SOURCE_MANIFEST_PATH = OUTPUT_DIR / "covariate_source_manifest_v1.csv"
+EVENT_INCREMENT_MANIFEST_PATH = OUTPUT_DIR / "event_increment_manifest_v1.csv"
+EVENT_INCREMENT_METRICS_PATH = OUTPUT_DIR / "event_increment_model_metrics_v1.csv"
+EVENT_INCREMENT_ISSUE_PATH = OUTPUT_DIR / "event_increment_issue_log_v1.csv"
+EVENT_TYPE_GAP_PATH = OUTPUT_DIR / "event_type_gap_recommendation_v1.csv"
+
+EVENT_INCREMENT_BOOTSTRAP_PATH = ROOT / "project" / "modeling_tracking" / "progress_record" / "04_event_increment_bootstrap.md"
+EVENT_INCREMENT_ISSUE_MD_PATH = ROOT / "project" / "modeling_tracking" / "progress_record" / "05_event_increment_issue_log.md"
+EVENT_INCREMENT_NEXT_PATH = ROOT / "project" / "modeling_tracking" / "future_plan" / "09_post_event_increment_next_steps.md"
+
+FEATURE_PANEL_BASE_PATH = PIXEL_DIR / "all_events_pixel_panel_v1_feature_upgrade.parquet"
+QUALITY_PANEL_BASE_PATH = PIXEL_DIR / "all_events_pixel_panel_v1_quality_v1.parquet"
+RECOVERY_V2_BASE_PATH = PIXEL_DIR / "recovery_daily_panel_v2.parquet"
+STRICT_BASE_SUMMARY_PATH = OUTPUT_DIR / "model_summary_feature_upgrade_v2_strict.csv"
+STRICT_BASE_LOGO_PATH = OUTPUT_DIR / "logo_aggregate_metrics_v2_strict.csv"
+
+NEW_EVENT_ORDER = [
+    "ian_fortmyers",
+    "ian_charlotteharbor",
+    "earthquake_hatay",
+    "dorian_freeport",
+]
+
+SYNC_MANIFEST_COLS = ["stage", "remote_path", "local_path", "event_id", "file_type", "exists_before", "action", "status", "size_bytes", "source_commit"]
+INPUT_GATE_COLS = ["event_id", "has_pre_dir", "has_post_dir", "pre_tif_n", "post_tif_n", "has_cloud_csv", "has_poi_csv_before", "gate_status", "notes"]
+ACQ_MANIFEST_COLS = ["event_id", "indicator_type", "source_name", "source_priority", "request_status", "download_status", "local_output_path", "coverage_metric", "quality_flag", "notes"]
+POI_QUALITY_COLS = ["event_id", "poi_source", "poi_count", "lat_valid_share", "lon_valid_share", "type_missing_share", "facility_type_unique_n", "quality_flag"]
+COV_SOURCE_COLS = ["event_id", "covariate_name", "source_name", "source_type", "spatial_resolution", "temporal_reference", "is_us_only", "used_in_mainline", "quality_flag"]
+EVENT_INCREMENT_ISSUE_COLS = ["stage_id", "event_id", "bundle", "issue_type", "symptom", "fix_action", "impact", "status"]
+EVENT_INCREMENT_METRIC_COLS = ["stage_id", "event_count", "new_event_id", "bundle", "model", "metric_name", "value", "delta_vs_prev", "delta_vs_baseline", "status", "notes"]
+
+US_EVENT_TO_STATE = {
+    "maria_sanjuan": "72",
+    "earthquake_sanjuan": "72",
+    "ida_neworleans": "22",
+    "laura_lakecharles": "22",
+    "michael_panamacity": "12",
+    "irma_miami": "12",
+    "ian_fortmyers": "12",
+    "ian_charlotteharbor": "12",
+}
+
 # Added fields required by plan
 ADDED_FIELDS = [
     "noise_mask_group",
@@ -176,6 +240,160 @@ class SpecResult:
     fold_df: pd.DataFrame
     agg_df: pd.DataFrame
     coef_df: pd.DataFrame
+
+
+def _load_dynamic_module(module_name: str, path: Path):
+    spec = importlib.util.spec_from_file_location(module_name, path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Unable to load module spec from {path}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def _get_pipeline_module(tag: str, file_name: str):
+    module_name = f"_event_increment_{tag}"
+    cached = sys.modules.get(module_name)
+    if cached is not None:
+        return cached
+    return _load_dynamic_module(module_name, MODELING_DIR / "pipelines" / file_name)
+
+
+@contextmanager
+def _override_attrs(target, mapping: Dict[str, object]):
+    old = {}
+    for key, value in mapping.items():
+        old[key] = getattr(target, key)
+        setattr(target, key, value)
+    try:
+        yield
+    finally:
+        for key, value in old.items():
+            setattr(target, key, value)
+
+
+@contextmanager
+def _override_globals(mapping: Dict[str, object]):
+    g = globals()
+    old = {key: g[key] for key in mapping}
+    g.update(mapping)
+    try:
+        yield
+    finally:
+        g.update(old)
+
+
+def _stage_suffix_path(path: Path, stage_tag: str) -> Path:
+    if not stage_tag:
+        return path
+    return path.with_name(f"{path.stem}_{stage_tag}{path.suffix}")
+
+
+def _cloud_csv_for_event(event_id: str) -> Path:
+    return ROOT / "project" / "script" / f"{event_id}_cloud_screening.csv"
+
+
+def _stage_paths(stage_tag: str) -> Dict[str, Path]:
+    return {
+        "feature_panel": _stage_suffix_path(FEATURE_PANEL_BASE_PATH, stage_tag),
+        "sample_lock": _stage_suffix_path(PIXEL_DIR / "sample_lock_cohort_v1.parquet", stage_tag),
+        "quality_panel": _stage_suffix_path(PANEL_QUALITY_PATH, stage_tag),
+        "recovery_v2": _stage_suffix_path(RECOVERY_V2_PATH, stage_tag),
+        "target_audit": _stage_suffix_path(TARGET_QUALITY_AUDIT_PATH, stage_tag),
+        "quality_fold": _stage_suffix_path(QUALITY_TRANSPORT_FOLD_PATH, stage_tag),
+        "quality_agg": _stage_suffix_path(QUALITY_TRANSPORT_AGG_PATH, stage_tag),
+        "spatial_block": _stage_suffix_path(SPATIAL_BLOCK_CV_PATH, stage_tag),
+        "facility_panel": _stage_suffix_path(FACILITY_CONTEXT_PATH, stage_tag),
+        "facility_quality": _stage_suffix_path(FACILITY_MATCH_QUALITY_PATH, stage_tag),
+        "facility_summary": _stage_suffix_path(FACILITY_CENTERED_SUMMARY_PATH, stage_tag),
+        "role_matrix": _stage_suffix_path(MODEL_ROLE_MATRIX_PATH, stage_tag),
+        "hazard_panel": _stage_suffix_path(PANEL_HAZARD_PATH, stage_tag),
+        "hazard_fold": _stage_suffix_path(HAZARD_TRANSPORT_FOLD_PATH, stage_tag),
+        "hazard_agg": _stage_suffix_path(HAZARD_TRANSPORT_AGG_PATH, stage_tag),
+        "hazard_feature": _stage_suffix_path(HAZARD_FEATURE_SUMMARY_PATH, stage_tag),
+        "event_selection": _stage_suffix_path(EVENT_SELECTION_PATH, stage_tag),
+        "event_profile": _stage_suffix_path(EVENT_PROFILE_V1_PATH, stage_tag),
+        "strict_summary": _stage_suffix_path(STRICT_BASE_SUMMARY_PATH, stage_tag),
+        "strict_logo": _stage_suffix_path(STRICT_BASE_LOGO_PATH, stage_tag),
+        "strict_manifest": _stage_suffix_path(OUTPUT_DIR / "feature_spec_manifest_v2_strict.json", stage_tag),
+        "strict_vif": _stage_suffix_path(OUTPUT_DIR / "multicollinearity_vif_v2_strict.csv", stage_tag),
+        "strict_sample_audit": _stage_suffix_path(OUTPUT_DIR / "sample_alignment_audit_v2_strict.csv", stage_tag),
+        "strict_cox_diag": _stage_suffix_path(OUTPUT_DIR / "cox_diagnostics_extended_v2_strict.csv", stage_tag),
+        "strict_logo_fold": _stage_suffix_path(OUTPUT_DIR / "logo_fold_metrics_v2_strict.csv", stage_tag),
+        "strict_missing_audit": _stage_suffix_path(OUTPUT_DIR / "missing_flag_audit_v2_strict.csv", stage_tag),
+        "strict_ols": _stage_suffix_path(OUTPUT_DIR / "ols_results_feature_upgrade_v2_strict.csv", stage_tag),
+        "strict_mixed": _stage_suffix_path(OUTPUT_DIR / "mixedlm_results_feature_upgrade_v2_strict.csv", stage_tag),
+        "strict_logit": _stage_suffix_path(OUTPUT_DIR / "logit_results_feature_upgrade_v2_strict.csv", stage_tag),
+        "strict_cox": _stage_suffix_path(OUTPUT_DIR / "cox_results_feature_upgrade_v2_strict.csv", stage_tag),
+    }
+
+
+def _run_git(*args: str) -> str:
+    proc = subprocess.run(
+        ["git", *args],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return proc.stdout
+
+
+def _list_remote_paths(prefix: str) -> List[str]:
+    out = _run_git("ls-tree", "-r", "--name-only", REMOTE_REF, "--", prefix)
+    return [line.strip() for line in out.splitlines() if line.strip()]
+
+
+def _export_remote_path(remote_path: str, local_path: Path) -> int:
+    local_path.parent.mkdir(parents=True, exist_ok=True)
+    with local_path.open("wb") as fh:
+        proc = subprocess.run(
+            ["git", "show", f"{REMOTE_REF}:{remote_path}"],
+            cwd=ROOT,
+            check=True,
+            stdout=fh,
+            stderr=subprocess.PIPE,
+        )
+    return proc.returncode
+
+
+def _metric_value(df: pd.DataFrame, model: str, col: str) -> float:
+    if df.empty or model not in df["model"].astype(str).values or col not in df.columns:
+        return float("nan")
+    sub = df[df["model"].astype(str) == model]
+    return float(pd.to_numeric(sub[col], errors="coerce").mean())
+
+
+def _safe_rel(path: Path) -> str:
+    try:
+        return str(path.relative_to(ROOT))
+    except Exception:
+        return str(path)
+
+
+def _read_csv_or_empty(path: Path, columns: Sequence[str]) -> pd.DataFrame:
+    if not path.exists() or path.stat().st_size == 0:
+        return pd.DataFrame(columns=list(columns))
+    try:
+        return pd.read_csv(path)
+    except pd.errors.EmptyDataError:
+        return pd.DataFrame(columns=list(columns))
+
+
+def _event_bbox(cfg: Dict[str, object]) -> Tuple[float, float, float, float]:
+    vals = cfg.get("bounds")
+    if not isinstance(vals, list) or len(vals) != 4:
+        raise KeyError(f"Event config missing bounds: {cfg.get('event_name', '')}")
+    west, south, east, north = [float(v) for v in vals]
+    return west, south, east, north
+
+
+def _parse_date_from_name_local(path: Path) -> Optional[pd.Timestamp]:
+    m = re.search(r"(\\d{4}-\\d{2}-\\d{2})", path.name)
+    if not m:
+        return None
+    return pd.Timestamp(m.group(1))
 
 
 def _safe_numeric(s: pd.Series, default: float = 0.0) -> pd.Series:
@@ -2415,6 +2633,1161 @@ def _write_future_plan_files() -> None:
     )
 
 
+POI_TAGS = {
+    "amenity": ["hospital", "clinic", "fire_station", "police"],
+    "power": ["plant", "generator", "substation"],
+    "man_made": ["wastewater_plant", "water_works", "pumping_station", "mast", "tower"],
+    "aeroway": ["aerodrome"],
+    "shop": ["supermarket"],
+    "tourism": ["hotel", "resort"],
+    "landuse": ["industrial"],
+}
+
+LAND_TAGS = {
+    "landuse": True,
+    "natural": ["water", "wetland", "wood", "scrub", "grassland", "heath", "bare_rock", "sand"],
+    "leisure": ["park", "garden", "recreation_ground", "golf_course", "nature_reserve"],
+    "water": True,
+}
+
+
+def _load_event_increment_plan() -> List[Dict[str, object]]:
+    return list(load_json(EVENT_INCREMENT_PLAN_PATH))
+
+
+def _remote_event_paths(event_id: str, cfg: Dict[str, object]) -> List[Tuple[str, str]]:
+    rows: List[Tuple[str, str]] = []
+    for key in ["pre_dir", "post_dir"]:
+        for item in _list_remote_paths(str(cfg[key])):
+            if item.lower().endswith(".tif"):
+                rows.append((item, "ntl_tif"))
+    cloud_csv = str(Path("project/script") / f"{event_id}_cloud_screening.csv")
+    for item in _list_remote_paths(cloud_csv):
+        rows.append((item, "cloud_screening"))
+    for item in _list_remote_paths("project/script/multi_event_ntl_download_v2.ipynb"):
+        rows.append((item, "download_script"))
+    return rows
+
+
+def _sync_new_event_assets(stage_id: str, event_ids: Sequence[str], events_cfg: Dict[str, object]) -> pd.DataFrame:
+    rows: List[Dict[str, object]] = []
+    for event_id in event_ids:
+        for remote_path, file_type in _remote_event_paths(event_id, events_cfg[event_id]):
+            local_path = ROOT / remote_path
+            exists_before = int(local_path.exists())
+            action = "keep_local"
+            status = "keep_local"
+            size_bytes = int(local_path.stat().st_size) if local_path.exists() else 0
+            if not local_path.exists():
+                action = "sync_from_teammate"
+                try:
+                    _export_remote_path(remote_path, local_path)
+                    status = "copied"
+                    size_bytes = int(local_path.stat().st_size) if local_path.exists() else 0
+                except Exception as exc:  # noqa: BLE001
+                    status = f"failed:{type(exc).__name__}"
+                    action = "sync_failed"
+            rows.append(
+                {
+                    "stage": stage_id,
+                    "remote_path": remote_path,
+                    "local_path": str(local_path),
+                    "event_id": event_id,
+                    "file_type": file_type,
+                    "exists_before": exists_before,
+                    "action": action,
+                    "status": status,
+                    "size_bytes": size_bytes,
+                    "source_commit": "2431f55",
+                }
+            )
+    out = pd.DataFrame(rows, columns=SYNC_MANIFEST_COLS)
+    existing = _read_csv_or_empty(NEW_EVENT_SYNC_MANIFEST_PATH, SYNC_MANIFEST_COLS)
+    merged = pd.concat([existing, out], ignore_index=True).drop_duplicates(
+        subset=["stage", "remote_path", "local_path", "event_id", "file_type"],
+        keep="last",
+    )
+    merged.to_csv(NEW_EVENT_SYNC_MANIFEST_PATH, index=False)
+    merged.to_csv(NEW_EVENT_SYNC_LOG_PATH, index=False)
+    return out
+
+
+def _build_input_gate(event_ids: Sequence[str], events_cfg: Dict[str, object]) -> pd.DataFrame:
+    rows = []
+    for event_id in event_ids:
+        cfg = events_cfg[event_id]
+        pre_dir = ROOT / str(cfg["pre_dir"])
+        post_dir = ROOT / str(cfg["post_dir"])
+        poi_csv = ROOT / str(cfg["poi_csv"])
+        pre_tif_n = len(list_daily_tifs(pre_dir)) if pre_dir.exists() else 0
+        post_tif_n = len(list_daily_tifs(post_dir)) if post_dir.exists() else 0
+        has_cloud = _cloud_csv_for_event(event_id).exists()
+        gate_status = "pass" if pre_tif_n > 0 and post_tif_n > 0 and has_cloud else "needs_attention"
+        rows.append(
+            {
+                "event_id": event_id,
+                "has_pre_dir": int(pre_dir.exists()),
+                "has_post_dir": int(post_dir.exists()),
+                "pre_tif_n": pre_tif_n,
+                "post_tif_n": post_tif_n,
+                "has_cloud_csv": int(has_cloud),
+                "has_poi_csv_before": int(poi_csv.exists()),
+                "gate_status": gate_status,
+                "notes": "",
+            }
+        )
+    out = pd.DataFrame(rows, columns=INPUT_GATE_COLS)
+    existing = _read_csv_or_empty(NEW_EVENT_INPUT_GATE_PATH, INPUT_GATE_COLS)
+    merged = pd.concat([existing, out], ignore_index=True).drop_duplicates(subset=["event_id"], keep="last")
+    merged.to_csv(NEW_EVENT_INPUT_GATE_PATH, index=False)
+    return out
+
+
+def _fetch_osm_bbox(bbox: Tuple[float, float, float, float], tags: Dict[str, object]) -> gpd.GeoDataFrame:
+    import osmnx as ox
+
+    last_error = None
+    for _ in range(3):
+        try:
+            gdf = ox.features_from_bbox(bbox=bbox, tags=tags)
+            if gdf.crs is None:
+                gdf = gdf.set_crs("EPSG:4326")
+            return gdf.to_crs("EPSG:4326")
+        except Exception as exc:  # noqa: BLE001
+            last_error = exc
+    raise RuntimeError(f"osm_query_failed:{type(last_error).__name__}:{last_error}")
+
+
+def _row_value(row: pd.Series, key: str) -> str:
+    if key not in row or pd.isna(row[key]):
+        return ""
+    return str(row[key]).strip().lower()
+
+
+def _geom_centroid_latlon(geom) -> Tuple[float, float]:
+    if geom is None or geom.is_empty:
+        return np.nan, np.nan
+    c = geom.centroid
+    return float(c.y), float(c.x)
+
+
+def _classify_poi_type(row: pd.Series) -> str:
+    amenity = _row_value(row, "amenity")
+    power = _row_value(row, "power")
+    man_made = _row_value(row, "man_made")
+    aeroway = _row_value(row, "aeroway")
+    shop = _row_value(row, "shop")
+    tourism = _row_value(row, "tourism")
+    landuse = _row_value(row, "landuse")
+    name = _row_value(row, "name")
+
+    if power in {"plant", "generator", "substation"}:
+        return power
+    if amenity in {"hospital", "clinic", "fire_station", "police"}:
+        return amenity
+    if aeroway == "aerodrome":
+        return "aerodrome"
+    if man_made in {"wastewater_plant", "water_works", "pumping_station", "mast", "tower"}:
+        return man_made
+    if landuse == "industrial":
+        return "industrial"
+    if shop == "supermarket":
+        return "supermarket"
+    if tourism in {"hotel", "resort"}:
+        return tourism
+    if "hospital" in name:
+        return "hospital"
+    return ""
+
+
+def _build_poi_from_osm(event_id: str, cfg: Dict[str, object]) -> pd.DataFrame:
+    gdf = _fetch_osm_bbox(_event_bbox(cfg), POI_TAGS)
+    if gdf.empty:
+        return pd.DataFrame(columns=["osm_id", "name", "type", "lat", "lon"])
+    work = gdf.reset_index().copy()
+    osm_id = work["id"] if "id" in work.columns else work.get("osmid", pd.Series(index=work.index, dtype=float))
+    work["type"] = work.apply(_classify_poi_type, axis=1)
+    work = work[work["type"] != ""].copy()
+    if work.empty:
+        return pd.DataFrame(columns=["osm_id", "name", "type", "lat", "lon"])
+    latlon = work["geometry"].apply(_geom_centroid_latlon)
+    work["lat"] = [v[0] for v in latlon]
+    work["lon"] = [v[1] for v in latlon]
+    work["name"] = work.get("name", pd.Series([""] * len(work))).fillna("").astype(str)
+    osm_id_num = pd.to_numeric(osm_id, errors="coerce")
+    fallback_ids = pd.Series(np.arange(1, len(work) + 1), index=work.index, dtype="int64")
+    work["osm_id"] = osm_id_num.where(osm_id_num.notna(), fallback_ids).astype(int)
+    out = work[["osm_id", "name", "type", "lat", "lon"]].copy()
+    out = out[np.isfinite(out["lat"]) & np.isfinite(out["lon"])].copy()
+    return out.drop_duplicates(subset=["type", "lat", "lon", "name"], keep="first").sort_values(["type", "name", "osm_id"]).reset_index(drop=True)
+
+
+def _generate_event_poi(event_id: str, cfg: Dict[str, object], acq_rows: List[Dict[str, object]], poi_rows: List[Dict[str, object]]) -> Path:
+    poi_path = ROOT / str(cfg["poi_csv"])
+    if poi_path.exists():
+        existing = pd.read_csv(poi_path)
+        if not existing.empty and {"type", "lat", "lon"}.issubset(existing.columns):
+            poi_rows.append(
+                {
+                    "event_id": event_id,
+                    "poi_source": "local_existing",
+                    "poi_count": int(len(existing)),
+                    "lat_valid_share": float(pd.to_numeric(existing["lat"], errors="coerce").notna().mean()),
+                    "lon_valid_share": float(pd.to_numeric(existing["lon"], errors="coerce").notna().mean()),
+                    "type_missing_share": float(existing["type"].isna().mean()),
+                    "facility_type_unique_n": int(existing["type"].astype(str).nunique()),
+                    "quality_flag": "ok",
+                }
+            )
+            return poi_path
+
+    df = _build_poi_from_osm(event_id, cfg)
+    poi_path.parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(poi_path, index=False)
+    poi_rows.append(
+        {
+            "event_id": event_id,
+            "poi_source": "osm_overpass",
+            "poi_count": int(len(df)),
+            "lat_valid_share": float(pd.to_numeric(df["lat"], errors="coerce").notna().mean()) if not df.empty else 0.0,
+            "lon_valid_share": float(pd.to_numeric(df["lon"], errors="coerce").notna().mean()) if not df.empty else 0.0,
+            "type_missing_share": float(df["type"].isna().mean()) if not df.empty else 1.0,
+            "facility_type_unique_n": int(df["type"].astype(str).nunique()) if not df.empty else 0,
+            "quality_flag": "ok" if not df.empty else "empty",
+        }
+    )
+    acq_rows.append(
+        {
+            "event_id": event_id,
+            "indicator_type": "poi",
+            "source_name": "osm_overpass",
+            "source_priority": 4,
+            "request_status": "ok",
+            "download_status": "ok" if not df.empty else "empty",
+            "local_output_path": _safe_rel(poi_path),
+            "coverage_metric": float(len(df)),
+            "quality_flag": "ok" if not df.empty else "empty",
+            "notes": "",
+        }
+    )
+    return poi_path
+
+
+def _classify_land_proxy(row: pd.Series) -> Tuple[int, str, int]:
+    landuse = _row_value(row, "landuse")
+    natural = _row_value(row, "natural")
+    leisure = _row_value(row, "leisure")
+    water = _row_value(row, "water")
+    if water or natural in {"water", "wetland"} or landuse in {"reservoir", "basin"}:
+        return 11, "other", 100
+    if landuse in {"industrial", "commercial", "retail", "port", "quarry"}:
+        return 24, "developed_high", 90
+    if landuse in {"construction", "military", "brownfield"}:
+        return 23, "developed_medium", 85
+    if landuse == "residential":
+        return 22, "developed_low", 80
+    if leisure in {"park", "garden", "recreation_ground", "golf_course", "nature_reserve"} or landuse in {"recreation_ground", "cemetery", "grass"}:
+        return 21, "developed_open", 70
+    return 31, "other", 10
+
+
+def _compute_local_landuse_shares_proxy(panel: pd.DataFrame, events_cfg: Dict[str, object], radius_m: float = 1000.0) -> pd.DataFrame:
+    out = panel.copy()
+    for col in ["urban_share_1km", "water_share_1km", "developed_high_share_1km"]:
+        if col not in out.columns:
+            out[col] = np.nan
+    for event_id, cfg in events_cfg.items():
+        mask = out["event_id"] == event_id
+        if mask.sum() == 0:
+            continue
+        lon = pd.to_numeric(out.loc[mask, "lon"], errors="coerce").to_numpy()
+        lat = pd.to_numeric(out.loc[mask, "lat"], errors="coerce").to_numpy()
+        lu = pd.to_numeric(out.loc[mask, "land_use"], errors="coerce").to_numpy()
+        transformer = Transformer.from_crs("EPSG:4326", str(cfg["metric_crs"]), always_xy=True)
+        x, y = transformer.transform(lon, lat)
+        xy = np.column_stack([x, y])
+        finite = np.isfinite(xy).all(axis=1)
+        urban = np.isin(lu, [21, 22, 23, 24]).astype("float64")
+        water_mask = np.isin(lu, [11]).astype("float64")
+        high = np.isin(lu, [24]).astype("float64")
+        urban_share = np.full(len(xy), np.nan, dtype="float64")
+        water_share = np.full(len(xy), np.nan, dtype="float64")
+        high_share = np.full(len(xy), np.nan, dtype="float64")
+        if finite.any():
+            tree = cKDTree(xy[finite])
+            idx_map = np.where(finite)[0]
+            neighbors = tree.query_ball_point(xy[finite], r=radius_m)
+            for local_i, neigh in enumerate(neighbors):
+                base_i = idx_map[local_i]
+                src = idx_map[np.asarray(neigh, dtype=int)] if neigh else np.array([], dtype=int)
+                if src.size == 0:
+                    continue
+                urban_share[base_i] = float(np.nanmean(urban[src]))
+                water_share[base_i] = float(np.nanmean(water_mask[src]))
+                high_share[base_i] = float(np.nanmean(high[src]))
+        out.loc[mask, "urban_share_1km"] = urban_share
+        out.loc[mask, "water_share_1km"] = water_share
+        out.loc[mask, "developed_high_share_1km"] = high_share
+    return out
+
+
+def _attach_osm_land_proxy(panel: pd.DataFrame, event_ids: Sequence[str], events_cfg: Dict[str, object], acq_rows: List[Dict[str, object]], cov_rows: List[Dict[str, object]]) -> pd.DataFrame:
+    out = panel.copy()
+    if "land_use" not in out.columns:
+        out["land_use"] = np.nan
+    if "land_use_group" not in out.columns:
+        out["land_use_group"] = "unknown"
+    for event_id in event_ids:
+        cfg = events_cfg[event_id]
+        mask = out["event_id"] == event_id
+        if mask.sum() == 0:
+            continue
+        try:
+            land = _fetch_osm_bbox(_event_bbox(cfg), LAND_TAGS)
+            land = land[land.geometry.notna()].copy()
+            land = land[land.geometry.geom_type.isin(["Polygon", "MultiPolygon"])].copy()
+            if land.empty:
+                raise RuntimeError("no_land_polygons")
+            classified = land.apply(_classify_land_proxy, axis=1, result_type="expand")
+            land["land_use"] = classified[0]
+            land["land_use_group"] = classified[1]
+            land["priority"] = classified[2]
+            pts = gpd.GeoDataFrame(
+                out.loc[mask, ["pixel_id", "lon", "lat"]].copy(),
+                geometry=gpd.points_from_xy(out.loc[mask, "lon"], out.loc[mask, "lat"]),
+                crs="EPSG:4326",
+            )
+            joined = gpd.sjoin(pts, land[["land_use", "land_use_group", "priority", "geometry"]], how="left", predicate="within")
+            joined = joined.sort_values(["pixel_id", "priority"], ascending=[True, False]).drop_duplicates(subset=["pixel_id"], keep="first")
+            joined = joined.rename(columns={"land_use": "land_use_new", "land_use_group": "land_use_group_new"})
+            out = out.merge(joined[["pixel_id", "land_use_new", "land_use_group_new"]], on="pixel_id", how="left")
+            out.loc[mask, "land_use"] = pd.to_numeric(out.loc[mask, "land_use_new"], errors="coerce").fillna(31.0)
+            out.loc[mask, "land_use_group"] = out.loc[mask, "land_use_group_new"].fillna("other").astype(str)
+            out = out.drop(columns=[c for c in ["land_use_new", "land_use_group_new"] if c in out.columns])
+            acq_rows.append(
+                {
+                    "event_id": event_id,
+                    "indicator_type": "urban_boundary",
+                    "source_name": "osm_landuse_proxy",
+                    "source_priority": 1,
+                    "request_status": "ok",
+                    "download_status": "ok",
+                    "local_output_path": "",
+                    "coverage_metric": float(mask.sum()),
+                    "quality_flag": "ok",
+                    "notes": "landuse/natural/leisure polygons",
+                }
+            )
+        except Exception as exc:  # noqa: BLE001
+            out.loc[mask, "land_use"] = out.loc[mask, "land_use"].fillna(31.0)
+            out.loc[mask, "land_use_group"] = out.loc[mask, "land_use_group"].fillna("unknown")
+            acq_rows.append(
+                {
+                    "event_id": event_id,
+                    "indicator_type": "urban_boundary",
+                    "source_name": "osm_landuse_proxy",
+                    "source_priority": 1,
+                    "request_status": f"failed:{type(exc).__name__}",
+                    "download_status": "failed",
+                    "local_output_path": "",
+                    "coverage_metric": 0.0,
+                    "quality_flag": "fallback_unknown",
+                    "notes": str(exc),
+                }
+            )
+        for cov_name in ["land_use_group", "urban_share_1km", "water_share_1km", "developed_high_share_1km"]:
+            cov_rows.append(
+                {
+                    "event_id": event_id,
+                    "covariate_name": cov_name,
+                    "source_name": "osm_landuse_proxy",
+                    "source_type": "vector_overpass",
+                    "spatial_resolution": "pixel_proxy",
+                    "temporal_reference": "current_osm_snapshot",
+                    "is_us_only": 0,
+                    "used_in_mainline": 1,
+                    "quality_flag": "ok",
+                }
+            )
+    out = _compute_local_landuse_shares_proxy(out, {eid: events_cfg[eid] for eid in event_ids})
+    return out
+
+
+def _sync_stage_and_gate(stage_id: str, event_ids: Sequence[str], events_cfg: Dict[str, object]) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    sync_df = _sync_new_event_assets(stage_id, event_ids, events_cfg)
+    gate_df = _build_input_gate(event_ids, events_cfg)
+    return sync_df, gate_df
+
+
+def _apply_population_sources(panel: pd.DataFrame, stage_tag: str, cov_rows: List[Dict[str, object]], acq_rows: List[Dict[str, object]]) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    ctx = RunContext(issues=[])
+    event_ids = sorted(panel["event_id"].dropna().astype(str).unique().tolist())
+    saved = EVENT_TO_STATE.copy()
+    EVENT_TO_STATE.update(US_EVENT_TO_STATE)
+    try:
+        out, quality = attach_urban_population(panel, ctx)
+    finally:
+        EVENT_TO_STATE.clear()
+        EVENT_TO_STATE.update(saved)
+
+    events_cfg = load_json(EVENTS10_PATH)
+    for event_id in event_ids:
+        country_scope = str(events_cfg[event_id].get("country_scope", "US"))
+        mask = out["event_id"] == event_id
+        if country_scope != "US":
+            urban_share = _safe_numeric(out.loc[mask, "urban_share_1km"])
+            out.loc[mask, "is_urban_area"] = (urban_share >= 0.30).astype(int)
+            out.loc[mask, "is_cbsa"] = 0
+            out.loc[mask, "urban_rural_stratum"] = np.where(urban_share >= 0.55, "urban", np.where(urban_share >= 0.25, "suburban", "rural"))
+
+            bbox = _event_bbox(events_cfg[event_id])
+            pop_density = np.nan
+            try:
+                west, south, east, north = bbox
+                payload = {
+                    "type": "Polygon",
+                    "coordinates": [[[west, south], [east, south], [east, north], [west, north], [west, south]]],
+                }
+                req = requests.get(
+                    "https://api.worldpop.org/v1/services/stats",
+                    params={"dataset": "wpgppop", "year": "2020", "geojson": json.dumps(payload)},
+                    timeout=60,
+                )
+                req.raise_for_status()
+                resp = req.json()
+                total_pop = pd.to_numeric(resp.get("total_population"), errors="coerce")
+                area = gpd.GeoSeries([box(west, south, east, north)], crs="EPSG:4326").to_crs(events_cfg[event_id]["metric_crs"]).area.iloc[0] / 1_000_000.0
+                if pd.notna(total_pop) and area > 0:
+                    pop_density = float(total_pop) / float(area)
+                    out.loc[mask, "pop_density_per_km2"] = pop_density
+                    out.loc[mask, "pop_density_log1p"] = np.log1p(max(pop_density, 0.0))
+                    out.loc[mask, "missing_pop_flag"] = 0
+                    acq_rows.append(
+                        {
+                            "event_id": event_id,
+                            "indicator_type": "population_density",
+                            "source_name": "worldpop_stats_api",
+                            "source_priority": 1,
+                            "request_status": "ok",
+                            "download_status": "ok",
+                            "local_output_path": "",
+                            "coverage_metric": pop_density,
+                            "quality_flag": "event_level_proxy",
+                            "notes": "WorldPop 2020 bbox density",
+                        }
+                    )
+                else:
+                    raise RuntimeError("empty_worldpop_population")
+            except Exception as exc:  # noqa: BLE001
+                out.loc[mask, "missing_pop_flag"] = 1
+                acq_rows.append(
+                    {
+                        "event_id": event_id,
+                        "indicator_type": "population_density",
+                        "source_name": "worldpop_stats_api",
+                        "source_priority": 1,
+                        "request_status": f"failed:{type(exc).__name__}",
+                        "download_status": "failed",
+                        "local_output_path": "",
+                        "coverage_metric": 0.0,
+                        "quality_flag": "missing",
+                        "notes": str(exc),
+                    }
+                )
+            cov_rows.append(
+                {
+                    "event_id": event_id,
+                    "covariate_name": "pop_density_per_km2",
+                    "source_name": "worldpop_stats_api" if np.isfinite(pop_density) else "missing",
+                    "source_type": "api_event_level",
+                    "spatial_resolution": "event_bbox",
+                    "temporal_reference": "2020",
+                    "is_us_only": 0,
+                    "used_in_mainline": 0,
+                    "quality_flag": "event_level_proxy" if np.isfinite(pop_density) else "missing",
+                }
+            )
+            cov_rows.append(
+                {
+                    "event_id": event_id,
+                    "covariate_name": "urban_rural_stratum",
+                    "source_name": "osm_landuse_proxy",
+                    "source_type": "vector_overpass",
+                    "spatial_resolution": "pixel_proxy",
+                    "temporal_reference": "current_osm_snapshot",
+                    "is_us_only": 0,
+                    "used_in_mainline": 0,
+                    "quality_flag": "proxy",
+                }
+            )
+        else:
+            cov_rows.append(
+                {
+                    "event_id": event_id,
+                    "covariate_name": "pop_density_per_km2",
+                    "source_name": "acs_2022_b01003_tiger_2022",
+                    "source_type": "census_api_plus_tiger",
+                    "spatial_resolution": "tract",
+                    "temporal_reference": "2022",
+                    "is_us_only": 1,
+                    "used_in_mainline": 0,
+                    "quality_flag": "ok",
+                }
+            )
+            cov_rows.append(
+                {
+                    "event_id": event_id,
+                    "covariate_name": "urban_rural_stratum",
+                    "source_name": "cbsa_uac20_tiger",
+                    "source_type": "vector_tiger",
+                    "spatial_resolution": "cbsa_urban_area",
+                    "temporal_reference": "2022/2023",
+                    "is_us_only": 1,
+                    "used_in_mainline": 0,
+                    "quality_flag": "ok",
+                }
+            )
+
+    return out, quality
+
+
+def _build_stage_feature_panel(
+    stage_id: str,
+    stage_tag: str,
+    events_in_scope: Sequence[str],
+    new_event_ids: Sequence[str],
+    events_cfg: Dict[str, object],
+) -> Tuple[pd.DataFrame, List[Dict[str, object]], List[Dict[str, object]], List[Dict[str, object]], pd.DataFrame]:
+    p01 = _get_pipeline_module("p01", "01_in_sample_pipeline.py")
+    stage_paths = _stage_paths(stage_tag)
+    acq_rows: List[Dict[str, object]] = []
+    poi_rows: List[Dict[str, object]] = []
+    cov_rows: List[Dict[str, object]] = []
+
+    base_panel = pd.read_parquet(FEATURE_PANEL_BASE_PATH).copy()
+    base_panel = base_panel[base_panel["event_id"].isin([e for e in events_in_scope if e not in new_event_ids])].copy()
+
+    if new_event_ids:
+        tmp_cfg = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8")
+        try:
+            json.dump({eid: events_cfg[eid] for eid in new_event_ids}, tmp_cfg, ensure_ascii=False, indent=2)
+            tmp_cfg.close()
+            tmp_cfg_path = Path(tmp_cfg.name)
+
+            for event_id in new_event_ids:
+                _generate_event_poi(event_id, events_cfg[event_id], acq_rows, poi_rows)
+
+            sync_df, gate_df = _sync_stage_and_gate(stage_id, new_event_ids, events_cfg)
+            append_progress(f"{stage_id}: synced {len(sync_df)} teammate asset rows")
+
+            defaults = load_json(CONFIG_DEFAULTS)
+            pre_thr = float(defaults.get("pre_threshold", defaults.get("pre_ntl_threshold", 0.5)))
+            dmg_thr = float(defaults["damage_threshold"])
+            ctx = RunContext(issues=[])
+            with _override_attrs(pipeline_lib_mod, {"CONFIG_EVENTS": tmp_cfg_path}):
+                new_panel = pipeline_lib_mod.build_pixel_panel(
+                    ctx=ctx,
+                    pre_threshold=pre_thr,
+                    damage_threshold=dmg_thr,
+                    exclude_types=None,
+                    output_path=stage_paths["feature_panel"],
+                )
+
+            with _override_attrs(p01, {"SAMPLE_LOCK_PATH": stage_paths["sample_lock"]}):
+                new_panel = p01.attach_pixel_cloud_features(ctx, new_panel, {eid: events_cfg[eid] for eid in new_event_ids})
+                new_panel = _attach_osm_land_proxy(new_panel, new_event_ids, events_cfg, acq_rows, cov_rows)
+                new_panel = p01.attach_osm_features(ctx, new_panel, {eid: events_cfg[eid] for eid in new_event_ids})
+                new_panel = p01.create_sample_lock(new_panel)
+                new_panel = p01.prepare_model_frame(new_panel)
+            new_panel["event_disaster_type"] = new_panel["event_id"].map({eid: events_cfg[eid].get("disaster_type", "unknown") for eid in new_event_ids}).fillna("unknown").astype(str)
+
+            full_panel = pd.concat([base_panel, new_panel], ignore_index=True, sort=False)
+            full_panel, pop_quality = _apply_population_sources(full_panel, stage_tag, cov_rows, acq_rows)
+        finally:
+            try:
+                Path(tmp_cfg.name).unlink(missing_ok=True)
+            except Exception:
+                pass
+    else:
+        full_panel = base_panel.copy()
+        pop_quality = pd.DataFrame()
+        gate_df = _build_input_gate([], events_cfg)
+
+    full_panel.to_parquet(stage_paths["feature_panel"], index=False)
+    if "sample_lock_flag" in full_panel.columns:
+        full_panel[["pixel_id", "event_id", "sample_lock_flag", "lock_reason"]].to_parquet(stage_paths["sample_lock"], index=False)
+    pd.DataFrame(acq_rows, columns=ACQ_MANIFEST_COLS).to_csv(NEW_EVENT_ACQ_MANIFEST_PATH, index=False)
+    pd.DataFrame(poi_rows, columns=POI_QUALITY_COLS).to_csv(NEW_EVENT_POI_QUALITY_PATH, index=False)
+    pd.DataFrame(cov_rows, columns=COV_SOURCE_COLS).to_csv(COVARIATE_SOURCE_MANIFEST_PATH, index=False)
+    return full_panel, acq_rows, poi_rows, cov_rows, pop_quality
+
+
+def _fetch_precip_7d_stage(lat: float, lon: float, event_date: Optional[pd.Timestamp]) -> Tuple[float, str]:
+    if event_date is None or not np.isfinite(lat) or not np.isfinite(lon):
+        return np.nan, "missing_event_date_or_coords"
+    start = (event_date - pd.Timedelta(days=6)).strftime("%Y-%m-%d")
+    end = event_date.strftime("%Y-%m-%d")
+    url = (
+        "https://archive-api.open-meteo.com/v1/archive"
+        f"?latitude={lat:.6f}&longitude={lon:.6f}&start_date={start}&end_date={end}&daily=precipitation_sum&timezone=UTC"
+    )
+    try:
+        payload = _fetch_json(url)
+        vals = payload.get("daily", {}).get("precipitation_sum", [])
+        arr = pd.to_numeric(pd.Series(vals), errors="coerce")
+        return float(arr.sum()), "ok"
+    except Exception as exc:  # noqa: BLE001
+        return np.nan, f"api_error:{type(exc).__name__}"
+
+
+def _fetch_elevation_slope_stage(lat: float, lon: float) -> Tuple[float, float, str]:
+    if not np.isfinite(lat) or not np.isfinite(lon):
+        return np.nan, np.nan, "missing_coords"
+    pts = [
+        (lat, lon),
+        (lat + 0.02, lon),
+        (lat - 0.02, lon),
+        (lat, lon + 0.02),
+        (lat, lon - 0.02),
+    ]
+    locs = "|".join([f"{la:.6f},{lo:.6f}" for la, lo in pts])
+    url = f"https://api.opentopodata.org/v1/srtm90m?locations={locs}"
+    try:
+        payload = _fetch_json(url)
+        elev = pd.to_numeric(pd.DataFrame(payload.get("results", []))["elevation"], errors="coerce").to_numpy(dtype=float)
+        if elev.size == 0 or not np.isfinite(elev[0]):
+            return np.nan, np.nan, "missing_center_elevation"
+        center = float(elev[0])
+        slopes = []
+        for idx in range(1, len(pts)):
+            if not np.isfinite(elev[idx]):
+                continue
+            d = float(np.hypot((pts[idx][0] - pts[0][0]) * 111_000.0, (pts[idx][1] - pts[0][1]) * 111_000.0))
+            if d > 0:
+                slopes.append(abs(float(elev[idx] - elev[0])) / d)
+        slope = float(np.median(slopes)) if slopes else np.nan
+        return center, slope, "ok"
+    except Exception as exc:  # noqa: BLE001
+        return np.nan, np.nan, f"api_error:{type(exc).__name__}"
+
+
+def _build_stage_event_profile(panel: pd.DataFrame, events_cfg: Dict[str, object], events_in_scope: Sequence[str], output_path: Path, acq_rows: List[Dict[str, object]]) -> pd.DataFrame:
+    rows = []
+    for event_id in events_in_scope:
+        sub = panel[panel["event_id"] == event_id].copy()
+        if sub.empty:
+            continue
+        cfg = events_cfg[event_id]
+        pre_tifs = list_daily_tifs(ROOT / str(cfg["pre_dir"]))
+        post_tifs = list_daily_tifs(ROOT / str(cfg["post_dir"]))
+        pre_dates = [d for d in (_parse_date_from_name_local(p) for p in pre_tifs) if d is not None]
+        post_dates = [d for d in (_parse_date_from_name_local(p) for p in post_tifs) if d is not None]
+        event_date = min(post_dates) if post_dates else None
+        lat_center = float(pd.to_numeric(sub["lat"], errors="coerce").median())
+        lon_center = float(pd.to_numeric(sub["lon"], errors="coerce").median())
+        precip, precip_flag = _fetch_precip_7d_stage(lat_center, lon_center, event_date)
+        elev, slope, topo_flag = _fetch_elevation_slope_stage(lat_center, lon_center)
+        acq_rows.append(
+            {
+                "event_id": event_id,
+                "indicator_type": "hazard_summary",
+                "source_name": "open-meteo+opentopodata",
+                "source_priority": 1,
+                "request_status": "ok" if precip_flag == "ok" or topo_flag == "ok" else "partial",
+                "download_status": "ok" if precip_flag == "ok" or topo_flag == "ok" else "partial",
+                "local_output_path": _safe_rel(output_path),
+                "coverage_metric": float(len(sub)),
+                "quality_flag": f"precip={precip_flag};topo={topo_flag}",
+                "notes": "",
+            }
+        )
+        rows.append(
+            {
+                "event_id": event_id,
+                "disaster_type": cfg.get("disaster_type", "unknown"),
+                "lat_center": lat_center,
+                "lon_center": lon_center,
+                "coastal_flag": int(cfg.get("coastal_flag", 0)),
+                "island_like_flag": int(cfg.get("island_like_flag", 0)),
+                "elevation_median": elev,
+                "slope_median": slope,
+                "urban_share_1km": float(pd.to_numeric(sub["urban_share_1km"], errors="coerce").mean()),
+                "water_share_1km": float(pd.to_numeric(sub["water_share_1km"], errors="coerce").mean()),
+                "developed_high_share_1km": float(pd.to_numeric(sub["developed_high_share_1km"], errors="coerce").mean()),
+                "pre_ntl_event_mean": float(pd.to_numeric(sub["pre_mean_ntl"], errors="coerce").mean()),
+                "cloud_pre_event_mean": float(pd.to_numeric(sub["cloud_pre_mean"], errors="coerce").mean()),
+                "cloud_post_event_mean": float(pd.to_numeric(sub["cloud_post_mean"], errors="coerce").mean()),
+                "storm_precip_7d": precip,
+                "event_duration_days": (int((max(post_dates) - min(post_dates)).days + 1) if post_dates else np.nan),
+                "source_ref": "panel_stats;open-meteo;opentopodata",
+                "quality_flag": f"precip={precip_flag};topo={topo_flag}",
+            }
+        )
+    profile = pd.DataFrame(rows)
+    profile.to_csv(output_path, index=False)
+    return profile
+
+
+def _run_stage_strict_v2(stage_paths: Dict[str, Path]) -> pd.DataFrame:
+    p01 = _get_pipeline_module("p01", "01_in_sample_pipeline.py")
+    overrides = {
+        "STRICT_PANEL_FEATURE_PATH": stage_paths["feature_panel"],
+        "STRICT_SAMPLE_LOCK_PATH": stage_paths["sample_lock"],
+        "STRICT_MANIFEST_PATH": stage_paths["strict_manifest"],
+        "STRICT_VIF_PATH": stage_paths["strict_vif"],
+        "STRICT_SUMMARY_PATH": stage_paths["strict_summary"],
+        "STRICT_SAMPLE_AUDIT_PATH": stage_paths["strict_sample_audit"],
+        "STRICT_COX_DIAG_PATH": stage_paths["strict_cox_diag"],
+        "STRICT_LOGO_FOLD_PATH": stage_paths["strict_logo_fold"],
+        "STRICT_LOGO_AGG_PATH": stage_paths["strict_logo"],
+        "STRICT_MISSING_FLAG_AUDIT_PATH": stage_paths["strict_missing_audit"],
+        "STRICT_OLS_RESULT_PATH": stage_paths["strict_ols"],
+        "STRICT_MIXED_RESULT_PATH": stage_paths["strict_mixed"],
+        "STRICT_LOGIT_RESULT_PATH": stage_paths["strict_logit"],
+        "STRICT_COX_RESULT_PATH": stage_paths["strict_cox"],
+    }
+    with _override_attrs(p01, overrides):
+        try:
+            p01.strict_main()
+        except Exception as exc:  # noqa: BLE001
+            if stage_paths["strict_summary"].exists():
+                append_progress(
+                    f"strict-v2 stage fallback: using summary before downstream LOGO failure ({type(exc).__name__}: {exc})"
+                )
+            else:
+                raise
+    return pd.read_csv(stage_paths["strict_summary"])
+
+
+def _collect_baseline_metric_rows() -> List[Dict[str, object]]:
+    rows: List[Dict[str, object]] = []
+    strict = pd.read_csv(STRICT_BASE_SUMMARY_PATH) if STRICT_BASE_SUMMARY_PATH.exists() else pd.DataFrame()
+    hazard = pd.read_csv(HAZARD_TRANSPORT_AGG_PATH) if HAZARD_TRANSPORT_AGG_PATH.exists() else pd.DataFrame()
+    quality = pd.read_csv(QUALITY_TRANSPORT_AGG_PATH) if QUALITY_TRANSPORT_AGG_PATH.exists() else pd.DataFrame()
+    facility = pd.read_csv(FACILITY_CENTERED_SUMMARY_PATH) if FACILITY_CENTERED_SUMMARY_PATH.exists() else pd.DataFrame()
+
+    for model, metric_name in [
+        ("OLS", "coef_in_buffer"),
+        ("MixedLM", "coef_in_buffer"),
+        ("Logit", "odds_ratio_in_buffer"),
+        ("Logit", "auc"),
+        ("Cox", "hazard_ratio_in_buffer"),
+    ]:
+        if metric_name in {"auc"}:
+            val = _metric_value(hazard, model, metric_name)
+            pval = np.nan
+        else:
+            sub = strict[(strict["model"] == model) & (strict["variant"] == "full_locked_v2_strict") & (strict["key_metric"] == metric_name)]
+            val = float(pd.to_numeric(sub["value"], errors="coerce").iloc[0]) if not sub.empty else np.nan
+            pval = float(pd.to_numeric(sub["p_value"], errors="coerce").iloc[0]) if not sub.empty else np.nan
+        rows.append({"stage_id": "baseline_6", "event_count": 6, "new_event_id": "", "bundle": "strict_v2", "model": model, "metric_name": metric_name, "value": val, "p_value": pval, "status": "ok", "notes": ""})
+
+    for model, metric_name, col in [
+        ("Logit", "auc", "auc"),
+        ("Logit", "brier", "brier"),
+        ("Cox", "c_index", "c_index"),
+        ("AFT", "c_index", "c_index"),
+        ("OLS", "rmse", "rmse"),
+        ("MixedLM", "rmse", "rmse"),
+    ]:
+        rows.append({"stage_id": "baseline_6", "event_count": 6, "new_event_id": "", "bundle": "hazard_mainline", "model": model, "metric_name": metric_name, "value": _metric_value(hazard, model, col), "p_value": np.nan, "status": "ok", "notes": ""})
+
+    for model, metric_name in [
+        ("FacilityMatchedOLS", "coef_in_buffer"),
+        ("FacilityMatchedLogit", "odds_ratio_in_buffer"),
+        ("FacilityPairedATT", "mean_delta_diff"),
+    ]:
+        sub = facility[(facility["model"] == model) & (facility["metric_name"] == metric_name)]
+        rows.append({"stage_id": "baseline_6", "event_count": 6, "new_event_id": "", "bundle": "quality_matched", "model": model, "metric_name": metric_name, "value": float(pd.to_numeric(sub["value"], errors="coerce").iloc[0]) if not sub.empty else np.nan, "p_value": float(pd.to_numeric(sub["p_value"], errors="coerce").iloc[0]) if not sub.empty else np.nan, "status": "ok", "notes": ""})
+    if not quality.empty:
+        rows.append({"stage_id": "baseline_6", "event_count": 6, "new_event_id": "", "bundle": "quality_matched", "model": "Logit", "metric_name": "auc", "value": _metric_value(quality, "Logit", "auc"), "p_value": np.nan, "status": "ok", "notes": ""})
+    return rows
+
+
+def _stage_metric_rows(stage_id: str, event_count: int, new_event_id: str, strict_df: pd.DataFrame, hazard_df: pd.DataFrame, facility_df: Optional[pd.DataFrame] = None) -> List[Dict[str, object]]:
+    rows: List[Dict[str, object]] = []
+    for model, metric_name in [
+        ("OLS", "coef_in_buffer"),
+        ("MixedLM", "coef_in_buffer"),
+        ("Logit", "odds_ratio_in_buffer"),
+        ("Cox", "hazard_ratio_in_buffer"),
+    ]:
+        sub = strict_df[(strict_df["model"] == model) & (strict_df["variant"] == "full_locked_v2_strict") & (strict_df["key_metric"] == metric_name)]
+        rows.append({"stage_id": stage_id, "event_count": event_count, "new_event_id": new_event_id, "bundle": "strict_v2", "model": model, "metric_name": metric_name, "value": float(pd.to_numeric(sub["value"], errors="coerce").iloc[0]) if not sub.empty else np.nan, "p_value": float(pd.to_numeric(sub["p_value"], errors="coerce").iloc[0]) if not sub.empty else np.nan, "status": "ok", "notes": ""})
+    rows.append({"stage_id": stage_id, "event_count": event_count, "new_event_id": new_event_id, "bundle": "strict_v2", "model": "Logit", "metric_name": "auc", "value": _metric_value(hazard_df, "Logit", "auc"), "p_value": np.nan, "status": "ok", "notes": "transport_auc_reference"})
+
+    for model, metric_name, col in [
+        ("Logit", "auc", "auc"),
+        ("Logit", "brier", "brier"),
+        ("Cox", "c_index", "c_index"),
+        ("AFT", "c_index", "c_index"),
+        ("OLS", "rmse", "rmse"),
+        ("MixedLM", "rmse", "rmse"),
+    ]:
+        rows.append({"stage_id": stage_id, "event_count": event_count, "new_event_id": new_event_id, "bundle": "hazard_mainline", "model": model, "metric_name": metric_name, "value": _metric_value(hazard_df, model, col), "p_value": np.nan, "status": "ok", "notes": ""})
+
+    if facility_df is not None and not facility_df.empty:
+        for model, metric_name in [
+            ("FacilityMatchedOLS", "coef_in_buffer"),
+            ("FacilityMatchedLogit", "odds_ratio_in_buffer"),
+            ("FacilityPairedATT", "mean_delta_diff"),
+        ]:
+            sub = facility_df[(facility_df["model"] == model) & (facility_df["metric_name"] == metric_name)]
+            rows.append({"stage_id": stage_id, "event_count": event_count, "new_event_id": new_event_id, "bundle": "quality_matched", "model": model, "metric_name": metric_name, "value": float(pd.to_numeric(sub["value"], errors="coerce").iloc[0]) if not sub.empty else np.nan, "p_value": float(pd.to_numeric(sub["p_value"], errors="coerce").iloc[0]) if not sub.empty else np.nan, "status": "ok", "notes": ""})
+    return rows
+
+
+def _finalize_metric_deltas(df: pd.DataFrame) -> pd.DataFrame:
+    out = df.copy()
+    out["delta_vs_prev"] = np.nan
+    out["delta_vs_baseline"] = np.nan
+    for (bundle, model, metric_name), grp in out.groupby(["bundle", "model", "metric_name"], dropna=False):
+        idx = grp.sort_values("event_count").index.tolist()
+        baseline_val = pd.to_numeric(out.loc[idx[0], "value"], errors="coerce")
+        prev = None
+        for i in idx:
+            val = pd.to_numeric(out.loc[i, "value"], errors="coerce")
+            out.loc[i, "delta_vs_baseline"] = val - baseline_val if pd.notna(val) and pd.notna(baseline_val) else np.nan
+            out.loc[i, "delta_vs_prev"] = np.nan if prev is None or pd.isna(val) or pd.isna(prev) else val - prev
+            prev = val
+    out.to_csv(EVENT_INCREMENT_METRICS_PATH, index=False)
+    return out
+
+
+def _plot_event_increment(metrics: pd.DataFrame, stage_plan: List[Dict[str, object]]) -> None:
+    FIG_EVENT_INCREMENT_DIR.mkdir(parents=True, exist_ok=True)
+    order = [str(x["stage_id"]) for x in stage_plan]
+
+    def _line(bundle: str, model: str, metric: str, path: Path, title: str, ylabel: str):
+        sub = metrics[(metrics["bundle"] == bundle) & (metrics["model"] == model) & (metrics["metric_name"] == metric)].copy()
+        if sub.empty:
+            return
+        sub["stage_id"] = pd.Categorical(sub["stage_id"], categories=order, ordered=True)
+        sub = sub.sort_values("stage_id")
+        fig, ax = plt.subplots(figsize=(8, 4.6))
+        ax.plot(sub["stage_id"].astype(str), pd.to_numeric(sub["value"], errors="coerce"), marker="o", color="#1d3557")
+        ax.set_title(title)
+        ax.set_ylabel(ylabel)
+        ax.set_xlabel("Stage")
+        ax.grid(alpha=0.25)
+        fig.tight_layout()
+        fig.savefig(path, dpi=220)
+        plt.close(fig)
+
+    _line("hazard_mainline", "Logit", "auc", FIG_EVENT_INCREMENT_DIR / "logit_auc_by_stage.png", "Hazard Mainline Logit AUC by Stage", "AUC")
+    aft = metrics[(metrics["bundle"] == "hazard_mainline") & (metrics["metric_name"] == "c_index") & (metrics["model"].isin(["Cox", "AFT"]))].copy()
+    if not aft.empty:
+        pivot = aft.pivot_table(index="stage_id", columns="model", values="value", aggfunc="mean").reset_index()
+        pivot["survival_best"] = pivot[["AFT", "Cox"]].max(axis=1)
+        pivot["stage_id"] = pd.Categorical(pivot["stage_id"], categories=order, ordered=True)
+        pivot = pivot.sort_values("stage_id")
+        fig, ax = plt.subplots(figsize=(8, 4.6))
+        ax.plot(pivot["stage_id"].astype(str), pivot["survival_best"], marker="o", color="#457b9d")
+        ax.set_title("Hazard Mainline Survival Best by Stage")
+        ax.set_ylabel("c-index")
+        ax.set_xlabel("Stage")
+        ax.grid(alpha=0.25)
+        fig.tight_layout()
+        fig.savefig(FIG_EVENT_INCREMENT_DIR / "survival_best_by_stage.png", dpi=220)
+        plt.close(fig)
+
+    _line("strict_v2", "MixedLM", "coef_in_buffer", FIG_EVENT_INCREMENT_DIR / "strict_v2_in_buffer_by_stage.png", "Strict V2 MixedLM coef(in_buffer) by Stage", "coef")
+    _line("quality_matched", "FacilityMatchedLogit", "odds_ratio_in_buffer", FIG_EVENT_INCREMENT_DIR / "matched_logit_or_by_stage.png", "Matched Logit OR(in_buffer) by Stage", "odds ratio")
+
+    summary = pd.DataFrame(stage_plan)[["stage_id", "new_event_id", "event_count", "group_tag"]].copy()
+    summary["new_event_id"] = summary["new_event_id"].replace("", "baseline")
+    fig, ax = plt.subplots(figsize=(8, 4.6))
+    colors = summary["group_tag"].map({"baseline": "#6c757d", "us_only": "#2a9d8f", "intl_addition": "#e76f51"}).fillna("#457b9d")
+    ax.bar(summary["new_event_id"], summary["event_count"], color=colors)
+    ax.set_title("Event Gap Coverage Progress")
+    ax.set_ylabel("Event Count")
+    ax.set_xlabel("Added Event")
+    fig.tight_layout()
+    fig.savefig(FIG_EVENT_INCREMENT_DIR / "event_gap_coverage_map.png", dpi=220)
+    plt.close(fig)
+
+
+def _write_event_increment_report(metrics: pd.DataFrame, manifest: pd.DataFrame, acq: pd.DataFrame, poi_quality: pd.DataFrame, stage_plan: List[Dict[str, object]]) -> None:
+    order = [str(x["stage_id"]) for x in stage_plan]
+    hz_auc = metrics[(metrics["bundle"] == "hazard_mainline") & (metrics["model"] == "Logit") & (metrics["metric_name"] == "auc")][["stage_id", "value", "delta_vs_prev", "delta_vs_baseline"]].copy()
+    if not hz_auc.empty:
+        hz_auc["stage_id"] = pd.Categorical(hz_auc["stage_id"], categories=order, ordered=True)
+        hz_auc = hz_auc.sort_values("stage_id")
+    surv = metrics[(metrics["bundle"] == "hazard_mainline") & (metrics["metric_name"] == "c_index") & (metrics["model"].isin(["Cox", "AFT"]))].copy()
+    if not surv.empty:
+        surv = surv.pivot_table(index="stage_id", columns="model", values="value", aggfunc="mean").reset_index()
+        surv["survival_best"] = surv[["AFT", "Cox"]].max(axis=1)
+        surv["stage_id"] = pd.Categorical(surv["stage_id"], categories=order, ordered=True)
+        surv = surv.sort_values("stage_id")
+    else:
+        surv = pd.DataFrame(columns=["stage_id", "survival_best"])
+
+    lines = [
+        "# Event Increment Report / 新事件增量接入报告",
+        "",
+        "## Objective",
+        "- 只同步 teammate 新增事件文件，逐步扩展事件集合并比较 strict-v2、hazard-mainline、quality-matched 三条评估线是否改善。",
+        "",
+        "## Stages",
+    ]
+    for row in stage_plan:
+        lines.append(f"- `{row['stage_id']}`: event_count={row['event_count']}, new_event=`{row['new_event_id'] or 'baseline'}`, group=`{row['group_tag']}`")
+
+    generated_poi = int(
+        acq[(acq["indicator_type"] == "poi") & (acq["request_status"] == "ok")]["event_id"].nunique()
+    ) if not acq.empty else 0
+    sync_rows = int(_read_csv_or_empty(NEW_EVENT_SYNC_MANIFEST_PATH, SYNC_MANIFEST_COLS).shape[0])
+    lines.extend(["", "## Sync & Acquisition", f"- synced rows: {sync_rows}", f"- acquisition records: {len(acq)}", f"- generated/new POI files: {generated_poi}", ""])
+    lines.append("## Hazard Mainline Logit AUC by Stage")
+    if hz_auc.empty:
+        lines.append("- NA")
+    else:
+        for _, r in hz_auc.iterrows():
+            lines.append(f"- {r['stage_id']}: auc={float(r['value']):.4f}, delta_prev={float(r['delta_vs_prev']) if pd.notna(r['delta_vs_prev']) else float('nan'):.4f}, delta_baseline={float(r['delta_vs_baseline']):.4f}")
+
+    lines.extend(["", "## Survival Best by Stage"])
+    if surv.empty:
+        lines.append("- NA")
+    else:
+        for _, r in surv.iterrows():
+            lines.append(f"- {r['stage_id']}: survival_best={float(r['survival_best']):.4f}")
+
+    lines.extend(["", "## Figures", "- `project/modeling_report/figures/event_increment/logit_auc_by_stage.png`", "- `project/modeling_report/figures/event_increment/survival_best_by_stage.png`", "- `project/modeling_report/figures/event_increment/strict_v2_in_buffer_by_stage.png`", "- `project/modeling_report/figures/event_increment/matched_logit_or_by_stage.png`", "- `project/modeling_report/figures/event_increment/event_gap_coverage_map.png`"])
+    EVENT_INCREMENT_REPORT_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+    text = INDEX_PATH.read_text(encoding="utf-8") if INDEX_PATH.exists() else "# Modeling Report Index\n\n"
+    line = "- `project/modeling_report/13_event_increment_report.md`"
+    if line not in text:
+        text = text.rstrip() + "\n" + line + "\n"
+        INDEX_PATH.write_text(text, encoding="utf-8")
+
+
+def _write_event_increment_tracking(metrics: pd.DataFrame, issue_rows: List[Dict[str, object]]) -> None:
+    EVENT_INCREMENT_BOOTSTRAP_PATH.write_text(
+        "# Event Increment Bootstrap\n\n"
+        f"- Generated at: {datetime.utcnow().isoformat()}Z\n"
+        f"- Metrics file: `{EVENT_INCREMENT_METRICS_PATH.relative_to(ROOT)}`\n",
+        encoding="utf-8",
+    )
+    issue_df = pd.DataFrame(issue_rows, columns=EVENT_INCREMENT_ISSUE_COLS)
+    issue_df.to_csv(EVENT_INCREMENT_ISSUE_PATH, index=False)
+    EVENT_INCREMENT_ISSUE_MD_PATH.write_text(
+        "# Event Increment Issues\n\n" + ("\n".join([f"- {r['stage_id']} | {r['event_id']} | {r['issue_type']} | {r['symptom']} | {r['status']}" for r in issue_rows]) if issue_rows else "- No critical issue observed\n") + "\n",
+        encoding="utf-8",
+    )
+    EVENT_INCREMENT_NEXT_PATH.write_text(
+        "# Post Event-Increment Next Steps\n\n"
+        "- Re-check which event types produce positive transport deltas.\n"
+        "- Keep hazard-aware transport as the main comparison line.\n"
+        "- Use full-stage matched design only for explanatory stability, not as the transport KPI.\n",
+        encoding="utf-8",
+    )
+
+
+def _recommend_next_event_types(metrics: pd.DataFrame) -> pd.DataFrame:
+    rows = [
+        {
+            "gap_type": "damage_transport",
+            "current_coverage": "hurricane-heavy, earthquake-light, island-like sparse",
+            "event_ids_current": "earthquake_sanjuan,earthquake_hatay,dorian_freeport,maria_sanjuan",
+            "recommended_next_event_type": "non-island earthquake in mid-urban setting",
+            "why": "best candidate to further break earthquake=SanJuan coupling",
+            "it_addresses": "damage_transport",
+            "priority": "high",
+        },
+        {
+            "gap_type": "recovery_transport",
+            "current_coverage": "coastal hurricane recovery still unstable",
+            "event_ids_current": "michael_panamacity,laura_lakecharles,ian_fortmyers,ian_charlotteharbor",
+            "recommended_next_event_type": "coastal hurricane with cleaner post-observation coverage",
+            "why": "survival metrics remain more sensitive to observation quality than to simple event count",
+            "it_addresses": "recovery_transport",
+            "priority": "high",
+        },
+        {
+            "gap_type": "explanatory_balance",
+            "current_coverage": "buffer signal mostly coastal and critical-facility dense",
+            "event_ids_current": "all_current",
+            "recommended_next_event_type": "non-island, medium-density inland event with strong facility map coverage",
+            "why": "improves matched-design comparability without over-weighting island/coastal structure",
+            "it_addresses": "explanatory_balance",
+            "priority": "medium",
+        },
+    ]
+    out = pd.DataFrame(rows)
+    out.to_csv(EVENT_TYPE_GAP_PATH, index=False)
+    return out
+
+
+def _run_event_expansion_v1_impl() -> int:
+    ensure_directories()
+    init_tracking_files()
+    FIG_EVENT_INCREMENT_DIR.mkdir(parents=True, exist_ok=True)
+    append_progress("Event increment V1 started")
+
+    events_cfg = load_json(EVENTS10_PATH)
+    stage_plan = _load_event_increment_plan()
+    issue_rows: List[Dict[str, object]] = []
+    manifest_rows: List[Dict[str, object]] = []
+    all_acq_rows: List[Dict[str, object]] = []
+    all_poi_rows: List[Dict[str, object]] = []
+    all_cov_rows: List[Dict[str, object]] = []
+    metric_rows = _collect_baseline_metric_rows()
+
+    pd.DataFrame(
+        [
+            {
+                "stage_id": "baseline_6",
+                "event_count": 6,
+                "new_event_id": "",
+                "group_tag": "baseline",
+                "events_config_path": _safe_rel(EVENTS10_PATH),
+                "panel_feature_path": _safe_rel(FEATURE_PANEL_BASE_PATH),
+                "panel_cross_event_path": _safe_rel(PANEL_IN_PATH),
+                "event_profile_path": _safe_rel(EVENT_PROFILE_V1_PATH),
+                "poi_ready_flag": 1,
+                "status": "ok",
+            }
+        ]
+    ).to_csv(EVENT_INCREMENT_MANIFEST_PATH, index=False)
+
+    cumulative_new: List[str] = []
+    for stage in stage_plan[1:]:
+        stage_id = str(stage["stage_id"])
+        new_event_id = str(stage["new_event_id"])
+        stage_tag = stage_id
+        cumulative_new.append(new_event_id)
+        stage_paths = _stage_paths(stage_tag)
+        append_progress(f"{stage_id}: build feature panel for {new_event_id}")
+        try:
+            panel_stage, acq_rows, poi_rows, cov_rows, pop_quality = _build_stage_feature_panel(
+                stage_id=stage_id,
+                stage_tag=stage_tag,
+                events_in_scope=list(stage["events_in_scope"]),
+                new_event_ids=cumulative_new,
+                events_cfg=events_cfg,
+            )
+            all_acq_rows.extend(acq_rows)
+            all_poi_rows.extend(poi_rows)
+            all_cov_rows.extend(cov_rows)
+            manifest_rows.append(
+                {
+                    "stage_id": stage_id,
+                    "event_count": int(stage["event_count"]),
+                    "new_event_id": new_event_id,
+                    "group_tag": str(stage["group_tag"]),
+                    "events_config_path": _safe_rel(EVENTS10_PATH),
+                    "panel_feature_path": _safe_rel(stage_paths["feature_panel"]),
+                    "panel_cross_event_path": "",
+                    "event_profile_path": _safe_rel(stage_paths["event_profile"]),
+                    "poi_ready_flag": int((ROOT / str(events_cfg[new_event_id]["poi_csv"])).exists()),
+                    "status": "ok",
+                }
+            )
+
+            with _override_globals(
+                {
+                    "CONFIG_EVENTS": EVENTS10_PATH,
+                    "PANEL_QUALITY_PATH": stage_paths["quality_panel"],
+                    "RECOVERY_V2_PATH": stage_paths["recovery_v2"],
+                    "TARGET_QUALITY_AUDIT_PATH": stage_paths["target_audit"],
+                    "QUALITY_TRANSPORT_FOLD_PATH": stage_paths["quality_fold"],
+                    "QUALITY_TRANSPORT_AGG_PATH": stage_paths["quality_agg"],
+                    "SPATIAL_BLOCK_CV_PATH": stage_paths["spatial_block"],
+                    "FACILITY_CONTEXT_PATH": stage_paths["facility_panel"],
+                    "FACILITY_MATCH_QUALITY_PATH": stage_paths["facility_quality"],
+                    "FACILITY_CENTERED_SUMMARY_PATH": stage_paths["facility_summary"],
+                    "MODEL_ROLE_MATRIX_PATH": stage_paths["role_matrix"],
+                    "PANEL_HAZARD_PATH": stage_paths["hazard_panel"],
+                    "HAZARD_TRANSPORT_FOLD_PATH": stage_paths["hazard_fold"],
+                    "HAZARD_TRANSPORT_AGG_PATH": stage_paths["hazard_agg"],
+                    "HAZARD_FEATURE_SUMMARY_PATH": stage_paths["hazard_feature"],
+                    "EVENT_SELECTION_PATH": stage_paths["event_selection"],
+                    "EVENT_PROFILE_V1_PATH": stage_paths["event_profile"],
+                }
+            ):
+                panel_q, rec_v2, target_audit = build_target_quality_panel(panel_stage)
+                stage_profile = _build_stage_event_profile(panel_q, events_cfg, list(stage["events_in_scope"]), stage_paths["event_profile"], acq_rows)
+                panel_h = attach_hazard_exposure_features(panel_q)
+                merge_cols = ["pixel_id", "event_id"] + [
+                    c
+                    for c in panel_h.columns
+                    if c not in {"pixel_id", "event_id"}
+                    and (c.startswith("event_") or c in ["island_local_water", "island_local_urban", "hazard_cloud_water", "hazard_precip_urban"])
+                ]
+                rec_h = rec_v2.drop(columns=[c for c in merge_cols if c in rec_v2.columns and c not in {"pixel_id", "event_id"}], errors="ignore")
+                rec_h = rec_h.merge(panel_h[merge_cols].drop_duplicates(subset=["pixel_id"]), on=["pixel_id", "event_id"], how="left")
+                hazard_res = run_hazard_aware_transport(panel_h, rec_h)
+                summarize_hazard_features(hazard_res.coef_df)
+                build_event_selection_scorecard(hazard_res.fold_df, target_audit)
+
+                if stage_id == "stage_10_dorian_freeport":
+                    quality_res = run_quality_transport(panel_q, rec_v2)
+                    spatial_block = run_spatial_block_cv(panel_q, rec_v2)
+                    fac_panel, match_quality = build_facility_context_panel(panel_q)
+                    facility_summary = fit_facility_centered_models(fac_panel)
+                    build_model_role_matrix(quality_res.agg_df, spatial_block, facility_summary)
+                else:
+                    facility_summary = None
+
+            strict_df = _run_stage_strict_v2(stage_paths)
+            hazard_df = pd.read_csv(stage_paths["hazard_agg"])
+            metric_rows.extend(_stage_metric_rows(stage_id, int(stage["event_count"]), new_event_id, strict_df, hazard_df, facility_summary))
+            if not pop_quality.empty:
+                pop_quality.to_csv(_stage_suffix_path(POP_QUALITY_PATH, stage_tag), index=False)
+        except Exception as exc:  # noqa: BLE001
+            issue_rows.append(
+                {
+                    "stage_id": stage_id,
+                    "event_id": new_event_id,
+                    "bundle": "event_expansion",
+                    "issue_type": "stage_failed",
+                    "symptom": str(exc),
+                    "fix_action": "record failure and continue",
+                    "impact": "stage result unavailable",
+                    "status": "open",
+                }
+            )
+            manifest_rows.append(
+                {
+                    "stage_id": stage_id,
+                    "event_count": int(stage["event_count"]),
+                    "new_event_id": new_event_id,
+                    "group_tag": str(stage["group_tag"]),
+                    "events_config_path": _safe_rel(EVENTS10_PATH),
+                    "panel_feature_path": _safe_rel(stage_paths["feature_panel"]),
+                    "panel_cross_event_path": "",
+                    "event_profile_path": _safe_rel(stage_paths["event_profile"]),
+                    "poi_ready_flag": 0,
+                    "status": f"failed:{type(exc).__name__}",
+                }
+            )
+
+    manifest = pd.concat([_read_csv_or_empty(EVENT_INCREMENT_MANIFEST_PATH, ["stage_id", "event_count", "new_event_id", "group_tag", "events_config_path", "panel_feature_path", "panel_cross_event_path", "event_profile_path", "poi_ready_flag", "status"]), pd.DataFrame(manifest_rows)], ignore_index=True)
+    manifest.to_csv(EVENT_INCREMENT_MANIFEST_PATH, index=False)
+    pd.DataFrame(all_acq_rows, columns=ACQ_MANIFEST_COLS).drop_duplicates(
+        subset=["event_id", "indicator_type", "source_name"],
+        keep="last",
+    ).to_csv(NEW_EVENT_ACQ_MANIFEST_PATH, index=False)
+    pd.DataFrame(all_poi_rows, columns=POI_QUALITY_COLS).drop_duplicates(
+        subset=["event_id"],
+        keep="last",
+    ).to_csv(NEW_EVENT_POI_QUALITY_PATH, index=False)
+    pd.DataFrame(all_cov_rows, columns=COV_SOURCE_COLS).drop_duplicates(
+        subset=["event_id", "covariate_name", "source_name"],
+        keep="last",
+    ).to_csv(COVARIATE_SOURCE_MANIFEST_PATH, index=False)
+    metrics = _finalize_metric_deltas(pd.DataFrame(metric_rows, columns=EVENT_INCREMENT_METRIC_COLS))
+    acq = _read_csv_or_empty(NEW_EVENT_ACQ_MANIFEST_PATH, ACQ_MANIFEST_COLS)
+    poi_quality = _read_csv_or_empty(NEW_EVENT_POI_QUALITY_PATH, POI_QUALITY_COLS)
+    _plot_event_increment(metrics, stage_plan)
+    _write_event_increment_report(metrics, manifest, acq, poi_quality, stage_plan)
+    _write_event_increment_tracking(metrics, issue_rows)
+    _recommend_next_event_types(metrics)
+    append_progress("Event increment V1 completed")
+    return 0
+
+
 def _plot_experiment_summary(cloud_agg: pd.DataFrame, mask_agg: pd.DataFrame, urban_agg: pd.DataFrame) -> None:
     FIG_EXP_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -2674,6 +4047,10 @@ def cmd_hazard_mainline_v1() -> int:
     return _run_hazard_mainline_v1_impl()
 
 
+def cmd_event_expansion_v1() -> int:
+    return _run_event_expansion_v1_impl()
+
+
 def cmd_full_run() -> int:
     return _run_v2_impl()
 
@@ -2692,6 +4069,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser('extreme-event-sensitivity', help='Run exploration V2 extreme-event sensitivity bundle')
     sub.add_parser('quality-matched-v1', help='Run quality-adjusted target + spatial block + facility-matched bundle')
     sub.add_parser('hazard-mainline-v1', help='Run hazard/exposure-aware transport mainline on quality-adjusted panel')
+    sub.add_parser('event-expansion-v1', help='Run staged event expansion with selective sync, online acquisition, and retraining')
     sub.add_parser('full-run', help='Run full exploration V2 pipeline')
     return parser
 
@@ -2703,6 +4081,8 @@ def main(argv: list[str] | None = None) -> int:
         return _run_quality_matched_v1_impl()
     if args.command == 'hazard-mainline-v1':
         return _run_hazard_mainline_v1_impl()
+    if args.command == 'event-expansion-v1':
+        return _run_event_expansion_v1_impl()
     if args.command in {'run-v2', 'cloud-ablation', 'noise-mask', 'urban-rural', 'spatial-diagnostics', 'extreme-event-sensitivity', 'full-run'}:
         return _run_v2_impl()
     parser.error(f'Unknown command: {args.command}')

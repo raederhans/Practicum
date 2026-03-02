@@ -140,3 +140,62 @@
 - [2026-02-28 00:27:26 UTC] Hazard mainline V1: LOEO transport
 - [2026-02-28 00:27:37 UTC] Hazard mainline V1: summarize features and event selection
 - [2026-02-28 00:27:37 UTC] Hazard mainline V1 completed
+- [2026-03-02 03:46:07 UTC] Event increment V1 started
+- [2026-03-02 03:46:07 UTC] stage_7_ian_fortmyers: build feature panel for ian_fortmyers
+- [2026-03-02 03:46:17 UTC] stage_8_ian_charlotteharbor: build feature panel for ian_charlotteharbor
+- [2026-03-02 03:46:17 UTC] stage_9_earthquake_hatay: build feature panel for earthquake_hatay
+- [2026-03-02 03:46:17 UTC] stage_10_dorian_freeport: build feature panel for dorian_freeport
+- [2026-03-02 03:47:37 UTC] stage_7_ian_fortmyers: synced 0 teammate asset rows
+- [2026-03-02 03:48:12 UTC] stage_7_ian_fortmyers: synced 0 teammate asset rows
+- [2026-03-02 03:49:23 UTC] stage_7_ian_fortmyers: synced 86 teammate asset rows
+- [2026-03-02 03:49:24 UTC] Built pixel panel project/modeling/pixel_data/all_events_pixel_panel_v1_feature_upgrade_stage_7_ian_fortmyers.parquet with 2,911 rows across 1 events
+- [2026-03-02 03:55:01 UTC] Event increment V1 started
+- [2026-03-02 03:55:01 UTC] stage_7_ian_fortmyers: build feature panel for ian_fortmyers
+- [2026-03-02 03:55:02 UTC] stage_7_ian_fortmyers: synced 86 teammate asset rows
+- [2026-03-02 03:55:03 UTC] Built pixel panel project/modeling/pixel_data/all_events_pixel_panel_v1_feature_upgrade_stage_7_ian_fortmyers.parquet with 2,911 rows across 1 events
+- [2026-03-02 03:55:30 UTC] stage_8_ian_charlotteharbor: build feature panel for ian_charlotteharbor
+- [2026-03-02 03:55:39 UTC] stage_8_ian_charlotteharbor: synced 167 teammate asset rows
+- [2026-03-02 03:55:40 UTC] Built pixel panel project/modeling/pixel_data/all_events_pixel_panel_v1_feature_upgrade_stage_8_ian_charlotteharbor.parquet with 3,688 rows across 2 events
+- [2026-03-02 03:56:18 UTC] stage_9_earthquake_hatay: build feature panel for earthquake_hatay
+- [2026-03-02 03:56:24 UTC] stage_9_earthquake_hatay: synced 191 teammate asset rows
+- [2026-03-02 03:56:25 UTC] Built pixel panel project/modeling/pixel_data/all_events_pixel_panel_v1_feature_upgrade_stage_9_earthquake_hatay.parquet with 5,260 rows across 3 events
+- [2026-03-02 03:57:56 UTC] stage_10_dorian_freeport: build feature panel for dorian_freeport
+- [2026-03-02 03:58:05 UTC] stage_10_dorian_freeport: synced 275 teammate asset rows
+- [2026-03-02 03:58:07 UTC] Built pixel panel project/modeling/pixel_data/all_events_pixel_panel_v1_feature_upgrade_stage_10_dorian_freeport.parquet with 5,635 rows across 4 events
+- [2026-03-02 03:58:49 UTC] Event increment V1 completed
+- [2026-03-02 03:59:47 UTC] stage_7_ian_fortmyers: synced 86 teammate asset rows
+- [2026-03-02 03:59:47 UTC] Built pixel panel project/modeling/pixel_data/all_events_pixel_panel_v1_feature_upgrade_stage_7_ian_fortmyers.parquet with 2,911 rows across 1 events
+- [2026-03-02 04:00:46 UTC] stage_7_ian_fortmyers: synced 86 teammate asset rows
+- [2026-03-02 04:00:47 UTC] Built pixel panel project/modeling/pixel_data/all_events_pixel_panel_v1_feature_upgrade_stage_7_ian_fortmyers.parquet with 2,911 rows across 1 events
+- [2026-03-02 04:01:48 UTC] stage_7_ian_fortmyers: synced 86 teammate asset rows
+- [2026-03-02 04:01:49 UTC] Built pixel panel project/modeling/pixel_data/all_events_pixel_panel_v1_feature_upgrade_stage_7_ian_fortmyers.parquet with 2,911 rows across 1 events
+- [2026-03-02 04:02:29 UTC] Strict V2 pipeline started
+- [2026-03-02 04:03:22 UTC] Event increment V1 started
+- [2026-03-02 04:03:22 UTC] stage_7_ian_fortmyers: build feature panel for ian_fortmyers
+- [2026-03-02 04:03:23 UTC] stage_7_ian_fortmyers: synced 86 teammate asset rows
+- [2026-03-02 04:03:24 UTC] Built pixel panel project/modeling/pixel_data/all_events_pixel_panel_v1_feature_upgrade_stage_7_ian_fortmyers.parquet with 2,911 rows across 1 events
+- [2026-03-02 04:04:06 UTC] Strict V2 pipeline started
+- [2026-03-02 04:04:10 UTC] strict-v2 stage fallback: using summary before downstream LOGO failure (ValueError: operands could not be broadcast together with shapes (0,0) (11,) )
+- [2026-03-02 04:04:10 UTC] stage_8_ian_charlotteharbor: build feature panel for ian_charlotteharbor
+- [2026-03-02 04:04:12 UTC] stage_8_ian_charlotteharbor: synced 167 teammate asset rows
+- [2026-03-02 04:04:13 UTC] Built pixel panel project/modeling/pixel_data/all_events_pixel_panel_v1_feature_upgrade_stage_8_ian_charlotteharbor.parquet with 3,688 rows across 2 events
+- [2026-03-02 04:04:57 UTC] Strict V2 pipeline started
+- [2026-03-02 04:05:01 UTC] strict-v2 stage fallback: using summary before downstream LOGO failure (ValueError: operands could not be broadcast together with shapes (0,0) (11,) )
+- [2026-03-02 04:05:02 UTC] stage_9_earthquake_hatay: build feature panel for earthquake_hatay
+- [2026-03-02 04:05:04 UTC] stage_9_earthquake_hatay: synced 191 teammate asset rows
+- [2026-03-02 04:05:05 UTC] Built pixel panel project/modeling/pixel_data/all_events_pixel_panel_v1_feature_upgrade_stage_9_earthquake_hatay.parquet with 5,260 rows across 3 events
+- [2026-03-02 04:06:54 UTC] Strict V2 pipeline started
+- [2026-03-02 04:06:58 UTC] strict-v2 stage fallback: using summary before downstream LOGO failure (ValueError: operands could not be broadcast together with shapes (0,0) (11,) )
+- [2026-03-02 04:06:58 UTC] stage_10_dorian_freeport: build feature panel for dorian_freeport
+- [2026-03-02 04:07:01 UTC] stage_10_dorian_freeport: synced 275 teammate asset rows
+- [2026-03-02 04:07:03 UTC] Built pixel panel project/modeling/pixel_data/all_events_pixel_panel_v1_feature_upgrade_stage_10_dorian_freeport.parquet with 5,635 rows across 4 events
+- [2026-03-02 04:08:36 UTC] Strict V2 pipeline started
+- [2026-03-02 04:08:41 UTC] strict-v2 stage fallback: using summary before downstream LOGO failure (ValueError: operands could not be broadcast together with shapes (0,0) (11,) )
+- [2026-03-02 04:08:42 UTC] Event increment V1 completed
+- [2026-03-02 14:35:35 UTC] intl-stage-repair: prepare covariates
+- [2026-03-02 14:35:57 UTC] intl-stage-repair: prepare covariates
+- [2026-03-02 14:42:15 UTC] intl-stage-repair: repair stage 9
+- [2026-03-02 14:42:58 UTC] intl-stage-repair: repair stage 10
+- [2026-03-02 14:43:26 UTC] intl-stage-repair: fit HZ2
+- [2026-03-02 14:44:11 UTC] intl-stage-repair: score readiness
+- [2026-03-02 14:44:24 UTC] intl-stage-repair: write report
