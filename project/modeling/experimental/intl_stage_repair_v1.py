@@ -91,6 +91,19 @@ HZ2_CATEGORICAL = ["land_use_group", "event_disaster_type"]
 STAGE_IDS = ["stage_9_earthquake_hatay", "stage_10_dorian_freeport"]
 
 
+def _pretty_stage_label(label: str) -> str:
+    label = str(label)
+    m = label.split("_", 2)
+    if len(m) >= 3 and m[0] == "stage":
+        suffix = m[2].replace("_", " ").title()
+        return f"Stage {m[1]}\n{suffix}"
+    return label.replace("_", " ")
+
+
+def _pretty_event_label(label: str) -> str:
+    return str(label).replace("_", "\n").title()
+
+
 def _safe_rel(path: Path) -> str:
     try:
         return str(path.relative_to(ROOT))
@@ -809,12 +822,12 @@ def _plot_summary(comparison: pd.DataFrame, readiness: pd.DataFrame) -> None:
     FIG_DIR.mkdir(parents=True, exist_ok=True)
     auc = comparison[(comparison["model"] == "Logit") & (comparison["metric_name"] == "auc")].copy()
     surv = comparison[comparison["metric_name"] == "survival_best"].copy()
-    fig, axes = plt.subplots(1, 2, figsize=(11, 4.8))
+    fig, axes = plt.subplots(1, 2, figsize=(13.5, 5.8))
     x = np.arange(len(auc))
     axes[0].bar(x - 0.18, auc["hz1_value"], width=0.36, label="HZ1", color="#8d99ae")
     axes[0].bar(x + 0.18, auc["hz2_value"], width=0.36, label="HZ2", color="#1d3557")
     axes[0].set_xticks(x)
-    axes[0].set_xticklabels(auc["stage_id"], rotation=15)
+    axes[0].set_xticklabels([_pretty_stage_label(x) for x in auc["stage_id"]], rotation=0, ha="center")
     axes[0].set_title("Stage 9/10 Logit AUC")
     axes[0].set_ylim(0.0, 1.0)
     axes[0].legend()
@@ -823,23 +836,24 @@ def _plot_summary(comparison: pd.DataFrame, readiness: pd.DataFrame) -> None:
     axes[1].bar(x2 - 0.18, surv["hz1_value"], width=0.36, label="HZ1", color="#8d99ae")
     axes[1].bar(x2 + 0.18, surv["hz2_value"], width=0.36, label="HZ2", color="#457b9d")
     axes[1].set_xticks(x2)
-    axes[1].set_xticklabels(surv["stage_id"], rotation=15)
+    axes[1].set_xticklabels([_pretty_stage_label(x) for x in surv["stage_id"]], rotation=0, ha="center")
     axes[1].set_title("Stage 9/10 Survival Best")
     axes[1].set_ylim(0.0, 1.0)
     axes[1].legend()
-    fig.tight_layout()
+    fig.subplots_adjust(bottom=0.22, left=0.06, right=0.98, top=0.90, wspace=0.10)
     fig.savefig(FIG_DIR / "stage9_10_hz1_vs_hz2.png", dpi=220)
     plt.close(fig)
 
-    fig, ax = plt.subplots(figsize=(10, 4.8))
+    fig, ax = plt.subplots(figsize=(11.5, 5.8))
     rd = readiness.sort_values("total_score", ascending=False)
-    ax.bar(rd["event_id"], rd["total_score"], color="#2a9d8f")
+    labels = [_pretty_event_label(x) for x in rd["event_id"]]
+    ax.bar(labels, rd["total_score"], color="#2a9d8f")
     ax.axhline(80, color="#264653", linestyle="--", linewidth=1)
     ax.axhline(60, color="#e9c46a", linestyle="--", linewidth=1)
     ax.set_title("Event Readiness Score")
     ax.set_ylabel("score")
-    ax.set_xticklabels(rd["event_id"], rotation=35, ha="right")
-    fig.tight_layout()
+    ax.tick_params(axis="x", labelrotation=0)
+    fig.subplots_adjust(bottom=0.25, left=0.08, right=0.98, top=0.90)
     fig.savefig(FIG_DIR / "event_readiness_score_v1.png", dpi=220)
     plt.close(fig)
 

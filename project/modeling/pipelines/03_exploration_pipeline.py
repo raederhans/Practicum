@@ -131,6 +131,24 @@ MODEL_ROLE_MATRIX_PATH = OUTPUT_DIR / "model_role_matrix_v1.csv"
 QUALITY_REPORT_PATH = REPORT_DIR / "11_quality_matched_report.md"
 QUALITY_FIG_PATH = FIG_EXP_DIR / "quality_matched_compare_v1.png"
 
+
+def _pretty_stage_label(label: str) -> str:
+    if label == "baseline_6":
+        return "Baseline\n(6 events)"
+    m = re.match(r"stage_(\d+)_(.+)", label)
+    if not m:
+        return label.replace("_", " ")
+    stage_num = m.group(1)
+    event_name = m.group(2).replace("_", " ").title()
+    return f"Stage {stage_num}\n{event_name}"
+
+
+def _pretty_event_label(label: str) -> str:
+    label = str(label)
+    if label == "baseline":
+        return "Baseline"
+    return label.replace("_", "\n").title()
+
 PANEL_HAZARD_PATH = PIXEL_DIR / "all_events_pixel_panel_v1_hazard_v1.parquet"
 HAZARD_TRANSPORT_FOLD_PATH = OUTPUT_DIR / "hazard_transport_fold_metrics_v1.csv"
 HAZARD_TRANSPORT_AGG_PATH = OUTPUT_DIR / "hazard_transport_aggregate_metrics_v1.csv"
@@ -3464,13 +3482,17 @@ def _plot_event_increment(metrics: pd.DataFrame, stage_plan: List[Dict[str, obje
             return
         sub["stage_id"] = pd.Categorical(sub["stage_id"], categories=order, ordered=True)
         sub = sub.sort_values("stage_id")
-        fig, ax = plt.subplots(figsize=(8, 4.6))
-        ax.plot(sub["stage_id"].astype(str), pd.to_numeric(sub["value"], errors="coerce"), marker="o", color="#1d3557")
+        labels = [_pretty_stage_label(x) for x in sub["stage_id"].astype(str)]
+        x = np.arange(len(labels))
+        fig, ax = plt.subplots(figsize=(10.5, 5.8))
+        ax.plot(x, pd.to_numeric(sub["value"], errors="coerce"), marker="o", color="#1d3557", linewidth=2.2)
         ax.set_title(title)
         ax.set_ylabel(ylabel)
         ax.set_xlabel("Stage")
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, rotation=0, ha="center")
         ax.grid(alpha=0.25)
-        fig.tight_layout()
+        fig.subplots_adjust(bottom=0.22, left=0.10, right=0.98, top=0.90)
         fig.savefig(path, dpi=220)
         plt.close(fig)
 
@@ -3481,13 +3503,17 @@ def _plot_event_increment(metrics: pd.DataFrame, stage_plan: List[Dict[str, obje
         pivot["survival_best"] = pivot[["AFT", "Cox"]].max(axis=1)
         pivot["stage_id"] = pd.Categorical(pivot["stage_id"], categories=order, ordered=True)
         pivot = pivot.sort_values("stage_id")
-        fig, ax = plt.subplots(figsize=(8, 4.6))
-        ax.plot(pivot["stage_id"].astype(str), pivot["survival_best"], marker="o", color="#457b9d")
+        labels = [_pretty_stage_label(x) for x in pivot["stage_id"].astype(str)]
+        x = np.arange(len(labels))
+        fig, ax = plt.subplots(figsize=(10.5, 5.8))
+        ax.plot(x, pivot["survival_best"], marker="o", color="#457b9d", linewidth=2.2)
         ax.set_title("Hazard Mainline Survival Best by Stage")
         ax.set_ylabel("c-index")
         ax.set_xlabel("Stage")
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, rotation=0, ha="center")
         ax.grid(alpha=0.25)
-        fig.tight_layout()
+        fig.subplots_adjust(bottom=0.22, left=0.10, right=0.98, top=0.90)
         fig.savefig(FIG_EVENT_INCREMENT_DIR / "survival_best_by_stage.png", dpi=220)
         plt.close(fig)
 
@@ -3496,13 +3522,14 @@ def _plot_event_increment(metrics: pd.DataFrame, stage_plan: List[Dict[str, obje
 
     summary = pd.DataFrame(stage_plan)[["stage_id", "new_event_id", "event_count", "group_tag"]].copy()
     summary["new_event_id"] = summary["new_event_id"].replace("", "baseline")
-    fig, ax = plt.subplots(figsize=(8, 4.6))
+    fig, ax = plt.subplots(figsize=(10.5, 5.8))
     colors = summary["group_tag"].map({"baseline": "#6c757d", "us_only": "#2a9d8f", "intl_addition": "#e76f51"}).fillna("#457b9d")
-    ax.bar(summary["new_event_id"], summary["event_count"], color=colors)
+    labels = [_pretty_event_label(x) for x in summary["new_event_id"]]
+    ax.bar(labels, summary["event_count"], color=colors)
     ax.set_title("Event Gap Coverage Progress")
     ax.set_ylabel("Event Count")
     ax.set_xlabel("Added Event")
-    fig.tight_layout()
+    fig.subplots_adjust(bottom=0.22, left=0.10, right=0.98, top=0.90)
     fig.savefig(FIG_EVENT_INCREMENT_DIR / "event_gap_coverage_map.png", dpi=220)
     plt.close(fig)
 
