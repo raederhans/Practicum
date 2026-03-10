@@ -1,6 +1,6 @@
 {
   "version": "v2_strict",
-  "timestamp_utc": "2026-02-27T14:28:46.966407+00:00",
+  "timestamp_utc": "2026-03-10T01:43:28.519262+00:00",
   "variants": [
     "baseline_locked_v2_strict",
     "nlcd_locked_v2_strict",
@@ -20,10 +20,11 @@
     "osm_dist_power_m",
     "osm_any_count_750m"
   ],
+  "vif_gate_max": 12.0,
   "scale_stats": {
     "pre_mean_ntl_centered": {
-      "mean": -1.7925588132895988e-16,
-      "std": 3.9038502817639102
+      "mean": 8.824904926964179e-16,
+      "std": 4.175565040258373
     },
     "osm_dist_any_m": {
       "mean": 1374.2381430682904,

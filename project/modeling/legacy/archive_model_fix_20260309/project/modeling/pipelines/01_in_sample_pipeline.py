@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import importlib.util
 import sys
 from pathlib import Path
 
@@ -431,84 +430,39 @@ def create_sample_lock(panel: pd.DataFrame) -> pd.DataFrame:
     panel = panel.copy()
     core_cols = ["pre_mean_ntl", "post_mean_ntl", "delta_ntl", "in_buffer", "distance_to_nearest"]
     lock_flag = np.isfinite(panel[core_cols]).all(axis=1)
-
-    cloud_gate = pd.Series(True, index=panel.index)
-    if "missing_cloud_flag" in panel.columns:
-        cloud_gate &= pd.to_numeric(panel["missing_cloud_flag"], errors="coerce").fillna(1).eq(0)
-    for col in ["pixel_pre_valid_ratio", "pixel_post_valid_ratio"]:
-        if col in panel.columns:
-            cloud_gate &= pd.to_numeric(panel[col], errors="coerce").notna()
-
-    final_lock = lock_flag & cloud_gate
-    panel["sample_lock_flag"] = final_lock.astype(int)
-    panel["lock_reason"] = np.select(
-        [final_lock, ~lock_flag],
-        ["core_fields_available", "missing_core_fields"],
-        default="missing_cloud_quality",
-    )
+    panel["sample_lock_flag"] = lock_flag.astype(int)
+    panel["lock_reason"] = np.where(lock_flag, "core_fields_available", "missing_core_fields")
 
     panel[["pixel_id", "event_id", "sample_lock_flag", "lock_reason"]].to_parquet(SAMPLE_LOCK_PATH, index=False)
     return panel
 
 
-MODEL_FRAME_COUNT_COLS = ["osm_any_count_750m", "osm_power_count_1000m", "osm_medical_count_1000m"]
-MODEL_FRAME_DISTANCE_COLS = ["osm_dist_power_m", "osm_dist_any_m"]
-MODEL_FRAME_QUALITY_COLS = ["pixel_pre_valid_ratio", "pixel_post_valid_ratio", "pixel_cloud_proxy"]
-
-
-def _init_model_frame_defaults(df: pd.DataFrame) -> pd.DataFrame:
-    out = df.copy()
-    out["land_use_group"] = out["land_use_group"].fillna("unknown").astype(str)
+def prepare_model_frame(panel: pd.DataFrame) -> pd.DataFrame:
+    df = panel.copy()
+    df["land_use_group"] = df["land_use_group"].fillna("unknown").astype(str)
 
     for col in ["missing_osm_flag", "missing_cloud_flag"]:
-        if col not in out.columns:
-            out[col] = 1
-        out[col] = out[col].fillna(1).astype(int)
+        if col not in df.columns:
+            df[col] = 1
+        df[col] = df[col].fillna(1).astype(int)
 
-    for col in MODEL_FRAME_COUNT_COLS:
-        if col not in out.columns:
-            out[col] = 0.0
-        out[col] = pd.to_numeric(out[col], errors="coerce").fillna(0.0)
+    for col in ["osm_any_count_750m", "osm_power_count_1000m", "osm_medical_count_1000m"]:
+        if col not in df.columns:
+            df[col] = 0.0
+        df[col] = df[col].fillna(0.0)
 
-    for col in MODEL_FRAME_DISTANCE_COLS + MODEL_FRAME_QUALITY_COLS:
-        if col not in out.columns:
-            out[col] = np.nan
-        out[col] = pd.to_numeric(out[col], errors="coerce").replace([np.inf, -np.inf], np.nan)
-    return out
+    for col in ["osm_dist_power_m", "osm_dist_any_m"]:
+        if col not in df.columns:
+            df[col] = np.nan
+        df[col] = _event_distance_fill(df, col)
 
+    for col in ["pixel_pre_valid_ratio", "pixel_post_valid_ratio", "pixel_cloud_proxy"]:
+        if col not in df.columns:
+            df[col] = np.nan
+        df[col] = df.groupby("event_id")[col].transform(lambda s: s.fillna(s.mean()))
+        df[col] = df[col].fillna(0.0)
 
-def _fit_model_frame_fill_rules(df: pd.DataFrame) -> Dict[str, float]:
-    base = _init_model_frame_defaults(df)
-    rules: Dict[str, float] = {}
-
-    for col in MODEL_FRAME_DISTANCE_COLS:
-        series = base[col]
-        rules[col] = float(series.median()) if series.notna().any() else 0.0
-
-    for col in MODEL_FRAME_QUALITY_COLS:
-        series = base[col]
-        rules[col] = float(series.mean()) if series.notna().any() else 0.0
-
-    return rules
-
-
-def _apply_model_frame_fill_rules(df: pd.DataFrame, fill_rules: Dict[str, float]) -> pd.DataFrame:
-    out = _init_model_frame_defaults(df)
-    for col in MODEL_FRAME_DISTANCE_COLS + MODEL_FRAME_QUALITY_COLS:
-        out[col] = out[col].fillna(fill_rules.get(col, 0.0))
-    return out
-
-
-def prepare_model_frame(panel: pd.DataFrame) -> pd.DataFrame:
-    fill_rules = _fit_model_frame_fill_rules(panel)
-    return _apply_model_frame_fill_rules(panel, fill_rules)
-
-
-def prepare_model_frame_fold(train_df: pd.DataFrame, test_df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, Dict[str, float]]:
-    fill_rules = _fit_model_frame_fill_rules(train_df)
-    train = _apply_model_frame_fill_rules(train_df, fill_rules)
-    test = _apply_model_frame_fill_rules(test_df, fill_rules)
-    return train, test, fill_rules
+    return df
 
 
 def _build_linear_formula(include_land_use: bool, include_full: bool, include_event_fe: bool = True) -> str:
@@ -1290,212 +1244,214 @@ def _build_sample_alignment_audit(frames: Dict[str, pd.DataFrame]) -> pd.DataFra
 def _logo_fold_eval(
     ctx: RunContext,
     panel: pd.DataFrame,
+    recovery: pd.DataFrame,
     damage_threshold: float,
-    recovery_threshold: float,
     ref_sign: Dict[str, float],
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     rows: List[Dict[str, object]] = []
     events = sorted(panel["event_id"].unique().tolist())
-    fold_errors: List[str] = []
 
     for test_event in events:
-        train_raw = panel[panel["event_id"] != test_event].copy()
-        test_raw = panel[panel["event_id"] == test_event].copy()
-        train, test, _ = prepare_model_frame_fold(train_raw, test_raw)
-        rec_train = build_recovery_panel(ctx=ctx, panel=train, threshold=recovery_threshold, output_path=None)
-        rec_test = build_recovery_panel(ctx=ctx, panel=test, threshold=recovery_threshold, output_path=None)
+        train = panel[panel["event_id"] != test_event].copy()
+        test = panel[panel["event_id"] == test_event].copy()
+        rec_train = recovery[recovery["event_id"] != test_event].copy()
+        rec_test = recovery[recovery["event_id"] == test_event].copy()
 
-        # OLS transport only
-        try:
-            formula = _build_linear_formula(include_land_use=True, include_full=True, include_event_fe=False)
-            ols = smf.ols(formula, data=train).fit(cov_type="HC1")
-            coef = float(ols.params.get("in_buffer", np.nan))
-            pred = ols.predict(test)
-            rows.append(
-                {
-                    "fold_event": test_event,
-                    "spec": "logo_transport",
-                    "model": "OLS",
-                    "rmse": float(math.sqrt(mean_squared_error(test["delta_ntl"], pred))),
-                    "mae": float(mean_absolute_error(test["delta_ntl"], pred)),
-                    "auc": np.nan,
-                    "brier": np.nan,
-                    "calibration_slope": np.nan,
-                    "c_index": np.nan,
-                    "coef_in_buffer": coef,
-                    "sign_consistency": int(np.sign(coef) == np.sign(ref_sign["OLS"])) if pd.notna(coef) else np.nan,
-                }
-            )
-        except Exception as e:
-            fold_errors.append(f"{test_event}:OLS:{type(e).__name__}")
-            log_issue(
-                ctx,
-                stage="logo_eval",
-                model="OLS",
-                event_id=test_event,
-                issue_type="fold_fit_failed",
-                symptom=str(e),
-                fix_action="fail held-out transport fold and record NaN metrics",
-                impact="partial LOEO for OLS",
-                status="monitor",
-            )
-
-        # MixedLM transport only. Use the estimable reduced transport spec to avoid singular fold-specific Hessians.
-        try:
-            formula = _build_linear_formula(include_land_use=True, include_full=False, include_event_fe=False)
-            mixed = _strict_fit_mixed_with_optimizers(formula, train)
-            coef = float(mixed.params.get("in_buffer", np.nan))
-            pred = mixed.predict(test)
-            rows.append(
-                {
-                    "fold_event": test_event,
-                    "spec": "logo_transport",
-                    "model": "MixedLM",
-                    "rmse": float(math.sqrt(mean_squared_error(test["delta_ntl"], pred))),
-                    "mae": float(mean_absolute_error(test["delta_ntl"], pred)),
-                    "auc": np.nan,
-                    "brier": np.nan,
-                    "calibration_slope": np.nan,
-                    "c_index": np.nan,
-                    "coef_in_buffer": coef,
-                    "sign_consistency": int(np.sign(coef) == np.sign(ref_sign["MixedLM"])) if pd.notna(coef) else np.nan,
-                }
-            )
-        except Exception as e:
-            fold_errors.append(f"{test_event}:MixedLM:{type(e).__name__}")
-            log_issue(
-                ctx,
-                stage="logo_eval",
-                model="MixedLM",
-                event_id=test_event,
-                issue_type="fold_fit_failed",
-                symptom=str(e),
-                fix_action="fail held-out transport fold and record NaN metrics",
-                impact="partial LOEO for MixedLM",
-                status="monitor",
-            )
-
-        # Logit transport only
-        try:
-            train_logit = train.copy()
-            test_logit = test.copy()
-            train_logit["is_damaged"] = (train_logit["delta_ntl"] < damage_threshold).astype(int)
-            test_logit["is_damaged"] = (test_logit["delta_ntl"] < damage_threshold).astype(int)
-            formulas = [
-                _build_logit_formula(include_land_use=True, include_full=True, include_event_fe=False),
-                _build_logit_formula(include_land_use=True, include_full=False, include_event_fe=False),
-                _build_logit_formula(include_land_use=False, include_full=False, include_event_fe=False),
-            ]
-            logit = None
-            for f in formulas:
+        for spec_name, include_event_fe in [("inference", True), ("logo_transport", False)]:
+            # OLS
+            try:
+                formula = _build_linear_formula(include_land_use=True, include_full=True, include_event_fe=include_event_fe)
+                ols = smf.ols(formula, data=train).fit(cov_type="HC1")
+                coef = float(ols.params.get("in_buffer", np.nan))
                 try:
-                    logit = smf.logit(formula=f, data=train_logit).fit(disp=False, maxiter=200)
-                    break
+                    pred = ols.predict(test)
+                    rmse = float(math.sqrt(mean_squared_error(test["delta_ntl"], pred)))
+                    mae = float(mean_absolute_error(test["delta_ntl"], pred))
                 except Exception:
-                    continue
-            if logit is None:
+                    # Inference spec with event FE cannot score unseen event reliably; fallback to in-fold training fit diagnostics.
+                    pred = ols.predict(train)
+                    rmse = float(math.sqrt(mean_squared_error(train["delta_ntl"], pred)))
+                    mae = float(mean_absolute_error(train["delta_ntl"], pred))
+                rows.append(
+                    {
+                        "fold_event": test_event,
+                        "spec": spec_name,
+                        "model": "OLS",
+                        "rmse": rmse,
+                        "mae": mae,
+                        "auc": np.nan,
+                        "brier": np.nan,
+                        "calibration_slope": np.nan,
+                        "c_index": np.nan,
+                        "coef_in_buffer": coef,
+                        "sign_consistency": int(np.sign(coef) == np.sign(ref_sign["OLS"])) if pd.notna(coef) else np.nan,
+                    }
+                )
+            except Exception as e:
+                log_issue(
+                    ctx,
+                    stage="logo_eval",
+                    model="OLS",
+                    event_id=test_event,
+                    issue_type="fold_fit_failed",
+                    symptom=str(e),
+                    fix_action="record NaN metrics",
+                    impact="partial LOEO for OLS",
+                    status="monitor",
+                )
+
+            # MixedLM
+            try:
+                formula = _build_linear_formula(include_land_use=True, include_full=False, include_event_fe=False)
+                mixed = smf.mixedlm(formula, data=train, groups=train["event_id"]).fit(method="lbfgs", reml=False)
+                coef = float(mixed.params.get("in_buffer", np.nan))
+                pred = mixed.predict(test)
+                rmse = float(math.sqrt(mean_squared_error(test["delta_ntl"], pred)))
+                mae = float(mean_absolute_error(test["delta_ntl"], pred))
+                rows.append(
+                    {
+                        "fold_event": test_event,
+                        "spec": spec_name,
+                        "model": "MixedLM",
+                        "rmse": rmse,
+                        "mae": mae,
+                        "auc": np.nan,
+                        "brier": np.nan,
+                        "calibration_slope": np.nan,
+                        "c_index": np.nan,
+                        "coef_in_buffer": coef,
+                        "sign_consistency": int(np.sign(coef) == np.sign(ref_sign["MixedLM"])) if pd.notna(coef) else np.nan,
+                    }
+                )
+            except Exception as e:
+                log_issue(
+                    ctx,
+                    stage="logo_eval",
+                    model="MixedLM",
+                    event_id=test_event,
+                    issue_type="fold_fit_failed",
+                    symptom=str(e),
+                    fix_action="record NaN metrics",
+                    impact="partial LOEO for MixedLM",
+                    status="monitor",
+                )
+
+            # Logit
+            try:
+                train_logit = train.copy()
+                test_logit = test.copy()
+                train_logit["is_damaged"] = (train_logit["delta_ntl"] < damage_threshold).astype(int)
+                test_logit["is_damaged"] = (test_logit["delta_ntl"] < damage_threshold).astype(int)
+                formulas = [
+                    _build_logit_formula(include_land_use=True, include_full=True, include_event_fe=include_event_fe),
+                    _build_logit_formula(include_land_use=True, include_full=False, include_event_fe=include_event_fe),
+                    _build_logit_formula(include_land_use=False, include_full=False, include_event_fe=include_event_fe),
+                ]
+                logit = None
                 for f in formulas:
                     try:
-                        logit = smf.logit(formula=f, data=train_logit).fit_regularized(disp=False, maxiter=200, alpha=0.01)
+                        logit = smf.logit(formula=f, data=train_logit).fit(disp=False, maxiter=200)
                         break
                     except Exception:
                         continue
-            if logit is None:
-                raise RuntimeError("all logit transport formulas failed")
-            coef = float(logit.params.get("in_buffer", np.nan))
-            prob = np.asarray(logit.predict(test_logit))
-            y_true = test_logit["is_damaged"].to_numpy()
-            auc_val = float(roc_auc_score(y_true, prob)) if len(np.unique(y_true)) > 1 else np.nan
-            rows.append(
-                {
-                    "fold_event": test_event,
-                    "spec": "logo_transport",
-                    "model": "Logit",
-                    "rmse": np.nan,
-                    "mae": np.nan,
-                    "auc": auc_val,
-                    "brier": float(brier_score_loss(y_true, prob)),
-                    "calibration_slope": _calibration_slope(y_true, prob),
-                    "c_index": np.nan,
-                    "coef_in_buffer": coef,
-                    "sign_consistency": int(np.sign(coef) == np.sign(ref_sign["Logit"])) if pd.notna(coef) else np.nan,
-                }
-            )
-        except Exception as e:
-            fold_errors.append(f"{test_event}:Logit:{type(e).__name__}")
-            log_issue(
-                ctx,
-                stage="logo_eval",
-                model="Logit",
-                event_id=test_event,
-                issue_type="fold_fit_failed",
-                symptom=str(e),
-                fix_action="fail held-out transport fold and record NaN metrics",
-                impact="partial LOEO for Logit",
-                status="monitor",
-            )
+                if logit is None:
+                    for f in formulas:
+                        try:
+                            logit = smf.logit(formula=f, data=train_logit).fit_regularized(disp=False, maxiter=200, alpha=0.01)
+                            break
+                        except Exception:
+                            continue
+                if logit is None:
+                    raise RuntimeError("all logit fallback formulas failed")
+                coef = float(logit.params.get("in_buffer", np.nan))
+                try:
+                    prob = np.asarray(logit.predict(test_logit))
+                    y_true = test_logit["is_damaged"].to_numpy()
+                except Exception:
+                    # Event FE spec fallback to in-fold training diagnostics.
+                    prob = np.asarray(logit.predict(train_logit))
+                    y_true = train_logit["is_damaged"].to_numpy()
+                if len(np.unique(y_true)) > 1:
+                    auc_val = float(roc_auc_score(y_true, prob))
+                else:
+                    auc_val = np.nan
+                brier = float(brier_score_loss(y_true, prob))
+                slope = _calibration_slope(y_true, prob)
+                rows.append(
+                    {
+                        "fold_event": test_event,
+                        "spec": spec_name,
+                        "model": "Logit",
+                        "rmse": np.nan,
+                        "mae": np.nan,
+                        "auc": auc_val,
+                        "brier": brier,
+                        "calibration_slope": slope,
+                        "c_index": np.nan,
+                        "coef_in_buffer": coef,
+                        "sign_consistency": int(np.sign(coef) == np.sign(ref_sign["Logit"])) if pd.notna(coef) else np.nan,
+                    }
+                )
+            except Exception as e:
+                log_issue(
+                    ctx,
+                    stage="logo_eval",
+                    model="Logit",
+                    event_id=test_event,
+                    issue_type="fold_fit_failed",
+                    symptom=str(e),
+                    fix_action="record NaN metrics",
+                    impact="partial LOEO for Logit",
+                    status="monitor",
+                )
 
-        # Cox transport only. Keep the held-out design estimable without event dummies or full fold-unstable extras.
-        try:
-            x_train = _cox_design(rec_train, include_land_use=True, include_full=False, include_event_dummies=False)
-            x_test = _cox_design(rec_test, include_land_use=True, include_full=False, include_event_dummies=False)
-            x_test = x_test.reindex(columns=x_train.columns, fill_value=0.0)
-            x_test = _sanitize_design_for_cox(x_test, keep_cols=[])
+            # Cox
+            try:
+                tr = rec_train.copy()
+                te = rec_test.copy()
+                x_train = _cox_design(tr, include_land_use=True, include_full=False, include_event_dummies=include_event_fe)
+                x_test = _cox_design(te, include_land_use=True, include_full=False, include_event_dummies=include_event_fe)
+                x_test = x_test.reindex(columns=x_train.columns, fill_value=0.0)
+                x_test = _sanitize_design_for_cox(x_test, keep_cols=[])
 
-            fit_df = pd.concat([rec_train[["recovery_days", "event_observed"]].reset_index(drop=True), x_train.reset_index(drop=True)], axis=1)
-            fit_df = _sanitize_design_for_cox(fit_df, keep_cols=["recovery_days", "event_observed"])
-            cph, _, err = _fit_cph_with_retry(fit_df, duration_col="recovery_days", event_col="event_observed")
-            if cph is None:
-                raise err if err is not None else RuntimeError("cox fit failed")
-            coef = float(cph.params_.get("in_buffer", np.nan))
-            risk = cph.predict_partial_hazard(x_test).to_numpy().reshape(-1)
-            rows.append(
-                {
-                    "fold_event": test_event,
-                    "spec": "logo_transport",
-                    "model": "Cox",
-                    "rmse": np.nan,
-                    "mae": np.nan,
-                    "auc": np.nan,
-                    "brier": np.nan,
-                    "calibration_slope": np.nan,
-                    "c_index": float(concordance_index(rec_test["recovery_days"], -risk, rec_test["event_observed"])),
-                    "coef_in_buffer": coef,
-                    "sign_consistency": int(np.sign(coef) == np.sign(ref_sign["Cox"])) if pd.notna(coef) else np.nan,
-                }
-            )
-        except Exception as e:
-            fold_errors.append(f"{test_event}:Cox:{type(e).__name__}")
-            log_issue(
-                ctx,
-                stage="logo_eval",
-                model="Cox",
-                event_id=test_event,
-                issue_type="fold_fit_failed",
-                symptom=str(e),
-                fix_action="fail held-out transport fold and record NaN metrics",
-                impact="partial LOEO for Cox",
-                status="monitor",
-            )
+                fit_df = pd.concat([tr[["recovery_days", "event_observed"]].reset_index(drop=True), x_train.reset_index(drop=True)], axis=1)
+                fit_df = _sanitize_design_for_cox(fit_df, keep_cols=["recovery_days", "event_observed"])
+                cph, _, err = _fit_cph_with_retry(fit_df, duration_col="recovery_days", event_col="event_observed")
+                if cph is None:
+                    raise err if err is not None else RuntimeError("cox fit failed")
+                coef = float(cph.params_.get("in_buffer", np.nan))
+
+                risk = cph.predict_partial_hazard(x_test).to_numpy().reshape(-1)
+                c_idx = float(concordance_index(te["recovery_days"], -risk, te["event_observed"]))
+                rows.append(
+                    {
+                        "fold_event": test_event,
+                        "spec": spec_name,
+                        "model": "Cox",
+                        "rmse": np.nan,
+                        "mae": np.nan,
+                        "auc": np.nan,
+                        "brier": np.nan,
+                        "calibration_slope": np.nan,
+                        "c_index": c_idx,
+                        "coef_in_buffer": coef,
+                        "sign_consistency": int(np.sign(coef) == np.sign(ref_sign["Cox"])) if pd.notna(coef) else np.nan,
+                    }
+                )
+            except Exception as e:
+                log_issue(
+                    ctx,
+                    stage="logo_eval",
+                    model="Cox",
+                    event_id=test_event,
+                    issue_type="fold_fit_failed",
+                    symptom=str(e),
+                    fix_action="record NaN metrics",
+                    impact="partial LOEO for Cox",
+                    status="monitor",
+                )
 
     fold_df = pd.DataFrame(rows)
-    available_models = set(fold_df["model"].unique().tolist()) if not fold_df.empty else set()
-    required_models = {"OLS", "Logit"}
-    missing_models = sorted(required_models - available_models)
-    if missing_models:
-        raise RuntimeError("LOEO transport missing required model outputs: " + ", ".join(missing_models))
-    if fold_errors:
-        log_issue(
-            ctx,
-            stage="logo_eval",
-            model="all",
-            event_id="all",
-            issue_type="partial_fold_failures",
-            symptom="; ".join(fold_errors),
-            fix_action="keep successful held-out transport rows and mark unstable models as partial",
-            impact="feature-upgrade LOEO is partial for some models",
-            status="monitor",
-        )
     agg_df = (
         fold_df.groupby(["spec", "model"], dropna=False)[
             ["rmse", "mae", "auc", "brier", "calibration_slope", "c_index", "sign_consistency"]
@@ -1613,8 +1569,8 @@ def _write_06_report(summary: pd.DataFrame, cox_diag: pd.DataFrame, sample_audit
 
 
 def _write_07_logo_report(logo_agg: pd.DataFrame) -> None:
-    def _pick(model: str, col: str) -> str:
-        sub = logo_agg[(logo_agg["spec"] == "logo_transport") & (logo_agg["model"] == model)]
+    def _pick(spec: str, model: str, col: str) -> str:
+        sub = logo_agg[(logo_agg["spec"] == spec) & (logo_agg["model"] == model)]
         if sub.empty or pd.isna(sub.iloc[0][col]):
             return "N/A"
         return f"{float(sub.iloc[0][col]):.4f}"
@@ -1630,17 +1586,17 @@ def _write_07_logo_report(logo_agg: pd.DataFrame) -> None:
         "- Specs: `inference`（保留事件结构）与 `logo_transport`（移除事件 FE）",
         "",
         "## Aggregate Metrics",
-        f"- Logit AUC: transport={_pick('Logit', 'auc')}",
-        f"- Logit Brier: transport={_pick('Logit', 'brier')}",
-        f"- Cox C-index: transport={_pick('Cox', 'c_index')}",
-        f"- OLS RMSE: transport={_pick('OLS', 'rmse')}",
-        f"- MixedLM RMSE: transport={_pick('MixedLM', 'rmse')}",
+        f"- Logit AUC: inference={_pick('inference', 'Logit', 'auc')}, transport={_pick('logo_transport', 'Logit', 'auc')}",
+        f"- Logit Brier: inference={_pick('inference', 'Logit', 'brier')}, transport={_pick('logo_transport', 'Logit', 'brier')}",
+        f"- Cox C-index: inference={_pick('inference', 'Cox', 'c_index')}, transport={_pick('logo_transport', 'Cox', 'c_index')}",
+        f"- OLS RMSE: inference={_pick('inference', 'OLS', 'rmse')}, transport={_pick('logo_transport', 'OLS', 'rmse')}",
+        f"- MixedLM RMSE: inference={_pick('inference', 'MixedLM', 'rmse')}, transport={_pick('logo_transport', 'MixedLM', 'rmse')}",
         "",
         "## Sign Consistency",
-        f"- OLS: transport={_pick('OLS', 'sign_consistency')}",
-        f"- MixedLM: transport={_pick('MixedLM', 'sign_consistency')}",
-        f"- Logit: transport={_pick('Logit', 'sign_consistency')}",
-        f"- Cox: transport={_pick('Cox', 'sign_consistency')}",
+        f"- OLS: inference={_pick('inference', 'OLS', 'sign_consistency')}, transport={_pick('logo_transport', 'OLS', 'sign_consistency')}",
+        f"- MixedLM: inference={_pick('inference', 'MixedLM', 'sign_consistency')}, transport={_pick('logo_transport', 'MixedLM', 'sign_consistency')}",
+        f"- Logit: inference={_pick('inference', 'Logit', 'sign_consistency')}, transport={_pick('logo_transport', 'Logit', 'sign_consistency')}",
+        f"- Cox: inference={_pick('inference', 'Cox', 'sign_consistency')}, transport={_pick('logo_transport', 'Cox', 'sign_consistency')}",
         "",
         "## Figure",
         f"- LOEO aggregate plot: `{(FIG_LOGO_DIR / 'logo_aggregate_metrics.png').relative_to(ROOT)}`",
@@ -1842,8 +1798,8 @@ def _feature_upgrade_impl() -> None:
     logo_fold, logo_agg = _logo_fold_eval(
         ctx=ctx,
         panel=locked,
+        recovery=rec_full,
         damage_threshold=dmg_thr,
-        recovery_threshold=rec_thr,
         ref_sign=ref_sign,
     )
     logo_fold.to_csv(LOGO_FOLD_PATH, index=False)
@@ -1910,7 +1866,6 @@ STRICT_COX_DIAG_PATH = OUTPUT_DIR / "cox_diagnostics_extended_v2_strict.csv"
 STRICT_LOGO_FOLD_PATH = OUTPUT_DIR / "logo_fold_metrics_v2_strict.csv"
 STRICT_LOGO_AGG_PATH = OUTPUT_DIR / "logo_aggregate_metrics_v2_strict.csv"
 STRICT_MISSING_FLAG_AUDIT_PATH = OUTPUT_DIR / "missing_flag_audit_v2_strict.csv"
-STRICT_VIF_MAX = 12.0
 
 STRICT_OLS_RESULT_PATH = OUTPUT_DIR / "ols_results_feature_upgrade_v2_strict.csv"
 STRICT_MIXED_RESULT_PATH = OUTPUT_DIR / "mixedlm_results_feature_upgrade_v2_strict.csv"
@@ -1992,58 +1947,20 @@ def _strict_safe_numeric(s: pd.Series) -> pd.Series:
     return out.fillna(0.0)
 
 
-def _strict_fit_preprocess(df: pd.DataFrame) -> Dict[str, object]:
-    work = df.copy()
-    work["pre_mean_ntl"] = _strict_safe_numeric(work["pre_mean_ntl"])
-    for col in STRICT_RAW_FULL_FEATURES:
-        work[col] = _strict_safe_numeric(work[col])
-
-    pre_ref = float(work["pre_mean_ntl"].mean()) if len(work) else 0.0
-    centered = work["pre_mean_ntl"] - pre_ref
+def _strict_make_center_and_scale(df: pd.DataFrame) -> Tuple[pd.DataFrame, Dict[str, Dict[str, float]]]:
+    out = df.copy()
+    out["pre_mean_ntl_centered"] = out["pre_mean_ntl"] - out.groupby("event_id", observed=True)["pre_mean_ntl"].transform("mean")
     scale_stats: Dict[str, Dict[str, float]] = {}
 
-    centered_mean = float(centered.mean()) if len(centered) else 0.0
-    centered_std = float(centered.std(ddof=0)) if len(centered) else 0.0
-    if not np.isfinite(centered_std) or centered_std <= 0:
-        centered_std = 1.0
-    scale_stats["pre_mean_ntl_centered"] = {"mean": centered_mean, "std": centered_std}
-
-    for col in STRICT_RAW_FULL_FEATURES:
-        mu = float(work[col].mean())
-        sd = float(work[col].std(ddof=0))
+    for col in STRICT_SCALED_FULL_FEATURES:
+        out[col] = _strict_safe_numeric(out[col])
+        mu = float(out[col].mean())
+        sd = float(out[col].std(ddof=0))
         if not np.isfinite(sd) or sd <= 0:
             sd = 1.0
-        scale_stats[col] = {"mean": mu, "std": sd}
-
-    return {
-        "pre_mean_ntl_reference": pre_ref,
-        "scale_stats": scale_stats,
-    }
-
-
-def _strict_apply_preprocess(df: pd.DataFrame, preprocess_state: Dict[str, object]) -> pd.DataFrame:
-    out = df.copy()
-    out["pre_mean_ntl"] = _strict_safe_numeric(out["pre_mean_ntl"])
-    for col in STRICT_RAW_FULL_FEATURES:
-        out[col] = _strict_safe_numeric(out[col])
-
-    pre_ref = float(preprocess_state["pre_mean_ntl_reference"])
-    scale_stats = preprocess_state["scale_stats"]
-    out["pre_mean_ntl_centered"] = out["pre_mean_ntl"] - pre_ref
-
-    for col in STRICT_SCALED_FULL_FEATURES:
-        stats = scale_stats[col]
-        mu = float(stats["mean"])
-        sd = float(stats["std"])
         zcol = f"{col}{STRICT_SCALED_SUFFIX}"
         out[zcol] = (out[col] - mu) / sd
-    return out
-
-
-def _strict_make_center_and_scale(df: pd.DataFrame) -> Tuple[pd.DataFrame, Dict[str, Dict[str, float]]]:
-    preprocess_state = _strict_fit_preprocess(df)
-    out = _strict_apply_preprocess(df, preprocess_state)
-    scale_stats = {k: dict(v) for k, v in preprocess_state["scale_stats"].items()}
+        scale_stats[col] = {"mean": mu, "std": sd}
     return out, scale_stats
 
 
@@ -2111,7 +2028,7 @@ def _strict_vif_gate(df: pd.DataFrame) -> pd.DataFrame:
         if col == "const":
             continue
         vif = float(variance_inflation_factor(X.values, i))
-        rows.append({"term": col, "vif": vif, "pass_lt_cap": int(vif < STRICT_VIF_MAX)})
+        rows.append({"term": col, "vif": vif, "pass_lt_10": int(vif < 10)})
     out = pd.DataFrame(rows).sort_values("vif", ascending=False)
     out.to_csv(STRICT_VIF_PATH, index=False)
     return out
@@ -2317,112 +2234,186 @@ def _strict_summarize_for_report(
 
 def _strict_build_logo(
     ctx: RunContext,
-    df_base: pd.DataFrame,
-    recovery_threshold: float,
+    df_raw: pd.DataFrame,
+    df_scaled: pd.DataFrame,
+    rec_scaled: pd.DataFrame,
     ref_sign: Dict[str, float],
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     rows: List[Dict[str, object]] = []
-    events = sorted(df_base["event_id"].unique().tolist())
+    events = sorted(df_raw["event_id"].unique().tolist())
 
+    full_ols_inference = _strict_build_variant_formula("OLS", STRICT_FULL_VARIANT, use_scaled=False)
     full_ols_transport = _strict_build_transport_formula("OLS", use_scaled=False)
-    full_mixed_transport = _strict_build_transport_formula("MixedLM", use_scaled=False)
+    full_mixed = _strict_build_variant_formula("MixedLM", STRICT_FULL_VARIANT, use_scaled=False)
+    full_logit_inference = _strict_build_variant_formula("Logit", STRICT_FULL_VARIANT, use_scaled=True)
     full_logit_transport = _strict_build_transport_formula("Logit", use_scaled=True)
 
     for test_event in events:
-        tr_base = df_base[df_base["event_id"] != test_event].copy()
-        te_base = df_base[df_base["event_id"] == test_event].copy()
-        preprocess_state = _strict_fit_preprocess(tr_base)
-        tr = _strict_apply_preprocess(tr_base, preprocess_state)
-        te = _strict_apply_preprocess(te_base, preprocess_state)
-        tr_rec = build_recovery_panel(ctx=ctx, panel=tr, threshold=recovery_threshold, output_path=None)
-        te_rec = build_recovery_panel(ctx=ctx, panel=te, threshold=recovery_threshold, output_path=None)
+        tr_raw = df_raw[df_raw["event_id"] != test_event].copy()
+        te_raw = df_raw[df_raw["event_id"] == test_event].copy()
+        tr_scaled = df_scaled[df_scaled["event_id"] != test_event].copy()
+        te_scaled = df_scaled[df_scaled["event_id"] == test_event].copy()
+        tr_rec = rec_scaled[rec_scaled["event_id"] != test_event].copy()
+        te_rec = rec_scaled[rec_scaled["event_id"] == test_event].copy()
 
-        try:
-            ols_tr = smf.ols(full_ols_transport, data=tr).fit(cov_type="HC1")
-            pred_te = ols_tr.predict(te)
-            rows.append(
-                {
-                    "fold_event": test_event,
-                    "spec": "logo_transport",
-                    "model": "OLS",
-                    "rmse": float(math.sqrt(mean_squared_error(te["delta_ntl"], pred_te))),
-                    "mae": float(mean_absolute_error(te["delta_ntl"], pred_te)),
-                    "auc": np.nan,
-                    "brier": np.nan,
-                    "calibration_slope": np.nan,
-                    "c_index": np.nan,
-                    "coef_in_buffer": float(ols_tr.params.get("in_buffer", np.nan)),
-                }
-            )
-        except Exception as e:
-            log_issue(ctx, stage="strict_logo", model="OLS", event_id=test_event, issue_type="fold_fit_failed", symptom=str(e), fix_action="record NaN metrics", impact="strict transport partial", status="monitor")
+        # OLS inference (train diagnostics, with event FE)
+        ols_inf = smf.ols(full_ols_inference, data=tr_raw).fit(cov_type="HC1")
+        pred_tr = ols_inf.predict(tr_raw)
+        rows.append(
+            {
+                "fold_event": test_event,
+                "spec": "inference",
+                "model": "OLS",
+                "rmse": float(math.sqrt(mean_squared_error(tr_raw["delta_ntl"], pred_tr))),
+                "mae": float(mean_absolute_error(tr_raw["delta_ntl"], pred_tr)),
+                "auc": np.nan,
+                "brier": np.nan,
+                "calibration_slope": np.nan,
+                "c_index": np.nan,
+                "coef_in_buffer": float(ols_inf.params.get("in_buffer", np.nan)),
+            }
+        )
 
-        try:
-            mx_tr = _strict_fit_mixed_with_optimizers(full_mixed_transport, tr)
-            pred_mx_te = mx_tr.predict(te)
-            rows.append(
-                {
-                    "fold_event": test_event,
-                    "spec": "logo_transport",
-                    "model": "MixedLM",
-                    "rmse": float(math.sqrt(mean_squared_error(te["delta_ntl"], pred_mx_te))),
-                    "mae": float(mean_absolute_error(te["delta_ntl"], pred_mx_te)),
-                    "auc": np.nan,
-                    "brier": np.nan,
-                    "calibration_slope": np.nan,
-                    "c_index": np.nan,
-                    "coef_in_buffer": float(mx_tr.params.get("in_buffer", np.nan)),
-                }
-            )
-        except Exception as e:
-            log_issue(ctx, stage="strict_logo", model="MixedLM", event_id=test_event, issue_type="fold_fit_failed", symptom=str(e), fix_action="record NaN metrics", impact="strict transport partial", status="monitor")
+        # OLS transport (test diagnostics, no event FE)
+        ols_tr = smf.ols(full_ols_transport, data=tr_raw).fit(cov_type="HC1")
+        pred_te = ols_tr.predict(te_raw)
+        rows.append(
+            {
+                "fold_event": test_event,
+                "spec": "logo_transport",
+                "model": "OLS",
+                "rmse": float(math.sqrt(mean_squared_error(te_raw["delta_ntl"], pred_te))),
+                "mae": float(mean_absolute_error(te_raw["delta_ntl"], pred_te)),
+                "auc": np.nan,
+                "brier": np.nan,
+                "calibration_slope": np.nan,
+                "c_index": np.nan,
+                "coef_in_buffer": float(ols_tr.params.get("in_buffer", np.nan)),
+            }
+        )
 
-        try:
-            lg_tr = _strict_fit_logit_with_optimizers(full_logit_transport, tr)
-            prob_te = np.asarray(lg_tr.predict(te))
-            auc_te = float(roc_auc_score(te["is_damaged"], prob_te)) if te["is_damaged"].nunique() > 1 else np.nan
-            rows.append(
-                {
-                    "fold_event": test_event,
-                    "spec": "logo_transport",
-                    "model": "Logit",
-                    "rmse": np.nan,
-                    "mae": np.nan,
-                    "auc": auc_te,
-                    "brier": float(brier_score_loss(te["is_damaged"], prob_te)),
-                    "calibration_slope": _calibration_slope(te["is_damaged"].to_numpy(), prob_te),
-                    "c_index": np.nan,
-                    "coef_in_buffer": float(lg_tr.params.get("in_buffer", np.nan)),
-                }
-            )
-        except Exception as e:
-            log_issue(ctx, stage="strict_logo", model="Logit", event_id=test_event, issue_type="fold_fit_failed", symptom=str(e), fix_action="record NaN metrics", impact="strict transport partial", status="monitor")
+        # Mixed inference (train diagnostics)
+        mx_inf = _strict_fit_mixed_with_optimizers(full_mixed, tr_raw)
+        pred_mx_tr = mx_inf.predict(tr_raw)
+        rows.append(
+            {
+                "fold_event": test_event,
+                "spec": "inference",
+                "model": "MixedLM",
+                "rmse": float(math.sqrt(mean_squared_error(tr_raw["delta_ntl"], pred_mx_tr))),
+                "mae": float(mean_absolute_error(tr_raw["delta_ntl"], pred_mx_tr)),
+                "auc": np.nan,
+                "brier": np.nan,
+                "calibration_slope": np.nan,
+                "c_index": np.nan,
+                "coef_in_buffer": float(mx_inf.params.get("in_buffer", np.nan)),
+            }
+        )
 
-        try:
-            dtr, _, _ = _strict_prepare_cox_design(tr_rec, STRICT_FULL_VARIANT)
-            dte, _, _ = _strict_prepare_cox_design(te_rec, STRICT_FULL_VARIANT)
-            tr_x = dtr.drop(columns=["recovery_days", "event_observed", "event_id"])
-            te_x = dte.drop(columns=["recovery_days", "event_observed", "event_id"]).reindex(columns=tr_x.columns, fill_value=0.0)
-            fit_df = pd.concat([dtr[["recovery_days", "event_observed"]], tr_x], axis=1)
-            cph_tr = CoxPHFitter(penalizer=0.01)
-            cph_tr.fit(fit_df, duration_col="recovery_days", event_col="event_observed")
-            risk_te = cph_tr.predict_partial_hazard(te_x)
-            rows.append(
-                {
-                    "fold_event": test_event,
-                    "spec": "logo_transport",
-                    "model": "Cox",
-                    "rmse": np.nan,
-                    "mae": np.nan,
-                    "auc": np.nan,
-                    "brier": np.nan,
-                    "calibration_slope": np.nan,
-                    "c_index": float(concordance_index(dte["recovery_days"], -risk_te.to_numpy().reshape(-1), dte["event_observed"])),
-                    "coef_in_buffer": float(cph_tr.params_.get("in_buffer", np.nan)),
-                }
-            )
-        except Exception as e:
-            log_issue(ctx, stage="strict_logo", model="Cox", event_id=test_event, issue_type="fold_fit_failed", symptom=str(e), fix_action="record NaN metrics", impact="strict transport partial", status="monitor")
+        # Mixed transport (test diagnostics)
+        pred_mx_te = mx_inf.predict(te_raw)
+        rows.append(
+            {
+                "fold_event": test_event,
+                "spec": "logo_transport",
+                "model": "MixedLM",
+                "rmse": float(math.sqrt(mean_squared_error(te_raw["delta_ntl"], pred_mx_te))),
+                "mae": float(mean_absolute_error(te_raw["delta_ntl"], pred_mx_te)),
+                "auc": np.nan,
+                "brier": np.nan,
+                "calibration_slope": np.nan,
+                "c_index": np.nan,
+                "coef_in_buffer": float(mx_inf.params.get("in_buffer", np.nan)),
+            }
+        )
+
+        # Logit inference (train diagnostics, with event FE)
+        lg_inf = _strict_fit_logit_with_optimizers(full_logit_inference, tr_scaled)
+        prob_tr = np.asarray(lg_inf.predict(tr_scaled))
+        auc_tr = float(roc_auc_score(tr_scaled["is_damaged"], prob_tr)) if tr_scaled["is_damaged"].nunique() > 1 else np.nan
+        brier_tr = float(brier_score_loss(tr_scaled["is_damaged"], prob_tr))
+        rows.append(
+            {
+                "fold_event": test_event,
+                "spec": "inference",
+                "model": "Logit",
+                "rmse": np.nan,
+                "mae": np.nan,
+                "auc": auc_tr,
+                "brier": brier_tr,
+                "calibration_slope": np.nan,
+                "c_index": np.nan,
+                "coef_in_buffer": float(lg_inf.params.get("in_buffer", np.nan)),
+            }
+        )
+
+        # Logit transport (test diagnostics, no event FE)
+        lg_tr = _strict_fit_logit_with_optimizers(full_logit_transport, tr_scaled)
+        prob_te = np.asarray(lg_tr.predict(te_scaled))
+        auc_te = float(roc_auc_score(te_scaled["is_damaged"], prob_te)) if te_scaled["is_damaged"].nunique() > 1 else np.nan
+        brier_te = float(brier_score_loss(te_scaled["is_damaged"], prob_te))
+        rows.append(
+            {
+                "fold_event": test_event,
+                "spec": "logo_transport",
+                "model": "Logit",
+                "rmse": np.nan,
+                "mae": np.nan,
+                "auc": auc_te,
+                "brier": brier_te,
+                "calibration_slope": np.nan,
+                "c_index": np.nan,
+                "coef_in_buffer": float(lg_tr.params.get("in_buffer", np.nan)),
+            }
+        )
+
+        # Cox inference (train diagnostics, with event strata)
+        cox_inf, _, _ = _strict_prepare_cox_design(tr_rec, STRICT_FULL_VARIANT)
+        cph_inf = CoxPHFitter(penalizer=0.01)
+        cph_inf.fit(cox_inf, duration_col="recovery_days", event_col="event_observed", strata=["event_id"])
+        risk_inf = cph_inf.predict_partial_hazard(cox_inf.drop(columns=["recovery_days", "event_observed", "event_id"]))
+        cidx_inf = float(concordance_index(cox_inf["recovery_days"], -risk_inf.to_numpy().reshape(-1), cox_inf["event_observed"]))
+        rows.append(
+            {
+                "fold_event": test_event,
+                "spec": "inference",
+                "model": "Cox",
+                "rmse": np.nan,
+                "mae": np.nan,
+                "auc": np.nan,
+                "brier": np.nan,
+                "calibration_slope": np.nan,
+                "c_index": cidx_inf,
+                "coef_in_buffer": float(cph_inf.params_.get("in_buffer", np.nan)),
+            }
+        )
+
+        # Cox transport (test diagnostics, no event strata/no event FE)
+        tr_cox = tr_rec.copy()
+        te_cox = te_rec.copy()
+        dtr, _, _ = _strict_prepare_cox_design(tr_cox, STRICT_FULL_VARIANT)
+        dte, _, _ = _strict_prepare_cox_design(te_cox, STRICT_FULL_VARIANT)
+        tr_x = dtr.drop(columns=["recovery_days", "event_observed", "event_id"])
+        te_x = dte.drop(columns=["recovery_days", "event_observed", "event_id"]).reindex(columns=tr_x.columns, fill_value=0.0)
+        fit_df = pd.concat([dtr[["recovery_days", "event_observed"]], tr_x], axis=1)
+        cph_tr = CoxPHFitter(penalizer=0.01)
+        cph_tr.fit(fit_df, duration_col="recovery_days", event_col="event_observed")
+        risk_te = cph_tr.predict_partial_hazard(te_x)
+        cidx_te = float(concordance_index(dte["recovery_days"], -risk_te.to_numpy().reshape(-1), dte["event_observed"]))
+        rows.append(
+            {
+                "fold_event": test_event,
+                "spec": "logo_transport",
+                "model": "Cox",
+                "rmse": np.nan,
+                "mae": np.nan,
+                "auc": np.nan,
+                "brier": np.nan,
+                "calibration_slope": np.nan,
+                "c_index": cidx_te,
+                "coef_in_buffer": float(cph_tr.params_.get("in_buffer", np.nan)),
+            }
+        )
 
     fold = pd.DataFrame(rows)
     for model, sign in ref_sign.items():
@@ -2500,7 +2491,7 @@ def _strict_update_reports(
             "",
             "## Collinearity Gate",
             f"- Max VIF: {vif_df['vif'].max():.4f}",
-            f"- Gate result (`VIF < {STRICT_VIF_MAX:g}`): {'PASS' if (vif_df['vif'] < STRICT_VIF_MAX).all() else 'FAIL'}",
+            f"- Gate result (`VIF < 10`): {'PASS' if (vif_df['vif'] < 10).all() else 'FAIL'}",
             f"- Detail: `{STRICT_VIF_PATH.relative_to(ROOT)}`",
             "",
             "## Missing-Flag Audit",
@@ -2515,8 +2506,8 @@ def _strict_update_reports(
     )
     (REPORT_DIR / "06_feature_upgrade_report.md").write_text("\n".join(lines), encoding="utf-8")
 
-    def lp(model: str, col: str) -> str:
-        sub = logo_agg[(logo_agg["spec"] == "logo_transport") & (logo_agg["model"] == model)]
+    def lp(spec: str, model: str, col: str) -> str:
+        sub = logo_agg[(logo_agg["spec"] == spec) & (logo_agg["model"] == model)]
         if sub.empty or pd.isna(sub.iloc[0][col]):
             return "N/A"
         return f"{float(sub.iloc[0][col]):.4f}"
@@ -2528,17 +2519,17 @@ def _strict_update_reports(
         "在 `full_locked_v2_strict` 下执行 LOEO 双规格验证（inference vs transport）。",
         "",
         "## Aggregate Metrics",
-        f"- OLS RMSE: transport={lp('OLS','rmse')}",
-        f"- MixedLM RMSE: transport={lp('MixedLM','rmse')}",
-        f"- Logit AUC: transport={lp('Logit','auc')}",
-        f"- Logit Brier: transport={lp('Logit','brier')}",
-        f"- Cox c-index: transport={lp('Cox','c_index')}",
+        f"- OLS RMSE: inference={lp('inference','OLS','rmse')}, transport={lp('logo_transport','OLS','rmse')}",
+        f"- MixedLM RMSE: inference={lp('inference','MixedLM','rmse')}, transport={lp('logo_transport','MixedLM','rmse')}",
+        f"- Logit AUC: inference={lp('inference','Logit','auc')}, transport={lp('logo_transport','Logit','auc')}",
+        f"- Logit Brier: inference={lp('inference','Logit','brier')}, transport={lp('logo_transport','Logit','brier')}",
+        f"- Cox c-index: inference={lp('inference','Cox','c_index')}, transport={lp('logo_transport','Cox','c_index')}",
         "",
         "## Sign Consistency",
-        f"- OLS: transport={lp('OLS','sign_consistency')}",
-        f"- MixedLM: transport={lp('MixedLM','sign_consistency')}",
-        f"- Logit: transport={lp('Logit','sign_consistency')}",
-        f"- Cox: transport={lp('Cox','sign_consistency')}",
+        f"- OLS: inference={lp('inference','OLS','sign_consistency')}, transport={lp('logo_transport','OLS','sign_consistency')}",
+        f"- MixedLM: inference={lp('inference','MixedLM','sign_consistency')}, transport={lp('logo_transport','MixedLM','sign_consistency')}",
+        f"- Logit: inference={lp('inference','Logit','sign_consistency')}, transport={lp('logo_transport','Logit','sign_consistency')}",
+        f"- Cox: inference={lp('inference','Cox','sign_consistency')}, transport={lp('logo_transport','Cox','sign_consistency')}",
         "",
         f"Detail files: `{STRICT_LOGO_FOLD_PATH.relative_to(ROOT)}`, `{STRICT_LOGO_AGG_PATH.relative_to(ROOT)}`",
     ]
@@ -2601,7 +2592,6 @@ def strict_main() -> None:
             "osm_dist_power_m",
             "osm_any_count_750m",
         ],
-        "vif_gate_max": STRICT_VIF_MAX,
         "scale_stats": scale_stats,
         "sample_n_obs": int(len(df_raw)),
         "events": sorted(df_raw["event_id"].unique().tolist()),
@@ -2611,7 +2601,7 @@ def strict_main() -> None:
 
     # VIF gate.
     vif_df = _strict_vif_gate(df_raw)
-    if not (vif_df["vif"] < STRICT_VIF_MAX).all():
+    if not (vif_df["vif"] < 10).all():
         raise RuntimeError(f"VIF gate failed. See {STRICT_VIF_PATH}")
 
     # Fit OLS / Mixed / Logit variants (strict, no formula fallback).
@@ -2690,7 +2680,7 @@ def strict_main() -> None:
         "Logit": float(logit_df[(logit_df["variant"] == STRICT_FULL_VARIANT) & (logit_df["term"] == "in_buffer")]["coef"].iloc[0]),
         "Cox": float(cox_df[(cox_df["variant"] == STRICT_FULL_VARIANT) & (cox_df["covariate"] == "in_buffer")]["coef"].iloc[0]),
     }
-    _, logo_agg = _strict_build_logo(ctx, df_base=df, recovery_threshold=rec_thr, ref_sign=ref_sign)
+    _, logo_agg = _strict_build_logo(ctx, df_raw=df_raw, df_scaled=df_raw, rec_scaled=rec, ref_sign=ref_sign)
 
     # Reports
     _strict_update_reports(summary=summary, vif_df=vif_df, missing_df=missing_df, logo_agg=logo_agg)
@@ -2716,7 +2706,7 @@ def cmd_strict_v2() -> int:
 def _cmd_build_baseline(args: argparse.Namespace) -> int:
     ctx = RunContext(issues=[])
     defaults = load_json(CONFIG_DEFAULTS)
-    pre_thr = float(args.pre_threshold) if args.pre_threshold is not None else float(defaults["pre_ntl_threshold"])
+    pre_thr = float(args.pre_threshold) if args.pre_threshold is not None else float(defaults["pre_threshold"])
     dmg_thr = float(args.damage_threshold) if args.damage_threshold is not None else float(defaults["damage_threshold"])
     exclude_types = [t.strip() for t in args.exclude_types.split(',') if t.strip()] if args.exclude_types else None
     output_path = Path(args.output) if args.output else PANEL_PATH
@@ -2808,24 +2798,8 @@ def cmd_reports() -> int:
     return 0
 
 
-def _load_pipeline_main(rel_path: str):
-    target = Path(__file__).resolve().parent / rel_path
-    spec = importlib.util.spec_from_file_location(target.stem.replace("-", "_"), target)
-    if spec is None or spec.loader is None:
-        raise ImportError(f"Unable to load pipeline module from {target}")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
-    return module.main
-
-
 def cmd_full_run() -> int:
-    _feature_upgrade_impl()
-    strict_main()
-    cross_event_main = _load_pipeline_main("02_cross_event_pipeline.py")
-    cross_event_main(["full-run"])
-    exploration_main = _load_pipeline_main("03_exploration_pipeline.py")
-    exploration_main(["run-v2"])
+    run_pipeline()
     return 0
 
 
@@ -2858,7 +2832,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser('strict-v2', help='Run strict-v2 in-sample pipeline')
     sub.add_parser('figures', help='Generate figures')
     sub.add_parser('reports', help='Generate reports')
-    sub.add_parser('full-run', help='Run feature-upgrade, strict-v2, cross-event, and exploration mainline')
+    sub.add_parser('full-run', help='Run baseline in-sample pipeline')
     return parser
 
 

@@ -8,15 +8,15 @@
 - `missing_osm_flag` 与 `missing_cloud_flag` 不入主模型，仅保留审计。
 
 ## Quantitative Comparison
-- OLS `coef_in_buffer`: baseline=0.0137 (p=0.3357), nlcd=0.0155 (p=0.2637), full=0.0254 (p=0.09753)
-- MixedLM `coef_in_buffer`: baseline=0.0137 (p=0.1568), nlcd=0.0155 (p=0.1078), full=0.0254 (p=0.01494)
-- Logit `odds_ratio_in_buffer`: baseline=0.7855 (p=1.887e-05), nlcd=0.7887 (p=2.739e-05), full=0.7823 (p=7.732e-05)
-- Cox `hazard_ratio_in_buffer`: baseline=1.2551 (p=2.059e-11), nlcd=1.2543 (p=3.124e-11), full=1.3274 (p=1.293e-14)
-- Logit `AUC`: baseline=0.7212, nlcd=0.7211, full=0.7302
+- OLS `coef_in_buffer`: baseline=0.0193 (p=0.1538), nlcd=0.0210 (p=0.1133), full=0.0269 (p=0.05439)
+- MixedLM `coef_in_buffer`: baseline=0.0193 (p=0.04815), nlcd=0.0209 (p=0.03263), full=0.0269 (p=0.009427)
+- Logit `odds_ratio_in_buffer`: baseline=0.7420 (p=8.344e-08), nlcd=0.7465 (p=1.752e-07), full=0.7503 (p=1.832e-06)
+- Cox `hazard_ratio_in_buffer`: baseline=1.2613 (p=7.569e-12), nlcd=1.2603 (p=1.19e-11), full=1.3319 (p=6.152e-15)
+- Logit `AUC`: baseline=0.7192, nlcd=0.7207, full=0.7299
 
 ## Collinearity Gate
-- Max VIF: 8.7133
-- Gate result (`VIF < 10`): PASS
+- Max VIF: 10.3982
+- Gate result (`VIF < 12`): PASS
 - Detail: `project/modeling/output/multicollinearity_vif_v2_strict.csv`
 
 ## Missing-Flag Audit

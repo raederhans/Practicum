@@ -1,39 +1,39 @@
 {
   "strict_v2_logo_path": "project/modeling/output/logo_aggregate_metrics_v2_strict.csv",
   "strict_v2_summary_path": "project/modeling/output/model_summary_feature_upgrade_v2_strict.csv",
-  "created_at_utc": "2026-02-27T14:28:53.834170+00:00",
+  "created_at_utc": "2026-03-10T02:55:54.676701+00:00",
   "strict_v2_logo_transport": {
     "Cox": {
       "rmse": NaN,
       "mae": NaN,
       "auc": NaN,
       "brier": NaN,
-      "c_index": 0.5120883160151183,
-      "sign_consistency": 1.0
+      "c_index": 0.5200494494472293,
+      "sign_consistency": 0.8333333333333334
     },
     "Logit": {
       "rmse": NaN,
       "mae": NaN,
-      "auc": 0.4654266122792432,
-      "brier": 0.2578221572628013,
+      "auc": 0.4548584976505576,
+      "brier": 0.2541868083820802,
       "c_index": NaN,
       "sign_consistency": 1.0
     },
     "MixedLM": {
-      "rmse": 0.443718668083807,
-      "mae": 0.2946856419312224,
+      "rmse": 0.451227780168869,
+      "mae": 0.3237215914293684,
       "auc": NaN,
       "brier": NaN,
       "c_index": NaN,
       "sign_consistency": 0.8333333333333334
     },
     "OLS": {
-      "rmse": 0.4243169052297554,
-      "mae": 0.2698970738083688,
+      "rmse": 0.413199513467456,
+      "mae": 0.262213550834218,
       "auc": NaN,
       "brier": NaN,
       "c_index": NaN,
-      "sign_consistency": 1.0
+      "sign_consistency": 0.5
     }
   }
 }

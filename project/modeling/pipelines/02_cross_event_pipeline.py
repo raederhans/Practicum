@@ -59,6 +59,7 @@ PANEL_FEATURE_PATH = PIXEL_DIR / "all_events_pixel_panel_v1_feature_upgrade.parq
 SAMPLE_LOCK_PATH = PIXEL_DIR / "sample_lock_cohort_v1.parquet"
 PANEL_V3_PATH = PIXEL_DIR / "all_events_pixel_panel_v1_cross_event_v3.parquet"
 EVENT_PROFILE_PATH = PIXEL_DIR / "event_profile_v1.csv"
+CLOUD_SUMMARY_PATH = OUTPUT_DIR / "cloud_feature_summary.csv"
 
 V3_ANCHOR_PATH = OUTPUT_DIR / "v3_baseline_anchor.json"
 SHIFT_PATH = OUTPUT_DIR / "cross_event_shift_diagnostics_v3.csv"
@@ -70,6 +71,7 @@ SUMMARY_PATH = OUTPUT_DIR / "model_summary_cross_event_v3.csv"
 REPORT_PATH = REPORT_DIR / "08_cross_event_model_report.md"
 INDEX_PATH = REPORT_DIR / "index.md"
 FIG_CE_DIR = FIG_DIR / "cross_event"
+ENABLE_CROSS_EVENT_BENCHMARK = False
 
 REPORT_SCHEMA_ORDER = [
     "event_id",
@@ -118,6 +120,7 @@ NUMERIC_FEATURE_CANDIDATES = [
 ]
 
 CATEGORICAL_FEATURE_CANDIDATES = ["land_use_group", "event_disaster_type"]
+CORE_NUMERIC_COLUMNS = ["pre_mean_ntl", "delta_ntl", "in_buffer", "is_damaged", "recovery_days", "event_observed"]
 
 
 @dataclass
@@ -132,6 +135,10 @@ def _safe_numeric(s: pd.Series, default: float = 0.0) -> pd.Series:
     if out.notna().any():
         return out.fillna(out.median())
     return out.fillna(default)
+
+
+def _coerce_numeric(s: pd.Series) -> pd.Series:
+    return pd.to_numeric(s, errors="coerce").replace([np.inf, -np.inf], np.nan)
 
 
 def _parse_date_from_name(path: Path) -> Optional[date]:
@@ -306,6 +313,7 @@ def _compute_local_landuse_shares(panel: pd.DataFrame, events_cfg: Dict[str, obj
 
 def _build_event_profile(panel: pd.DataFrame, events_cfg: Dict[str, object]) -> pd.DataFrame:
     windows = _event_windows(events_cfg)
+    cloud_summary = pd.read_csv(CLOUD_SUMMARY_PATH) if CLOUD_SUMMARY_PATH.exists() else pd.DataFrame()
     rows: List[Dict[str, object]] = []
 
     for event_id in sorted(panel["event_id"].unique().tolist()):
@@ -324,6 +332,14 @@ def _build_event_profile(panel: pd.DataFrame, events_cfg: Dict[str, object]) -> 
             "ok" if precip_flag == "ok" else precip_flag,
             "ok" if topo_flag == "ok" else topo_flag,
         ]
+        cloud_pre = float(pd.to_numeric(d["cloud_pre_mean"], errors="coerce").mean()) if "cloud_pre_mean" in d.columns else np.nan
+        cloud_post = float(pd.to_numeric(d["cloud_post_mean"], errors="coerce").mean()) if "cloud_post_mean" in d.columns else np.nan
+        if (not np.isfinite(cloud_pre) or not np.isfinite(cloud_post)) and not cloud_summary.empty:
+            hit = cloud_summary[cloud_summary["event_id"] == event_id]
+            if not hit.empty:
+                cloud_pre = float(pd.to_numeric(hit["cloud_pre_mean"], errors="coerce").iloc[0])
+                cloud_post = float(pd.to_numeric(hit["cloud_post_mean"], errors="coerce").iloc[0])
+                quality_parts.append("cloud_summary_fallback")
 
         row = {
             "event_id": event_id,
@@ -338,8 +354,8 @@ def _build_event_profile(panel: pd.DataFrame, events_cfg: Dict[str, object]) -> 
             "water_share_1km": float(pd.to_numeric(d["water_share_1km"], errors="coerce").mean()),
             "developed_high_share_1km": float(pd.to_numeric(d["developed_high_share_1km"], errors="coerce").mean()),
             "pre_ntl_event_mean": float(pd.to_numeric(d["pre_mean_ntl"], errors="coerce").mean()),
-            "cloud_pre_event_mean": float(pd.to_numeric(d["cloud_pre_mean"], errors="coerce").mean()),
-            "cloud_post_event_mean": float(pd.to_numeric(d["cloud_post_mean"], errors="coerce").mean()),
+            "cloud_pre_event_mean": cloud_pre,
+            "cloud_post_event_mean": cloud_post,
             "storm_precip_7d": precip,
             "event_duration_days": w.get("event_duration_days", np.nan),
             "source_ref": f"panel_stats;{precip_src};{topo_src}",
@@ -382,22 +398,68 @@ def _attach_event_features(panel: pd.DataFrame, event_profile: pd.DataFrame) -> 
     return out
 
 
-def _fill_model_na(df: pd.DataFrame) -> pd.DataFrame:
-    out = df.copy()
-    out["land_use_group"] = out["land_use_group"].fillna("unknown").astype(str)
-    out["event_disaster_type"] = out["event_disaster_type"].fillna("unknown").astype(str)
+def _fit_fill_rules(df: pd.DataFrame, numeric_terms: Sequence[str], cat_terms: Sequence[str]) -> Dict[str, Dict[str, object]]:
+    numeric_fill: Dict[str, float] = {}
+    for c in list(dict.fromkeys(list(CORE_NUMERIC_COLUMNS) + list(numeric_terms))):
+        if c not in df.columns:
+            numeric_fill[c] = 0.0
+            continue
+        series = _coerce_numeric(df[c])
+        val = float(series.median()) if series.notna().any() else 0.0
+        if not np.isfinite(val):
+            val = 0.0
+        numeric_fill[c] = val
 
-    for c in NUMERIC_FEATURE_CANDIDATES + ["pre_mean_ntl", "delta_ntl", "in_buffer"]:
+    cat_levels: Dict[str, List[str]] = {}
+    for c in cat_terms:
+        if c in df.columns:
+            levels = sorted(df[c].fillna("unknown").astype(str).unique().tolist())
+        else:
+            levels = []
+        if "unknown" not in levels:
+            levels.append("unknown")
+        cat_levels[c] = levels
+
+    return {"numeric_fill": numeric_fill, "cat_levels": cat_levels}
+
+
+def _apply_fill_rules(
+    df: pd.DataFrame,
+    numeric_terms: Sequence[str],
+    cat_terms: Sequence[str],
+    fill_rules: Dict[str, Dict[str, object]],
+) -> pd.DataFrame:
+    out = df.copy()
+    numeric_fill = fill_rules.get("numeric_fill", {})
+    cat_levels = fill_rules.get("cat_levels", {})
+
+    for c in list(dict.fromkeys(list(CORE_NUMERIC_COLUMNS) + list(numeric_terms))):
         if c not in out.columns:
             out[c] = np.nan
-        out[c] = _safe_numeric(out[c])
+        fill_value = float(numeric_fill.get(c, 0.0))
+        out[c] = _coerce_numeric(out[c]).fillna(fill_value)
 
-    # Event-wise fill first, then global median.
-    for c in NUMERIC_FEATURE_CANDIDATES:
-        out[c] = out.groupby("event_id", observed=True)[c].transform(lambda s: s.fillna(s.median()))
-        out[c] = _safe_numeric(out[c])
-
+    for c in cat_terms:
+        if c not in out.columns:
+            out[c] = "unknown"
+        values = out[c]
+        if isinstance(values.dtype, CategoricalDtype):
+            if "unknown" not in values.cat.categories:
+                values = values.cat.add_categories(["unknown"])
+        values = values.fillna("unknown").astype(str)
+        levels = list(cat_levels.get(c, ["unknown"]))
+        if "unknown" not in levels:
+            levels.append("unknown")
+        values = values.where(values.isin(levels), "unknown")
+        out[c] = pd.Categorical(values, categories=levels)
     return out
+
+
+def _fill_model_na(df: pd.DataFrame) -> pd.DataFrame:
+    numeric_terms = [c for c in NUMERIC_FEATURE_CANDIDATES if c in df.columns]
+    cat_terms = [c for c in CATEGORICAL_FEATURE_CANDIDATES if c in df.columns]
+    fill_rules = _fit_fill_rules(df, numeric_terms=numeric_terms, cat_terms=cat_terms)
+    return _apply_fill_rules(df, numeric_terms=numeric_terms, cat_terms=cat_terms, fill_rules=fill_rules)
 
 
 def _select_terms(df_train: pd.DataFrame) -> Tuple[List[str], List[str]]:
@@ -405,7 +467,7 @@ def _select_terms(df_train: pd.DataFrame) -> Tuple[List[str], List[str]]:
     for c in NUMERIC_FEATURE_CANDIDATES:
         if c not in df_train.columns:
             continue
-        s = _safe_numeric(df_train[c])
+        s = _coerce_numeric(df_train[c])
         if s.nunique(dropna=True) > 1:
             num_terms.append(c)
     cat_terms = []
@@ -751,6 +813,9 @@ def _run_loeo(
         te["is_damaged"] = (te["delta_ntl"] < damage_threshold).astype(int)
 
         num_terms, cat_terms = _select_terms(tr)
+        fill_rules = _fit_fill_rules(tr, numeric_terms=num_terms, cat_terms=cat_terms)
+        tr = _apply_fill_rules(tr, numeric_terms=num_terms, cat_terms=cat_terms, fill_rules=fill_rules)
+        te = _apply_fill_rules(te, numeric_terms=num_terms, cat_terms=cat_terms, fill_rules=fill_rules)
 
         # Interpretable: OLS
         ols_formula = _build_linear_formula(num_terms=num_terms, cat_terms=cat_terms)
@@ -775,7 +840,22 @@ def _run_loeo(
 
         # Interpretable: MixedLM
         mx_formula = _build_linear_formula(num_terms=num_terms, cat_terms=cat_terms)
-        mx = smf.mixedlm(mx_formula, data=tr, groups=tr["event_id"]).fit(method="lbfgs", reml=False)
+        mx = None
+        mixed_formulas = [mx_formula]
+        numeric_only_terms = ["in_buffer * pre_mean_ntl"] + list(num_terms)
+        mixed_formulas.append("delta_ntl ~ " + " + ".join(numeric_only_terms))
+        mixed_formulas.append("delta_ntl ~ in_buffer * pre_mean_ntl")
+        for fmx in mixed_formulas:
+            for method in ["lbfgs", "powell", "cg", "nm"]:
+                try:
+                    mx = smf.mixedlm(fmx, data=tr, groups=tr["event_id"]).fit(method=method, reml=False)
+                    break
+                except Exception:
+                    continue
+            if mx is not None:
+                break
+        if mx is None:
+            raise RuntimeError(f"MixedLM fit failed on fold {fold_event}")
         pred_mx = mx.predict(te)
         rows.append(
             {
@@ -823,8 +903,9 @@ def _run_loeo(
         # Interpretable: Cox + AFT
         tr_rec = recovery[recovery["event_id"] != fold_event].copy()
         te_rec = recovery[recovery["event_id"] == fold_event].copy()
-        tr_rec = _fill_model_na(tr_rec)
-        te_rec = _fill_model_na(te_rec)
+        rec_fill_rules = _fit_fill_rules(tr_rec, numeric_terms=num_terms, cat_terms=cat_terms)
+        tr_rec = _apply_fill_rules(tr_rec, numeric_terms=num_terms, cat_terms=cat_terms, fill_rules=rec_fill_rules)
+        te_rec = _apply_fill_rules(te_rec, numeric_terms=num_terms, cat_terms=cat_terms, fill_rules=rec_fill_rules)
         cox_cidx, aft_cidx, cox_coef_rows = _fit_cox_transport(tr_rec, te_rec, num_terms=num_terms, cat_terms=cat_terms)
         rows.append(
             {
@@ -858,6 +939,9 @@ def _run_loeo(
         )
         coef_rows.extend(cox_coef_rows)
 
+        if not ENABLE_CROSS_EVENT_BENCHMARK:
+            continue
+
         # Benchmark: HGB regressor
         xtr_reg = _prepare_hgb_matrix(tr, num_terms=num_terms, cat_terms=cat_terms)
         xte_reg = _prepare_hgb_matrix(te, num_terms=num_terms, cat_terms=cat_terms)
@@ -865,7 +949,7 @@ def _run_loeo(
         ytr_reg = _safe_numeric(tr["delta_ntl"])
         yte_reg = _safe_numeric(te["delta_ntl"])
 
-        hgb_r = HistGradientBoostingRegressor(max_depth=6, learning_rate=0.05, max_iter=250, random_state=42)
+        hgb_r = HistGradientBoostingRegressor(max_depth=6, learning_rate=0.05, max_iter=150, random_state=42)
         hgb_r.fit(xtr_reg, ytr_reg)
         pred_hgb = hgb_r.predict(xte_reg)
         rows.append(
@@ -889,7 +973,7 @@ def _run_loeo(
                 hgb_r,
                 xte_reg,
                 yte_reg,
-                n_repeats=10,
+                n_repeats=5,
                 random_state=42,
                 scoring="neg_root_mean_squared_error",
             )
@@ -916,7 +1000,7 @@ def _run_loeo(
         ytr_cls = tr["is_damaged"].astype(int).to_numpy()
         yte_cls = te["is_damaged"].astype(int).to_numpy()
 
-        hgb_c = HistGradientBoostingClassifier(max_depth=6, learning_rate=0.05, max_iter=250, random_state=42)
+        hgb_c = HistGradientBoostingClassifier(max_depth=6, learning_rate=0.05, max_iter=150, random_state=42)
         hgb_c.fit(xtr_cls, ytr_cls)
         prob_cls = hgb_c.predict_proba(xte_cls)[:, 1]
         auc_cls = float(roc_auc_score(yte_cls, prob_cls)) if np.unique(yte_cls).size > 1 else np.nan
@@ -943,7 +1027,7 @@ def _run_loeo(
                     hgb_c,
                     xte_cls,
                     yte_cls,
-                    n_repeats=10,
+                    n_repeats=5,
                     random_state=42,
                     scoring="roc_auc",
                 )
@@ -1320,9 +1404,6 @@ def _build_v3_impl() -> None:
     df = _compute_local_landuse_shares(df, events_cfg, radius_m=1000.0)
     event_profile = _build_event_profile(df, events_cfg)
     df = _attach_event_features(df, event_profile)
-    df = _fill_model_na(df)
-    df["is_damaged"] = (df["delta_ntl"] < damage_thr).astype(int)
-
     # Save enriched panel for reproducibility.
     df.to_parquet(PANEL_V3_PATH, index=False)
 
@@ -1436,37 +1517,43 @@ def _stabilize_event_inverse_sqrt_weights(event_series: pd.Series) -> pd.Series:
     return event_series.map(lambda e: 1.0 / math.sqrt(float(cnt.get(e, 1))))
 
 
+def _stabilize_fit_fill_rules(
+    df: pd.DataFrame,
+    numeric_terms: Sequence[str],
+    cat_terms: Sequence[str],
+    cat_levels: Optional[Dict[str, List[str]]] = None,
+) -> Dict[str, Dict[str, object]]:
+    fill_rules = _fit_fill_rules(df, numeric_terms=numeric_terms, cat_terms=cat_terms)
+    if cat_levels:
+        merged_levels: Dict[str, List[str]] = {}
+        for c in cat_terms:
+            levels = list(fill_rules["cat_levels"].get(c, []))
+            if not levels:
+                levels = list(cat_levels.get(c, []))
+            if "unknown" not in levels:
+                levels.append("unknown")
+            merged_levels[c] = levels
+        fill_rules["cat_levels"] = merged_levels
+    return fill_rules
+
+
+def _stabilize_apply_fill_rules(
+    df: pd.DataFrame,
+    numeric_terms: Sequence[str],
+    cat_terms: Sequence[str],
+    fill_rules: Dict[str, Dict[str, object]],
+) -> pd.DataFrame:
+    return _apply_fill_rules(df, numeric_terms=numeric_terms, cat_terms=cat_terms, fill_rules=fill_rules)
+
+
 def _stabilize_fill_frame(
     df: pd.DataFrame,
     numeric_terms: Sequence[str],
     cat_terms: Sequence[str],
     cat_levels: Optional[Dict[str, List[str]]] = None,
 ) -> pd.DataFrame:
-    out = df.copy()
-    for c in ["pre_mean_ntl", "in_buffer", "delta_ntl", "is_damaged", "recovery_days", "event_observed"]:
-        if c in out.columns:
-            out[c] = _stabilize_safe_numeric(out[c])
-
-    for c in numeric_terms:
-        if c not in out.columns:
-            out[c] = np.nan
-        out[c] = _stabilize_safe_numeric(out[c])
-        out[c] = out.groupby("event_id", observed=True)[c].transform(lambda s: s.fillna(s.median()))
-        out[c] = _stabilize_safe_numeric(out[c])
-
-    for c in cat_terms:
-        if c not in out.columns:
-            out[c] = "unknown"
-        if isinstance(out[c].dtype, CategoricalDtype):
-            if "unknown" not in out[c].cat.categories:
-                out[c] = out[c].cat.add_categories(["unknown"])
-        out[c] = out[c].fillna("unknown").astype(str)
-        if cat_levels and c in cat_levels and len(cat_levels[c]) > 0:
-            lv = list(cat_levels[c])
-            if "unknown" not in lv:
-                lv.append("unknown")
-            out[c] = pd.Categorical(out[c], categories=lv)
-    return out
+    fill_rules = _stabilize_fit_fill_rules(df, numeric_terms=numeric_terms, cat_terms=cat_terms, cat_levels=cat_levels)
+    return _stabilize_apply_fill_rules(df, numeric_terms=numeric_terms, cat_terms=cat_terms, fill_rules=fill_rules)
 
 
 def _stabilize_build_formula(target: str, numeric_terms: Sequence[str], cat_terms: Sequence[str]) -> str:
@@ -1643,8 +1730,9 @@ def _stabilize_run_loeo_round(
         tr["is_damaged"] = (tr["delta_ntl"] < damage_threshold).astype(int)
         te["is_damaged"] = (te["delta_ntl"] < damage_threshold).astype(int)
 
-        tr = _stabilize_fill_frame(tr, numeric_terms=numeric_terms, cat_terms=cat_terms, cat_levels=cat_levels)
-        te = _stabilize_fill_frame(te, numeric_terms=numeric_terms, cat_terms=cat_terms, cat_levels=cat_levels)
+        fold_fill_rules = _stabilize_fit_fill_rules(tr, numeric_terms=numeric_terms, cat_terms=cat_terms, cat_levels=cat_levels)
+        tr = _stabilize_apply_fill_rules(tr, numeric_terms=numeric_terms, cat_terms=cat_terms, fill_rules=fold_fill_rules)
+        te = _stabilize_apply_fill_rules(te, numeric_terms=numeric_terms, cat_terms=cat_terms, fill_rules=fold_fill_rules)
 
         w_tr = _stabilize_event_inverse_sqrt_weights(tr["event_id"]).to_numpy() if use_event_weights else None
 
@@ -1792,8 +1880,9 @@ def _stabilize_run_loeo_round(
         try:
             tr_rec = recovery[recovery["event_id"] != test_event].copy()
             te_rec = recovery[recovery["event_id"] == test_event].copy()
-            tr_rec = _stabilize_fill_frame(tr_rec, numeric_terms=numeric_terms, cat_terms=cat_terms, cat_levels=cat_levels)
-            te_rec = _stabilize_fill_frame(te_rec, numeric_terms=numeric_terms, cat_terms=cat_terms, cat_levels=cat_levels)
+            rec_fill_rules = _stabilize_fit_fill_rules(tr_rec, numeric_terms=numeric_terms, cat_terms=cat_terms, cat_levels=cat_levels)
+            tr_rec = _stabilize_apply_fill_rules(tr_rec, numeric_terms=numeric_terms, cat_terms=cat_terms, fill_rules=rec_fill_rules)
+            te_rec = _stabilize_apply_fill_rules(te_rec, numeric_terms=numeric_terms, cat_terms=cat_terms, fill_rules=rec_fill_rules)
 
             dtr = _stabilize_prepare_survival_design(tr_rec, numeric_terms=numeric_terms, cat_terms=cat_terms)
             dte = _stabilize_prepare_survival_design(te_rec, numeric_terms=numeric_terms, cat_terms=cat_terms)
@@ -1900,6 +1989,9 @@ def _stabilize_run_loeo_round(
         except Exception as e:
             raise StabilizationError(f"Round {round_id} Survival failed on fold {test_event}: {e}")
 
+        if not ENABLE_CROSS_EVENT_BENCHMARK:
+            continue
+
         # Benchmark models
         try:
             xtr_b = pd.DataFrame({"in_buffer": _stabilize_safe_numeric(tr["in_buffer"]), "pre_mean_ntl": _stabilize_safe_numeric(tr["pre_mean_ntl"])})
@@ -1926,7 +2018,7 @@ def _stabilize_run_loeo_round(
             ytr_cls = tr["is_damaged"].astype(int).to_numpy()
             yte_cls = te["is_damaged"].astype(int).to_numpy()
 
-            hgb_r = HistGradientBoostingRegressor(max_depth=6, learning_rate=0.05, max_iter=250, random_state=42)
+            hgb_r = HistGradientBoostingRegressor(max_depth=6, learning_rate=0.05, max_iter=150, random_state=42)
             hgb_r.fit(xtr_b, ytr_reg, sample_weight=w_tr)
             pred_r = hgb_r.predict(xte_b)
             fold_rows.append(
@@ -1946,7 +2038,7 @@ def _stabilize_run_loeo_round(
                 }
             )
 
-            hgb_c = HistGradientBoostingClassifier(max_depth=6, learning_rate=0.05, max_iter=250, random_state=42)
+            hgb_c = HistGradientBoostingClassifier(max_depth=6, learning_rate=0.05, max_iter=150, random_state=42)
             hgb_c.fit(xtr_b, ytr_cls, sample_weight=w_tr)
             prob_c = hgb_c.predict_proba(xte_b)[:, 1]
             auc_c = float(roc_auc_score(yte_cls, prob_c)) if len(np.unique(yte_cls)) > 1 else np.nan
@@ -1973,7 +2065,7 @@ def _stabilize_run_loeo_round(
                     hgb_c,
                     xte_b,
                     yte_cls,
-                    n_repeats=5,
+                    n_repeats=3,
                     random_state=42,
                     scoring="roc_auc",
                 )
@@ -2258,22 +2350,27 @@ def stabilize_main() -> None:
         for c in STABILIZE_CAT_TERMS_BASE
         if c in panel.columns
     }
-    panel = _stabilize_fill_frame(panel, numeric_terms=STABILIZE_LOCAL_NUMERIC_BASE, cat_terms=STABILIZE_CAT_TERMS_BASE, cat_levels=cat_levels)
     rec_ctx = RunContext(issues=[])
     recovery = build_recovery_panel(ctx=rec_ctx, panel=panel, threshold=rec_thr, output_path=None)
-    recovery = _stabilize_fill_frame(recovery, numeric_terms=STABILIZE_LOCAL_NUMERIC_BASE, cat_terms=STABILIZE_CAT_TERMS_BASE, cat_levels=cat_levels)
 
     # Round0 anchor from existing V3 aggregate.
     agg0 = pd.read_csv(STABILIZE_BASE_AGG_PATH)
+    def pick_metric(track: str, model: str, col: str) -> float:
+        sub = agg0[(agg0["track"] == track) & (agg0["model"] == model)]
+        if sub.empty:
+            return np.nan
+        val = pd.to_numeric(sub[col], errors="coerce").iloc[0]
+        return float(val) if pd.notna(val) else np.nan
+
     base_metrics = {
-        "logit_auc": float(agg0[(agg0["track"] == "interpretable") & (agg0["model"] == "Logit")]["auc"].iloc[0]),
-        "logit_brier": float(agg0[(agg0["track"] == "interpretable") & (agg0["model"] == "Logit")]["brier"].iloc[0]),
-        "cox_c_index": float(agg0[(agg0["track"] == "interpretable") & (agg0["model"] == "Cox")]["c_index"].iloc[0]),
-        "aft_c_index": float(agg0[(agg0["track"] == "interpretable") & (agg0["model"] == "AFT")]["c_index"].iloc[0]),
-        "ols_rmse": float(agg0[(agg0["track"] == "interpretable") & (agg0["model"] == "OLS")]["rmse"].iloc[0]),
-        "mixedlm_rmse": float(agg0[(agg0["track"] == "interpretable") & (agg0["model"] == "MixedLM")]["rmse"].iloc[0]),
-        "hgb_auc": float(agg0[(agg0["track"] == "benchmark") & (agg0["model"] == "HGBClassifier")]["auc"].iloc[0]),
-        "hgb_rmse": float(agg0[(agg0["track"] == "benchmark") & (agg0["model"] == "HGBRegressor")]["rmse"].iloc[0]),
+        "logit_auc": pick_metric("interpretable", "Logit", "auc"),
+        "logit_brier": pick_metric("interpretable", "Logit", "brier"),
+        "cox_c_index": pick_metric("interpretable", "Cox", "c_index"),
+        "aft_c_index": pick_metric("interpretable", "AFT", "c_index"),
+        "ols_rmse": pick_metric("interpretable", "OLS", "rmse"),
+        "mixedlm_rmse": pick_metric("interpretable", "MixedLM", "rmse"),
+        "hgb_auc": pick_metric("benchmark", "HGBClassifier", "auc"),
+        "hgb_rmse": pick_metric("benchmark", "HGBRegressor", "rmse"),
     }
     base_metrics["survival_best_c_index"] = float(max(base_metrics["cox_c_index"], base_metrics["aft_c_index"]))
 

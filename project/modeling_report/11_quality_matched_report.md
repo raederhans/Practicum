@@ -14,7 +14,7 @@
 - Mean absolute delta adjustment: 0.0095
 - Worst observed-rate event: maria_sanjuan (0.623)
 
-## Quality-Aware LOEO Transport
+## Appendix: Post-Hoc Quality Adjustment
 - Logit AUC: 0.4973
 - Logit Brier: 0.2409
 - AFT c-index: 0.4807
@@ -33,7 +33,7 @@
 - Paired ATT (treated-control delta_ntl): -0.0004
 - Mean matched pairs per facility: 2.68
 
-## Key Interpretation
+## Appendix Interpretation
 - 如果 quality-aware transport 比当前 v3r1 更稳，说明瓶颈的一部分来自 target/recovery 噪声。
 - 如果 matched 结果仍保持 buffer 正向信号，说明关键设施局地韧性并非完全由土地利用与城市密度混淆驱动。
 - 如果 spatial block CV 下分数明显回落，说明后续论文口径必须强调空间依赖修正。

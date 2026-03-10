@@ -11,8 +11,8 @@
 ## Round Metrics
 | round | logit_auc | logit_brier | survival_best_c_index | cox_c_index | aft_c_index | ols_rmse | mixedlm_rmse | hgb_auc |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| r0 | 0.4897 | 0.3110 | 0.5354 | 0.4641 | 0.5354 | 0.5243 | 0.4842 | 0.5688 |
-| r1 | 0.4827 | 0.2658 | 0.5213 | 0.5213 | 0.4773 | 0.4119 | 0.4683 | 0.5377 |
+| r0 | 0.4897 | 0.3110 | 0.5354 | 0.4641 | 0.5354 | 0.5243 | 0.6010 | N/A |
+| r1 | 0.4814 | 0.2567 | 0.5213 | 0.5213 | 0.4773 | 0.4142 | 0.4683 | N/A |
 
 ## Stop Decision Evidence
 - Comparison file: `project/modeling/output/cross_event_round_comparison_v3x.csv`

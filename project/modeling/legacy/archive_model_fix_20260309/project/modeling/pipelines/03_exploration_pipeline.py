@@ -87,19 +87,16 @@ INDEX_PATH = REPORT_DIR / "index.md"
 CLOUD_FOLD_PATH = OUTPUT_DIR / "cloud_ablation_fold_metrics.csv"
 CLOUD_AGG_PATH = OUTPUT_DIR / "cloud_ablation_aggregate_metrics.csv"
 CLOUD_IMPORTANCE_PATH = OUTPUT_DIR / "cloud_feature_importance.csv"
-CLOUD_COEF_PATH = OUTPUT_DIR / "cloud_ablation_coefficients.csv"
 
 # Noise mask outputs
 MASK_COVERAGE_PATH = OUTPUT_DIR / "noise_mask_coverage_by_event.csv"
 MASK_METRICS_PATH = OUTPUT_DIR / "noise_mask_experiment_metrics.csv"
 MASK_COEF_PATH = OUTPUT_DIR / "noise_mask_effect_on_coefficients.csv"
-MASK_FULL_COEF_PATH = OUTPUT_DIR / "noise_mask_coefficients.csv"
 
 # Urban-rural outputs
 URBAN_SPLIT_PATH = OUTPUT_DIR / "urban_rural_split_summary.csv"
 POP_QUALITY_PATH = OUTPUT_DIR / "pop_density_feature_quality.csv"
 URBAN_MODEL_PATH = OUTPUT_DIR / "urban_rural_model_comparison.csv"
-URBAN_COEF_PATH = OUTPUT_DIR / "urban_rural_coefficients.csv"
 
 # Spatial / contribution outputs
 MORAN_PATH = OUTPUT_DIR / "spatial_autocorr_morans_i.csv"
@@ -458,28 +455,12 @@ def _build_formula(target: str, numeric_terms: Sequence[str], cat_terms: Sequenc
     return f"{target} ~ " + " + ".join(rhs)
 
 
-def _filter_sample_lock(df: pd.DataFrame) -> pd.DataFrame:
-    if "sample_lock_flag" not in df.columns:
-        return df.copy()
-    flags = pd.to_numeric(df["sample_lock_flag"], errors="coerce").fillna(1).astype(int)
-    return df.loc[flags == 1].copy()
-
-
-def _prepare_columns(
-    df: pd.DataFrame,
-    numeric_terms: Sequence[str],
-    cat_terms: Sequence[str],
-    required_numeric: Sequence[str] = (),
-) -> pd.DataFrame:
+def _prepare_columns(df: pd.DataFrame, numeric_terms: Sequence[str], cat_terms: Sequence[str]) -> pd.DataFrame:
     out = df.copy()
     base_num = ["delta_ntl", "pre_mean_ntl", "in_buffer", "is_damaged", "recovery_days", "event_observed"]
-    required = {"pre_mean_ntl", "in_buffer"} | set(required_numeric)
-
     for c in base_num + list(numeric_terms):
         if c in out.columns:
             out[c] = _safe_numeric(out[c])
-        elif c in required:
-            raise KeyError(f"Missing required numeric column: {c}")
         else:
             out[c] = 0.0
 
@@ -922,10 +903,10 @@ def run_loeo_spec(
         tr_rec = rec[rec["event_id"] != fold_event].copy()
         te_rec = rec[rec["event_id"] == fold_event].copy()
 
-        tr = _prepare_columns(tr, numeric_terms, cat_terms, required_numeric=("delta_ntl", "is_damaged"))
-        te = _prepare_columns(te, numeric_terms, cat_terms, required_numeric=("delta_ntl", "is_damaged"))
-        tr_rec = _prepare_columns(tr_rec, numeric_terms, cat_terms, required_numeric=("recovery_days", "event_observed"))
-        te_rec = _prepare_columns(te_rec, numeric_terms, cat_terms, required_numeric=("recovery_days", "event_observed"))
+        tr = _prepare_columns(tr, numeric_terms, cat_terms)
+        te = _prepare_columns(te, numeric_terms, cat_terms)
+        tr_rec = _prepare_columns(tr_rec, numeric_terms, cat_terms)
+        te_rec = _prepare_columns(te_rec, numeric_terms, cat_terms)
 
         rows, coefs = _evaluate_fold(
             tr,
@@ -1115,13 +1096,41 @@ def attach_urban_population(panel: pd.DataFrame, ctx: RunContext) -> Tuple[pd.Da
     return out, quality
 
 
-def build_recovery_from_panel(panel: pd.DataFrame, ctx: Optional[RunContext] = None) -> pd.DataFrame:
-    defaults = load_json(CONFIG_DEFAULTS)
-    threshold = float(defaults["recovery_threshold"])
-    local_ctx = ctx if ctx is not None else RunContext(issues=[])
-    rec = pipeline_lib_mod.build_recovery_panel(local_ctx, panel=panel, threshold=threshold, output_path=None)
-    if "sample_lock_flag" not in rec.columns:
-        rec["sample_lock_flag"] = 1
+def build_recovery_from_panel(panel: pd.DataFrame) -> pd.DataFrame:
+    if not RECOVERY_IN_PATH.exists():
+        raise FileNotFoundError(f"Recovery panel missing: {RECOVERY_IN_PATH}")
+    rec = pd.read_parquet(RECOVERY_IN_PATH)
+    keep_cols = [
+        "pixel_id",
+        "event_id",
+        "recovery_days",
+        "event_observed",
+    ]
+    feature_cols = [
+        "in_buffer",
+        "pre_mean_ntl",
+        "land_use_group",
+        "event_disaster_type",
+        "urban_rural_stratum",
+        "osm_dist_any_m",
+        "osm_power_count_1000m",
+        "osm_medical_count_1000m",
+        "pixel_cloud_proxy",
+        "pixel_pre_valid_ratio",
+        "pixel_post_valid_ratio",
+        "missing_cloud_flag",
+        "urban_share_1km",
+        "water_share_1km",
+        "developed_high_share_1km",
+        "is_cbsa",
+        "is_urban_area",
+        "pop_density_log1p",
+        "pop_density_per_km2",
+    ]
+    merge_src = panel[["pixel_id"] + [c for c in feature_cols if c in panel.columns]].drop_duplicates(subset=["pixel_id"])
+    rec = rec[keep_cols].merge(merge_src, on="pixel_id", how="left")
+    rec = rec[rec["event_id"].isin(panel["event_id"].unique())].copy()
+    rec["sample_lock_flag"] = 1
     return rec
 
 
@@ -1162,7 +1171,6 @@ def run_cloud_ablation(panel: pd.DataFrame, recovery: pd.DataFrame) -> Tuple[pd.
     fold.to_csv(CLOUD_FOLD_PATH, index=False)
     agg.to_csv(CLOUD_AGG_PATH, index=False)
     imp.to_csv(CLOUD_IMPORTANCE_PATH, index=False)
-    coef.to_csv(CLOUD_COEF_PATH, index=False)
     return fold, agg, coef
 
 
@@ -1224,7 +1232,6 @@ def run_noise_mask(panel: pd.DataFrame, recovery: pd.DataFrame) -> Tuple[pd.Data
     coverage.to_csv(MASK_COVERAGE_PATH, index=False)
     agg.to_csv(MASK_METRICS_PATH, index=False)
     coef_effect.to_csv(MASK_COEF_PATH, index=False)
-    coef.to_csv(MASK_FULL_COEF_PATH, index=False)
     return fold, agg, coef
 
 
@@ -1243,7 +1250,7 @@ def run_urban_population(panel: pd.DataFrame, recovery: pd.DataFrame) -> Tuple[p
 
     fold_parts, agg_parts, coef_parts = [], [], []
 
-    num_terms = BASE_NUMERIC + ["pixel_cloud_proxy", "is_cbsa", "is_urban_area", "pop_density_log1p", "missing_pop_flag"]
+    num_terms = BASE_NUMERIC + ["pixel_cloud_proxy", "is_cbsa", "is_urban_area", "pop_density_log1p"]
     cat_terms = ["land_use_group", "event_disaster_type", "urban_rural_stratum"]
 
     # Full
@@ -1296,9 +1303,7 @@ def run_urban_population(panel: pd.DataFrame, recovery: pd.DataFrame) -> Tuple[p
 
     split_summary.to_csv(URBAN_SPLIT_PATH, index=False)
     agg.to_csv(URBAN_MODEL_PATH, index=False)
-    coef = pd.concat(coef_parts, ignore_index=True)
-    coef.to_csv(URBAN_COEF_PATH, index=False)
-    return fold, agg, coef
+    return fold, agg, pd.concat(coef_parts, ignore_index=True)
 
 
 def _moran_i_knn(df: pd.DataFrame, value_col: str, k: int = 8, n_perm: int = 199) -> Tuple[float, float]:
@@ -1352,7 +1357,7 @@ def _moran_i_knn(df: pd.DataFrame, value_col: str, k: int = 8, n_perm: int = 199
 def run_spatial_and_contribution(panel: pd.DataFrame, coef_all: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     p = _prepare_columns(
         panel,
-        numeric_terms=BASE_NUMERIC + ["pixel_cloud_proxy", "is_cbsa", "is_urban_area", "pop_density_log1p", "missing_pop_flag"],
+        numeric_terms=BASE_NUMERIC + ["pixel_cloud_proxy", "is_cbsa", "is_urban_area", "pop_density_log1p"],
         cat_terms=["land_use_group", "event_disaster_type", "urban_rural_stratum"],
     )
 
@@ -1835,12 +1840,12 @@ def run_spatial_block_cv(panel: pd.DataFrame, recovery: pd.DataFrame) -> pd.Data
     fold_rows: List[Dict[str, object]] = []
 
     for fold_idx, (train_idx, test_idx) in enumerate(gkf.split(p, groups=groups), start=1):
-        tr_panel = _prepare_columns(p.iloc[train_idx].copy(), numeric_terms, cat_terms, required_numeric=("delta_ntl", "is_damaged"))
-        te_panel = _prepare_columns(p.iloc[test_idx].copy(), numeric_terms, cat_terms, required_numeric=("delta_ntl", "is_damaged"))
+        tr_panel = _prepare_columns(p.iloc[train_idx].copy(), numeric_terms, cat_terms)
+        te_panel = _prepare_columns(p.iloc[test_idx].copy(), numeric_terms, cat_terms)
         train_pixels = set(tr_panel["pixel_id"].astype(str))
         test_pixels = set(te_panel["pixel_id"].astype(str))
-        tr_rec = _prepare_columns(recovery[recovery["pixel_id"].astype(str).isin(train_pixels)].copy(), numeric_terms, cat_terms, required_numeric=("recovery_days", "event_observed"))
-        te_rec = _prepare_columns(recovery[recovery["pixel_id"].astype(str).isin(test_pixels)].copy(), numeric_terms, cat_terms, required_numeric=("recovery_days", "event_observed"))
+        tr_rec = _prepare_columns(recovery[recovery["pixel_id"].astype(str).isin(train_pixels)].copy(), numeric_terms, cat_terms)
+        te_rec = _prepare_columns(recovery[recovery["pixel_id"].astype(str).isin(test_pixels)].copy(), numeric_terms, cat_terms)
         rows, _ = _evaluate_fold(
             tr_panel,
             te_panel,
@@ -2098,7 +2103,7 @@ def _plot_quality_matched_summary(quality_agg: pd.DataFrame, spatial_block_agg: 
 
 def _update_quality_index() -> None:
     line = "- `project/modeling_report/11_quality_matched_report.md`"
-    note = "- Appendix quality/matched outputs: `project/modeling/output/quality_transport_aggregate_metrics_v1.csv`, `project/modeling/output/facility_centered_model_summary.csv`, `project/modeling/output/spatial_block_cv_metrics_v1.csv`"
+    note = "- Quality/matched outputs: `project/modeling/output/quality_transport_aggregate_metrics_v1.csv`, `project/modeling/output/facility_centered_model_summary.csv`, `project/modeling/output/spatial_block_cv_metrics_v1.csv`"
     text = INDEX_PATH.read_text(encoding="utf-8") if INDEX_PATH.exists() else "# Modeling Report Index\n\n## Deliverables\n"
     if line not in text:
         text = text.rstrip() + "\n" + line + "\n"
@@ -2144,7 +2149,7 @@ def _write_quality_report(target_audit: pd.DataFrame, quality_agg: pd.DataFrame,
         f"- Mean absolute delta adjustment: {target_audit['delta_shift_abs_mean'].mean():.4f}" if not target_audit.empty else "- Mean absolute delta adjustment: NA",
         f"- Worst observed-rate event: {target_audit.sort_values('observed_rate_v2').iloc[0]['event_id']} ({target_audit.sort_values('observed_rate_v2').iloc[0]['observed_rate_v2']:.3f})" if not target_audit.empty else "- Worst observed-rate event: NA",
         "",
-        "## Appendix: Post-Hoc Quality Adjustment",
+        "## Quality-Aware LOEO Transport",
         f"- Logit AUC: {q_auc:.4f}",
         f"- Logit Brier: {q_brier:.4f}",
         f"- AFT c-index: {q_aft:.4f}",
@@ -2163,7 +2168,7 @@ def _write_quality_report(target_audit: pd.DataFrame, quality_agg: pd.DataFrame,
         f"- Paired ATT (treated-control delta_ntl): {float(att_row['value'].iloc[0]):.4f}" if not att_row.empty else "- Paired ATT: NA",
         f"- Mean matched pairs per facility: {match_quality['matched_pairs'].mean():.2f}" if not match_quality.empty else "- Mean matched pairs per facility: NA",
         "",
-        "## Appendix Interpretation",
+        "## Key Interpretation",
         "- 如果 quality-aware transport 比当前 v3r1 更稳，说明瓶颈的一部分来自 target/recovery 噪声。",
         "- 如果 matched 结果仍保持 buffer 正向信号，说明关键设施局地韧性并非完全由土地利用与城市密度混淆驱动。",
         "- 如果 spatial block CV 下分数明显回落，说明后续论文口径必须强调空间依赖修正。",
@@ -2188,7 +2193,8 @@ def _run_quality_matched_v1_impl() -> int:
     ctx = RunContext(issues=[])
 
     append_progress("Quality+matched V1 started")
-    panel = _filter_sample_lock(pd.read_parquet(PANEL_IN_PATH))
+    panel = pd.read_parquet(PANEL_IN_PATH)
+    panel = panel[panel.get("sample_lock_flag", 1) == 1].copy()
 
     append_progress("Quality+matched V1: build quality-adjusted targets and recovery v2")
     panel_q, rec_v2, target_audit = build_target_quality_panel(panel)
@@ -2532,7 +2538,7 @@ def _write_hazard_transport_report(
 
 def _update_hazard_index() -> None:
     line = "- `project/modeling_report/12_hazard_exposure_transport_report.md`"
-    note = "- Appendix hazard/exposure outputs: `project/modeling/output/hazard_transport_aggregate_metrics_v1.csv`, `project/modeling/output/event_selection_scorecard_v1.csv`"
+    note = "- Hazard mainline outputs: `project/modeling/output/hazard_transport_aggregate_metrics_v1.csv`, `project/modeling/output/event_selection_scorecard_v1.csv`"
     text = INDEX_PATH.read_text(encoding="utf-8") if INDEX_PATH.exists() else "# Modeling Report Index\n\n## Deliverables\n"
     if line not in text:
         text = text.rstrip() + "\n" + line + "\n"
@@ -2553,7 +2559,8 @@ def _run_hazard_mainline_v1_impl() -> int:
         rec_v2 = pd.read_parquet(RECOVERY_V2_PATH)
         target_audit = pd.read_csv(TARGET_QUALITY_AUDIT_PATH) if TARGET_QUALITY_AUDIT_PATH.exists() else pd.DataFrame()
     else:
-        panel = _filter_sample_lock(pd.read_parquet(PANEL_IN_PATH))
+        panel = pd.read_parquet(PANEL_IN_PATH)
+        panel = panel[panel.get("sample_lock_flag", 1) == 1].copy()
         panel_q, rec_v2, target_audit = build_target_quality_panel(panel)
 
     append_progress("Hazard mainline V1: attach hazard/exposure features")
@@ -3981,110 +3988,6 @@ def _write_report(
     REPORT_PATH.write_text("\n".join(report) + "\n", encoding="utf-8")
 
 
-def _load_exploration_inputs(ctx: RunContext) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    if not PANEL_IN_PATH.exists():
-        raise FileNotFoundError(f"Missing panel input: {PANEL_IN_PATH}")
-
-    panel = _filter_sample_lock(pd.read_parquet(PANEL_IN_PATH))
-    panel = _prepare_noise_groups(panel)
-    panel, pop_quality = attach_urban_population(panel, ctx)
-    pop_quality.to_csv(POP_QUALITY_PATH, index=False)
-
-    for c in ADDED_FIELDS:
-        if c not in panel.columns:
-            panel[c] = np.nan
-
-    panel.to_parquet(PANEL_OUT_PATH, index=False)
-    rec = build_recovery_from_panel(panel, ctx=ctx)
-    return panel, rec, pop_quality
-
-
-def _run_cloud_ablation_impl() -> int:
-    ensure_directories()
-    init_tracking_files()
-    FIG_EXP_DIR.mkdir(parents=True, exist_ok=True)
-    ctx = RunContext(issues=[])
-    append_progress("Exploration V2: cloud ablation bundle started")
-    panel, rec, _ = _load_exploration_inputs(ctx)
-    run_cloud_ablation(panel, rec)
-    save_issue_log(ctx)
-    append_progress("Exploration V2: cloud ablation bundle completed")
-    return 0
-
-
-def _run_noise_mask_impl() -> int:
-    ensure_directories()
-    init_tracking_files()
-    FIG_EXP_DIR.mkdir(parents=True, exist_ok=True)
-    ctx = RunContext(issues=[])
-    append_progress("Exploration V2: noise mask bundle started")
-    panel, rec, _ = _load_exploration_inputs(ctx)
-    run_noise_mask(panel, rec)
-    save_issue_log(ctx)
-    append_progress("Exploration V2: noise mask bundle completed")
-    return 0
-
-
-def _run_urban_rural_impl() -> int:
-    ensure_directories()
-    init_tracking_files()
-    FIG_EXP_DIR.mkdir(parents=True, exist_ok=True)
-    ctx = RunContext(issues=[])
-    append_progress("Exploration V2: urban-rural bundle started")
-    panel, rec, _ = _load_exploration_inputs(ctx)
-    run_urban_population(panel, rec)
-    save_issue_log(ctx)
-    append_progress("Exploration V2: urban-rural bundle completed")
-    return 0
-
-
-def _load_required_coef_outputs() -> pd.DataFrame:
-    required = [CLOUD_COEF_PATH, MASK_FULL_COEF_PATH, URBAN_COEF_PATH]
-    missing = [str(path.relative_to(ROOT)) for path in required if not path.exists()]
-    if missing:
-        raise FileNotFoundError(
-            "Spatial diagnostics requires existing cloud-ablation, noise-mask, and urban-rural coefficient outputs. "
-            f"Missing: {missing}. Run those bundles first or use `run-v2`."
-        )
-    coef_parts = [pd.read_csv(CLOUD_COEF_PATH), pd.read_csv(MASK_FULL_COEF_PATH), pd.read_csv(URBAN_COEF_PATH)]
-    return pd.concat(coef_parts, ignore_index=True)
-
-
-def _run_spatial_diagnostics_impl() -> int:
-    ensure_directories()
-    init_tracking_files()
-    FIG_EXP_DIR.mkdir(parents=True, exist_ok=True)
-    ctx = RunContext(issues=[])
-    append_progress("Exploration V2: spatial diagnostics bundle started")
-    panel, _, _ = _load_exploration_inputs(ctx)
-    coef_all = _load_required_coef_outputs()
-    run_spatial_and_contribution(panel, coef_all)
-    save_issue_log(ctx)
-    append_progress("Exploration V2: spatial diagnostics bundle completed")
-    return 0
-
-
-def _run_extreme_event_sensitivity_impl() -> int:
-    ensure_directories()
-    init_tracking_files()
-    FIG_EXP_DIR.mkdir(parents=True, exist_ok=True)
-    ctx = RunContext(issues=[])
-    append_progress("Exploration V2: extreme-event sensitivity bundle started")
-    panel, rec, _ = _load_exploration_inputs(ctx)
-    _, score = _compute_extreme_candidates()
-    if score.empty:
-        pd.DataFrame(columns=["event_id", "high_shift_flag", "poor_perf_flag", "extreme_candidate"]).to_csv(EXTREME_CANDIDATE_PATH, index=False)
-        pd.DataFrame(columns=["event_id", "extreme_score", "source_ref"]).to_csv(EXTREME_SCORE_PATH, index=False)
-        pd.DataFrame(columns=["experiment_family", "spec_id", "fold_event", "model", "rmse", "mae", "auc", "brier", "c_index", "coef_in_buffer", "notes"]).to_csv(EXTREME_DROP_METRIC_PATH, index=False)
-        pd.DataFrame(columns=["experiment_family", "spec_id", "model", "rmse", "mae", "auc", "brier", "c_index", "coef_in_buffer", "n_folds"]).to_csv(EXTREME_DROP_AGG_PATH, index=False)
-        EXTREME_DECISION_PATH.write_text(json.dumps({"decision": "missing_baseline_files", "extreme_candidates": []}, ensure_ascii=False, indent=2), encoding="utf-8")
-    else:
-        run_extreme_drop_sensitivity(panel, rec, score)
-    save_issue_log(ctx)
-    append_progress("Exploration V2: extreme-event sensitivity bundle completed")
-    return 0
-
-
 def _run_v2_impl() -> int:
     ensure_directories()
     init_tracking_files()
@@ -4094,7 +3997,26 @@ def _run_v2_impl() -> int:
 
     append_progress("Exploration V2 pipeline started")
 
-    panel, rec, pop_quality = _load_exploration_inputs(ctx)
+    if not PANEL_IN_PATH.exists():
+        raise FileNotFoundError(f"Missing panel input: {PANEL_IN_PATH}")
+
+    panel = pd.read_parquet(PANEL_IN_PATH)
+    panel = panel[panel.get("sample_lock_flag", 1) == 1].copy()
+    panel = _prepare_noise_groups(panel)
+
+    # Urban + population enrich
+    panel, pop_quality = attach_urban_population(panel, ctx)
+    pop_quality.to_csv(POP_QUALITY_PATH, index=False)
+
+    # Ensure required added fields exist
+    for c in ADDED_FIELDS:
+        if c not in panel.columns:
+            panel[c] = np.nan
+
+    panel.to_parquet(PANEL_OUT_PATH, index=False)
+
+    # Recovery panel synced with enriched features
+    rec = build_recovery_from_panel(panel)
 
     append_progress("Exploration V2: cloud ablation")
     cloud_fold, cloud_agg, cloud_coef = run_cloud_ablation(panel, rec)
@@ -4182,23 +4104,13 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    if args.command == 'cloud-ablation':
-        return _run_cloud_ablation_impl()
-    if args.command == 'noise-mask':
-        return _run_noise_mask_impl()
-    if args.command == 'urban-rural':
-        return _run_urban_rural_impl()
-    if args.command == 'spatial-diagnostics':
-        return _run_spatial_diagnostics_impl()
-    if args.command == 'extreme-event-sensitivity':
-        return _run_extreme_event_sensitivity_impl()
     if args.command == 'quality-matched-v1':
         return _run_quality_matched_v1_impl()
     if args.command == 'hazard-mainline-v1':
         return _run_hazard_mainline_v1_impl()
     if args.command == 'event-expansion-v1':
         return _run_event_expansion_v1_impl()
-    if args.command in {'run-v2', 'full-run'}:
+    if args.command in {'run-v2', 'cloud-ablation', 'noise-mask', 'urban-rural', 'spatial-diagnostics', 'extreme-event-sensitivity', 'full-run'}:
         return _run_v2_impl()
     parser.error(f'Unknown command: {args.command}')
     return 2

@@ -1990,13 +1990,30 @@ def run_pipeline() -> None:
     rec_thr = float(defaults["recovery_threshold"])
 
     # Stage 1: baseline panel and models
-    panel = build_pixel_panel(
-        ctx,
-        pre_threshold=pre_thr,
-        damage_threshold=dmg_thr,
-        exclude_types=None,
-        output_path=PANEL_PATH,
-    )
+    try:
+        panel = build_pixel_panel(
+            ctx,
+            pre_threshold=pre_thr,
+            damage_threshold=dmg_thr,
+            exclude_types=None,
+            output_path=PANEL_PATH,
+        )
+    except Exception as e_panel:
+        if PANEL_PATH.exists():
+            panel = pd.read_parquet(PANEL_PATH)
+            log_issue(
+                ctx,
+                stage="run_pipeline",
+                model="all",
+                event_id="all",
+                issue_type="panel_build_failed_use_cached",
+                symptom=str(e_panel),
+                fix_action="load existing all_events_pixel_panel_v1.parquet",
+                impact="pipeline continues without raw pre/post rebuild",
+                status="resolved",
+            )
+        else:
+            raise
 
     panel = attach_cloud_features(ctx=ctx, panel_path=PANEL_PATH, output_path=PANEL_PATH)
 
@@ -2012,7 +2029,24 @@ def run_pipeline() -> None:
     logit_base["roc"].to_csv(OUTPUT_DIR / "logit_roc_no_nlcd.csv", index=False)
     logit_base["calibration"].to_csv(OUTPUT_DIR / "logit_calibration_no_nlcd.csv", index=False)
 
-    rec_base = build_recovery_panel(ctx, panel, threshold=rec_thr, output_path=RECOVERY_PATH)
+    try:
+        rec_base = build_recovery_panel(ctx, panel, threshold=rec_thr, output_path=RECOVERY_PATH)
+    except Exception as e_rec:
+        if RECOVERY_PATH.exists():
+            rec_base = pd.read_parquet(RECOVERY_PATH)
+            log_issue(
+                ctx,
+                stage="run_pipeline",
+                model="Cox",
+                event_id="all",
+                issue_type="recovery_build_failed_use_cached",
+                symptom=str(e_rec),
+                fix_action="load existing recovery_daily_panel_v1.parquet",
+                impact="cox baseline runs on cached recovery panel",
+                status="resolved",
+            )
+        else:
+            raise
     cox_base = fit_cox(ctx, rec_base, variant="no_nlcd", include_land_use=False)
     cox_tables.append(cox_base)
     cox_base["km"].to_csv(OUTPUT_DIR / "cox_km_no_nlcd.csv", index=False)
@@ -2033,7 +2067,26 @@ def run_pipeline() -> None:
         logit_lu["roc"].to_csv(OUTPUT_DIR / "logit_roc_with_nlcd.csv", index=False)
         logit_lu["calibration"].to_csv(OUTPUT_DIR / "logit_calibration_with_nlcd.csv", index=False)
 
-        rec_lu = build_recovery_panel(ctx, panel_nlcd, threshold=rec_thr, output_path=None)
+        try:
+            rec_lu = build_recovery_panel(ctx, panel_nlcd, threshold=rec_thr, output_path=None)
+        except Exception as e_rec_lu:
+            if RECOVERY_PATH.exists():
+                rec_lu = pd.read_parquet(RECOVERY_PATH).copy()
+                lu = panel_nlcd[["pixel_id", "land_use"]].drop_duplicates(subset=["pixel_id"])
+                rec_lu = rec_lu.merge(lu, on="pixel_id", how="left")
+                log_issue(
+                    ctx,
+                    stage="run_pipeline",
+                    model="Cox",
+                    event_id="all",
+                    issue_type="recovery_build_failed_use_cached_with_land_use",
+                    symptom=str(e_rec_lu),
+                    fix_action="merge cached recovery panel with panel_nlcd land_use by pixel_id",
+                    impact="cox with_nlcd runs without rebuilding post-event stacks",
+                    status="resolved",
+                )
+            else:
+                raise
         cox_lu = fit_cox(ctx, rec_lu, variant="with_nlcd", include_land_use=True)
         cox_tables.append(cox_lu)
         cox_lu["km"].to_csv(OUTPUT_DIR / "cox_km_with_nlcd.csv", index=False)

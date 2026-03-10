@@ -17,23 +17,23 @@
 ## Metric Comparison
 - v3r1 Logit AUC: 0.4827
 - quality Logit AUC: 0.4973
-- hazard Logit AUC: 0.6001
+- hazard Logit AUC: 0.6025
 - v3r1 survival best: 0.5213
 - quality survival best: 0.5174
 - hazard survival best: 0.5341
-- hazard Logit Brier: 0.4406
+- hazard Logit Brier: 0.4424
 
 ## Top Hazard Features (Logit)
-- island_local_urban: mean_coef=2.0349, abs=2.0349, sign_consistency=1.00
-- event_cloud_shift: mean_coef=1.3194, abs=1.3194, sign_consistency=1.00
-- event_precip_log1p: mean_coef=-1.1512, abs=1.1512, sign_consistency=1.00
-- island_local_water: mean_coef=-1.0916, abs=1.0916, sign_consistency=1.00
-- event_duration_log1p: mean_coef=1.0258, abs=1.0258, sign_consistency=1.00
+- island_local_urban: mean_coef=2.2291, abs=2.2291, sign_consistency=1.00
+- event_cloud_shift: mean_coef=1.3656, abs=1.3656, sign_consistency=1.00
+- event_precip_log1p: mean_coef=-1.1555, abs=1.1555, sign_consistency=1.00
+- island_local_water: mean_coef=-1.1239, abs=1.1239, sign_consistency=1.00
+- event_duration_log1p: mean_coef=1.0017, abs=1.0017, sign_consistency=1.00
 
 ## Event Selection Signals
-- michael_panamacity: damage_auc=0.3560, survival_best=0.5797, signal=poor_damage_transport_holdout
-- laura_lakecharles: damage_auc=0.5288, survival_best=0.5470, signal=add_more_low_urban_events
-- irma_miami: damage_auc=0.5451, survival_best=0.5097, signal=representative_keep
+- michael_panamacity: damage_auc=0.3562, survival_best=0.5797, signal=poor_damage_transport_holdout
+- laura_lakecharles: damage_auc=0.5296, survival_best=0.5470, signal=add_more_low_urban_events
+- irma_miami: damage_auc=0.5439, survival_best=0.5097, signal=representative_keep
 
 ## Recommendation
 - 本轮 hazard/exposure 主线显著提升了 damage ranking（AUC），说明事件级暴露差异确实是当前跨事件主线缺失的信息。

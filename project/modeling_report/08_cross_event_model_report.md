@@ -14,12 +14,12 @@
 ### Event Profile Snapshot
 | event_id | disaster_type | event_duration_days | storm_precip_7d | quality_flag |
 |---|---|---|---|---|
-| earthquake_sanjuan | earthquake | 38 | 13.7000 | ok;ok |
-| ida_neworleans | hurricane | 59 | 252.7000 | ok;ok |
-| irma_miami | hurricane | 49 | 182.4000 | ok;ok |
-| laura_lakecharles | hurricane | 89 | 177.8000 | ok;ok |
-| maria_sanjuan | hurricane | 63 | 14.9000 | ok;ok |
-| michael_panamacity | hurricane | 76 | 147.6000 | ok;ok |
+| earthquake_sanjuan | earthquake | 38 | 13.7000 | ok;ok;cloud_summary_fallback |
+| ida_neworleans | hurricane | 59 | 252.7000 | ok;ok;cloud_summary_fallback |
+| irma_miami | hurricane | 49 | 182.4000 | ok;ok;cloud_summary_fallback |
+| laura_lakecharles | hurricane | 89 | 177.8000 | ok;ok;cloud_summary_fallback |
+| maria_sanjuan | hurricane | 63 | 14.9000 | ok;ok;cloud_summary_fallback |
+| michael_panamacity | hurricane | 76 | 147.6000 | ok;ok;cloud_summary_fallback |
 
 ## Specs
 - Interpretable track: OLS, MixedLM, Logit, Cox, AFT（统一 transport 口径，不使用 event FE 作为主预测特征）
@@ -27,12 +27,12 @@
 - Validation: LOEO (6 folds), each fold trains on 5 events and tests on 1 unseen event.
 
 ## Fold Results
-- Logit AUC: 0.4897 (vs strict-v2 0.4654, Δ=+0.0242)
-- Logit Brier: 0.3110 (vs strict-v2 0.2578, Δ=+0.0532)
-- Cox c-index: 0.4641 (vs strict-v2 0.5121, Δ=-0.0479)
-- OLS RMSE: 0.5243 (vs strict-v2 0.4243, Δ=+0.1000)
-- MixedLM RMSE: 0.4842 (vs strict-v2 0.4437, Δ=+0.0405)
-- HGBClassifier AUC: 0.5688
+- Logit AUC: 0.4897 (vs strict-v2 0.4549, Δ=+0.0349)
+- Logit Brier: 0.3110 (vs strict-v2 0.2542, Δ=+0.0568)
+- Cox c-index: 0.4641 (vs strict-v2 0.5200, Δ=-0.0559)
+- OLS RMSE: 0.5243 (vs strict-v2 0.4132, Δ=+0.1111)
+- MixedLM RMSE: 0.6010 (vs strict-v2 0.4512, Δ=+0.1498)
+- HGBClassifier AUC: N/A
 
 ## Improvement Verdict
 - Verdict: **Partially Improved**
