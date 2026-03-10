@@ -159,10 +159,28 @@ HAZARD_FEATURE_SUMMARY_PATH = OUTPUT_DIR / "hazard_transport_feature_summary_v1.
 EVENT_SELECTION_PATH = OUTPUT_DIR / "event_selection_scorecard_v1.csv"
 HAZARD_REPORT_PATH = REPORT_DIR / "12_hazard_exposure_transport_report.md"
 HAZARD_FIG_PATH = FIG_EXP_DIR / "hazard_transport_compare_v1.png"
+EVENT_READINESS_SCORE_PATH = OUTPUT_DIR / "event_readiness_score_v1.csv"
+HAZARD_READY_FOLD_PATH = OUTPUT_DIR / "hazard_transport_readiness_fold_metrics_v1.csv"
+HAZARD_READY_AGG_PATH = OUTPUT_DIR / "hazard_transport_readiness_aggregate_metrics_v1.csv"
+HAZARD_READY_FEATURE_SUMMARY_PATH = OUTPUT_DIR / "hazard_transport_readiness_feature_summary_v1.csv"
+HAZARD_READY_EVENTS_PATH = OUTPUT_DIR / "hazard_transport_readiness_events_v1.csv"
+HAZARD_READY_REPORT_PATH = REPORT_DIR / "hazard_transport_readiness_report_v1.md"
+HAZARD_READY_FIG_PATH = FIG_EXP_DIR / "hazard_transport_readiness_compare_v1.png"
+
+BUG_TRANSPORT_PANEL_PATH = PIXEL_DIR / "all_events_pixel_panel_v1_bug_transport_v1.parquet"
+BUG_TRANSPORT_FOLD_PATH = OUTPUT_DIR / "bug_transport_fold_metrics_v1.csv"
+BUG_TRANSPORT_AGG_PATH = OUTPUT_DIR / "bug_transport_aggregate_metrics_v1.csv"
+BUG_TRANSPORT_FEATURE_SUMMARY_PATH = OUTPUT_DIR / "bug_transport_feature_summary_v1.csv"
+BUG_TRANSPORT_FEATURE_AUDIT_PATH = OUTPUT_DIR / "bug_transport_feature_audit_v1.csv"
+BUG_TRANSPORT_REPORT_PATH = REPORT_DIR / "bug_transport_report.md"
+BUG_TRANSPORT_FIG_PATH = FIG_EXP_DIR / "bug_transport_compare_v1.png"
 
 # Event-increment outputs
 EVENTS10_PATH = MODELING_DIR / "config" / "events_10.json"
 EVENT_INCREMENT_PLAN_PATH = MODELING_DIR / "config" / "event_increment_plan_v1.json"
+BUG_PRIOR_CONFIG_PATH = MODELING_DIR / "config" / "bug_prior_lookup_v1.json"
+HAZARD_MAINLINE_CANDIDATES_PATH = MODELING_DIR / "config" / "hazard_mainline_candidates_v1.json"
+BUG2_PILOT_CONFIG_PATH = MODELING_DIR / "config" / "bug2_pilot_plan_v1.json"
 REMOTE_REF = "teammate/main"
 FIG_EVENT_INCREMENT_DIR = FIG_DIR / "event_increment"
 EVENT_INCREMENT_REPORT_PATH = REPORT_DIR / "13_event_increment_report.md"
@@ -194,6 +212,20 @@ NEW_EVENT_ORDER = [
     "earthquake_hatay",
     "dorian_freeport",
 ]
+
+BUG_INVENTORY_DIR = ROOT / "project" / "data" / "external" / "bug_inventory"
+BUG_INVENTORY_RAW_DIR = BUG_INVENTORY_DIR / "raw"
+BUG_INVENTORY_CANONICAL_DIR = BUG_INVENTORY_DIR / "canonical"
+BUG2_ACQ_BACKLOG_PATH = OUTPUT_DIR / "bug2_pilot_acquisition_backlog_v1.csv"
+BUG2_PR_CANONICAL_PATH = BUG_INVENTORY_CANONICAL_DIR / "bug_inventory_pr_pilot_v1.csv"
+BUG2_PR_CANONICAL_TEMPLATE_PATH = BUG_INVENTORY_CANONICAL_DIR / "bug_inventory_pr_pilot_v1_template.csv"
+BUG2_QA_PATH = OUTPUT_DIR / "bug2_pr_pilot_qa_v1.csv"
+BUG2_FEATURE_AUDIT_PATH = OUTPUT_DIR / "bug2_pr_feature_audit_v1.csv"
+BUG2_FOLD_PATH = OUTPUT_DIR / "bug2_pr_pilot_fold_metrics_v1.csv"
+BUG2_AGG_PATH = OUTPUT_DIR / "bug2_pr_pilot_aggregate_metrics_v1.csv"
+BUG2_FEATURE_SUMMARY_PATH = OUTPUT_DIR / "bug2_pr_pilot_feature_summary_v1.csv"
+BUG2_REPORT_PATH = REPORT_DIR / "bug2_pr_pilot_report.md"
+BUG2_FIG_PATH = FIG_EXP_DIR / "bug2_pr_pilot_compare_v1.png"
 
 SYNC_MANIFEST_COLS = ["stage", "remote_path", "local_path", "event_id", "file_type", "exists_before", "action", "status", "size_bytes", "source_commit"]
 INPUT_GATE_COLS = ["event_id", "has_pre_dir", "has_post_dir", "pre_tif_n", "post_tif_n", "has_cloud_csv", "has_poi_csv_before", "gate_status", "notes"]
@@ -232,6 +264,22 @@ BASE_NUMERIC = [
     "urban_share_1km",
     "water_share_1km",
     "developed_high_share_1km",
+]
+
+BUG_PRIOR_NUMERIC = [
+    "bug_prior_count_750m",
+    "bug_prior_count_1250m",
+    "bug_prior_capacity_proxy_1km",
+    "bug_prior_hours_proxy_1km",
+    "bug_prior_min_dist_m",
+]
+
+QUALITY_GUARD_NUMERIC = [
+    "pixel_cloud_proxy",
+    "pixel_pre_valid_ratio",
+    "pixel_post_valid_ratio",
+    "recovery_obs_quality_score",
+    "high_censoring_risk_flag",
 ]
 
 CLOUD_VARIANTS = {
@@ -422,6 +470,105 @@ def _safe_numeric(s: pd.Series, default: float = 0.0) -> pd.Series:
     if out.notna().any():
         return out.fillna(out.median())
     return out.fillna(default)
+
+
+def _capacity_band_scalar(band: str) -> float:
+    mapping = {
+        "low": 0.75,
+        "medium": 1.5,
+        "high": 3.0,
+        "very_high": 4.0,
+        "critical": 4.5,
+    }
+    return float(mapping.get(str(band).strip().lower(), 1.0))
+
+
+def _load_bug_prior_lookup() -> pd.DataFrame:
+    cfg = load_json(BUG_PRIOR_CONFIG_PATH)
+    default = cfg.get("default", {}) if isinstance(cfg, dict) else {}
+    facility_types = {}
+    if isinstance(cfg, dict):
+        if isinstance(cfg.get("facility_types"), dict):
+            facility_types = cfg.get("facility_types", {})
+        else:
+            facility_types = {k: v for k, v in cfg.items() if k != "default" and isinstance(v, dict)}
+    rows: List[Dict[str, object]] = []
+    for facility_type, payload in facility_types.items():
+        row = dict(default)
+        if isinstance(payload, dict):
+            row.update(payload)
+        row["facility_type_std"] = str(facility_type)
+        rows.append(row)
+    lookup = pd.DataFrame(rows)
+    if lookup.empty:
+        raise RuntimeError(f"BUG prior lookup is empty: {BUG_PRIOR_CONFIG_PATH}")
+    for c in ["bug_propensity_weight", "night_use_weight", "detectability_weight"]:
+        lookup[c] = _safe_numeric(lookup[c], default=float(default.get(c, 0.25)))
+    lookup["capacity_weight"] = _safe_numeric(lookup.get("capacity_weight", pd.Series(dtype=float)), default=1.0)
+    lookup["capacity_prior_band"] = lookup["capacity_prior_band"].fillna(default.get("capacity_prior_band", "low")).astype(str)
+    return lookup
+
+
+def _bug2_required_columns() -> List[str]:
+    return [
+        "source_dataset",
+        "jurisdiction",
+        "state",
+        "county_or_district",
+        "record_id",
+        "facility_name",
+        "facility_type_raw",
+        "facility_type_std",
+        "fuel_type",
+        "capacity_kw",
+        "operating_hours_annual",
+        "address_raw",
+        "lat",
+        "lon",
+        "geo_quality_flag",
+        "attribute_quality_flag",
+        "source_url",
+    ]
+
+
+def _load_hazard_mainline_candidates() -> List[str]:
+    if HAZARD_MAINLINE_CANDIDATES_PATH.exists():
+        cfg = load_json(HAZARD_MAINLINE_CANDIDATES_PATH)
+        if isinstance(cfg, dict):
+            events = cfg.get("event_ids", [])
+            if isinstance(events, list) and events:
+                return [str(v) for v in events]
+    if EVENT_READINESS_SCORE_PATH.exists():
+        ready = pd.read_csv(EVENT_READINESS_SCORE_PATH)
+        if {"event_id", "readiness_band"}.issubset(ready.columns):
+            allow = ready.loc[ready["readiness_band"].astype(str) == "mainline_ready", "event_id"].astype(str).tolist()
+            if allow:
+                return allow
+    return [
+        "ian_charlotteharbor",
+        "earthquake_sanjuan",
+        "ida_neworleans",
+        "irma_miami",
+        "laura_lakecharles",
+    ]
+
+
+def _load_bug2_pilot_config() -> Dict[str, object]:
+    cfg = load_json(BUG2_PILOT_CONFIG_PATH) if BUG2_PILOT_CONFIG_PATH.exists() else {}
+    if not isinstance(cfg, dict):
+        cfg = {}
+    cfg.setdefault("pilot_state", "PR")
+    cfg.setdefault("pilot_label", "Puerto Rico official BUG pilot")
+    cfg.setdefault("pilot_event_ids", ["earthquake_sanjuan", "maria_sanjuan"])
+    cfg.setdefault("source_dataset", "pr_official_bug_pilot")
+    cfg.setdefault("jurisdiction", "Puerto Rico")
+    cfg.setdefault("county_or_district", "San Juan")
+    cfg.setdefault("source_url", "")
+    cfg.setdefault("source_path", _safe_rel(BUG_INVENTORY_RAW_DIR / "bug_inventory_pr_pilot_raw.csv"))
+    cfg.setdefault("canonical_path", _safe_rel(BUG2_PR_CANONICAL_PATH))
+    cfg.setdefault("coverage_gate", {"min_records": 25, "min_geo_coverage": 0.75, "min_event_hits": 2})
+    cfg.setdefault("canonical_columns", _bug2_required_columns())
+    return cfg
 
 
 def _zscore(x: pd.Series) -> pd.Series:
@@ -2214,6 +2361,286 @@ def _run_quality_matched_v1_impl() -> int:
     return 0
 
 
+def attach_bug_prior_features(panel: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    out = panel.copy()
+    events_cfg = load_json(CONFIG_EVENTS)
+    lookup = _load_bug_prior_lookup()
+    default_row = {
+        "bug_propensity_weight": 0.15,
+        "night_use_weight": 0.25,
+        "detectability_weight": 0.25,
+        "capacity_prior_band": "low",
+    }
+    if BUG_PRIOR_CONFIG_PATH.exists():
+        cfg = load_json(BUG_PRIOR_CONFIG_PATH)
+        if isinstance(cfg, dict) and isinstance(cfg.get("default"), dict):
+            default_row.update(cfg["default"])
+
+    feature_defaults = {
+        "bug_prior_count_750m": 0.0,
+        "bug_prior_count_1250m": 0.0,
+        "bug_prior_capacity_proxy_1km": 0.0,
+        "bug_prior_hours_proxy_1km": 0.0,
+        "bug_prior_min_dist_m": np.nan,
+        "high_conf_bug_buffer": 0,
+    }
+    for col, default in feature_defaults.items():
+        if col not in out.columns:
+            out[col] = default
+
+    audit_rows: List[Dict[str, object]] = []
+
+    for event_id, cfg in events_cfg.items():
+        mask = out["event_id"].astype(str) == str(event_id)
+        if mask.sum() == 0:
+            continue
+
+        poi_path = ROOT / str(cfg["poi_csv"])
+        if not poi_path.exists():
+            out.loc[mask, "bug_prior_count_750m"] = 0.0
+            out.loc[mask, "bug_prior_count_1250m"] = 0.0
+            out.loc[mask, "bug_prior_capacity_proxy_1km"] = 0.0
+            out.loc[mask, "bug_prior_hours_proxy_1km"] = 0.0
+            out.loc[mask, "bug_prior_min_dist_m"] = np.nan
+            out.loc[mask, "high_conf_bug_buffer"] = 0
+            audit_rows.append(
+                {
+                    "event_id": event_id,
+                    "n_obs": int(mask.sum()),
+                    "poi_status": "missing_poi_csv",
+                    "poi_count": 0,
+                    "high_conf_poi_count": 0,
+                    "high_conf_share": 0.0,
+                    "bug_prior_count_750m_constant": 1,
+                    "bug_prior_count_1250m_constant": 1,
+                    "bug_prior_capacity_proxy_1km_constant": 1,
+                    "bug_prior_hours_proxy_1km_constant": 1,
+                    "high_conf_bug_buffer_share": 0.0,
+                }
+            )
+            continue
+
+        poi = pd.read_csv(poi_path).copy()
+        if poi.empty:
+            out.loc[mask, "bug_prior_count_750m"] = 0.0
+            out.loc[mask, "bug_prior_count_1250m"] = 0.0
+            out.loc[mask, "bug_prior_capacity_proxy_1km"] = 0.0
+            out.loc[mask, "bug_prior_hours_proxy_1km"] = 0.0
+            out.loc[mask, "bug_prior_min_dist_m"] = np.nan
+            out.loc[mask, "high_conf_bug_buffer"] = 0
+            audit_rows.append(
+                {
+                    "event_id": event_id,
+                    "n_obs": int(mask.sum()),
+                    "poi_status": "empty_poi_csv",
+                    "poi_count": 0,
+                    "high_conf_poi_count": 0,
+                    "high_conf_share": 0.0,
+                    "bug_prior_count_750m_constant": 1,
+                    "bug_prior_count_1250m_constant": 1,
+                    "bug_prior_capacity_proxy_1km_constant": 1,
+                    "bug_prior_hours_proxy_1km_constant": 1,
+                    "high_conf_bug_buffer_share": 0.0,
+                }
+            )
+            continue
+
+        poi["facility_type_std"] = poi["type"].astype(str).map(standardize_facility_type)
+        poi = poi.merge(lookup, on="facility_type_std", how="left")
+        for c, default in [
+            ("bug_propensity_weight", float(default_row["bug_propensity_weight"])),
+            ("night_use_weight", float(default_row["night_use_weight"])),
+            ("detectability_weight", float(default_row["detectability_weight"])),
+        ]:
+            poi[c] = _safe_numeric(poi[c], default=default)
+        poi["capacity_weight"] = _safe_numeric(poi.get("capacity_weight", pd.Series(dtype=float)), default=1.0)
+        poi["capacity_prior_band"] = poi["capacity_prior_band"].fillna(str(default_row["capacity_prior_band"])).astype(str)
+        poi["capacity_band_scalar"] = poi["capacity_prior_band"].map(_capacity_band_scalar)
+        poi["bug_prior_weight"] = (
+            _safe_numeric(poi["bug_propensity_weight"]) *
+            _safe_numeric(poi["night_use_weight"]) *
+            _safe_numeric(poi["detectability_weight"])
+        )
+        poi["bug_capacity_weight"] = poi["bug_prior_weight"] * _safe_numeric(poi["capacity_weight"], default=1.0) * _safe_numeric(poi["capacity_band_scalar"], default=1.0)
+        poi["bug_hours_weight"] = poi["bug_prior_weight"] * _safe_numeric(poi["night_use_weight"], default=0.25)
+        poi["buffer_radius_m"] = np.where(poi["facility_type_std"] == "aerodrome", BUFFER_RADII["aerodrome"], DEFAULT_BUFFER)
+        poi["high_conf_bug_flag"] = (
+            (poi["bug_propensity_weight"] >= 0.8) &
+            (poi["night_use_weight"] >= 0.8) &
+            (poi["detectability_weight"] >= 0.65)
+        ).astype(int)
+
+        sub = out.loc[mask].copy()
+        transformer = Transformer.from_crs("EPSG:4326", str(cfg["metric_crs"]), always_xy=True)
+        px, py = transformer.transform(sub["lon"].to_numpy(), sub["lat"].to_numpy())
+        qx, qy = transformer.transform(poi["lon"].to_numpy(), poi["lat"].to_numpy())
+        pix_xy = np.column_stack([px, py])
+        poi_xy = np.column_stack([qx, qy])
+        tree = cKDTree(poi_xy)
+
+        idx_750 = tree.query_ball_point(pix_xy, r=750.0)
+        idx_1000 = tree.query_ball_point(pix_xy, r=1000.0)
+        idx_1250 = tree.query_ball_point(pix_xy, r=1250.0)
+
+        prior_weight = poi["bug_prior_weight"].to_numpy(dtype=float)
+        cap_weight = poi["bug_capacity_weight"].to_numpy(dtype=float)
+        hour_weight = poi["bug_hours_weight"].to_numpy(dtype=float)
+
+        def _weighted_sum(ix: Sequence[int], weights: np.ndarray) -> float:
+            if not ix:
+                return 0.0
+            return float(weights[np.asarray(ix, dtype=int)].sum())
+
+        sub["bug_prior_count_750m"] = [_weighted_sum(ix, prior_weight) for ix in idx_750]
+        sub["bug_prior_count_1250m"] = [_weighted_sum(ix, prior_weight) for ix in idx_1250]
+        sub["bug_prior_capacity_proxy_1km"] = [_weighted_sum(ix, cap_weight) for ix in idx_1000]
+        sub["bug_prior_hours_proxy_1km"] = [_weighted_sum(ix, hour_weight) for ix in idx_1000]
+
+        if len(poi_xy):
+            dist_all, _ = tree.query(pix_xy, k=1)
+            sub["bug_prior_min_dist_m"] = dist_all.astype(float)
+        else:
+            sub["bug_prior_min_dist_m"] = np.nan
+
+        high_conf = poi[poi["high_conf_bug_flag"] == 1].copy()
+        if not high_conf.empty:
+            high_xy = np.column_stack([qx[high_conf.index.to_numpy()], qy[high_conf.index.to_numpy()]])
+            high_tree = cKDTree(high_xy)
+            dist_high, idx_high = high_tree.query(pix_xy, k=1)
+            high_radii = high_conf["buffer_radius_m"].to_numpy(dtype=float)
+            sub["high_conf_bug_buffer"] = (dist_high.astype(float) <= high_radii[np.asarray(idx_high, dtype=int)]).astype(int)
+        else:
+            sub["high_conf_bug_buffer"] = 0
+
+        out.loc[mask, "bug_prior_count_750m"] = sub["bug_prior_count_750m"].to_numpy(dtype=float)
+        out.loc[mask, "bug_prior_count_1250m"] = sub["bug_prior_count_1250m"].to_numpy(dtype=float)
+        out.loc[mask, "bug_prior_capacity_proxy_1km"] = sub["bug_prior_capacity_proxy_1km"].to_numpy(dtype=float)
+        out.loc[mask, "bug_prior_hours_proxy_1km"] = sub["bug_prior_hours_proxy_1km"].to_numpy(dtype=float)
+        out.loc[mask, "bug_prior_min_dist_m"] = sub["bug_prior_min_dist_m"].to_numpy(dtype=float)
+        out.loc[mask, "high_conf_bug_buffer"] = sub["high_conf_bug_buffer"].to_numpy(dtype=int)
+
+        audit_rows.append(
+            {
+                "event_id": event_id,
+                "n_obs": int(len(sub)),
+                "poi_status": "ok",
+                "poi_count": int(len(poi)),
+                "high_conf_poi_count": int(high_conf.shape[0]),
+                "high_conf_share": float(high_conf.shape[0] / len(poi)) if len(poi) else 0.0,
+                "bug_prior_count_750m_constant": int(sub["bug_prior_count_750m"].nunique(dropna=True) <= 1),
+                "bug_prior_count_1250m_constant": int(sub["bug_prior_count_1250m"].nunique(dropna=True) <= 1),
+                "bug_prior_capacity_proxy_1km_constant": int(sub["bug_prior_capacity_proxy_1km"].nunique(dropna=True) <= 1),
+                "bug_prior_hours_proxy_1km_constant": int(sub["bug_prior_hours_proxy_1km"].nunique(dropna=True) <= 1),
+                "high_conf_bug_buffer_share": float(sub["high_conf_bug_buffer"].mean()),
+            }
+        )
+
+    out["high_conf_bug_buffer"] = _safe_numeric(out["high_conf_bug_buffer"]).astype(int)
+    out["bug_prior_min_dist_m"] = _safe_numeric(out["bug_prior_min_dist_m"], default=5000.0)
+    out.to_parquet(BUG_TRANSPORT_PANEL_PATH, index=False)
+    audit = pd.DataFrame(audit_rows).sort_values("event_id") if audit_rows else pd.DataFrame()
+    audit.to_csv(BUG_TRANSPORT_FEATURE_AUDIT_PATH, index=False)
+    return out, audit
+
+
+def _merge_bug_features_into_recovery(panel: pd.DataFrame, recovery: pd.DataFrame) -> pd.DataFrame:
+    merge_cols = [
+        "pixel_id",
+        "event_id",
+        "high_conf_bug_buffer",
+        "official_bug_count_1km",
+        "official_bug_kw_sum_1km",
+        "official_bug_hours_proxy_1km",
+        "official_bug_min_dist_m",
+        "official_bug_coverage_flag",
+    ] + BUG_PRIOR_NUMERIC
+    merge_cols = [c for c in merge_cols if c in panel.columns]
+    rec = recovery.drop(columns=[c for c in merge_cols if c in recovery.columns and c not in {"pixel_id", "event_id"}], errors="ignore")
+    return rec.merge(panel[merge_cols].drop_duplicates(subset=["pixel_id"]), on=["pixel_id", "event_id"], how="left")
+
+
+def run_bug_aware_transport(panel: pd.DataFrame, recovery: pd.DataFrame) -> SpecResult:
+    specs: List[Tuple[str, pd.DataFrame, pd.DataFrame, List[str]]] = []
+
+    specs.append(("BUG0", panel.copy(), recovery.copy(), BASE_NUMERIC + QUALITY_GUARD_NUMERIC))
+    specs.append(("BUG1A", panel.copy(), recovery.copy(), BASE_NUMERIC + QUALITY_GUARD_NUMERIC + BUG_PRIOR_NUMERIC))
+
+    panel_b = panel.copy()
+    rec_b = recovery.copy()
+    panel_b["legacy_in_buffer"] = panel_b["in_buffer"]
+    panel_b["in_buffer"] = _safe_numeric(panel_b["high_conf_bug_buffer"]).astype(int)
+    rec_b["legacy_in_buffer"] = rec_b["in_buffer"]
+    rec_b["in_buffer"] = _safe_numeric(rec_b["high_conf_bug_buffer"]).astype(int)
+    specs.append(("BUG1B", panel_b, rec_b, BASE_NUMERIC + QUALITY_GUARD_NUMERIC + BUG_PRIOR_NUMERIC))
+
+    panel_c = panel.copy()
+    rec_c = recovery.copy()
+    panel_c["legacy_in_buffer"] = panel_c["in_buffer"]
+    panel_c["in_buffer"] = _safe_numeric(panel_c["high_conf_bug_buffer"]).astype(int)
+    rec_c["legacy_in_buffer"] = rec_c["in_buffer"]
+    rec_c["in_buffer"] = _safe_numeric(rec_c["high_conf_bug_buffer"]).astype(int)
+    specs.append(("BUG1C", panel_c, rec_c, QUALITY_GUARD_NUMERIC + BUG_PRIOR_NUMERIC))
+
+    fold_parts: List[pd.DataFrame] = []
+    agg_parts: List[pd.DataFrame] = []
+    coef_parts: List[pd.DataFrame] = []
+    for spec_id, spec_panel, spec_recovery, numeric_terms in specs:
+        res = run_loeo_spec(
+            spec_panel,
+            spec_recovery,
+            numeric_terms=numeric_terms,
+            cat_terms=["land_use_group", "event_disaster_type"],
+            experiment_family="bug_transport",
+            spec_id=spec_id,
+        )
+        fold_parts.append(res.fold_df)
+        agg_parts.append(res.agg_df)
+        coef_parts.append(res.coef_df)
+
+    fold_df = pd.concat(fold_parts, ignore_index=True) if fold_parts else pd.DataFrame()
+    agg_df = pd.concat(agg_parts, ignore_index=True) if agg_parts else pd.DataFrame()
+    coef_df = pd.concat(coef_parts, ignore_index=True) if coef_parts else pd.DataFrame()
+    fold_df.to_csv(BUG_TRANSPORT_FOLD_PATH, index=False)
+    agg_df.to_csv(BUG_TRANSPORT_AGG_PATH, index=False)
+    return SpecResult(fold_df=fold_df, agg_df=agg_df, coef_df=coef_df)
+
+
+def summarize_bug_transport_features(coef_df: pd.DataFrame) -> pd.DataFrame:
+    if coef_df.empty:
+        out = pd.DataFrame(columns=["spec_id", "model", "feature", "mean_coef", "mean_abs_coef", "sign_consistency", "folds"])
+        out.to_csv(BUG_TRANSPORT_FEATURE_SUMMARY_PATH, index=False)
+        return out
+
+    tracked = set(BUG_PRIOR_NUMERIC) | {"in_buffer", "high_conf_bug_buffer"}
+    sub = coef_df[coef_df["feature"].isin(tracked)].copy()
+    if sub.empty:
+        out = pd.DataFrame(columns=["spec_id", "model", "feature", "mean_coef", "mean_abs_coef", "sign_consistency", "folds"])
+        out.to_csv(BUG_TRANSPORT_FEATURE_SUMMARY_PATH, index=False)
+        return out
+
+    rows = []
+    for (spec_id, model, feature), grp in sub.groupby(["spec_id", "model", "feature"], dropna=False):
+        coef = pd.to_numeric(grp["coef"], errors="coerce").dropna()
+        if coef.empty:
+            continue
+        pos = float((coef > 0).mean())
+        neg = float((coef < 0).mean())
+        rows.append(
+            {
+                "spec_id": spec_id,
+                "model": model,
+                "feature": feature,
+                "mean_coef": float(coef.mean()),
+                "mean_abs_coef": float(coef.abs().mean()),
+                "sign_consistency": max(pos, neg),
+                "folds": int(coef.shape[0]),
+            }
+        )
+    out = pd.DataFrame(rows).sort_values(["spec_id", "model", "mean_abs_coef"], ascending=[True, True, False])
+    out.to_csv(BUG_TRANSPORT_FEATURE_SUMMARY_PATH, index=False)
+    return out
+
+
 def attach_hazard_exposure_features(panel: pd.DataFrame) -> pd.DataFrame:
     out = panel.copy()
     if not EVENT_PROFILE_V1_PATH.exists():
@@ -2266,7 +2693,14 @@ def attach_hazard_exposure_features(panel: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def run_hazard_aware_transport(panel: pd.DataFrame, recovery: pd.DataFrame) -> SpecResult:
+def run_hazard_aware_transport(
+    panel: pd.DataFrame,
+    recovery: pd.DataFrame,
+    spec_id: str = "HZ1",
+    experiment_family: str = "hazard_transport",
+    fold_path: Path = HAZARD_TRANSPORT_FOLD_PATH,
+    agg_path: Path = HAZARD_TRANSPORT_AGG_PATH,
+) -> SpecResult:
     numeric_terms = BASE_NUMERIC + [
         "pixel_cloud_proxy",
         "recovery_obs_quality_score",
@@ -2286,18 +2720,18 @@ def run_hazard_aware_transport(panel: pd.DataFrame, recovery: pd.DataFrame) -> S
         recovery,
         numeric_terms=numeric_terms,
         cat_terms=cat_terms,
-        experiment_family="hazard_transport",
-        spec_id="HZ1",
+        experiment_family=experiment_family,
+        spec_id=spec_id,
     )
-    res.fold_df.to_csv(HAZARD_TRANSPORT_FOLD_PATH, index=False)
-    res.agg_df.to_csv(HAZARD_TRANSPORT_AGG_PATH, index=False)
+    res.fold_df.to_csv(fold_path, index=False)
+    res.agg_df.to_csv(agg_path, index=False)
     return res
 
 
-def summarize_hazard_features(coef_df: pd.DataFrame) -> pd.DataFrame:
+def summarize_hazard_features(coef_df: pd.DataFrame, output_path: Path = HAZARD_FEATURE_SUMMARY_PATH) -> pd.DataFrame:
     if coef_df.empty:
         out = pd.DataFrame(columns=["model", "feature", "mean_coef", "mean_abs_coef", "sign_consistency", "folds"])
-        out.to_csv(HAZARD_FEATURE_SUMMARY_PATH, index=False)
+        out.to_csv(output_path, index=False)
         return out
 
     hazard_features = {
@@ -2314,7 +2748,7 @@ def summarize_hazard_features(coef_df: pd.DataFrame) -> pd.DataFrame:
     sub = coef_df[coef_df["feature"].isin(hazard_features)].copy()
     if sub.empty:
         out = pd.DataFrame(columns=["model", "feature", "mean_coef", "mean_abs_coef", "sign_consistency", "folds"])
-        out.to_csv(HAZARD_FEATURE_SUMMARY_PATH, index=False)
+        out.to_csv(output_path, index=False)
         return out
 
     rows = []
@@ -2335,8 +2769,212 @@ def summarize_hazard_features(coef_df: pd.DataFrame) -> pd.DataFrame:
             }
         )
     out = pd.DataFrame(rows).sort_values(["model", "mean_abs_coef"], ascending=[True, False])
-    out.to_csv(HAZARD_FEATURE_SUMMARY_PATH, index=False)
+    out.to_csv(output_path, index=False)
     return out
+
+
+def _prepare_hazard_transport_inputs() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    if PANEL_QUALITY_PATH.exists() and RECOVERY_V2_PATH.exists():
+        panel_q = pd.read_parquet(PANEL_QUALITY_PATH)
+        rec_v2 = pd.read_parquet(RECOVERY_V2_PATH)
+        target_audit = pd.read_csv(TARGET_QUALITY_AUDIT_PATH) if TARGET_QUALITY_AUDIT_PATH.exists() else pd.DataFrame()
+    else:
+        panel = _filter_sample_lock(pd.read_parquet(PANEL_IN_PATH))
+        panel_q, rec_v2, target_audit = build_target_quality_panel(panel)
+
+    panel_h = attach_hazard_exposure_features(panel_q)
+    merge_cols = [
+        c
+        for c in panel_h.columns
+        if c.startswith("event_") or c in ["island_local_water", "island_local_urban", "hazard_cloud_water", "hazard_precip_urban"]
+    ]
+    merge_cols = ["pixel_id", "event_id"] + [c for c in merge_cols if c not in {"pixel_id", "event_id"}]
+    rec_h = rec_v2.drop(columns=[c for c in merge_cols if c in rec_v2.columns and c not in {"pixel_id", "event_id"}], errors="ignore")
+    rec_h = rec_h.merge(panel_h[merge_cols].drop_duplicates(subset=["pixel_id"]), on=["pixel_id", "event_id"], how="left")
+    return panel_h, rec_h, target_audit
+
+
+def _filter_event_allowlist(
+    panel: pd.DataFrame,
+    recovery: pd.DataFrame,
+    allow_events: Sequence[str],
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    allow = {str(v) for v in allow_events}
+    panel_sub = panel[panel["event_id"].astype(str).isin(allow)].copy()
+    recovery_sub = recovery[recovery["event_id"].astype(str).isin(allow)].copy()
+    return panel_sub, recovery_sub
+
+
+def _load_bug_inventory_frame(path: Path) -> pd.DataFrame:
+    suffix = path.suffix.lower()
+    if suffix == ".csv":
+        return pd.read_csv(path)
+    if suffix in {".parquet", ".pq"}:
+        return pd.read_parquet(path)
+    if suffix in {".xlsx", ".xls"}:
+        return pd.read_excel(path)
+    raise ValueError(f"Unsupported inventory file type: {path}")
+
+
+def canonicalize_bug_inventory(df: pd.DataFrame, pilot_cfg: Dict[str, object]) -> pd.DataFrame:
+    out = df.copy()
+    rename_map = {
+        "facility_type": "facility_type_raw",
+        "facility_type_clean": "facility_type_std",
+        "generator_type": "facility_type_raw",
+        "EQUIPMENT_TYPE": "facility_type_raw",
+        "PERMIT_DESCRIPTION": "facility_type_raw",
+        "capacity": "capacity_kw",
+        "kw": "capacity_kw",
+        "Capacity listed (kW)": "capacity_kw",
+        "Total Capacity (kW)": "capacity_kw",
+        "operating_hours": "operating_hours_annual",
+        "hours": "operating_hours_annual",
+        "LAST READING - FIRST READING": "operating_hours_annual",
+        "address": "address_raw",
+        "address_line": "address_raw",
+        "EQUIP_LOCATION_ADDRESS": "address_raw",
+        "latitude": "lat",
+        "longitude": "lon",
+        "Latitude": "lat",
+        "Longitude": "lon",
+        "DBA": "facility_name",
+        "Regulated Entity Name": "facility_name",
+        "Fuel": "fuel_type",
+        "agency_url": "source_url",
+        "Source": "source_url",
+    }
+    out = out.rename(columns={k: v for k, v in rename_map.items() if k in out.columns})
+    for col in _bug2_required_columns():
+        if col not in out.columns:
+            out[col] = np.nan
+    out["source_dataset"] = out["source_dataset"].fillna(str(pilot_cfg.get("source_dataset", str(pilot_cfg.get("pilot_state", "PR")).lower() + "_pilot")))
+    out["jurisdiction"] = out["jurisdiction"].fillna(str(pilot_cfg.get("jurisdiction", pilot_cfg.get("pilot_state", "PR"))))
+    out["state"] = out["state"].fillna(str(pilot_cfg.get("pilot_state", "PR")))
+    out["county_or_district"] = out["county_or_district"].fillna(str(pilot_cfg.get("county_or_district", "")))
+    out["facility_type_raw"] = out["facility_type_raw"].fillna(out["facility_type_std"]).fillna("unknown").astype(str)
+    mask_std = out["facility_type_std"].isna() | (out["facility_type_std"].astype(str).str.strip() == "")
+    if mask_std.any():
+        out.loc[mask_std, "facility_type_std"] = out.loc[mask_std, "facility_type_raw"].map(standardize_facility_type)
+    out["facility_type_std"] = out["facility_type_std"].fillna("other").astype(str)
+    out["record_id"] = out["record_id"].fillna(out.index.astype(str)).astype(str)
+    out["facility_name"] = out["facility_name"].fillna("unknown_facility").astype(str)
+    out["fuel_type"] = out["fuel_type"].fillna("unknown").astype(str)
+    out["address_raw"] = out["address_raw"].fillna("").astype(str)
+    out["source_url"] = out["source_url"].fillna(str(pilot_cfg.get("source_url", ""))).astype(str)
+    out["capacity_kw"] = _safe_numeric(out["capacity_kw"])
+    out["operating_hours_annual"] = _safe_numeric(out["operating_hours_annual"])
+    out["lat"] = pd.to_numeric(out["lat"], errors="coerce")
+    out["lon"] = pd.to_numeric(out["lon"], errors="coerce")
+    out["geo_quality_flag"] = out["geo_quality_flag"].fillna(np.where(np.isfinite(out["lat"]) & np.isfinite(out["lon"]), "coords_present", "missing_coords")).astype(str)
+    out["attribute_quality_flag"] = out["attribute_quality_flag"].fillna(
+        np.where((out["facility_type_std"] != "other") | (out["capacity_kw"] > 0) | (out["operating_hours_annual"] > 0), "usable", "sparse")
+    ).astype(str)
+    keep = _bug2_required_columns()
+    return out[keep].copy()
+
+
+def audit_bug_inventory(df: pd.DataFrame, pilot_cfg: Dict[str, object]) -> pd.DataFrame:
+    rows: List[Dict[str, object]] = []
+    pilot_events = [str(v) for v in pilot_cfg.get("pilot_event_ids", [])]
+    geo_cov = float((np.isfinite(df["lat"]) & np.isfinite(df["lon"])).mean()) if not df.empty else 0.0
+    attr_cov = float(((df["capacity_kw"] > 0) | (df["operating_hours_annual"] > 0) | (df["facility_type_std"] != "other")).mean()) if not df.empty else 0.0
+    rows.append(
+        {
+            "pilot_state": str(pilot_cfg.get("pilot_state", "PR")),
+            "pilot_event_ids": ";".join(pilot_events),
+            "records_n": int(df.shape[0]),
+            "geo_coverage": geo_cov,
+            "attribute_coverage": attr_cov,
+            "capacity_nonzero_share": float((df["capacity_kw"] > 0).mean()) if not df.empty else 0.0,
+            "hours_nonzero_share": float((df["operating_hours_annual"] > 0).mean()) if not df.empty else 0.0,
+            "distinct_facility_types": int(df["facility_type_std"].astype(str).nunique()) if not df.empty else 0,
+            "duplicate_record_share": float(df["record_id"].astype(str).duplicated().mean()) if not df.empty else 0.0,
+            "gate_pass": int(
+                (df.shape[0] >= int(pilot_cfg["coverage_gate"]["min_records"])) and
+                (geo_cov >= float(pilot_cfg["coverage_gate"]["min_geo_coverage"]))
+            ),
+        }
+    )
+    out = pd.DataFrame(rows)
+    out.to_csv(BUG2_QA_PATH, index=False)
+    return out
+
+
+def attach_official_bug_features(
+    panel: pd.DataFrame,
+    inventory: pd.DataFrame,
+    pilot_cfg: Dict[str, object],
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    out = panel.copy()
+    feature_defaults = {
+        "official_bug_count_1km": 0.0,
+        "official_bug_kw_sum_1km": 0.0,
+        "official_bug_hours_proxy_1km": 0.0,
+        "official_bug_min_dist_m": np.nan,
+        "official_bug_coverage_flag": 0,
+    }
+    for col, default in feature_defaults.items():
+        if col not in out.columns:
+            out[col] = default
+
+    audit_rows: List[Dict[str, object]] = []
+    events_cfg = load_json(CONFIG_EVENTS)
+    pilot_events = {str(v) for v in pilot_cfg.get("pilot_event_ids", [])}
+    inv = inventory[np.isfinite(inventory["lat"]) & np.isfinite(inventory["lon"])].copy()
+
+    for event_id, cfg in events_cfg.items():
+        mask = out["event_id"].astype(str) == str(event_id)
+        if mask.sum() == 0:
+            continue
+        if event_id not in pilot_events or inv.empty:
+            out.loc[mask, "official_bug_coverage_flag"] = 0
+            audit_rows.append({"event_id": event_id, "inventory_records": 0, "coverage_flag": 0, "feature_nonzero_share": 0.0})
+            continue
+
+        transformer = Transformer.from_crs("EPSG:4326", str(cfg["metric_crs"]), always_xy=True)
+        sub = out.loc[mask].copy()
+        px, py = transformer.transform(sub["lon"].to_numpy(), sub["lat"].to_numpy())
+        qx, qy = transformer.transform(inv["lon"].to_numpy(), inv["lat"].to_numpy())
+        pix_xy = np.column_stack([px, py])
+        inv_xy = np.column_stack([qx, qy])
+        tree = cKDTree(inv_xy)
+        idx_1000 = tree.query_ball_point(pix_xy, r=1000.0)
+        kw = inv["capacity_kw"].to_numpy(dtype=float)
+        hrs = inv["operating_hours_annual"].to_numpy(dtype=float)
+
+        def _sum(ix: Sequence[int], arr: np.ndarray) -> float:
+            if not ix:
+                return 0.0
+            return float(arr[np.asarray(ix, dtype=int)].sum())
+
+        sub["official_bug_count_1km"] = [float(len(ix)) for ix in idx_1000]
+        sub["official_bug_kw_sum_1km"] = [_sum(ix, kw) for ix in idx_1000]
+        sub["official_bug_hours_proxy_1km"] = [_sum(ix, hrs) for ix in idx_1000]
+        if len(inv_xy):
+            dist_all, _ = tree.query(pix_xy, k=1)
+            sub["official_bug_min_dist_m"] = dist_all.astype(float)
+        else:
+            sub["official_bug_min_dist_m"] = np.nan
+        sub["official_bug_coverage_flag"] = 1
+
+        out.loc[mask, "official_bug_count_1km"] = sub["official_bug_count_1km"].to_numpy(dtype=float)
+        out.loc[mask, "official_bug_kw_sum_1km"] = sub["official_bug_kw_sum_1km"].to_numpy(dtype=float)
+        out.loc[mask, "official_bug_hours_proxy_1km"] = sub["official_bug_hours_proxy_1km"].to_numpy(dtype=float)
+        out.loc[mask, "official_bug_min_dist_m"] = sub["official_bug_min_dist_m"].to_numpy(dtype=float)
+        out.loc[mask, "official_bug_coverage_flag"] = 1
+        audit_rows.append(
+            {
+                "event_id": event_id,
+                "inventory_records": int(inv.shape[0]),
+                "coverage_flag": 1,
+                "feature_nonzero_share": float((sub["official_bug_count_1km"] > 0).mean()),
+            }
+        )
+
+    audit = pd.DataFrame(audit_rows)
+    audit.to_csv(BUG2_FEATURE_AUDIT_PATH, index=False)
+    return out, audit
 
 
 def build_event_selection_scorecard(
@@ -2541,6 +3179,142 @@ def _update_hazard_index() -> None:
     INDEX_PATH.write_text(text, encoding="utf-8")
 
 
+def _plot_hazard_readiness_summary(hazard_ready_agg: pd.DataFrame) -> None:
+    hazard = pd.read_csv(HAZARD_TRANSPORT_AGG_PATH) if HAZARD_TRANSPORT_AGG_PATH.exists() else pd.DataFrame()
+    quality = pd.read_csv(QUALITY_TRANSPORT_AGG_PATH) if QUALITY_TRANSPORT_AGG_PATH.exists() else pd.DataFrame()
+
+    def _metric(df: pd.DataFrame, spec_id: str, model: str, col: str) -> float:
+        if df.empty:
+            return np.nan
+        if "spec_id" in df.columns:
+            sub = df[(df["spec_id"] == spec_id) & (df["model"] == model)]
+        else:
+            sub = df[df["model"] == model]
+        return float(pd.to_numeric(sub[col], errors="coerce").mean()) if not sub.empty and col in sub.columns else np.nan
+
+    labels = ["QT1", "HZ1", "HZ1_READY"]
+    auc_vals = [
+        _metric(quality, "QT1", "Logit", "auc"),
+        _metric(hazard, "HZ1", "Logit", "auc"),
+        _metric(hazard_ready_agg, "HZ1_READY", "Logit", "auc"),
+    ]
+    brier_vals = [
+        _metric(quality, "QT1", "Logit", "brier"),
+        _metric(hazard, "HZ1", "Logit", "brier"),
+        _metric(hazard_ready_agg, "HZ1_READY", "Logit", "brier"),
+    ]
+
+    fig, axes = plt.subplots(1, 2, figsize=(10.5, 4.6))
+    axes[0].bar(labels, auc_vals, color=["#8c8c8c", "#1b9e77", "#4c78a8"])
+    axes[0].set_title("Damage Transport Logit AUC")
+    axes[0].set_ylim(0.0, 1.0)
+    axes[1].bar(labels, brier_vals, color=["#8c8c8c", "#1b9e77", "#4c78a8"])
+    axes[1].set_title("Damage Transport Logit Brier")
+    axes[1].set_ylim(0.0, max([v for v in brier_vals if pd.notna(v)] + [0.6]) * 1.15)
+    plt.tight_layout()
+    fig.savefig(HAZARD_READY_FIG_PATH, dpi=220)
+    plt.close(fig)
+
+
+def _write_hazard_readiness_report(
+    readiness_agg: pd.DataFrame,
+    feature_summary: pd.DataFrame,
+    allow_df: pd.DataFrame,
+) -> None:
+    hazard = pd.read_csv(HAZARD_TRANSPORT_AGG_PATH) if HAZARD_TRANSPORT_AGG_PATH.exists() else pd.DataFrame()
+    quality = pd.read_csv(QUALITY_TRANSPORT_AGG_PATH) if QUALITY_TRANSPORT_AGG_PATH.exists() else pd.DataFrame()
+
+    def _metric(df: pd.DataFrame, spec_id: str, model: str, col: str) -> float:
+        if df.empty:
+            return np.nan
+        if "spec_id" in df.columns:
+            sub = df[(df["spec_id"] == spec_id) & (df["model"] == model)]
+        else:
+            sub = df[df["model"] == model]
+        return float(pd.to_numeric(sub[col], errors="coerce").mean()) if not sub.empty and col in sub.columns else np.nan
+
+    hz1_auc = _metric(hazard, "HZ1", "Logit", "auc")
+    ready_auc = _metric(readiness_agg, "HZ1_READY", "Logit", "auc")
+    hz1_brier = _metric(hazard, "HZ1", "Logit", "brier")
+    ready_brier = _metric(readiness_agg, "HZ1_READY", "Logit", "brier")
+    delta_auc = ready_auc - hz1_auc if np.isfinite(ready_auc) and np.isfinite(hz1_auc) else np.nan
+    delta_brier = ready_brier - hz1_brier if np.isfinite(ready_brier) and np.isfinite(hz1_brier) else np.nan
+    top_logit = feature_summary[feature_summary["model"] == "Logit"].head(5)
+    if np.isfinite(delta_auc) and np.isfinite(delta_brier):
+        if delta_auc >= 0:
+            verdict = "HZ1_READY preserves or improves ranking on the cleaner event pool and can be kept as the predictive anchor candidate."
+        elif delta_brier < 0:
+            verdict = "HZ1_READY improves calibration but loses ranking power versus the full-event HZ1 line, so it should remain a robustness subset rather than the main predictive anchor."
+        else:
+            verdict = "HZ1_READY underperforms the full-event HZ1 line on both ranking and calibration and should remain sensitivity-only."
+    else:
+        verdict = "HZ1_READY verdict unavailable because one or more key metrics are missing."
+
+    lines = [
+        "# Hazard Readiness-Filtered Transport Report",
+        "",
+        "## Objective",
+        "- Re-run the HZ1 hazard/exposure transport line on the current mainline-ready event subset instead of the full mixed event pool.",
+        "",
+        "## Mainline Event Allowlist",
+    ]
+    if allow_df.empty:
+        lines.append("- NA")
+    else:
+        for _, row in allow_df.iterrows():
+            lines.append(f"- {row['event_id']}: source={row.get('allowlist_source', 'config')}, readiness_band={row.get('readiness_band', 'NA')}")
+
+    lines.extend(
+        [
+            "",
+            "## Metric Comparison",
+            f"- QT1 Logit AUC: {_metric(quality, 'QT1', 'Logit', 'auc'):.4f}",
+            f"- full-event HZ1 Logit AUC: {hz1_auc:.4f}",
+            f"- readiness-filtered HZ1_READY Logit AUC: {ready_auc:.4f}",
+            f"- HZ1_READY vs HZ1 AUC delta: {delta_auc:.4f}",
+            f"- full-event HZ1 Logit Brier: {hz1_brier:.4f}",
+            f"- HZ1_READY Logit Brier: {ready_brier:.4f}",
+            f"- HZ1_READY vs HZ1 Brier delta: {delta_brier:.4f}",
+            "",
+            "## Top Hazard Features (Logit)",
+        ]
+    )
+    if top_logit.empty:
+        lines.append("- NA")
+    else:
+        for _, row in top_logit.iterrows():
+            lines.append(
+                f"- {row['feature']}: mean_coef={row['mean_coef']:.4f}, abs={row['mean_abs_coef']:.4f}, sign_consistency={row['sign_consistency']:.2f}"
+            )
+
+    lines.extend(
+        [
+            "",
+            "## Recommendation",
+            f"- {verdict}",
+            "- Treat the readiness subset as a cleaner benchmark, not as a replacement for explanatory models.",
+            "",
+            "## Outputs",
+            "- `project/modeling/output/hazard_transport_readiness_aggregate_metrics_v1.csv`",
+            "- `project/modeling/output/hazard_transport_readiness_feature_summary_v1.csv`",
+            "- `project/modeling/output/hazard_transport_readiness_events_v1.csv`",
+            "- `project/modeling_report/figures/exploration_v2/hazard_transport_readiness_compare_v1.png`",
+        ]
+    )
+    HAZARD_READY_REPORT_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _update_hazard_readiness_index() -> None:
+    line = "- `project/modeling_report/hazard_transport_readiness_report_v1.md`"
+    note = "- Appendix readiness-filtered hazard outputs: `project/modeling/output/hazard_transport_readiness_aggregate_metrics_v1.csv`, `project/modeling/output/hazard_transport_readiness_events_v1.csv`"
+    text = INDEX_PATH.read_text(encoding="utf-8") if INDEX_PATH.exists() else "# Modeling Report Index\n\n## Deliverables\n"
+    if line not in text:
+        text = text.rstrip() + "\n" + line + "\n"
+    if note not in text:
+        text = text.rstrip() + "\n" + note + "\n"
+    INDEX_PATH.write_text(text, encoding="utf-8")
+
+
 def _run_hazard_mainline_v1_impl() -> int:
     ensure_directories()
     init_tracking_files()
@@ -2548,20 +3322,8 @@ def _run_hazard_mainline_v1_impl() -> int:
     ctx = RunContext(issues=[])
 
     append_progress("Hazard mainline V1 started")
-    if PANEL_QUALITY_PATH.exists() and RECOVERY_V2_PATH.exists():
-        panel_q = pd.read_parquet(PANEL_QUALITY_PATH)
-        rec_v2 = pd.read_parquet(RECOVERY_V2_PATH)
-        target_audit = pd.read_csv(TARGET_QUALITY_AUDIT_PATH) if TARGET_QUALITY_AUDIT_PATH.exists() else pd.DataFrame()
-    else:
-        panel = _filter_sample_lock(pd.read_parquet(PANEL_IN_PATH))
-        panel_q, rec_v2, target_audit = build_target_quality_panel(panel)
-
-    append_progress("Hazard mainline V1: attach hazard/exposure features")
-    panel_h = attach_hazard_exposure_features(panel_q)
-    merge_cols = [c for c in panel_h.columns if c.startswith("event_") or c in ["island_local_water", "island_local_urban", "hazard_cloud_water", "hazard_precip_urban"]]
-    merge_cols = ["pixel_id", "event_id"] + [c for c in merge_cols if c not in {"pixel_id", "event_id"}]
-    rec_h = rec_v2.drop(columns=[c for c in merge_cols if c in rec_v2.columns and c not in {"pixel_id", "event_id"}], errors="ignore")
-    rec_h = rec_h.merge(panel_h[merge_cols].drop_duplicates(subset=["pixel_id"]), on=["pixel_id", "event_id"], how="left")
+    append_progress("Hazard mainline V1: prepare quality-adjusted hazard inputs")
+    panel_h, rec_h, target_audit = _prepare_hazard_transport_inputs()
 
     append_progress("Hazard mainline V1: LOEO transport")
     hazard_res = run_hazard_aware_transport(panel_h, rec_h)
@@ -2575,6 +3337,552 @@ def _run_hazard_mainline_v1_impl() -> int:
 
     save_issue_log(ctx)
     append_progress("Hazard mainline V1 completed")
+    return 0
+
+
+def _run_hazard_readiness_v1_impl() -> int:
+    ensure_directories()
+    init_tracking_files()
+    FIG_EXP_DIR.mkdir(parents=True, exist_ok=True)
+    ctx = RunContext(issues=[])
+
+    append_progress("Hazard readiness V1 started")
+    panel_h, rec_h, _ = _prepare_hazard_transport_inputs()
+    allow_events = _load_hazard_mainline_candidates()
+    allow_df = pd.DataFrame({"event_id": allow_events, "allowlist_source": "config"})
+    if EVENT_READINESS_SCORE_PATH.exists():
+        readiness = pd.read_csv(EVENT_READINESS_SCORE_PATH)
+        allow_df = allow_df.merge(readiness, on="event_id", how="left")
+    allow_df.to_csv(HAZARD_READY_EVENTS_PATH, index=False)
+
+    append_progress("Hazard readiness V1: filter mainline-ready events")
+    panel_ready, rec_ready = _filter_event_allowlist(panel_h, rec_h, allow_events)
+    if panel_ready.empty or rec_ready.empty:
+        raise RuntimeError("hazard_readiness_empty_subset")
+
+    append_progress("Hazard readiness V1: LOEO transport")
+    ready_res = run_hazard_aware_transport(
+        panel_ready,
+        rec_ready,
+        spec_id="HZ1_READY",
+        experiment_family="hazard_transport_readiness",
+        fold_path=HAZARD_READY_FOLD_PATH,
+        agg_path=HAZARD_READY_AGG_PATH,
+    )
+
+    append_progress("Hazard readiness V1: summarize and report")
+    feature_summary = summarize_hazard_features(ready_res.coef_df, output_path=HAZARD_READY_FEATURE_SUMMARY_PATH)
+    _plot_hazard_readiness_summary(ready_res.agg_df)
+    _write_hazard_readiness_report(ready_res.agg_df, feature_summary, allow_df)
+    _update_hazard_readiness_index()
+
+    save_issue_log(ctx)
+    append_progress("Hazard readiness V1 completed")
+    return 0
+
+
+def _plot_bug_transport_summary(bug_agg: pd.DataFrame) -> None:
+    quality = pd.read_csv(QUALITY_TRANSPORT_AGG_PATH) if QUALITY_TRANSPORT_AGG_PATH.exists() else pd.DataFrame()
+    hazard = pd.read_csv(HAZARD_TRANSPORT_AGG_PATH) if HAZARD_TRANSPORT_AGG_PATH.exists() else pd.DataFrame()
+
+    def _metric(df: pd.DataFrame, spec_id: str, model: str, col: str) -> float:
+        if df.empty:
+            return np.nan
+        sub = df[(df["spec_id"] == spec_id) & (df["model"] == model)]
+        return float(pd.to_numeric(sub[col], errors="coerce").mean()) if not sub.empty and col in sub.columns else np.nan
+
+    labels = ["QT1", "HZ1", "BUG0", "BUG1A", "BUG1B", "BUG1C"]
+    auc_vals = [
+        float(pd.to_numeric(quality.loc[quality["model"] == "Logit", "auc"], errors="coerce").mean()) if not quality.empty else np.nan,
+        float(pd.to_numeric(hazard.loc[hazard["model"] == "Logit", "auc"], errors="coerce").mean()) if not hazard.empty else np.nan,
+        _metric(bug_agg, "BUG0", "Logit", "auc"),
+        _metric(bug_agg, "BUG1A", "Logit", "auc"),
+        _metric(bug_agg, "BUG1B", "Logit", "auc"),
+        _metric(bug_agg, "BUG1C", "Logit", "auc"),
+    ]
+    brier_vals = [
+        float(pd.to_numeric(quality.loc[quality["model"] == "Logit", "brier"], errors="coerce").mean()) if not quality.empty else np.nan,
+        float(pd.to_numeric(hazard.loc[hazard["model"] == "Logit", "brier"], errors="coerce").mean()) if not hazard.empty else np.nan,
+        _metric(bug_agg, "BUG0", "Logit", "brier"),
+        _metric(bug_agg, "BUG1A", "Logit", "brier"),
+        _metric(bug_agg, "BUG1B", "Logit", "brier"),
+        _metric(bug_agg, "BUG1C", "Logit", "brier"),
+    ]
+
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.8))
+    axes[0].bar(labels, auc_vals, color=["#8c8c8c", "#1b9e77", "#4c78a8", "#59a14f", "#f28e2b", "#e15759"])
+    axes[0].set_title("Damage Transport Logit AUC")
+    axes[0].set_ylim(0.0, 1.0)
+    axes[1].bar(labels, brier_vals, color=["#8c8c8c", "#1b9e77", "#4c78a8", "#59a14f", "#f28e2b", "#e15759"])
+    axes[1].set_title("Damage Transport Logit Brier")
+    axes[1].set_ylim(0.0, max([v for v in brier_vals if pd.notna(v)] + [0.6]) * 1.15)
+    plt.tight_layout()
+    fig.savefig(BUG_TRANSPORT_FIG_PATH, dpi=220)
+    plt.close(fig)
+
+
+def _write_bug_transport_report(bug_agg: pd.DataFrame, feature_summary: pd.DataFrame, feature_audit: pd.DataFrame) -> None:
+    quality = pd.read_csv(QUALITY_TRANSPORT_AGG_PATH) if QUALITY_TRANSPORT_AGG_PATH.exists() else pd.DataFrame()
+    hazard = pd.read_csv(HAZARD_TRANSPORT_AGG_PATH) if HAZARD_TRANSPORT_AGG_PATH.exists() else pd.DataFrame()
+
+    def _metric(df: pd.DataFrame, spec_id: str, model: str, col: str) -> float:
+        if df.empty:
+            return np.nan
+        sub = df[(df["spec_id"] == spec_id) & (df["model"] == model)]
+        return float(pd.to_numeric(sub[col], errors="coerce").mean()) if not sub.empty and col in sub.columns else np.nan
+
+    def _family_metric(df: pd.DataFrame, model: str, col: str) -> float:
+        if df.empty:
+            return np.nan
+        sub = df[df["model"] == model]
+        return float(pd.to_numeric(sub[col], errors="coerce").mean()) if not sub.empty and col in sub.columns else np.nan
+
+    top_logit = feature_summary[(feature_summary["model"] == "Logit") & (feature_summary["spec_id"].isin(["BUG1A", "BUG1B", "BUG1C"]))].head(8)
+    bug0_auc = _metric(bug_agg, "BUG0", "Logit", "auc")
+    bug1a_auc = _metric(bug_agg, "BUG1A", "Logit", "auc")
+    bug1a_brier = _metric(bug_agg, "BUG1A", "Logit", "brier")
+    improvement = bug1a_auc - bug0_auc if np.isfinite(bug1a_auc) and np.isfinite(bug0_auc) else np.nan
+    brier_delta = bug1a_brier - _metric(bug_agg, "BUG0", "Logit", "brier") if np.isfinite(bug1a_brier) else np.nan
+
+    lines = [
+        "# BUG-aware Transport Report",
+        "",
+        "## Objective",
+        "- Keep the existing mainline untouched and test whether BUG-aware proxy features improve damage transport stability.",
+        "",
+        "## Compared Specs",
+        "- `BUG0`: quality-adjusted transport baseline rerun under the BUG family",
+        "- `BUG1A`: baseline plus prior-weighted BUG features",
+        "- `BUG1B`: replace binary `in_buffer` with `high_conf_bug_buffer` and keep baseline controls",
+        "- `BUG1C`: BUG prior features plus quality guards, without the legacy baseline spatial context block",
+        "",
+        "## Metric Comparison",
+        f"- QT1 Logit AUC: {_family_metric(quality, 'Logit', 'auc'):.4f}",
+        f"- HZ1 Logit AUC: {_family_metric(hazard, 'Logit', 'auc'):.4f}",
+        f"- BUG0 Logit AUC: {bug0_auc:.4f}",
+        f"- BUG1A Logit AUC: {bug1a_auc:.4f}",
+        f"- BUG1A vs BUG0 AUC delta: {improvement:.4f}",
+        f"- BUG1A Logit Brier: {bug1a_brier:.4f}",
+        f"- BUG1A vs BUG0 Brier delta: {brier_delta:.4f}",
+        "",
+        "## Feature Audit",
+    ]
+    if feature_audit.empty:
+        lines.append("- No feature audit rows generated.")
+    else:
+        for _, row in feature_audit.iterrows():
+            lines.append(
+                f"- {row['event_id']}: poi_status={row['poi_status']}, poi_count={int(row['poi_count'])}, "
+                f"high_conf_share={float(row['high_conf_share']):.2f}, high_conf_bug_buffer_share={float(row['high_conf_bug_buffer_share']):.3f}"
+            )
+
+    lines.extend(["", "## Top BUG Features (Logit)"])
+    if top_logit.empty:
+        lines.append("- NA")
+    else:
+        for _, row in top_logit.iterrows():
+            lines.append(
+                f"- {row['spec_id']} | {row['feature']}: mean_coef={row['mean_coef']:.4f}, "
+                f"mean_abs={row['mean_abs_coef']:.4f}, sign_consistency={row['sign_consistency']:.2f}"
+            )
+
+    if np.isfinite(improvement) and np.isfinite(brier_delta):
+        if improvement > 0 and brier_delta <= 0.02:
+            verdict = "BUG1A improves damage ranking without material probability deterioration."
+        elif improvement > 0:
+            verdict = "BUG1A improves ranking but looks more like a ranking-only line because Brier worsens."
+        else:
+            verdict = "BUG1A does not improve transport enough to justify moving to official inventory work yet."
+    else:
+        verdict = "BUG1A verdict unavailable because one or more key metrics are missing."
+
+        lines.extend(
+        [
+            "",
+            "## Recommendation",
+            f"- {verdict}",
+            "- Freeze `BUG1` as a proxy-refinement test and do not keep tuning prior weights or BUG-only proxy thresholds.",
+            "- Keep `strict-v2`, `quality_transport`, and `hazard_transport` unchanged; only a minimal official-inventory pilot should remain open for the BUG mechanism line.",
+            "",
+            "## Outputs",
+            "- `project/modeling/output/bug_transport_fold_metrics_v1.csv`",
+            "- `project/modeling/output/bug_transport_aggregate_metrics_v1.csv`",
+            "- `project/modeling/output/bug_transport_feature_summary_v1.csv`",
+            "- `project/modeling/output/bug_transport_feature_audit_v1.csv`",
+            "- `project/modeling_report/figures/exploration_v2/bug_transport_compare_v1.png`",
+        ]
+    )
+    BUG_TRANSPORT_REPORT_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _update_bug_transport_index() -> None:
+    line = "- `project/modeling_report/bug_transport_report.md`"
+    note = "- Appendix BUG-aware outputs: `project/modeling/output/bug_transport_aggregate_metrics_v1.csv`, `project/modeling/output/bug_transport_feature_audit_v1.csv`"
+    text = INDEX_PATH.read_text(encoding="utf-8") if INDEX_PATH.exists() else "# Modeling Report Index\n\n## Deliverables\n"
+    if line not in text:
+        text = text.rstrip() + "\n" + line + "\n"
+    if note not in text:
+        text = text.rstrip() + "\n" + note + "\n"
+    INDEX_PATH.write_text(text, encoding="utf-8")
+
+
+def _run_bug_transport_v1_impl() -> int:
+    ensure_directories()
+    init_tracking_files()
+    FIG_EXP_DIR.mkdir(parents=True, exist_ok=True)
+    ctx = RunContext(issues=[])
+
+    append_progress("BUG transport V1 started")
+    if PANEL_QUALITY_PATH.exists() and RECOVERY_V2_PATH.exists():
+        panel_q = pd.read_parquet(PANEL_QUALITY_PATH)
+        rec_v2 = pd.read_parquet(RECOVERY_V2_PATH)
+    else:
+        panel = _filter_sample_lock(pd.read_parquet(PANEL_IN_PATH))
+        panel_q, rec_v2, _ = build_target_quality_panel(panel)
+
+    append_progress("BUG transport V1: attach BUG prior features")
+    panel_bug, feature_audit = attach_bug_prior_features(panel_q)
+    rec_bug = _merge_bug_features_into_recovery(panel_bug, rec_v2)
+
+    append_progress("BUG transport V1: LOEO transport")
+    bug_res = run_bug_aware_transport(panel_bug, rec_bug)
+
+    append_progress("BUG transport V1: summarize features and report")
+    feature_summary = summarize_bug_transport_features(bug_res.coef_df)
+    _plot_bug_transport_summary(bug_res.agg_df)
+    _write_bug_transport_report(bug_res.agg_df, feature_summary, feature_audit)
+    _update_bug_transport_index()
+
+    save_issue_log(ctx)
+    append_progress("BUG transport V1 completed")
+    return 0
+
+
+def _build_bug2_acquisition_backlog() -> pd.DataFrame:
+    tracker_path = ROOT / "BUG dataset tracker.xlsx"
+    pilot_cfg = _load_bug2_pilot_config()
+    priority_states = [str(v) for v in pilot_cfg.get("pilot_priority_order", ["PR", "FL", "LA"])]
+    columns = [
+        "State",
+        "Priority state?",
+        "Agency responsible for permitting BUGs",
+        "Source for agency responsible for permitting BUGs",
+        "Data availability",
+        "Source for data availability",
+        "Notes",
+    ]
+    fallback = pd.DataFrame(pilot_cfg.get("acquisition_backlog", []))
+    if not tracker_path.exists():
+        out = fallback.copy()
+        if out.empty:
+            out = pd.DataFrame(columns=columns)
+        out.to_csv(BUG2_ACQ_BACKLOG_PATH, index=False)
+        return out
+    try:
+        tracker = pd.read_excel(tracker_path, sheet_name="State level tracker")
+        keep = [c for c in columns if c in tracker.columns]
+        out = tracker[tracker["State"].astype(str).isin(priority_states)][keep].copy()
+    except Exception:
+        out = fallback.copy()
+        if out.empty:
+            out = pd.DataFrame(columns=columns)
+    out = out.sort_values(["Priority state?", "State"], na_position="last")
+    out.to_csv(BUG2_ACQ_BACKLOG_PATH, index=False)
+    return out
+
+
+def summarize_bug2_features(coef_df: pd.DataFrame) -> pd.DataFrame:
+    tracked = {
+        "official_bug_count_1km",
+        "official_bug_kw_sum_1km",
+        "official_bug_hours_proxy_1km",
+        "official_bug_min_dist_m",
+        "official_bug_coverage_flag",
+    }
+    if coef_df.empty:
+        out = pd.DataFrame(columns=["spec_id", "model", "feature", "mean_coef", "mean_abs_coef", "sign_consistency", "folds"])
+        out.to_csv(BUG2_FEATURE_SUMMARY_PATH, index=False)
+        return out
+    sub = coef_df[coef_df["feature"].isin(tracked)].copy()
+    if sub.empty:
+        out = pd.DataFrame(columns=["spec_id", "model", "feature", "mean_coef", "mean_abs_coef", "sign_consistency", "folds"])
+        out.to_csv(BUG2_FEATURE_SUMMARY_PATH, index=False)
+        return out
+    rows = []
+    for (spec_id, model, feature), grp in sub.groupby(["spec_id", "model", "feature"], dropna=False):
+        coef = pd.to_numeric(grp["coef"], errors="coerce").dropna()
+        if coef.empty:
+            continue
+        pos = float((coef > 0).mean())
+        neg = float((coef < 0).mean())
+        rows.append(
+            {
+                "spec_id": spec_id,
+                "model": model,
+                "feature": feature,
+                "mean_coef": float(coef.mean()),
+                "mean_abs_coef": float(coef.abs().mean()),
+                "sign_consistency": max(pos, neg),
+                "folds": int(coef.shape[0]),
+            }
+        )
+    out = pd.DataFrame(rows).sort_values(["spec_id", "model", "mean_abs_coef"], ascending=[True, True, False])
+    out.to_csv(BUG2_FEATURE_SUMMARY_PATH, index=False)
+    return out
+
+
+def run_bug2_pilot_transport(panel: pd.DataFrame, recovery: pd.DataFrame) -> SpecResult:
+    official_terms = [
+        "official_bug_count_1km",
+        "official_bug_kw_sum_1km",
+        "official_bug_hours_proxy_1km",
+        "official_bug_min_dist_m",
+        "official_bug_coverage_flag",
+    ]
+    specs = [
+        ("BUG2_BASE", panel.copy(), recovery.copy(), BASE_NUMERIC + QUALITY_GUARD_NUMERIC),
+        ("BUG2_OFFICIAL", panel.copy(), recovery.copy(), BASE_NUMERIC + QUALITY_GUARD_NUMERIC + official_terms),
+    ]
+    fold_parts: List[pd.DataFrame] = []
+    agg_parts: List[pd.DataFrame] = []
+    coef_parts: List[pd.DataFrame] = []
+    for spec_id, spec_panel, spec_recovery, numeric_terms in specs:
+        res = run_loeo_spec(
+            spec_panel,
+            spec_recovery,
+            numeric_terms=numeric_terms,
+            cat_terms=["land_use_group", "event_disaster_type"],
+            experiment_family="bug2_pr_pilot",
+            spec_id=spec_id,
+        )
+        fold_parts.append(res.fold_df)
+        agg_parts.append(res.agg_df)
+        coef_parts.append(res.coef_df)
+    fold_df = pd.concat(fold_parts, ignore_index=True) if fold_parts else pd.DataFrame()
+    agg_df = pd.concat(agg_parts, ignore_index=True) if agg_parts else pd.DataFrame()
+    coef_df = pd.concat(coef_parts, ignore_index=True) if coef_parts else pd.DataFrame()
+    fold_df.to_csv(BUG2_FOLD_PATH, index=False)
+    agg_df.to_csv(BUG2_AGG_PATH, index=False)
+    return SpecResult(fold_df=fold_df, agg_df=agg_df, coef_df=coef_df)
+
+
+def _plot_bug2_pilot_summary(bug2_agg: pd.DataFrame) -> None:
+    def _metric(spec_id: str, model: str, col: str) -> float:
+        if bug2_agg.empty:
+            return np.nan
+        sub = bug2_agg[(bug2_agg["spec_id"] == spec_id) & (bug2_agg["model"] == model)]
+        return float(pd.to_numeric(sub[col], errors="coerce").mean()) if not sub.empty and col in sub.columns else np.nan
+
+    labels = ["BUG2_BASE", "BUG2_OFFICIAL"]
+    auc_vals = [_metric("BUG2_BASE", "Logit", "auc"), _metric("BUG2_OFFICIAL", "Logit", "auc")]
+    brier_vals = [_metric("BUG2_BASE", "Logit", "brier"), _metric("BUG2_OFFICIAL", "Logit", "brier")]
+    fig, axes = plt.subplots(1, 2, figsize=(9.5, 4.6))
+    axes[0].bar(labels, auc_vals, color=["#8c8c8c", "#1b9e77"])
+    axes[0].set_ylim(0.0, 1.0)
+    axes[0].set_title("PR Pilot Logit AUC")
+    axes[1].bar(labels, brier_vals, color=["#8c8c8c", "#1b9e77"])
+    axes[1].set_ylim(0.0, max([v for v in brier_vals if pd.notna(v)] + [0.6]) * 1.15)
+    axes[1].set_title("PR Pilot Logit Brier")
+    plt.tight_layout()
+    fig.savefig(BUG2_FIG_PATH, dpi=220)
+    plt.close(fig)
+
+
+def _write_bug2_pilot_report(
+    pilot_cfg: Dict[str, object],
+    qa_df: pd.DataFrame,
+    backlog_df: pd.DataFrame,
+    feature_audit: pd.DataFrame,
+    agg_df: Optional[pd.DataFrame] = None,
+    feature_summary: Optional[pd.DataFrame] = None,
+    status: str = "awaiting_inventory",
+) -> None:
+    gate_pass = int(qa_df["gate_pass"].iloc[0]) if not qa_df.empty and "gate_pass" in qa_df.columns else 0
+    lines = [
+        "# BUG2 Puerto Rico Pilot Report",
+        "",
+        "## Objective",
+        "- Move the BUG line from proxy refinement to official inventory validation for the Puerto Rico pilot jurisdiction.",
+        "",
+        "## Pilot Scope",
+        f"- pilot_state: {pilot_cfg.get('pilot_state', 'PR')}",
+        f"- pilot_events: {';'.join([str(v) for v in pilot_cfg.get('pilot_event_ids', [])])}",
+        f"- status: {status}",
+        "",
+        "## Acquisition Backlog",
+    ]
+    if backlog_df.empty:
+        lines.append("- No tracker-derived backlog rows available.")
+    else:
+        for _, row in backlog_df.iterrows():
+            lines.append(f"- {row['State']}: availability={row.get('Data availability', 'NA')}, notes={row.get('Notes', 'NA')}")
+
+    lines.extend(["", "## QA Gate"])
+    if qa_df.empty:
+        lines.append("- QA not available.")
+    else:
+        row = qa_df.iloc[0]
+        lines.extend(
+            [
+                f"- records_n: {int(row.get('records_n', 0))}",
+                f"- geo_coverage: {float(row.get('geo_coverage', 0.0)):.3f}",
+                f"- attribute_coverage: {float(row.get('attribute_coverage', 0.0)):.3f}",
+                f"- gate_pass: {gate_pass}",
+            ]
+        )
+
+    lines.extend(["", "## Feature Coverage"])
+    if feature_audit.empty:
+        lines.append("- Official inventory features not attached yet.")
+    else:
+        for _, row in feature_audit.iterrows():
+            lines.append(
+                f"- {row['event_id']}: coverage_flag={int(row.get('coverage_flag', 0))}, "
+                f"inventory_records={int(row.get('inventory_records', 0))}, "
+                f"feature_nonzero_share={float(row.get('feature_nonzero_share', 0.0)):.3f}"
+            )
+
+    if agg_df is not None and not agg_df.empty:
+        def _metric(spec_id: str, model: str, col: str) -> float:
+            sub = agg_df[(agg_df["spec_id"] == spec_id) & (agg_df["model"] == model)]
+            return float(pd.to_numeric(sub[col], errors="coerce").mean()) if not sub.empty and col in sub.columns else np.nan
+
+        lines.extend(
+            [
+                "",
+                "## Model Comparison",
+                f"- BUG2_BASE Logit AUC: {_metric('BUG2_BASE', 'Logit', 'auc'):.4f}",
+                f"- BUG2_OFFICIAL Logit AUC: {_metric('BUG2_OFFICIAL', 'Logit', 'auc'):.4f}",
+                f"- BUG2_BASE Logit Brier: {_metric('BUG2_BASE', 'Logit', 'brier'):.4f}",
+                f"- BUG2_OFFICIAL Logit Brier: {_metric('BUG2_OFFICIAL', 'Logit', 'brier'):.4f}",
+            ]
+        )
+        top_logit = feature_summary[feature_summary["model"] == "Logit"].head(5) if feature_summary is not None and not feature_summary.empty else pd.DataFrame()
+        lines.extend(["", "## Top Official BUG Features"])
+        if top_logit.empty:
+            lines.append("- NA")
+        else:
+            for _, row in top_logit.iterrows():
+                lines.append(
+                    f"- {row['spec_id']} | {row['feature']}: mean_coef={row['mean_coef']:.4f}, abs={row['mean_abs_coef']:.4f}, sign_consistency={row['sign_consistency']:.2f}"
+                )
+
+    lines.extend(
+        [
+            "",
+            "## Recommendation",
+            "- Expand beyond Puerto Rico only if the QA gate passes and the official BUG features show a clear local increment over the baseline.",
+            "- If the pilot remains blocked on data, keep BUG2 as an acquisition-and-validation track rather than a main modeling branch.",
+            "",
+            "## Outputs",
+            "- `project/modeling/output/bug2_pilot_acquisition_backlog_v1.csv`",
+            "- `project/modeling/output/bug2_pr_pilot_qa_v1.csv`",
+            "- `project/modeling/output/bug2_pr_feature_audit_v1.csv`",
+            "- `project/modeling/output/bug2_pr_pilot_aggregate_metrics_v1.csv`",
+        ]
+    )
+    BUG2_REPORT_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _update_bug2_index() -> None:
+    line = "- `project/modeling_report/bug2_pr_pilot_report.md`"
+    note = "- Appendix BUG2 pilot outputs: `project/modeling/output/bug2_pilot_acquisition_backlog_v1.csv`, `project/modeling/output/bug2_pr_pilot_qa_v1.csv`"
+    text = INDEX_PATH.read_text(encoding="utf-8") if INDEX_PATH.exists() else "# Modeling Report Index\n\n## Deliverables\n"
+    if line not in text:
+        text = text.rstrip() + "\n" + line + "\n"
+    if note not in text:
+        text = text.rstrip() + "\n" + note + "\n"
+    INDEX_PATH.write_text(text, encoding="utf-8")
+
+
+def _run_bug2_pr_pilot_v1_impl() -> int:
+    ensure_directories()
+    init_tracking_files()
+    FIG_EXP_DIR.mkdir(parents=True, exist_ok=True)
+    BUG_INVENTORY_RAW_DIR.mkdir(parents=True, exist_ok=True)
+    BUG_INVENTORY_CANONICAL_DIR.mkdir(parents=True, exist_ok=True)
+    ctx = RunContext(issues=[])
+
+    append_progress("BUG2 PR pilot V1 started")
+    pilot_cfg = _load_bug2_pilot_config()
+    backlog_df = _build_bug2_acquisition_backlog()
+    source_path = ROOT / str(pilot_cfg.get("source_path", _safe_rel(BUG_INVENTORY_RAW_DIR / "bug_inventory_pr_pilot_raw.csv")))
+    canonical_path = ROOT / str(pilot_cfg.get("canonical_path", _safe_rel(BUG2_PR_CANONICAL_PATH)))
+
+    if not BUG2_PR_CANONICAL_TEMPLATE_PATH.exists():
+        pd.DataFrame(columns=_bug2_required_columns()).to_csv(BUG2_PR_CANONICAL_TEMPLATE_PATH, index=False)
+
+    if not canonical_path.exists() and source_path.exists():
+        append_progress("BUG2 PR pilot V1: canonicalize raw inventory")
+        inventory_raw = _load_bug_inventory_frame(source_path)
+        inventory = canonicalize_bug_inventory(inventory_raw, pilot_cfg)
+        canonical_path.parent.mkdir(parents=True, exist_ok=True)
+        inventory.to_csv(canonical_path, index=False)
+
+    if not canonical_path.exists():
+        pd.DataFrame(columns=["experiment_family", "spec_id", "fold_event", "model", "rmse", "mae", "auc", "brier", "c_index", "coef_in_buffer", "notes"]).to_csv(BUG2_FOLD_PATH, index=False)
+        pd.DataFrame(columns=["experiment_family", "spec_id", "model", "rmse", "mae", "auc", "brier", "c_index", "coef_in_buffer", "n_folds"]).to_csv(BUG2_AGG_PATH, index=False)
+        pd.DataFrame(columns=["spec_id", "model", "feature", "mean_coef", "mean_abs_coef", "sign_consistency", "folds"]).to_csv(BUG2_FEATURE_SUMMARY_PATH, index=False)
+        qa_df = pd.DataFrame([{
+            "pilot_state": str(pilot_cfg.get("pilot_state", "PR")),
+            "pilot_event_ids": ";".join([str(v) for v in pilot_cfg.get("pilot_event_ids", [])]),
+            "records_n": 0,
+            "geo_coverage": 0.0,
+            "attribute_coverage": 0.0,
+            "capacity_nonzero_share": 0.0,
+            "hours_nonzero_share": 0.0,
+            "distinct_facility_types": 0,
+            "duplicate_record_share": 0.0,
+            "gate_pass": 0,
+        }])
+        qa_df.to_csv(BUG2_QA_PATH, index=False)
+        empty_audit = pd.DataFrame(columns=["event_id", "inventory_records", "coverage_flag", "feature_nonzero_share"])
+        empty_audit.to_csv(BUG2_FEATURE_AUDIT_PATH, index=False)
+        _write_bug2_pilot_report(pilot_cfg, qa_df, backlog_df, empty_audit, status="awaiting_inventory")
+        _update_bug2_index()
+        save_issue_log(ctx)
+        append_progress("BUG2 PR pilot V1 completed: awaiting canonical inventory")
+        return 0
+
+    append_progress("BUG2 PR pilot V1: load canonical inventory")
+    inventory_raw = _load_bug_inventory_frame(canonical_path)
+    inventory = canonicalize_bug_inventory(inventory_raw, pilot_cfg)
+    inventory.to_csv(canonical_path, index=False)
+    qa_df = audit_bug_inventory(inventory, pilot_cfg)
+
+    append_progress("BUG2 PR pilot V1: attach official features")
+    panel_h, rec_h, _ = _prepare_hazard_transport_inputs()
+    panel_sub, rec_sub = _filter_event_allowlist(panel_h, rec_h, [str(v) for v in pilot_cfg.get("pilot_event_ids", [])])
+    panel_official, feature_audit = attach_official_bug_features(panel_sub, inventory, pilot_cfg)
+    rec_official = _merge_bug_features_into_recovery(panel_official, rec_sub)
+
+    gate_pass = int(qa_df["gate_pass"].iloc[0]) if not qa_df.empty else 0
+    if gate_pass != 1 or panel_official["event_id"].astype(str).nunique() < 2:
+        pd.DataFrame(columns=["experiment_family", "spec_id", "fold_event", "model", "rmse", "mae", "auc", "brier", "c_index", "coef_in_buffer", "notes"]).to_csv(BUG2_FOLD_PATH, index=False)
+        pd.DataFrame(columns=["experiment_family", "spec_id", "model", "rmse", "mae", "auc", "brier", "c_index", "coef_in_buffer", "n_folds"]).to_csv(BUG2_AGG_PATH, index=False)
+        pd.DataFrame(columns=["spec_id", "model", "feature", "mean_coef", "mean_abs_coef", "sign_consistency", "folds"]).to_csv(BUG2_FEATURE_SUMMARY_PATH, index=False)
+        _write_bug2_pilot_report(pilot_cfg, qa_df, backlog_df, feature_audit, status="qa_failed_or_sparse")
+        _update_bug2_index()
+        save_issue_log(ctx)
+        append_progress("BUG2 PR pilot V1 completed: QA gate failed or insufficient pilot events")
+        return 0
+
+    append_progress("BUG2 PR pilot V1: LOEO transport")
+    bug2_res = run_bug2_pilot_transport(panel_official, rec_official)
+    feature_summary = summarize_bug2_features(bug2_res.coef_df)
+    _plot_bug2_pilot_summary(bug2_res.agg_df)
+    _write_bug2_pilot_report(
+        pilot_cfg,
+        qa_df,
+        backlog_df,
+        feature_audit,
+        agg_df=bug2_res.agg_df,
+        feature_summary=feature_summary,
+        status="modeled",
+    )
+    _update_bug2_index()
+    save_issue_log(ctx)
+    append_progress("BUG2 PR pilot V1 completed")
     return 0
 
 
@@ -4152,6 +5460,14 @@ def cmd_hazard_mainline_v1() -> int:
     return _run_hazard_mainline_v1_impl()
 
 
+def cmd_hazard_readiness_v1() -> int:
+    return _run_hazard_readiness_v1_impl()
+
+
+def cmd_bug2_pr_pilot_v1() -> int:
+    return _run_bug2_pr_pilot_v1_impl()
+
+
 def cmd_event_expansion_v1() -> int:
     return _run_event_expansion_v1_impl()
 
@@ -4174,6 +5490,9 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser('extreme-event-sensitivity', help='Run exploration V2 extreme-event sensitivity bundle')
     sub.add_parser('quality-matched-v1', help='Run quality-adjusted target + spatial block + facility-matched bundle')
     sub.add_parser('hazard-mainline-v1', help='Run hazard/exposure-aware transport mainline on quality-adjusted panel')
+    sub.add_parser('hazard-readiness-v1', help='Run readiness-filtered HZ1 rerun on the current mainline-ready event subset')
+    sub.add_parser('bug-transport-v1', help='Run BUG-aware transport family on the quality-adjusted panel')
+    sub.add_parser('bug2-pr-pilot-v1', help='Run the Puerto Rico official-inventory pilot setup and, if data exists, the local BUG2 model')
     sub.add_parser('event-expansion-v1', help='Run staged event expansion with selective sync, online acquisition, and retraining')
     sub.add_parser('full-run', help='Run full exploration V2 pipeline')
     return parser
@@ -4196,6 +5515,12 @@ def main(argv: list[str] | None = None) -> int:
         return _run_quality_matched_v1_impl()
     if args.command == 'hazard-mainline-v1':
         return _run_hazard_mainline_v1_impl()
+    if args.command == 'hazard-readiness-v1':
+        return _run_hazard_readiness_v1_impl()
+    if args.command == 'bug-transport-v1':
+        return _run_bug_transport_v1_impl()
+    if args.command == 'bug2-pr-pilot-v1':
+        return _run_bug2_pr_pilot_v1_impl()
     if args.command == 'event-expansion-v1':
         return _run_event_expansion_v1_impl()
     if args.command in {'run-v2', 'full-run'}:

@@ -199,3 +199,69 @@
 - [2026-03-02 14:43:26 UTC] intl-stage-repair: fit HZ2
 - [2026-03-02 14:44:11 UTC] intl-stage-repair: score readiness
 - [2026-03-02 14:44:24 UTC] intl-stage-repair: write report
+- [2026-03-10 01:36:21 UTC] Built pixel panel project/modeling/pixel_data/all_events_pixel_panel_v1.parquet with 10,306 rows across 6 events
+- [2026-03-10 01:36:48 UTC] Attached NLCD to panel. Coverage summary saved to project/modeling/output/nlcd_coverage.csv
+- [2026-03-10 01:37:06 UTC] Feature-upgrade pipeline started
+- [2026-03-10 01:37:09 UTC] Feature-upgrade pipeline started
+- [2026-03-10 01:37:10 UTC] Built pixel panel project/modeling/pixel_data/all_events_pixel_panel_v1.parquet with 10,306 rows across 6 events
+- [2026-03-10 01:39:11 UTC] Feature-upgrade pipeline started
+- [2026-03-10 01:39:40 UTC] Feature-upgrade pipeline started
+- [2026-03-10 01:40:01 UTC] Feature-upgrade pipeline finished
+- [2026-03-10 01:40:23 UTC] Feature-upgrade pipeline finished
+- [2026-03-10 01:40:25 UTC] Strict V2 pipeline started
+- [2026-03-10 01:41:03 UTC] Strict V2 pipeline started
+- [2026-03-10 01:41:49 UTC] Strict V2 pipeline started
+- [2026-03-10 01:42:07 UTC] Strict V2 pipeline finished
+- [2026-03-10 01:43:28 UTC] Strict V2 pipeline started
+- [2026-03-10 01:43:48 UTC] Strict V2 pipeline finished
+- [2026-03-10 01:49:48 UTC] Exploration V2 pipeline started
+- [2026-03-10 01:50:15 UTC] Exploration V2: cloud ablation
+- [2026-03-10 01:50:46 UTC] Exploration V2: noise masking
+- [2026-03-10 01:51:06 UTC] Exploration V2: urban-rural + population
+- [2026-03-10 01:51:22 UTC] Exploration V2: spatial diagnostics + contribution
+- [2026-03-10 01:51:25 UTC] Exploration V2: extreme-event sensitivity
+- [2026-03-10 01:51:57 UTC] Exploration V2: write plan docs/report/index
+- [2026-03-10 01:51:57 UTC] Exploration V2 pipeline completed
+- [2026-03-10 01:52:27 UTC] Quality+matched V1 started
+- [2026-03-10 01:52:27 UTC] Quality+matched V1: build quality-adjusted targets and recovery v2
+- [2026-03-10 01:52:31 UTC] Quality+matched V1: LOEO quality-aware transport
+- [2026-03-10 01:52:39 UTC] Quality+matched V1: spatial block CV
+- [2026-03-10 01:52:45 UTC] Quality+matched V1: facility-centered matched design
+- [2026-03-10 01:52:55 UTC] Quality+matched V1: role matrix and report
+- [2026-03-10 01:52:55 UTC] Quality+matched V1 completed
+- [2026-03-10 01:53:18 UTC] Hazard mainline V1 started
+- [2026-03-10 01:53:18 UTC] Hazard mainline V1: attach hazard/exposure features
+- [2026-03-10 01:53:18 UTC] Hazard mainline V1: LOEO transport
+- [2026-03-10 01:53:28 UTC] Hazard mainline V1: summarize features and event selection
+- [2026-03-10 01:53:28 UTC] Hazard mainline V1 completed
+- [2026-03-10 14:34:04 UTC] BUG transport V1 started
+- [2026-03-10 14:34:04 UTC] BUG transport V1: attach BUG prior features
+- [2026-03-10 14:35:04 UTC] BUG transport V1 started
+- [2026-03-10 14:35:04 UTC] BUG transport V1: attach BUG prior features
+- [2026-03-10 14:35:04 UTC] BUG transport V1: LOEO transport
+- [2026-03-10 14:35:32 UTC] BUG transport V1: summarize features and report
+- [2026-03-10 14:35:32 UTC] BUG transport V1 completed
+- [2026-03-10 14:48:33 UTC] Hazard readiness V1 started
+- [2026-03-10 14:48:33 UTC] BUG2 PR pilot V1 started
+- [2026-03-10 14:48:34 UTC] Hazard readiness V1: filter mainline-ready events
+- [2026-03-10 14:48:34 UTC] Hazard readiness V1: LOEO transport
+- [2026-03-10 14:48:38 UTC] Hazard readiness V1: summarize and report
+- [2026-03-10 14:48:38 UTC] Hazard readiness V1 completed
+- [2026-03-10 14:49:16 UTC] BUG2 PR pilot V1 started
+- [2026-03-10 14:49:16 UTC] BUG2 PR pilot V1 completed: awaiting canonical inventory
+- [2026-03-10 14:50:02 UTC] Hazard readiness V1 started
+- [2026-03-10 14:50:02 UTC] BUG2 PR pilot V1 started
+- [2026-03-10 14:50:02 UTC] BUG2 PR pilot V1 completed: awaiting canonical inventory
+- [2026-03-10 14:50:02 UTC] Hazard readiness V1: filter mainline-ready events
+- [2026-03-10 14:50:02 UTC] Hazard readiness V1: LOEO transport
+- [2026-03-10 14:50:06 UTC] Hazard readiness V1: summarize and report
+- [2026-03-10 14:50:06 UTC] Hazard readiness V1 completed
+- [2026-03-10 14:51:15 UTC] BUG2 PR pilot V1 started
+- [2026-03-10 14:51:15 UTC] BUG2 PR pilot V1 completed: awaiting canonical inventory
+- [2026-03-10 14:52:23 UTC] Hazard readiness V1 started
+- [2026-03-10 14:52:23 UTC] BUG2 PR pilot V1 started
+- [2026-03-10 14:52:23 UTC] BUG2 PR pilot V1 completed: awaiting canonical inventory
+- [2026-03-10 14:52:23 UTC] Hazard readiness V1: filter mainline-ready events
+- [2026-03-10 14:52:24 UTC] Hazard readiness V1: LOEO transport
+- [2026-03-10 14:52:27 UTC] Hazard readiness V1: summarize and report
+- [2026-03-10 14:52:28 UTC] Hazard readiness V1 completed

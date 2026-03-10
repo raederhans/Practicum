@@ -1,0 +1,1 @@
+source_dataset,jurisdiction,state,county_or_district,record_id,facility_name,facility_type_raw,facility_type_std,fuel_type,capacity_kw,operating_hours_annual,address_raw,lat,lon,geo_quality_flag,attribute_quality_flag,source_url

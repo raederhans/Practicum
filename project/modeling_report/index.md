@@ -124,3 +124,9 @@ Pre-fix snapshots for overwritten code and docs are stored in:
 - `project/modeling/legacy/archive_model_fix_20260309/`
 - V3 cross-event outputs: `project/modeling/output/model_summary_cross_event_v3.csv`, `project/modeling/output/cross_event_aggregate_metrics_v3.csv`
 - V3 stabilization outputs: `project/modeling/output/cross_event_round_comparison_v3x.csv`, `project/modeling/output/cross_event_stop_decision_v3x.json`
+- `project/modeling_report/bug_transport_report.md`
+- Appendix BUG-aware outputs: `project/modeling/output/bug_transport_aggregate_metrics_v1.csv`, `project/modeling/output/bug_transport_feature_audit_v1.csv`
+- `project/modeling_report/hazard_transport_readiness_report_v1.md`
+- Appendix readiness-filtered hazard outputs: `project/modeling/output/hazard_transport_readiness_aggregate_metrics_v1.csv`, `project/modeling/output/hazard_transport_readiness_events_v1.csv`
+- `project/modeling_report/bug2_pr_pilot_report.md`
+- Appendix BUG2 pilot outputs: `project/modeling/output/bug2_pilot_acquisition_backlog_v1.csv`, `project/modeling/output/bug2_pr_pilot_qa_v1.csv`

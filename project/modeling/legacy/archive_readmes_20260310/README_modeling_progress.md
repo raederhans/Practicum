@@ -494,3 +494,21 @@ The project already has a stable explanatory framework. The main unresolved issu
 - and a clearer separation between explanation and transport
 
 That is the current technical state of the project.
+
+## BUG-aware Proxy Test
+
+The first BUG-aware transport family should now be treated as a proxy refinement test rather than as a new candidate mainline.
+
+Current reading:
+
+- prior-weighted BUG proxy features did not improve cross-event damage transport over the quality-adjusted baseline
+- replacing the legacy `in_buffer` context with BUG-prior structure performed worse
+- this suggests that a smarter POI proxy is still too far from real generator presence and operating intensity
+
+The next BUG step should therefore not be more prior tuning. The better next move is:
+
+1. keep the predictive mainline anchored on readiness-filtered `HZ1`
+2. keep `strict-v2` as the explanatory anchor
+3. test one small official-inventory pilot, starting with Puerto Rico
+
+This means the BUG line is now a mechanism-validation track, not the main predictive branch.

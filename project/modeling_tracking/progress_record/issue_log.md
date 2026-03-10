@@ -287,3 +287,69 @@ Error converting data to categorical: observation with value 'michael_panamacity
 
 ## Update 2026-02-28 00:27:37 UTC
 - No critical issue observed in this run.
+
+## Update 2026-03-10 01:36:21 UTC
+- No critical issue observed in this run.
+
+## Update 2026-03-10 01:36:48 UTC
+- No critical issue observed in this run.
+
+## Update 2026-03-10 01:37:10 UTC
+- No critical issue observed in this run.
+
+## Update 2026-03-10 01:40:01 UTC
+- [MixedLM] all | random_effect_extraction_failed | symptom=Cannot predict random effects from singular covariance structure. | fix=keep fixed effects and predictions | impact=random-effect table unavailable | status=monitor
+- [MixedLM] all | formula_fallback | symptom=failed full formula for full_locked | fix=use reduced mixed formula: delta_ntl ~ in_buffer * pre_mean_ntl + C(land_use_group) | impact=mixedlm kept with reduced controls | status=resolved
+- [Logit] all | formula_fallback | symptom=failed full formula for full_locked | fix=use reduced formula: is_damaged ~ in_buffer * pre_mean_ntl + C(event_id) + C(land_use_group) | impact=logit kept with reduced controls | status=resolved
+- [Cox] all | base_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=try event strata model | impact=fallback sequence triggered | status=monitor
+- [Cox] all | strata_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=try time-interaction model | impact=fallback sequence triggered | status=monitor
+- [Cox] all | time_interaction_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=use best available cox candidate | impact=partial PH repair | status=monitor
+- [Cox] all | formula_fallback | symptom=full Cox failed for full_locked | fix=fallback to nlcd-level cox design | impact=full_locked uses reduced Cox controls | status=resolved
+
+## Update 2026-03-10 01:40:23 UTC
+- [MixedLM] all | random_effect_extraction_failed | symptom=Cannot predict random effects from singular covariance structure. | fix=keep fixed effects and predictions | impact=random-effect table unavailable | status=monitor
+- [MixedLM] all | formula_fallback | symptom=failed full formula for full_locked | fix=use reduced mixed formula: delta_ntl ~ in_buffer * pre_mean_ntl + C(land_use_group) | impact=mixedlm kept with reduced controls | status=resolved
+- [Logit] all | formula_fallback | symptom=failed full formula for full_locked | fix=use reduced formula: is_damaged ~ in_buffer * pre_mean_ntl + C(event_id) + C(land_use_group) | impact=logit kept with reduced controls | status=resolved
+- [Cox] all | base_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=try event strata model | impact=fallback sequence triggered | status=monitor
+- [Cox] all | strata_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=try time-interaction model | impact=fallback sequence triggered | status=monitor
+- [Cox] all | time_interaction_fit_failed | symptom=delta contains nan value(s). Convergence halted. Please see the following tips in the lifelines documentation: https://lifelines.readthedocs.io/en/latest/Examples.html#problems-with-convergence-in-the-cox-proportional-hazard-model | fix=use best available cox candidate | impact=partial PH repair | status=monitor
+- [Cox] all | formula_fallback | symptom=full Cox failed for full_locked | fix=fallback to nlcd-level cox design | impact=full_locked uses reduced Cox controls | status=resolved
+
+## Update 2026-03-10 01:42:07 UTC
+- No critical issue observed in this run.
+
+## Update 2026-03-10 01:43:48 UTC
+- No critical issue observed in this run.
+
+## Update 2026-03-10 01:51:57 UTC
+- No critical issue observed in this run.
+
+## Update 2026-03-10 01:52:55 UTC
+- No critical issue observed in this run.
+
+## Update 2026-03-10 01:53:28 UTC
+- No critical issue observed in this run.
+
+## Update 2026-03-10 14:35:32 UTC
+- No critical issue observed in this run.
+
+## Update 2026-03-10 14:48:38 UTC
+- No critical issue observed in this run.
+
+## Update 2026-03-10 14:49:16 UTC
+- No critical issue observed in this run.
+
+## Update 2026-03-10 14:50:02 UTC
+- No critical issue observed in this run.
+
+## Update 2026-03-10 14:50:06 UTC
+- No critical issue observed in this run.
+
+## Update 2026-03-10 14:51:15 UTC
+- No critical issue observed in this run.
+
+## Update 2026-03-10 14:52:23 UTC
+- No critical issue observed in this run.
+
+## Update 2026-03-10 14:52:28 UTC
+- No critical issue observed in this run.
