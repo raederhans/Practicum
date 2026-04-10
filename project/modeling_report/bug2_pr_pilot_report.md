@@ -17,10 +17,17 @@
 - records_n: 0
 - geo_coverage: 0.000
 - attribute_coverage: 0.000
+- confidential_usage_share: 0.000
+- hours_outlier_share: 0.000
+- inactive_permit_share: 0.000
+- stale_usage_share: 0.000
 - gate_pass: 0
 
 ## Feature Coverage
 - Official inventory features not attached yet.
+
+## Proxy vs Official Overlay
+- Overlay not available yet.
 
 ## Recommendation
 - Expand beyond Puerto Rico only if the QA gate passes and the official BUG features show a clear local increment over the baseline.
@@ -28,6 +35,9 @@
 
 ## Outputs
 - `project/modeling/output/bug2_pilot_acquisition_backlog_v1.csv`
+- `project/modeling/output/bug2_pr_canonical_field_mapping_v1.csv`
+- `project/modeling/output/bug2_pr_proxy_overlay_v1.csv`
 - `project/modeling/output/bug2_pr_pilot_qa_v1.csv`
 - `project/modeling/output/bug2_pr_feature_audit_v1.csv`
 - `project/modeling/output/bug2_pr_pilot_aggregate_metrics_v1.csv`
+- `project/modeling_report/bug2_pr_acquisition_memo_v1.md`

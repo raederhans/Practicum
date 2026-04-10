@@ -265,3 +265,12 @@
 - [2026-03-10 14:52:24 UTC] Hazard readiness V1: LOEO transport
 - [2026-03-10 14:52:27 UTC] Hazard readiness V1: summarize and report
 - [2026-03-10 14:52:28 UTC] Hazard readiness V1 completed
+- [2026-03-11 00:32:55 UTC] BUG detectability V1 started
+- [2026-03-11 00:32:55 UTC] BUG detectability V1: attach detectability-aware BUG features
+- [2026-03-11 00:32:56 UTC] BUG detectability V1: LOEO transport
+- [2026-03-11 00:33:26 UTC] BUG detectability V1: summarize features and report
+- [2026-03-11 00:33:27 UTC] BUG detectability V1 completed
+- [2026-03-11 00:33:45 UTC] BUG2 PR pilot V1 started
+- [2026-03-11 00:33:45 UTC] BUG2 PR pilot V1 completed: awaiting canonical inventory
+- [2026-03-11 00:35:20 UTC] BUG2 PR pilot V1 started
+- [2026-03-11 00:35:21 UTC] BUG2 PR pilot V1 completed: awaiting canonical inventory

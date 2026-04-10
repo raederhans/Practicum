@@ -1,0 +1,98 @@
+{
+  "default": {
+    "bug_propensity_weight": 0.1,
+    "night_use_weight": 0.15,
+    "diesel_dominance_prior": 0.7,
+    "detectability_weight": 0.1,
+    "size_band_prior": "low",
+    "hours_prior_band": "low"
+  },
+  "hospital": {
+    "bug_propensity_weight": 1.0,
+    "night_use_weight": 1.0,
+    "diesel_dominance_prior": 0.95,
+    "detectability_weight": 0.95,
+    "size_band_prior": "high",
+    "hours_prior_band": "medium"
+  },
+  "aerodrome": {
+    "bug_propensity_weight": 1.0,
+    "night_use_weight": 0.95,
+    "diesel_dominance_prior": 0.85,
+    "detectability_weight": 1.0,
+    "size_band_prior": "critical",
+    "hours_prior_band": "high"
+  },
+  "power_plant": {
+    "bug_propensity_weight": 1.0,
+    "night_use_weight": 1.0,
+    "diesel_dominance_prior": 0.75,
+    "detectability_weight": 1.0,
+    "size_band_prior": "critical",
+    "hours_prior_band": "high"
+  },
+  "substation": {
+    "bug_propensity_weight": 0.95,
+    "night_use_weight": 0.95,
+    "diesel_dominance_prior": 0.9,
+    "detectability_weight": 0.9,
+    "size_band_prior": "high",
+    "hours_prior_band": "medium"
+  },
+  "water_works": {
+    "bug_propensity_weight": 0.9,
+    "night_use_weight": 0.9,
+    "diesel_dominance_prior": 0.9,
+    "detectability_weight": 0.85,
+    "size_band_prior": "high",
+    "hours_prior_band": "medium"
+  },
+  "fire_station": {
+    "bug_propensity_weight": 0.75,
+    "night_use_weight": 0.85,
+    "diesel_dominance_prior": 0.95,
+    "detectability_weight": 0.75,
+    "size_band_prior": "medium",
+    "hours_prior_band": "low"
+  },
+  "police": {
+    "bug_propensity_weight": 0.75,
+    "night_use_weight": 0.85,
+    "diesel_dominance_prior": 0.95,
+    "detectability_weight": 0.75,
+    "size_band_prior": "medium",
+    "hours_prior_band": "low"
+  },
+  "government": {
+    "bug_propensity_weight": 0.6,
+    "night_use_weight": 0.6,
+    "diesel_dominance_prior": 0.8,
+    "detectability_weight": 0.55,
+    "size_band_prior": "medium",
+    "hours_prior_band": "low"
+  },
+  "townhall": {
+    "bug_propensity_weight": 0.45,
+    "night_use_weight": 0.45,
+    "diesel_dominance_prior": 0.75,
+    "detectability_weight": 0.45,
+    "size_band_prior": "low",
+    "hours_prior_band": "low"
+  },
+  "public_building": {
+    "bug_propensity_weight": 0.35,
+    "night_use_weight": 0.4,
+    "diesel_dominance_prior": 0.75,
+    "detectability_weight": 0.35,
+    "size_band_prior": "low",
+    "hours_prior_band": "low"
+  },
+  "clinic": {
+    "bug_propensity_weight": 0.2,
+    "night_use_weight": 0.25,
+    "diesel_dominance_prior": 0.85,
+    "detectability_weight": 0.2,
+    "size_band_prior": "low",
+    "hours_prior_band": "low"
+  }
+}

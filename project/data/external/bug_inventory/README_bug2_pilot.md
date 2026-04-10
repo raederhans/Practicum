@@ -38,3 +38,7 @@ This directory is reserved for the official-inventory validation line.
 
 - `earthquake_sanjuan` and `maria_sanjuan` are the only pilot events for this first official-inventory test.
 - If no official PR inventory is available yet, keep the template file in place and use the acquisition backlog report to track progress.
+- Supporting workflow artifacts now live in:
+  - `project/modeling_report/bug2_pr_acquisition_memo_v1.md`
+  - `project/modeling/output/bug2_pr_canonical_field_mapping_v1.csv`
+  - `project/modeling/output/bug2_pr_proxy_overlay_v1.csv`

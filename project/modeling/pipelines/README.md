@@ -1,6 +1,9 @@
 # Modeling Pipelines
 
-Use `project/modeling/README.md` as the canonical entrypoint for the current modeling workflow, rerun commands, artifact map, and result interpretation.
+Use the repo-root `README.md` for the WSL-first environment contract and
+PowerShell handoff, then use `project/modeling/README.md` as the canonical
+entrypoint for the current modeling workflow, rerun commands, artifact map, and
+result interpretation.
 
 This `pipelines/` directory only lists the active executable scripts:
 

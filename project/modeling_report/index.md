@@ -130,3 +130,7 @@ Pre-fix snapshots for overwritten code and docs are stored in:
 - Appendix readiness-filtered hazard outputs: `project/modeling/output/hazard_transport_readiness_aggregate_metrics_v1.csv`, `project/modeling/output/hazard_transport_readiness_events_v1.csv`
 - `project/modeling_report/bug2_pr_pilot_report.md`
 - Appendix BUG2 pilot outputs: `project/modeling/output/bug2_pilot_acquisition_backlog_v1.csv`, `project/modeling/output/bug2_pr_pilot_qa_v1.csv`
+- `project/modeling_report/bug_detectability_transport_report.md`
+- Appendix BUG-detectability outputs: `project/modeling/output/bug_detectability_transport_aggregate_metrics_v1.csv`, `project/modeling/output/bug_detectability_transport_feature_audit_v1.csv`
+- `project/modeling_report/bug2_pr_acquisition_memo_v1.md`
+- Appendix BUG2 pilot outputs: `project/modeling/output/bug2_pilot_acquisition_backlog_v1.csv`, `project/modeling/output/bug2_pr_pilot_qa_v1.csv`, `project/modeling/output/bug2_pr_proxy_overlay_v1.csv`

@@ -5,6 +5,8 @@ POI/__pycache__/
 
 # Python env/cache
 .venv/
+.omx/
+.DOCS/
 .venv_modeling/
 __pycache__/
 *.pyc

@@ -6,6 +6,27 @@ Older root-level summaries were archived on 2026-03-10 under:
 
 - `project/modeling/legacy/archive_readmes_20260310/`
 
+## Environment Contract
+
+This modeling stack is WSL-first.
+
+- Do not run the active pipelines with Windows Python.
+- Use the repo-root `README.md` as the environment entrypoint.
+- Use `project/modeling/requirements-modeling.txt` as the active dependency
+  manifest for the modeling runtime.
+
+From PowerShell, hand commands to WSL through:
+
+```powershell
+.\run_wsl_modeling.ps1 -Command "python project/modeling/run_pipeline.py full-run"
+```
+
+From WSL, run from the repo root:
+
+```bash
+source .venv_modeling/bin/activate
+```
+
 ## Project Goal
 
 The project uses Black Marble nightlight data to study whether pixels near critical infrastructure behave as if backup power is present after disasters.
@@ -27,12 +48,6 @@ Those two goals are related but not interchangeable. The strongest explanatory m
   - cross-event V3 build and stabilization
 - `project/modeling/pipelines/03_exploration_pipeline.py`
   - exploration bundles, quality-adjusted appendix lines, hazard appendix, BUG experiments, readiness reruns, and BUG2 pilot scaffolding
-
-Use the modeling environment:
-
-```bash
-source .venv_modeling/bin/activate
-```
 
 ## Data And Design
 
@@ -226,7 +241,30 @@ Interpretation:
 
 BUG1 is now a proxy-refinement test, not a candidate mainline.
 
-### 9. BUG2 Puerto Rico pilot
+### 9. BUG-detectability proxy-enhancement test
+
+We ran one more parallel BUG family using detectability-aware priors rather than only facility presence.
+
+This version encoded likely diesel dominance, size, runtime, and nightlight detectability using the new `document/` and `extra data/` material as prior inputs.
+
+Main result:
+
+- `BD0` Logit `AUC = 0.4973`
+- `BD1A` Logit `AUC = 0.4931`
+- `BD1A` vs `BD0` AUC delta = `-0.0042`
+- `BD1A` Logit `Brier = 0.2422`
+- `BD1A` vs `BD0` Brier delta = `+0.0013`
+- `BD1B` and `BD1C` performed worse than the baseline family
+
+Interpretation:
+
+- detectability-aware proxy engineering still did not improve damage transport
+- this is a second negative result for the proxy-enhancement track
+- the project should stop adding richer POI-only BUG proxy families
+
+The BUG-detectability line is therefore the strongest remaining proxy test, but it also fails to justify more proxy-only tuning.
+
+### 10. BUG2 Puerto Rico pilot
 
 The next BUG step is no longer proxy construction. It is mechanism validation using official inventory or permit data.
 
@@ -241,13 +279,17 @@ What has already been implemented:
 - canonical template file
 - QA gate
 - acquisition backlog
+- acquisition memo
+- canonical field-mapping table built from the San Diego and BAAQMD source examples
+- proxy-vs-official overlay output placeholder
 - official feature-attachment interface
 - local pilot report output
 
 Current reading:
 
-- the pilot line is ready
-- but it cannot move into model comparison until a canonical Puerto Rico inventory file is added
+- the pilot line is ready as an acquisition, QA, and overlay module
+- but it still cannot move into model comparison until a canonical Puerto Rico inventory file is added
+- until then, BUG2 should be used to structure data collection and validate future official inventory rather than to generate a new transport family
 
 ## Current Main Conclusions
 
@@ -263,7 +305,8 @@ If the goal is cross-event prediction:
 - the strongest predictive ranking result still comes from the full-event hazard/exposure appendix line
 - the readiness-filtered rerun is cleaner but weaker in ranking
 - BUG1 proxy refinement failed to add transport value
-- BUG2 should be treated as a mechanism-validation pilot, not as a new main modeling branch
+- BUG-detectability also failed to add transport value
+- BUG2 should be treated as a mechanism-validation pilot and official-inventory workflow, not as a new main modeling branch
 
 ## Active Commands
 
@@ -281,6 +324,7 @@ python project/modeling/pipelines/03_exploration_pipeline.py quality-matched-v1
 python project/modeling/pipelines/03_exploration_pipeline.py hazard-mainline-v1
 python project/modeling/pipelines/03_exploration_pipeline.py hazard-readiness-v1
 python project/modeling/pipelines/03_exploration_pipeline.py bug-transport-v1
+python project/modeling/pipelines/03_exploration_pipeline.py bug-detectability-v1
 python project/modeling/pipelines/03_exploration_pipeline.py bug2-pr-pilot-v1
 ```
 
@@ -296,14 +340,19 @@ Headline / active reference artifacts:
 - `project/modeling/output/hazard_transport_aggregate_metrics_v1.csv`
 - `project/modeling/output/hazard_transport_readiness_aggregate_metrics_v1.csv`
 - `project/modeling/output/bug_transport_aggregate_metrics_v1.csv`
+- `project/modeling/output/bug_detectability_transport_aggregate_metrics_v1.csv`
 - `project/modeling/output/bug2_pr_pilot_qa_v1.csv`
+- `project/modeling/output/bug2_pr_canonical_field_mapping_v1.csv`
+- `project/modeling/output/bug2_pr_proxy_overlay_v1.csv`
 
 Supporting reports:
 
 - `project/modeling_report/12_hazard_exposure_transport_report.md`
 - `project/modeling_report/hazard_transport_readiness_report_v1.md`
 - `project/modeling_report/bug_transport_report.md`
+- `project/modeling_report/bug_detectability_transport_report.md`
 - `project/modeling_report/bug2_pr_pilot_report.md`
+- `project/modeling_report/bug2_pr_acquisition_memo_v1.md`
 
 ## Archive
 
