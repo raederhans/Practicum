@@ -1,4 +1,7 @@
 <script setup>
+import { nextTick, onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+
 const navigation = [
   { to: '/', label: 'Overview', index: '01' },
   { to: '/atlas', label: 'Study Atlas', index: '02' },
@@ -6,6 +9,22 @@ const navigation = [
   { to: '/methods', label: 'Methods', index: '04' },
   { to: '/credits', label: 'Credits / Policy', index: '05' },
 ]
+
+const route = useRoute()
+const navigationElement = ref(null)
+
+function revealActiveNavigation() {
+  nextTick(() => {
+    requestAnimationFrame(() => {
+      navigationElement.value
+        ?.querySelector('[aria-current="page"]')
+        ?.scrollIntoView({ block: 'nearest', inline: 'center' })
+    })
+  })
+}
+
+watch(() => route.path, revealActiveNavigation, { flush: 'post' })
+onMounted(revealActiveNavigation)
 </script>
 
 <template>
@@ -24,8 +43,8 @@ const navigation = [
         </span>
       </RouterLink>
 
-      <nav class="site-nav" aria-label="Primary navigation">
-        <RouterLink v-for="item in navigation" :key="item.to" :to="item.to">
+      <nav ref="navigationElement" class="site-nav" aria-label="Primary navigation">
+        <RouterLink v-for="item in navigation" :key="item.to" :to="item.to" :aria-current="route.path === item.to ? 'page' : undefined">
           <span aria-hidden="true">{{ item.index }}</span>{{ item.label }}
         </RouterLink>
       </nav>

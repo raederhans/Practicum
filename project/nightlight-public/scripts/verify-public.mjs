@@ -3,6 +3,7 @@ import { basename, extname, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { verifyReleaseManifest } from './release-manifest.mjs'
+import { PUBLIC_GENERALIZATION_ARTIFACT, validatePublicGeneralizationArtifact } from '../src/content/generalizationArtifact.js'
 
 const ignoredRootDirectories = new Set(['node_modules', '.git', '.vercel'])
 const allowedTopLevel = new Set([
@@ -54,6 +55,7 @@ const allowedExactFiles = new Set([
   'scripts/verify-public.mjs',
   'src/App.vue',
   'src/content/copy.js',
+  'src/content/generalizationArtifact.js',
   'src/content/study.js',
   'src/domain/filterEvents.js',
   'src/domain/projectPoint.js',
@@ -67,6 +69,7 @@ const allowedExactFiles = new Set([
   'src/views/MethodsView.vue',
   'src/views/OverviewView.vue',
   'tests/copy.test.js',
+  'tests/generalization-artifact.test.js',
   'tests/public-boundary.test.js',
   'tests/release-manifest.test.js',
   'tests/routes.test.js',
@@ -230,6 +233,8 @@ export async function scanPublicTree(rootPath, { requireDist = false } = {}) {
   }
 
   await walk(root)
+  const artifactViolations = validatePublicGeneralizationArtifact(PUBLIC_GENERALIZATION_ARTIFACT)
+  violations.push(...artifactViolations.map((violation) => `src/content/generalizationArtifact.js: ${violation}`))
   if (requireDist && !distIndexFound) {
     violations.push('dist/index.html: required production build is missing')
   }

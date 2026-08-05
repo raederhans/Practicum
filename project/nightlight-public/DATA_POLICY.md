@@ -6,6 +6,7 @@
 - Aggregate modeling scale: Stage 3 contains 1,002 ZIP-event observations across 22 events and 15 U.S. states.
 - Descriptive model summaries: R² 0.7603, adjusted R² 0.7543, and n = 977.
 - A value of 0.551 labeled only as descriptive sensitivity, with no causal or fairness conclusion.
+- `Public Generalization Artifact v1`: a small allowlisted set of aggregate model-role metrics, including an explicitly labeled held-out-event damage-ranking result. Each value carries cohort, sample lock, validation design, source artifact identifier/version/SHA-256, quality, publication status, license, and attribution.
 - The original study's 25-event index, reduced to disaster name, year, broad location, hazard family, and one center rounded to one decimal.
 - Methods, interpretation limits, credits, and licensing notices.
 
@@ -34,3 +35,5 @@ The public edition does not sublicense the source dataset under MIT. Neither ORN
 ## Enforcement
 
 `npm run verify:public` fails closed on prohibited data and model formats, restricted artifact names, data directories, credential-shaped text, runtime network calls, and structural paths outside the release allowlist. A production verification also compares every built file against `dist/release-manifest.json` by relative path, byte length, and SHA-256.
+
+The artifact verifier also rejects a public metric when it lacks the required role, metric type, unit, source lineage, or SHA-256-shaped source artifact hash. It rejects prohibited or reconstructable fields before the site can build a release.

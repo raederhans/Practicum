@@ -41,6 +41,19 @@
       </article>
     </section>
 
+    <section class="method-principles" aria-labelledby="public-artifact-title">
+      <div>
+        <p class="eyebrow"><span>Public contract</span> Inspectable limits</p>
+        <h2 id="public-artifact-title">Public Generalization Artifact v1</h2>
+      </div>
+      <ol>
+        <li><span>01</span><strong>Every public metric has a role.</strong><p>Metrics are labeled as description, ranking, and calibration so one task is not mistaken for another.</p></li>
+        <li><span>02</span><strong>Lineage is part of the value.</strong><p>Each admitted aggregate identifies a source artifact, version, SHA-256, cohort, sample lock, and validation design.</p></li>
+        <li><span>03</span><strong>Cross-event validation has its own test.</strong><p>Held-out-event evaluation is reported separately from in-sample explanatory fit; unlike metrics are not merged into one score.</p></li>
+        <li><span>04</span><strong>Withholding is an outcome.</strong><p>When a value lacks an approved aggregate lineage or a safe public grain, the contract keeps it unavailable rather than substituting a demonstration.</p></li>
+      </ol>
+    </section>
+
     <section class="method-principles">
       <div>
         <p class="eyebrow"><span>Operating rules</span> Research hygiene</p>
