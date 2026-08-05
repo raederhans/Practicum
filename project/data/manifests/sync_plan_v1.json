@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "donor_repository": "https://github.com/ZhiyuanZhaoMicheal/Practicum.git",
+  "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+  "reachability_ref": "teammate/main",
+  "attribution": "Teammate-authored final-project slices reused with explicit permission; preserve Git provenance and do not claim sole authorship.",
+  "slices": {
+    "roots": [
+      "project/nightlight-dashboard",
+      "project/data/result/stage2",
+      "project/data/result/stage3"
+    ],
+    "files": [
+      "project/script/stage2_15events_modelD.ipynb",
+      "project/script/stage2_25events.ipynb",
+      "project/script/run_modelD_loeo_25events.py",
+      "project/script/regen_modelD_prob_maps.py",
+      "project/script/make_modelD_loeo_heatmap.py",
+      "project/script/stage3_events.py",
+      "project/script/stage3_export_all.py",
+      "project/script/stage3_modelD_extra_regressions.py",
+      "project/script/stage3_modelD_full_regressions.py",
+      "project/script/stage3_ntl_download.py",
+      "project/script/stage3_osm_download.py",
+      "project/script/stage3_zipcode_analysis_modelD.py",
+      "project/script/regen_pre_figures.py",
+      ".github/workflows/deploy-dashboard.yml"
+    ]
+  },
+  "protected_prefixes": [
+    "README.md",
+    ".gitignore",
+    "project/modeling",
+    "project/modeling_tracking",
+    "project/modeling_report",
+    "notebooks",
+    "document",
+    "extra data",
+    "POI",
+    "run_wsl_modeling.ps1"
+  ]
+}

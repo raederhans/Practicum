@@ -1,0 +1,172 @@
+{
+  "m1": {
+    "name": "M1 \u00b7 OLS  mean_prob ~ fac_density + FE",
+    "unit_of_analysis": "ZIP-event observation",
+    "covariance": "cluster-robust",
+    "inference_distribution": "Student t",
+    "cluster_variable": "event_id",
+    "n_clusters": 22,
+    "n": 1002,
+    "r_squared": 0.5887,
+    "adj_r_squared": 0.5794,
+    "coefs": {
+      "fac_density": [
+        0.0373,
+        1.5900363179352463e-07
+      ]
+    }
+  },
+  "m1_plus": {
+    "name": "M1+ \u00b7 OLS  + Census controls",
+    "unit_of_analysis": "ZIP-event observation",
+    "covariance": "cluster-robust",
+    "inference_distribution": "Student t",
+    "cluster_variable": "event_id",
+    "n_clusters": 22,
+    "n": 977,
+    "r_squared": 0.7603,
+    "adj_r_squared": 0.7543,
+    "coefs": {
+      "fac_density": [
+        0.0298,
+        1.6228836713255202e-06
+      ],
+      "log_pop_density": [
+        0.065,
+        5.963015578496022e-09
+      ],
+      "log_income": [
+        -0.0797,
+        0.00046116685808961433
+      ]
+    }
+  },
+  "m5_hurricane": {
+    "name": "M5 \u00b7 Hurricane subset  mean_prob ~ fac_density + FE",
+    "unit_of_analysis": "ZIP-event observation",
+    "covariance": "cluster-robust",
+    "inference_distribution": "Student t",
+    "cluster_variable": "event_id",
+    "n_clusters": 15,
+    "n": 554,
+    "r_squared": 0.6129,
+    "adj_r_squared": 0.6021,
+    "coefs": {
+      "fac_density": [
+        0.0392,
+        0.0010890815169081742
+      ]
+    }
+  },
+  "m5_plus_hurricane": {
+    "name": "M5+ \u00b7 Hurricane subset + Census",
+    "unit_of_analysis": "ZIP-event observation",
+    "covariance": "cluster-robust",
+    "inference_distribution": "Student t",
+    "cluster_variable": "event_id",
+    "n_clusters": 15,
+    "n": 536,
+    "r_squared": 0.7813,
+    "adj_r_squared": 0.7742,
+    "coefs": {
+      "fac_density": [
+        0.0352,
+        0.008919220643483767
+      ],
+      "log_pop_density": [
+        0.0568,
+        1.4363404047237314e-05
+      ],
+      "log_income": [
+        -0.0948,
+        1.2307673991402097e-05
+      ]
+    }
+  },
+  "m3_sem": {
+    "name": "M3 \u00b7 Spatial Error Model (GM_Error_Het, KNN k=5)",
+    "status": "diagnostic-only",
+    "type": "Spatial Error Model",
+    "unit_of_analysis": "ZIP-event observation",
+    "spatial_weights": "event-block kNN",
+    "k": 5,
+    "n": 1002,
+    "event_blocks": 22,
+    "components": 22,
+    "cross_event_edges": 0,
+    "features": [
+      "fac_density",
+      "ev_1",
+      "ev_2",
+      "ev_3",
+      "ev_4",
+      "ev_5",
+      "ev_6",
+      "ev_7",
+      "ev_8",
+      "ev_9",
+      "ev_10",
+      "ev_11",
+      "ev_12",
+      "ev_13",
+      "ev_14",
+      "ev_15",
+      "ev_16",
+      "ev_17",
+      "ev_18",
+      "ev_19",
+      "ev_20",
+      "ev_21"
+    ],
+    "covariates": [
+      "fac_density"
+    ],
+    "lambda": 0.99,
+    "intercept": 0.3525,
+    "fac_density_coef": 0.0147,
+    "fac_density_p": 4.4086256243325944e-09,
+    "pseudo_r2": 0.5282
+  },
+  "m8": {
+    "name": "M8 \u00b7 severity ~ mean_prob + FE",
+    "unit_of_analysis": "ZIP-event observation",
+    "covariance": "cluster-robust",
+    "inference_distribution": "Student t",
+    "cluster_variable": "event_id",
+    "n_clusters": 21,
+    "n": 935,
+    "r_squared": 0.7636,
+    "adj_r_squared": 0.7581,
+    "coefs": {
+      "mean_prob": [
+        73.0469,
+        0.5209705889303936
+      ]
+    }
+  },
+  "m8_plus": {
+    "name": "M8+ \u00b7 severity ~ mean_prob + Census + FE",
+    "unit_of_analysis": "ZIP-event observation",
+    "covariance": "cluster-robust",
+    "inference_distribution": "Student t",
+    "cluster_variable": "event_id",
+    "n_clusters": 21,
+    "n": 911,
+    "r_squared": 0.7593,
+    "adj_r_squared": 0.7531,
+    "coefs": {
+      "mean_prob": [
+        115.7522,
+        0.3422620457941891
+      ],
+      "log_pop_density": [
+        -5.3555,
+        0.5042561073459926
+      ],
+      "log_income": [
+        10.8319,
+        0.6215223728102728
+      ]
+    }
+  }
+}

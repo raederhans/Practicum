@@ -1,0 +1,461 @@
+{
+  "m2_morans_i": {
+    "event": "Isaias_Newark",
+    "no_controls": {
+      "I": 0.6457,
+      "p": 0.001,
+      "n": 145
+    },
+    "with_controls": {
+      "I": 0.3375,
+      "p": 0.001,
+      "n": 143
+    }
+  },
+  "m4_subgroup": {
+    "large": {
+      "name": "M4 \u00b7 subgroup=large",
+      "status": "ok",
+      "n": 794,
+      "unit_of_analysis": "ZIP-event observation",
+      "covariance": "cluster-robust",
+      "inference_distribution": "Student t",
+      "cluster_variable": "event_id",
+      "cluster_definition": "unique event_id",
+      "n_clusters": 12,
+      "fixed_effects": "event_id",
+      "r_squared": 0.5161,
+      "adj_r_squared": 0.5087,
+      "coefs": {
+        "fac_density": [
+          0.0348,
+          5.115552129252559e-06
+        ]
+      },
+      "with_fac_mean": 0.583,
+      "without_fac_mean": 0.508
+    },
+    "medium": {
+      "name": "M4 \u00b7 subgroup=medium",
+      "status": "ok",
+      "n": 165,
+      "unit_of_analysis": "ZIP-event observation",
+      "covariance": "cluster-robust",
+      "inference_distribution": "Student t",
+      "cluster_variable": "event_id",
+      "cluster_definition": "unique event_id",
+      "n_clusters": 6,
+      "fixed_effects": "event_id",
+      "r_squared": 0.3607,
+      "adj_r_squared": 0.3364,
+      "coefs": {
+        "fac_density": [
+          0.118,
+          0.0012286426285694557
+        ]
+      },
+      "with_fac_mean": 0.386,
+      "without_fac_mean": 0.28
+    },
+    "small": {
+      "name": "M4 \u00b7 subgroup=small",
+      "status": "ok",
+      "n": 43,
+      "unit_of_analysis": "ZIP-event observation",
+      "covariance": "cluster-robust",
+      "inference_distribution": "Student t",
+      "cluster_variable": "event_id",
+      "cluster_definition": "unique event_id",
+      "n_clusters": 4,
+      "fixed_effects": "event_id",
+      "r_squared": 0.4979,
+      "adj_r_squared": 0.4451,
+      "coefs": {
+        "fac_density": [
+          0.3151,
+          0.011786901275854264
+        ]
+      },
+      "with_fac_mean": 0.361,
+      "without_fac_mean": 0.282
+    }
+  },
+  "m5_wind": {
+    "name": "M5 \u00b7 Hurricane + wind",
+    "status": "ok",
+    "n": 554,
+    "unit_of_analysis": "ZIP-event observation",
+    "covariance": "cluster-robust",
+    "inference_distribution": "Student t",
+    "cluster_variable": "event_id",
+    "cluster_definition": "unique event_id",
+    "n_clusters": 15,
+    "fixed_effects": "event_id",
+    "r_squared": 0.6165,
+    "adj_r_squared": 0.6051,
+    "coefs": {
+      "fac_density": [
+        0.0383,
+        0.001096728746487298
+      ],
+      "wind_exposure": [
+        -0.2892,
+        0.6585927327720931
+      ]
+    }
+  },
+  "m5_plus_wind_census": {
+    "name": "M5+ \u00b7 Hurricane + wind + Census",
+    "status": "ok",
+    "n": 536,
+    "unit_of_analysis": "ZIP-event observation",
+    "covariance": "cluster-robust",
+    "inference_distribution": "Student t",
+    "cluster_variable": "event_id",
+    "cluster_definition": "unique event_id",
+    "n_clusters": 15,
+    "fixed_effects": "event_id",
+    "r_squared": 0.7825,
+    "adj_r_squared": 0.7749,
+    "coefs": {
+      "fac_density": [
+        0.0343,
+        0.02092371900553072
+      ],
+      "wind_exposure": [
+        -0.1638,
+        0.6106688101177647
+      ],
+      "log_pop_density": [
+        0.0565,
+        3.7421563213026218e-06
+      ],
+      "log_income": [
+        -0.0946,
+        1.4969663733487363e-05
+      ]
+    }
+  },
+  "m6_ntldrop": {
+    "name": "M6 \u00b7 mean_prob ~ fac + ntl_drop + FE",
+    "status": "not_identifiable",
+    "reason": "Covariate(s) are constant within every event and therefore are not identifiable together with event fixed effects: ntl_drop",
+    "nonidentifiable_covariates": [
+      "ntl_drop"
+    ],
+    "n": 1002,
+    "unit_of_analysis": "ZIP-event observation",
+    "fixed_effects": "event_id"
+  },
+  "m7_full_hurricane": {
+    "name": "M7 \u00b7 Hurricane + wind + ntl_drop + FE",
+    "status": "not_identifiable",
+    "reason": "Covariate(s) are constant within every event and therefore are not identifiable together with event fixed effects: ntl_drop",
+    "nonidentifiable_covariates": [
+      "ntl_drop"
+    ],
+    "n": 554,
+    "unit_of_analysis": "ZIP-event observation",
+    "fixed_effects": "event_id"
+  },
+  "m9_severity_wind": {
+    "name": "M9 \u00b7 severity ~ mean_prob + wind + fac + FE",
+    "status": "ok",
+    "n": 487,
+    "unit_of_analysis": "ZIP-event observation",
+    "covariance": "cluster-robust",
+    "inference_distribution": "Student t",
+    "cluster_variable": "event_id+fips",
+    "cluster_definition": "unique county-event (event_id, fips)",
+    "n_clusters": 42,
+    "fixed_effects": "event_id",
+    "r_squared": 0.407,
+    "adj_r_squared": 0.3868,
+    "coefs": {
+      "mean_prob": [
+        130.3687,
+        0.2884512860954564
+      ],
+      "wind_exposure": [
+        -737.5656,
+        0.34410365111741037
+      ],
+      "fac_density": [
+        -6.9208,
+        0.25865467774591666
+      ]
+    },
+    "sensitivity": {
+      "covariance": "cluster-robust",
+      "inference_distribution": "Student t",
+      "cluster_variable": "event_id",
+      "cluster_definition": "unique event_id",
+      "n_clusters": 14,
+      "coefs": {
+        "mean_prob": [
+          130.3687,
+          0.24872280129655408
+        ],
+        "wind_exposure": [
+          -737.5656,
+          0.5511872454738036
+        ],
+        "fac_density": [
+          -6.9208,
+          0.11506529761197745
+        ]
+      }
+    }
+  },
+  "fairness_A": {
+    "name": "A' \u00b7 fac_density ~ pop + income + FE",
+    "status": "ok",
+    "n": 977,
+    "unit_of_analysis": "ZIP-event observation",
+    "covariance": "cluster-robust",
+    "inference_distribution": "Student t",
+    "cluster_variable": "event_id",
+    "cluster_definition": "unique event_id",
+    "n_clusters": 22,
+    "fixed_effects": "event_id",
+    "r_squared": 0.1822,
+    "adj_r_squared": 0.1624,
+    "coefs": {
+      "log_pop_density": [
+        0.441,
+        0.0006847596633194081
+      ],
+      "log_income": [
+        0.1729,
+        0.2902475573727593
+      ]
+    }
+  },
+  "fairness_B": {
+    "name": "B' \u00b7 A' + severity",
+    "status": "ok",
+    "n": 911,
+    "unit_of_analysis": "ZIP-event observation",
+    "covariance": "cluster-robust",
+    "inference_distribution": "Student t",
+    "cluster_variable": "event_id+fips",
+    "cluster_definition": "unique county-event (event_id, fips)",
+    "n_clusters": 62,
+    "fixed_effects": "event_id",
+    "r_squared": 0.1766,
+    "adj_r_squared": 0.1552,
+    "coefs": {
+      "log_pop_density": [
+        0.4323,
+        0.00010712491046806565
+      ],
+      "log_income": [
+        0.0971,
+        0.5731346022955949
+      ],
+      "severity_county": [
+        -0.0002,
+        0.24813804212183818
+      ]
+    },
+    "sensitivity": {
+      "covariance": "cluster-robust",
+      "inference_distribution": "Student t",
+      "cluster_variable": "event_id",
+      "cluster_definition": "unique event_id",
+      "n_clusters": 21,
+      "coefs": {
+        "log_pop_density": [
+          0.4323,
+          0.004131379157551647
+        ],
+        "log_income": [
+          0.0971,
+          0.5683082984353962
+        ],
+        "severity_county": [
+          -0.0002,
+          0.2862227928434528
+        ]
+      }
+    }
+  },
+  "fairness_C": {
+    "name": "C' \u00b7 B' + wind  (hurricane subset)",
+    "status": "ok",
+    "n": 470,
+    "unit_of_analysis": "ZIP-event observation",
+    "covariance": "cluster-robust",
+    "inference_distribution": "Student t",
+    "cluster_variable": "event_id+fips",
+    "cluster_definition": "unique county-event (event_id, fips)",
+    "n_clusters": 42,
+    "fixed_effects": "event_id",
+    "r_squared": 0.2237,
+    "adj_r_squared": 0.1946,
+    "coefs": {
+      "log_pop_density": [
+        0.1849,
+        3.456541511169363e-05
+      ],
+      "log_income": [
+        -0.1671,
+        0.06745335856027973
+      ],
+      "severity_county": [
+        -0.0,
+        0.8597025102124805
+      ],
+      "wind_exposure": [
+        -0.468,
+        0.4321605116430183
+      ]
+    },
+    "sensitivity": {
+      "covariance": "cluster-robust",
+      "inference_distribution": "Student t",
+      "cluster_variable": "event_id",
+      "cluster_definition": "unique event_id",
+      "n_clusters": 14,
+      "coefs": {
+        "log_pop_density": [
+          0.1849,
+          0.0007421252219056905
+        ],
+        "log_income": [
+          -0.1671,
+          0.11445513339095706
+        ],
+        "severity_county": [
+          -0.0,
+          0.3371460857366675
+        ],
+        "wind_exposure": [
+          -0.468,
+          0.345016501212502
+        ]
+      }
+    }
+  },
+  "equity_gap_severity": {
+    "status": "descriptive-only",
+    "tertiles": [
+      {
+        "tertile": "Q1_low",
+        "n": 366,
+        "fac_density": 0.861,
+        "mean_prob": 0.527999997138977,
+        "pop_density": 2892.803
+      },
+      {
+        "tertile": "Q2_mid",
+        "n": 265,
+        "fac_density": 0.455,
+        "mean_prob": 0.5360000133514404,
+        "pop_density": 1829.666
+      },
+      {
+        "tertile": "Q3_high",
+        "n": 304,
+        "fac_density": 0.475,
+        "mean_prob": 0.5189999938011169,
+        "pop_density": 2181.239
+      }
+    ],
+    "ratio_q3_q1": 0.551,
+    "ratio_interpretation": "descriptive only",
+    "naive_ttest": {
+      "inference": "exploratory_naive",
+      "assumption_warning": "Treats repeated ZIP-event observations as independent.",
+      "q1_vs_q3_t": 3.295178098230368,
+      "q1_vs_q3_p": 0.0010355799179397613
+    },
+    "clustered_difference": {
+      "name": "Severity tertile Q3-Q1 facility-density difference",
+      "status": "ok",
+      "n": 670,
+      "unit_of_analysis": "ZIP-event observation",
+      "covariance": "cluster-robust",
+      "inference_distribution": "Student t",
+      "cluster_variable": "event_id+fips",
+      "cluster_definition": "unique county-event (event_id, fips)",
+      "n_clusters": 50,
+      "fixed_effects": "event_id",
+      "r_squared": 0.0827,
+      "adj_r_squared": 0.053,
+      "coefs": {
+        "is_high_severity": [
+          -0.1639,
+          0.07675908663930416
+        ]
+      },
+      "sensitivity": {
+        "covariance": "cluster-robust",
+        "inference_distribution": "Student t",
+        "cluster_variable": "event_id",
+        "cluster_definition": "unique event_id",
+        "n_clusters": 21,
+        "coefs": {
+          "is_high_severity": [
+            -0.1639,
+            0.03730224123393783
+          ]
+        }
+      }
+    }
+  },
+  "equity_gap_income": {
+    "quartiles": [
+      {
+        "income_q": "Q1",
+        "n": 245,
+        "fac_density": 0.542,
+        "pop_density": 2425.07
+      },
+      {
+        "income_q": "Q2",
+        "n": 244,
+        "fac_density": 0.494,
+        "pop_density": 2525.14
+      },
+      {
+        "income_q": "Q3",
+        "n": 244,
+        "fac_density": 0.557,
+        "pop_density": 2820.691
+      },
+      {
+        "income_q": "Q4",
+        "n": 244,
+        "fac_density": 0.799,
+        "pop_density": 3734.783
+      }
+    ],
+    "naive_ttest": {
+      "inference": "exploratory_naive",
+      "assumption_warning": "Treats repeated ZIP-event observations as independent.",
+      "q1_vs_q4_t": -2.1021114218390733,
+      "q1_vs_q4_p": 0.03605641422260238
+    },
+    "clustered_difference": {
+      "name": "Income quartile Q4-Q1 facility-density difference",
+      "status": "ok",
+      "n": 489,
+      "unit_of_analysis": "ZIP-event observation",
+      "covariance": "cluster-robust",
+      "inference_distribution": "Student t",
+      "cluster_variable": "event_id",
+      "cluster_definition": "unique event_id",
+      "n_clusters": 22,
+      "fixed_effects": "event_id",
+      "r_squared": 0.121,
+      "adj_r_squared": 0.0795,
+      "coefs": {
+        "is_high_income": [
+          0.148,
+          0.7007455546342374
+        ]
+      }
+    }
+  }
+}

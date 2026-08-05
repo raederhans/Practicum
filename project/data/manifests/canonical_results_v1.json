@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+  "scope": {
+    "stage2_events": 25,
+    "stage3_events": 22,
+    "stage3_us_states": 15,
+    "puerto_rico_events": 2,
+    "turkey_events": 1,
+    "publication_phrase": "17 jurisdictions across the U.S. and Turkey",
+    "sources": [
+      "project/data/result/stage2/loeo_modelD_25events.csv",
+      "project/data/result/stage3/regression_results_modelD_full.json"
+    ]
+  },
+  "stage3_regression": {
+    "status": "publishable-with-caveats",
+    "metric_kind": "in-sample-fit",
+    "primary_model": "m1_plus",
+    "unit_of_analysis": "ZIP-event",
+    "covariance": "cluster-robust",
+    "cluster_variable": "event_id",
+    "event_clusters": 22,
+    "r_squared": 0.7603,
+    "adjusted_r_squared": 0.7543,
+    "n": 977,
+    "exploratory_facility_density_ratio": {
+      "value": 0.551,
+      "comparison": "high-versus-low county-event severity tertile",
+      "weighting": "ZIP-weighted",
+      "status": "descriptive-only",
+      "reason": "The county-event outcome is repeated across ZIPs, current OSM facilities are not a historical inventory, and the ratio changes under alternative weighting."
+    },
+    "sources": [
+      "project/data/result/stage3/regression_results_modelD_full.json",
+      "project/data/result/stage3/regression_results_modelD_extra.json"
+    ]
+  },
+  "retired_donor_baseline": {
+    "status": "retired",
+    "r_squared": 0.7472,
+    "adjusted_r_squared": 0.7408,
+    "n": 977,
+    "facility_density_ratio": 0.63,
+    "probability_variant": "rf",
+    "probability_tif_band": 1,
+    "area_crs": "EPSG:3857",
+    "source_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+    "reason": "These values use a different probability band and area definition and cannot be mixed with the ensemble/EPSG:5070 publication contract."
+  },
+  "model_d_rf_loeo_mean_auc": {
+    "value": 0.70404,
+    "qualifier": "approximately",
+    "source": "project/data/result/stage2/loeo_modelD_25events.csv"
+  },
+  "probability_variant": "ensemble",
+  "probability_tif_band": 3,
+  "area_crs": "EPSG:5070",
+  "formal_artifacts": {
+    "zipcode_panel_modelD.parquet": {
+      "path": "project/data/result/stage3/zipcode_panel_modelD.parquet",
+      "sha256": "3f4d8291999e9f388a46d7b65b361ac80e3eddfa5a42f0f5dec1ea59bc9d44d9"
+    },
+    "regression_results_modelD.json": {
+      "path": "project/data/result/stage3/regression_results_modelD.json",
+      "sha256": "8a32bae9a0bef97eb511ec349f9a43984b26c1f5b4edf5b9e363c6d843e53428"
+    },
+    "regression_results_modelD_full.json": {
+      "path": "project/data/result/stage3/regression_results_modelD_full.json",
+      "sha256": "8e9ffbea618a0da7f67782258dde72fa479b4876ad501499da70785cd221717a"
+    },
+    "regression_results_modelD_extra.json": {
+      "path": "project/data/result/stage3/regression_results_modelD_extra.json",
+      "sha256": "c03c49598d53141a8535f0f9619b2ae589ead4465a19823636fc1a93f949c7db"
+    }
+  },
+  "runtime_contract": {
+    "python": "3.12.10",
+    "requirements": "project/script/requirements-stage3.txt"
+  },
+  "probability_sources": [
+    "project/script/stage2_25events.ipynb",
+    "project/nightlight-dashboard/src/views/DocsDetailView.vue"
+  ],
+  "publication_guardrails": [
+    "Stage 3 coefficients and fit statistics are descriptive and not causal.",
+    "The Stage 3 R-squared values are in-sample fit statistics, not out-of-sample predictive accuracy.",
+    "The severity-tertile facility-density ratio is exploratory and must not be presented as evidence of an equity gap.",
+    "Spatial-error and severity-regression coefficients remain diagnostic until their sensitivity and clustered-inference limitations are resolved."
+  ],
+  "notes": [
+    "Values in this file are the publication contract for synchronized outputs.",
+    "The donor baseline is retained only for provenance and must not be displayed as the current result.",
+    "No additional metric should be published until its source artifact, calculation, unit of analysis, and inference method are recorded."
+  ]
+}

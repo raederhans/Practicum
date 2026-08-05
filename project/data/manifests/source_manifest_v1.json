@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "purpose": "Official upstream sources needed to reproduce the selectively synchronized Stage 2 and Stage 3 analyses.",
+  "sources": [
+    {
+      "id": "nasa_vnp46a2",
+      "name": "NASA VIIRS/NPP Gap-Filled Lunar BRDF-Adjusted Nighttime Lights Daily L3 Global 500m SIN Grid VNP46A2",
+      "official_urls": [
+        "https://ladsweb.modaps.eosdis.nasa.gov/missions-and-measurements/products/VNP46A2/",
+        "https://search.earthdata.nasa.gov/search?q=VNP46A2"
+      ],
+      "auth": "NASA Earthdata Login required for download",
+      "license": "NASA Earth Science data policy; retain dataset citation and metadata",
+      "version": "Collection/version must be recorded per downloaded granule; not inferred from filenames",
+      "redistribution": "metadata-and-derived-products-review-required",
+      "reproducibility": "official-download-reproducible-with-account-and-granule-list",
+      "status": "required-upstream-not-vendored",
+      "local_targets": ["project/data/raw", "project/data/processed"]
+    },
+    {
+      "id": "eagle_i",
+      "name": "U.S. DOE EAGLE-I outage data",
+      "official_urls": ["https://eagle-i.doe.gov/"],
+      "auth": "access may require registration or authorization",
+      "license": "terms-controlled; verify grant-specific or portal terms before reuse",
+      "version": "query/export timestamp and event window must be recorded",
+      "redistribution": "do-not-redistribute-without-confirmed-terms",
+      "reproducibility": "conditional-on-authorized-access",
+      "status": "partner-restricted",
+      "local_targets": ["project/data/raw/Outage_Dataset_R1"],
+      "derived_targets": [
+        {
+          "path": "project/data/result/stage3",
+          "publication_status": "rights-review-required"
+        }
+      ]
+    },
+    {
+      "id": "osm_overpass",
+      "name": "OpenStreetMap data via Overpass API",
+      "official_urls": [
+        "https://www.openstreetmap.org/copyright",
+        "https://wiki.openstreetmap.org/wiki/Overpass_API"
+      ],
+      "auth": "none for public endpoints; rate limits apply",
+      "license": "Open Database License 1.0 with attribution",
+      "version": "record query, endpoint, and retrieval timestamp",
+      "redistribution": "permitted-with-ODbL-attribution-and-share-alike-where-applicable",
+      "reproducibility": "queries-reproducible-but-live-database-can-change",
+      "status": "public-live-source",
+      "local_targets": ["project/data/result/stage2/poi_cache", "project/data/result/stage3/poi_cache"],
+      "validation_acquisition": {
+        "event_id": "zeta_atlanta",
+        "endpoint": "https://overpass-api.de/api/interpreter",
+        "user_agent": "Practicum-reproducibility/1.0 (+https://github.com/raederhans/Practicum)",
+        "retrieved_at": "2026-08-05T05:26:08.733738Z",
+        "row_count": 399,
+        "sha256": "af791973010fd5bb2a3e0eb4dc8f37c19c444c9b1be6fbba287d77ed7cfdc8eb",
+        "storage": "ignored-local-cache",
+        "manifest": "cache/source-data/osm-20260805/zeta_atlanta/osm_retrieval_manifest.json",
+        "donor_row_count": 404,
+        "donor_sha256": "90e18b2b5db8dc0d2542a96a06cce864923f7358df54244fcf1c18ef2b0d2c59",
+        "interpretation": "The five-row difference is recorded as live-source drift; the canonical donor cache was not silently replaced."
+      }
+    },
+    {
+      "id": "census_tiger_zcta_county",
+      "name": "U.S. Census Bureau TIGER/Line ZCTA and County shapefiles",
+      "official_urls": [
+        "https://www2.census.gov/geo/tiger/TIGER2020/ZCTA520/tl_2020_us_zcta520.zip",
+        "https://www2.census.gov/geo/tiger/TIGER2020/COUNTY/tl_2020_us_county.zip"
+      ],
+      "auth": "none",
+      "license": "U.S. Census Bureau public data; cite source and vintage",
+      "version": "TIGER/Line 2020; ZCTA520 and County national archives",
+      "redistribution": "permitted-with-source-citation",
+      "reproducibility": "stable-yearly-archives",
+      "status": "public-download-verified",
+      "local_targets": ["project/data/raw/tiger", "project/data/result/stage3"],
+      "acquisitions": [
+        {
+          "filename": "tl_2020_us_zcta520.zip",
+          "url": "https://www2.census.gov/geo/tiger/TIGER2020/ZCTA520/tl_2020_us_zcta520.zip",
+          "bytes": 527995578,
+          "sha256": "fb91d692a3140a366aa0c188f081f44cc860cccd693859858f997cf14afead9b",
+          "retrieved_at": "2026-08-05T12:58:01.2936285+08:00",
+          "storage": "ignored-local-cache",
+          "status": "verified"
+        },
+        {
+          "filename": "tl_2020_us_county.zip",
+          "url": "https://www2.census.gov/geo/tiger/TIGER2020/COUNTY/tl_2020_us_county.zip",
+          "bytes": 80644766,
+          "sha256": "a490d33145b8cd308b0b53113d4bb31575b84a2b4cf6ec28fa5855be37559d8d",
+          "retrieved_at": "2026-08-05T12:58:01.2936285+08:00",
+          "storage": "ignored-local-cache",
+          "status": "verified"
+        }
+      ],
+      "validation": {
+        "method": "geopandas-read-and-geometry-check",
+        "completed_at": "2026-08-05T12:59:51.7022228+08:00",
+        "crs": "EPSG:4269",
+        "zcta_rows": 33791,
+        "zcta_valid_geometry_rows": 33791,
+        "zcta_id_field": "ZCTA5CE20",
+        "county_rows": 3234,
+        "county_valid_geometry_rows": 3234,
+        "county_id_field": "GEOID",
+        "storage": "ignored-local-cache",
+        "log": "cache/logs/census-tiger-2020-schema.log"
+      }
+    },
+    {
+      "id": "census_acs_zcta_2022",
+      "name": "U.S. Census Bureau 2022 ACS 5-year ZCTA population and median-income controls",
+      "official_urls": [
+        "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b01003.dat",
+        "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b19013.dat"
+      ],
+      "auth": "none for table-based summary files",
+      "license": "U.S. Census Bureau public data; retain source, table, and vintage attribution",
+      "version": "2022 ACS 5-year table-based summary files; B01003 and B19013",
+      "redistribution": "permitted-with-source-citation",
+      "reproducibility": "stable-vintage-official-download",
+      "status": "public-download-verified",
+      "local_targets": ["project/data/raw/acs_zcta_2022.csv"],
+      "acquisition": {
+        "retrieved_at": "2026-08-05T05:27:35Z",
+        "source_mode": "summary-file",
+        "rows": 33774,
+        "bytes": 998266,
+        "geo_id_prefix": "860Z200US",
+        "output_sha256": "2cae6c00da19cb97ce0ccbd2600f5e3bfdd85cdfa1a310339cce0421537c1df3",
+        "manifest": "project/data/raw/acs_zcta_2022.manifest.json",
+        "responses": [
+          {
+            "field": "B01003_E001",
+            "sha256": "45f7e8d4fd2e3752d5219924ef01e886bfe70bcbe38524cd81d38abc7d1fa392"
+          },
+          {
+            "field": "B19013_E001",
+            "sha256": "54dc9c5f15146d861080919372c1dde3f8b51c7bc3f8c175d97b60f2d1c6b85b"
+          }
+        ]
+      }
+    },
+    {
+      "id": "noaa_ibtracs",
+      "name": "NOAA International Best Track Archive for Climate Stewardship",
+      "official_urls": [
+        "https://www.ncei.noaa.gov/products/international-best-track-archive"
+      ],
+      "auth": "none",
+      "license": "NOAA/NCEI data terms; cite IBTrACS version and access date",
+      "version": "IBTrACS release/version must be recorded",
+      "redistribution": "permitted-with-source-and-version-citation",
+      "reproducibility": "versioned-official-download-when-endpoint-is-available",
+      "status": "official-endpoint-http-403-on-2026-08-05",
+      "local_targets": ["project/data/raw/ibtracs"],
+      "run_alternative": "noaa_hurdat2_atlantic"
+    },
+    {
+      "id": "noaa_hurdat2_atlantic",
+      "name": "NOAA National Hurricane Center Atlantic HURDAT2",
+      "official_urls": [
+        "https://www.nhc.noaa.gov/data/hurdat/hurdat2-1851-2025-02272026.txt",
+        "https://www.nhc.noaa.gov/data/#hurdat"
+      ],
+      "auth": "none",
+      "license": "NOAA/NHC public data; cite the database, vintage, and access date",
+      "version": "Atlantic 1851-2025; updated 2026-02-27",
+      "redistribution": "permitted-with-source-and-vintage-citation",
+      "reproducibility": "versioned-official-download",
+      "status": "public-download-verified",
+      "local_targets": ["project/data/raw/hurdat2_atlantic_tracks.csv"],
+      "role": "Transparent NOAA alternative supplying positions and 34-knot wind radii for the nine named Atlantic storms used by the wind-exposure model.",
+      "acquisition": {
+        "retrieved_at": "2026-08-05T05:35:18Z",
+        "rows": 55605,
+        "storms": 2004,
+        "bytes": 1600665,
+        "source_sha256": "1b9b0c7beed5b4505838658b1d30e159fc84330c60891a58cfcf43ae55c37202",
+        "output_sha256": "09712f2926b8026f79b09bf2457e4397a9495e2148c0c7170e9813c0287d3cce",
+        "manifest": "project/data/raw/hurdat2_atlantic_tracks.manifest.json"
+      }
+    },
+    {
+      "id": "miami_dade_open_data",
+      "name": "Miami-Dade County Open Data",
+      "official_urls": ["https://gis-mdc.opendata.arcgis.com/"],
+      "auth": "normally none for public datasets; service limits may apply",
+      "license": "dataset-specific portal terms must be retained",
+      "version": "record item ID, service URL, and retrieval timestamp",
+      "redistribution": "dataset-specific-review-required",
+      "reproducibility": "public-service-reproducible-while-item-remains-available",
+      "status": "public-catalog-dataset-selection-required",
+      "local_targets": ["project/data/raw/miami_dade", "project/data/result/stage2"]
+    },
+    {
+      "id": "nlcd",
+      "name": "USGS Annual National Land Cover Database",
+      "official_urls": ["https://www.mrlc.gov/data"],
+      "auth": "none for public downloads",
+      "license": "U.S. Geological Survey data; cite product, year, and release",
+      "version": "land-cover year and release must be recorded",
+      "redistribution": "permitted-with-source-citation",
+      "reproducibility": "versioned-official-download",
+      "status": "public-download",
+      "local_targets": ["project/data/raw/nlcd", "project/data/result/stage2"]
+    },
+    {
+      "id": "worldpop",
+      "name": "WorldPop gridded population data",
+      "official_urls": ["https://hub.worldpop.org/"],
+      "auth": "none for public catalog downloads",
+      "license": "dataset-specific WorldPop license; retain citation and verify selected layer",
+      "version": "country, year, resolution, and constrained/unconstrained variant must be recorded",
+      "redistribution": "dataset-specific-attribution-required",
+      "reproducibility": "versioned-catalog-download-after-layer-selection",
+      "status": "public-catalog-dataset-selection-required",
+      "local_targets": ["project/data/raw/worldpop", "project/data/result/stage2"]
+    }
+  ]
+}

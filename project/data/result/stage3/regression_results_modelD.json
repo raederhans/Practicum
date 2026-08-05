@@ -1,0 +1,96 @@
+{
+  "ols_prob": {
+    "r_squared": 0.5887,
+    "fac_density_coef": 0.0373,
+    "fac_density_p": 1.2394688557889203e-43,
+    "n": 1002
+  },
+  "ttest": {
+    "with_mean": 0.5410000085830688,
+    "without_mean": 0.460999995470047,
+    "difference": 0.07999999821186066,
+    "t_stat": 4.949999809265137,
+    "p_value": 8.663132575748023e-07,
+    "n_with": 854,
+    "n_without": 148
+  },
+  "consistency": {
+    "consistent": 11,
+    "total": 12,
+    "pct": 91.7,
+    "per_event": [
+      {
+        "event": "Atmos_Seattle",
+        "with": 0.4429999887943268,
+        "without": 0.2720000147819519,
+        "delta": 0.17100000381469727
+      },
+      {
+        "event": "Derecho_Chicago",
+        "with": 0.671999990940094,
+        "without": 0.6100000143051147,
+        "delta": 0.06199999898672104
+      },
+      {
+        "event": "IceStorm_OKC",
+        "with": 0.4129999876022339,
+        "without": 0.25999999046325684,
+        "delta": 0.15299999713897705
+      },
+      {
+        "event": "Isaias_Newark",
+        "with": 0.6880000233650208,
+        "without": 0.6320000290870667,
+        "delta": 0.054999999701976776
+      },
+      {
+        "event": "Isaias_Westchester",
+        "with": 0.3409999907016754,
+        "without": 0.3179999887943268,
+        "delta": 0.02199999988079071
+      },
+      {
+        "event": "Matthew_Fayetteville",
+        "with": 0.34299999475479126,
+        "without": 0.21699999272823334,
+        "delta": 0.12600000202655792
+      },
+      {
+        "event": "Michael_PanamaCity",
+        "with": 0.35499998927116394,
+        "without": 0.28200000524520874,
+        "delta": 0.07400000095367432
+      },
+      {
+        "event": "Noreaster_Boston",
+        "with": 0.6320000290870667,
+        "without": 0.5720000267028809,
+        "delta": 0.05999999865889549
+      },
+      {
+        "event": "Severe_Detroit",
+        "with": 0.6029999852180481,
+        "without": 0.43700000643730164,
+        "delta": 0.16599999368190765
+      },
+      {
+        "event": "Uri_Houston",
+        "with": 0.578000009059906,
+        "without": 0.5809999704360962,
+        "delta": -0.003000000026077032
+      },
+      {
+        "event": "Zeta_Atlanta",
+        "with": 0.5640000104904175,
+        "without": 0.5479999780654907,
+        "delta": 0.01600000075995922
+      },
+      {
+        "event": "Zeta_Birmingham",
+        "with": 0.41100001335144043,
+        "without": 0.32499998807907104,
+        "delta": 0.0860000029206276
+      }
+    ]
+  }
+}

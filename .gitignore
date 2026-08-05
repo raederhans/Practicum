@@ -10,6 +10,12 @@ POI/__pycache__/
 .venv_modeling/
 __pycache__/
 *.pyc
+.playwright-cli/
+.playwright-mcp/
+
+# Dashboard install/build outputs
+project/nightlight-dashboard/node_modules/
+project/nightlight-dashboard/dist/
 
 # Generated modeling artifacts (reproducible)
 project/modeling/output/*.csv

@@ -1,0 +1,36 @@
+{
+  "citation": "U.S. Census Bureau, 2022 American Community Survey 5-year table-based summary files, tables B01003 and B19013.",
+  "dataset": "Census ACS 5-year ZCTA",
+  "derived_fields": {
+    "NAME": "Derived as 'ZCTA5 {ZCTA5CE20}' from GEO_ID prefix 860Z200US."
+  },
+  "geography": {
+    "geo_id_prefix": "860Z200US",
+    "level": "zip code tabulation area"
+  },
+  "license": "U.S. Census Bureau public data; retain source and vintage attribution.",
+  "output_sha256": "2cae6c00da19cb97ce0ccbd2600f5e3bfdd85cdfa1a310339cce0421537c1df3",
+  "responses": [
+    {
+      "field": "B01003_E001",
+      "sha256": "45f7e8d4fd2e3752d5219924ef01e886bfe70bcbe38524cd81d38abc7d1fa392",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b01003.dat",
+      "variable": "total_pop"
+    },
+    {
+      "field": "B19013_E001",
+      "sha256": "54dc9c5f15146d861080919372c1dde3f8b51c7bc3f8c175d97b60f2d1c6b85b",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b19013.dat",
+      "variable": "median_income"
+    }
+  ],
+  "retrieved_at": "2026-08-05T05:27:35Z",
+  "rows": 33774,
+  "source": "summary-file",
+  "variables": {
+    "NAME": "NAME",
+    "median_income": "B19013_001E",
+    "total_pop": "B01003_001E"
+  },
+  "year": 2022
+}

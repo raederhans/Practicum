@@ -1,0 +1,3449 @@
+{
+  "artifact_role": "initial-import-receipt",
+  "captured_at": "2026-08-05T04:55:12Z",
+  "state_scope": "immediate-post-import",
+  "current_tree_may_diverge": true,
+  "scope_note": "This records donor equality at initial import only; it is not a current-tree assertion after personalization.",
+  "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+  "files": [
+    {
+      "action": "skip-identical",
+      "bytes": 1050,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "f75171be1eeb671ca8b6145c7e4f5ee3d2db9e6e",
+      "path": ".github/workflows/deploy-dashboard.yml",
+      "sha256": "f19af6fcded59b46f31e848cb236044fbb1969d8e29ec4d5eb117ff4ec7f09be",
+      "slice": "explicit-files",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 34174,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "64f521ad4d95bbe3d83395fcf1e81d099b425e6f",
+      "path": "project/data/result/stage2/Atmos_Seattle_prob_map_modelD.tif",
+      "sha256": "8db45ba7896acf52346369b643baf37c6143b09995f25a5a7a5938dfaf3fc663",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 35586,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "f929d1c390d62d00b9d5cca743836bd17a2aedbc",
+      "path": "project/data/result/stage2/Derecho_Chicago_prob_map_modelD.tif",
+      "sha256": "401f13a7dd1f34663eef599ec156aaa74b27de9d2b1d7f8814f7d3d3392a4c4c",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 26436,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "e4705b6de9f22f892369aaa3bab98818725cfb8a",
+      "path": "project/data/result/stage2/Earthquake_Hatay_prob_map_modelD.tif",
+      "sha256": "0a6ab65d73b39cf94234b01e3f4b5238b1e359ce586b10edce84c8c67b704d82",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 21930,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "fad88da8b125a5b3972c60dcf599f92158dd30b5",
+      "path": "project/data/result/stage2/Earthquake_SanJuan_prob_map_modelD.tif",
+      "sha256": "7cc3299fd9458365963bde595e66d5bd9db06c7bd0d7cbd73688c4719cd2cf09",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 25049,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "6aa92905a2315e2beb2399589c135a8028211619",
+      "path": "project/data/result/stage2/Florence_MyrtleBeach_prob_map_modelD.tif",
+      "sha256": "28d8fb4641f7a3993627f22c8de650b8e6be715f33fa16beda1ab66edbdcf459",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 23926,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "981dd37d6d4293cf09907a7c539e3a4e759c91a6",
+      "path": "project/data/result/stage2/Florence_Wilmington_prob_map_modelD.tif",
+      "sha256": "7feae737ed11765baf14693d301c134e5e47d78ba9b820c455552f134204e176",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 14110,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "55033d837f53914de7f83c7f925606dc9104535a",
+      "path": "project/data/result/stage2/Ian_CharlotteHarbor_prob_map_modelD.tif",
+      "sha256": "95e03bfc1c40654182815ee45b70567450ad0b95f77d60ef263b812ecc9d523c",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 44035,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "5b4f26b4b172ee292b7bebf0e8008068d7abb088",
+      "path": "project/data/result/stage2/Ian_FortMyers_prob_map_modelD.tif",
+      "sha256": "e684f1a1ebfc1af47d7869e1d2dae9d26418ebcdfa08ffa8baaba4cb6c8b3249",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 53907,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "67d7b6fd6bfa3fc2189328bbd765a2d9e947e53a",
+      "path": "project/data/result/stage2/IceStorm_OKC_prob_map_modelD.tif",
+      "sha256": "0ea4852510692c03bc52de6e9176cab4d41b5961b22bc18b050a38c153ae5a66",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 36199,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "cc98821467f59cc78cdc12f2975a51b48736b1d7",
+      "path": "project/data/result/stage2/Ida_NewOrleans_prob_map_modelD.tif",
+      "sha256": "29458506d24823f3993462483a6c5d1a397ced039954a783532a640b17815fa5",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 33890,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "43da31a0d0bea8554a19ea5840b98ed6183719e4",
+      "path": "project/data/result/stage2/Irma_Miami_prob_map_modelD.tif",
+      "sha256": "a8cf0edfa27474a3dc944e60b163725a6411df97907fe0fbb8dd76e7e6acb75d",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 26771,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "8b789850b67742f7f954db34a9588c7fa102f9f4",
+      "path": "project/data/result/stage2/Irma_Savannah_prob_map_modelD.tif",
+      "sha256": "ccdf9f68659a9678eebbe5a38b860e37cc519366121b9113d6a2d9f4173ec728",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 56868,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "b2c0ce8263621ecc639a3a63b740dfeb624c1101",
+      "path": "project/data/result/stage2/Isaias_Newark_prob_map_modelD.tif",
+      "sha256": "5aff7b4cb325b52065248952363ab4ca79709b7c7524683e61e1d8b433ee37f8",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 31040,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "04e86ac53db9591a0bc896ce283aec200ea6d6e2",
+      "path": "project/data/result/stage2/Isaias_Westchester_prob_map_modelD.tif",
+      "sha256": "ec0153ecd9b8f73c3eee63ef0a318e222bea338c09605fdc7b0971516b2373fa",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 26141,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "ac2cdd60fb7512522e673893651372734cb49286",
+      "path": "project/data/result/stage2/Laura_LakeCharles_prob_map_modelD.tif",
+      "sha256": "f3d0b901595af60a49a3c43bf6568196373783eb63dc3b0a1eaa4903d9104277",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 22130,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "50b82458eaa0f8e4019b6f26b6fc5fb025f24ead",
+      "path": "project/data/result/stage2/Maria_SanJuan_prob_map_modelD.tif",
+      "sha256": "0a8be9920a96745b176b18ff3f1e6fd739c342b3e870a89c8547ef14a77ec3d2",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 31858,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "45c42f7180a83e5abd1f18c55581b50fc91a6f06",
+      "path": "project/data/result/stage2/Matthew_Fayetteville_prob_map_modelD.tif",
+      "sha256": "be1042774309e7abaf3bbe35b92afc3e413b6624879877590d7b5f9b5e06e42f",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 51185,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "df02f91c394f42a160024b8e42565cd98956f7a5",
+      "path": "project/data/result/stage2/Matthew_Jacksonville_prob_map_modelD.tif",
+      "sha256": "faa3aca847b14b5d61f401bfd4cce99b4a9c2d4f45d03aac6517c68e3ffc15e5",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 22176,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "2744d6d20ba2c0871c047e979db730f738de4950",
+      "path": "project/data/result/stage2/Michael_PanamaCity_prob_map_modelD.tif",
+      "sha256": "921674bfd334a5c23d16089e32ff5432db1e76b3ae6a851f861832b39f438d9e",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 43259,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "1790dd3acea34210f3af12205cdbdc3804692cce",
+      "path": "project/data/result/stage2/Noreaster_Boston_prob_map_modelD.tif",
+      "sha256": "f2ac77ec11e2d240e0bddb1c326bc6fbacc94600121bd1f38957c9bf91a6583c",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 49171,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "0da8ed44e2a7a9efc76807c52f09be33720f35e6",
+      "path": "project/data/result/stage2/Severe_Detroit_prob_map_modelD.tif",
+      "sha256": "6a82e5850d0738d1045f4f74859fa42fb472a1ab3a8e91233f1a5999ef5051a1",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 50840,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "5c1666bfe6950d38a1882a434416f4d8b6046453",
+      "path": "project/data/result/stage2/Severe_Nashville_prob_map_modelD.tif",
+      "sha256": "112e4d5df5d2d2c47fb0c49efb970fa03dea755fadbccddf82f42be75ca605e8",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 64649,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "94b0428ddd8a75ae011543b0862193ccc0fd95b4",
+      "path": "project/data/result/stage2/Uri_Houston_prob_map_modelD.tif",
+      "sha256": "5c4a2d8d3ed5441129a70b67cd196e98d5bc8854b4089d15d4235202b183eea2",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 63690,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "772fe3385c2df7f893f16bcb8fb9792af5365949",
+      "path": "project/data/result/stage2/Zeta_Atlanta_prob_map_modelD.tif",
+      "sha256": "c1b47c10718dcf666c84cd15632774732d8bad1ad15f4f89127247a932e0b1e1",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 48914,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "59cdf93acfa47401ce931fee58a8d3467469df75",
+      "path": "project/data/result/stage2/Zeta_Birmingham_prob_map_modelD.tif",
+      "sha256": "8a11475240dab01c319118dda89a23d36df244c5d9dd7e657f6a421dc5aebc21",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 13459,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "87cf0f9854cfc9abc0f3a5de9d9b87050842d0d0",
+      "path": "project/data/result/stage2/building_coverage_panel.parquet",
+      "sha256": "1bb96d85a5f46744e41fbfb597287b374c0a5656bbb8badf65bc63772c9ae24d",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 683,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "f9d55e7c5e4a9ac4bab2c3a677c15f742a4b67c2",
+      "path": "project/data/result/stage2/feature_importance_modelD.csv",
+      "sha256": "7be4413e712705cab2d5df4ce639412452ca28f55161e9b25494d7a272c8f012",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 149,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "12b1aeea309e243eca319849262b056ee716b2d9",
+      "path": "project/data/result/stage2/grouped_auc_by_city_size.csv",
+      "sha256": "a1222bb349417f60f49811528695022f69f06331dcec982b824d466d51ac9738",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 264,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "5b728ff672c6465a64ef2c236adb1a05d7083ebd",
+      "path": "project/data/result/stage2/grouped_auc_by_disaster.csv",
+      "sha256": "9f20742f69f7456694726cbdebc87cef0e3d42f645e34fb24625c64b96698482",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 4115,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "fcb127eaac001a424bec4e5dcbb2330a4d01a2df",
+      "path": "project/data/result/stage2/loeo_modelD_25events.csv",
+      "sha256": "3af62e83eca8186446c212b7f9b9afd1d5838356117904c762a57d14e3e2a79d",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 15639,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "2785275cca9170c9fa25d0e0273965c99b69d7dd",
+      "path": "project/data/result/stage2/miami_dade_pointwise_probs.csv",
+      "sha256": "ef70d3ee863015afaab1a950c7d5555ce1e7bb929c523bbab0c51760bc7f8893",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2332,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "8b6344c49a9b5d58869b5f509b94bffea885b804",
+      "path": "project/data/result/stage2/miami_dade_validation.json",
+      "sha256": "423058700be95b7b7fad11e24ec0484a4df71a28ff3f4340ecdd20b0a9e8d0b7",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 1563956,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "475852b9025016c3d6c54c63b7952c0cc28c2747",
+      "path": "project/data/result/stage2/pixel_panel.parquet",
+      "sha256": "f65102bee88e2bfb294c641a56f054c45d6dd9da628c0640fc5cf95c166f224a",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 19706,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "30bfcac1ef029e465f9c99eb4df5f18bc9f51a8d",
+      "path": "project/data/result/stage2/poi_cache/Atmos_Seattle_poi.csv",
+      "sha256": "655aeb1d2f0c4e988d4516047af5f85adcfc13f8f475b774b7fe94924356ed9d",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 38966,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "944767627bcf8cdfe4f2474390451b836282414b",
+      "path": "project/data/result/stage2/poi_cache/Derecho_Chicago_poi.csv",
+      "sha256": "161f0aa8d9a6a0fbb9619cb1d7826d8dbd64268266987ec11cfa8c6e7f49f4f0",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 8762,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "0f4dd259715c024495cb73e0a11ceb01252f3e63",
+      "path": "project/data/result/stage2/poi_cache/Earthquake_Hatay_buildings.geojson",
+      "sha256": "5d012264969e9ae5671165cfab437ecdcc169cc66b6a25c281be71e4c723bcc1",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 3174,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "f1c6a52802c005546a2e55e68704cddeb53f462a",
+      "path": "project/data/result/stage2/poi_cache/Earthquake_Hatay_poi.csv",
+      "sha256": "04f3d1850a6b18ab6e46f6c32f1b323a9606a702be06b66024cff80c90c58849",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 43075,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "0b70e4cddf2da62a34b73fd60ecb4d99d2164c00",
+      "path": "project/data/result/stage2/poi_cache/Earthquake_SanJuan_buildings.geojson",
+      "sha256": "a14b954e11706ffd372edeed643354d8a64492ea4793766639dd0b20588e6243",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 11974,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "7796a31d5c9a36d62e48e06fe6f3a5c8817aa09f",
+      "path": "project/data/result/stage2/poi_cache/Earthquake_SanJuan_poi.csv",
+      "sha256": "6d59c1027fb85b9055300c746d61d5a8bde6975ac889b2e659545a48cabae093",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 7988,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "fc0733f085e3ec6915c436d921ba8f3432b71647",
+      "path": "project/data/result/stage2/poi_cache/Florence_MyrtleBeach_poi.csv",
+      "sha256": "ac6d6d6dd8df1c2c0d343777da57b9d294573ab5acd62e6510a2b60c898d8898",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 6018,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "e8432ebcfe7fb2b19306af038af2aacf3b17961e",
+      "path": "project/data/result/stage2/poi_cache/Florence_Wilmington_poi.csv",
+      "sha256": "0de241094fda2b022f0bfee7d8e22b2112e0fc3c36023c35a970f1979902f4cd",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 8449,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "22526358c07c781f2ea433fed007200ce27ad6fb",
+      "path": "project/data/result/stage2/poi_cache/Ian_CharlotteHarbor_buildings.geojson",
+      "sha256": "4ab60d3f4cfd878c5ab7c261974a1519f7686a89a05a601062a227964d6188e6",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 3709,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "6c539a796eb67747a445d0255b72945f489d80b7",
+      "path": "project/data/result/stage2/poi_cache/Ian_CharlotteHarbor_poi.csv",
+      "sha256": "f91dfe91fc6ac335b389b54fd945f7d48e3163a65f3c4ea50f08ebf768703528",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 22337,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "2b7f495a77a653bea29b09a1df4fc697fa32d73a",
+      "path": "project/data/result/stage2/poi_cache/Ian_FortMyers_buildings.geojson",
+      "sha256": "58fa706e00b3797405f03c0e9a1575f98bea1b17275b1038acd4e12929970d3c",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 8541,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "5b08491b122f7d3dc0f87c159ce9274bc1780be0",
+      "path": "project/data/result/stage2/poi_cache/Ian_FortMyers_poi.csv",
+      "sha256": "6899c73915e7db19d97127ecee41c8b57ad03c4cd4433d5e101e8f5a61924cd2",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 17044,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "51a8473f1ec8003923f5162a079d237cd4119119",
+      "path": "project/data/result/stage2/poi_cache/IceStorm_OKC_poi.csv",
+      "sha256": "a75a036cfe507d5931adee62c4b8930499ac228f012b3b19b2761f4a34269ee1",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 22173,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "815c621b1c959cb2dbd3438b3602e73c4b1400e8",
+      "path": "project/data/result/stage2/poi_cache/Ida_NewOrleans_buildings.geojson",
+      "sha256": "6fa46cf9bb53975a3cf83944356dbd995cd473eaa170f164ec337a2a6adb1a41",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 15856,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "947caed2cbe4d88cc363922a183f0e03d9329be4",
+      "path": "project/data/result/stage2/poi_cache/Ida_NewOrleans_poi.csv",
+      "sha256": "8ed8434dcea836259c11a312b98bf3a9266bad3b0974605ba0da744693e93e4b",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 35929,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "e0c48ab2f2dd9fe4e8ec06fa5cca4e637f689182",
+      "path": "project/data/result/stage2/poi_cache/Irma_Miami_buildings.geojson",
+      "sha256": "68e6da2a5365db19d31eaac17066857877f0d466dbfc6c6714f8fa6ec60ffb2e",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 26329,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "dcde17b005e34c0a919e93408f8d1d119bbb70d8",
+      "path": "project/data/result/stage2/poi_cache/Irma_Miami_poi.csv",
+      "sha256": "9c813d74968bdb6a1ecdf651e8117b7b5336a261b3ddbe025d531fcc076ba648",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 24804,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "269e55afdacde370f0726e712f7723bcd6b71182",
+      "path": "project/data/result/stage2/poi_cache/Irma_Savannah_poi.csv",
+      "sha256": "79d5bc2244dcdf3df71a73c43aabd3c6aae78b0eaa31795ca306c0a46d2f5fd3",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 43524,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "d8f1ceff887e646547d13a3f874de24d71c30611",
+      "path": "project/data/result/stage2/poi_cache/Isaias_Newark_poi.csv",
+      "sha256": "ceffe6d4405b8af48256f883e4032f3707665a5bec36c87b37d429b02d136a28",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 11282,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "033cb0a26ef6d2fece5db1c4f7c76641653fca80",
+      "path": "project/data/result/stage2/poi_cache/Isaias_Westchester_poi.csv",
+      "sha256": "3683ca1951feca9b42b27c5cf3b0ab1ddd40d640cae25e50ed53afa3e7020f50",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 7298,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "719f0471f3b35b9e1d8da592c87ebe2506c9c742",
+      "path": "project/data/result/stage2/poi_cache/Laura_LakeCharles_buildings.geojson",
+      "sha256": "8319f641f1dffae0b4f79067ae4d9c2cb0a3845626d128417fedcc5b3b335bbc",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 6883,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "ae9fa0b026d3c4b43beee8cdc1a81dc9985e3f5c",
+      "path": "project/data/result/stage2/poi_cache/Laura_LakeCharles_poi.csv",
+      "sha256": "260a6c2ba8035b064d85c9642e1e142971ba29d810cd75aa500412f021169781",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 43070,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "c4897b6742e398fdd6f2059d68b4f6ef0fddf5b3",
+      "path": "project/data/result/stage2/poi_cache/Maria_SanJuan_buildings.geojson",
+      "sha256": "961c9f182f1c13a7a4e2357199fb7c597b20f5e3428e0eaf6281ef0284416ef0",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 21063,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "f70fcdd16548e76d69f809224abad6f70ad98f5b",
+      "path": "project/data/result/stage2/poi_cache/Maria_SanJuan_poi.csv",
+      "sha256": "910c1d4a00d86aee4e0da5397b3e92519478cc07e597cfd1d077029eaf52513c",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 9419,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "4be9df6dab6a4986f7c7a2857fbdbd5872c92bb4",
+      "path": "project/data/result/stage2/poi_cache/Matthew_Fayetteville_poi.csv",
+      "sha256": "40b79389e0ac7b6dc84555f97b203fecf13b516c5198e9904ac01683a01d6d0f",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 17380,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "0a9e4a8f64177752c48bfc17ce09a7210537f290",
+      "path": "project/data/result/stage2/poi_cache/Matthew_Jacksonville_poi.csv",
+      "sha256": "d808bc9dfb727b8844c54c64871a8e26653ed5d34819feb104598052f75aba14",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 14028,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "84c250b5972c151ffd621ae3b272df4d3e7ff2a1",
+      "path": "project/data/result/stage2/poi_cache/Michael_PanamaCity_buildings.geojson",
+      "sha256": "582dc9360c7f65d900733f5956ff279d627d67a1de758a1a7e668cde228e5220",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 3870,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "e4d9244056ea599e731fb39d43b9a0a0fbac82e5",
+      "path": "project/data/result/stage2/poi_cache/Michael_PanamaCity_poi.csv",
+      "sha256": "98564d97987e94289d1a97a421f7248837c81ef4b5b068a254cac4813f35f604",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 41682,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "6aeecc661473e3b25e2dd234a54f8c5cff80fe68",
+      "path": "project/data/result/stage2/poi_cache/Noreaster_Boston_poi.csv",
+      "sha256": "8a4061273e78f9634354376f607e065de07360be7b7eec2ba4ae7c65e281dd44",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 34507,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "df1c57f7cdde16996ee746dee76d65d6ede0b40e",
+      "path": "project/data/result/stage2/poi_cache/Severe_Detroit_poi.csv",
+      "sha256": "5a0d3e7bcb18548d6057f92f76db6798f3d6e36c948a6bfd79200f5830c94dd0",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 17100,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "bf4db2468403a3f01ec115e4c916223b74b2b338",
+      "path": "project/data/result/stage2/poi_cache/Severe_Nashville_poi.csv",
+      "sha256": "0c9147dd0baf2b327f84d5d644d68e9678d6cae4c07241e83c02681c5620fc1d",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 20113,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "51e161f79a272a2bf11a747bb0d421247794ecbd",
+      "path": "project/data/result/stage2/poi_cache/Uri_Houston_poi.csv",
+      "sha256": "ca04984209884b4ae7c7ee0b1b7cb28388b3aaff2a7cf6b8288398bc93844b7e",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 31118,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "19a2b4364be779242482635636ecc29954a8908e",
+      "path": "project/data/result/stage2/poi_cache/Zeta_Atlanta_poi.csv",
+      "sha256": "90e18b2b5db8dc0d2542a96a06cce864923f7358df54244fcf1c18ef2b0d2c59",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 21240,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "fc3648f1878d576a7a77487643a653c782d33220",
+      "path": "project/data/result/stage2/poi_cache/Zeta_Birmingham_poi.csv",
+      "sha256": "cc84138ec435c51c4b2c503e43a2e4fd15fdac7bcbd22efc6bfe7ed447c64db9",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 292,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "2676b26310f04127c50d2b515d72d631cab45da4",
+      "path": "project/data/result/stage2/precision_recall_results.csv",
+      "sha256": "4f42ee493c2c3959cf54d92024d458e7be7ae682c87bef29a9b4b8f0616a08b7",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 88820,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "2a3271252af4e099ae15509103b35bb66b55deeb",
+      "path": "project/data/result/stage2/prob_by_facility_group.png",
+      "sha256": "77567952061c8ab69ed5f262c2171604bdd4c6fd4a308be48753592b2caabf9e",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2659225,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "1c7054bdf12b79f7888d9463bbe4b05bbb882077",
+      "path": "project/data/result/stage2/rf_modelD.pkl",
+      "sha256": "c6eb5bade864f01ed8e6d3f44a2356faad818d1cbacd845afb98298a230fea8e",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 785354,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "abd8a140d5bbc11ab64a711ce062de9ae15012fc",
+      "path": "project/data/result/stage2/xgb_modelD.pkl",
+      "sha256": "45a047249a1f786e044395683b785ac2cb0a9cdbbb5080abe5c233e3733f8eb0",
+      "slice": "project/data/result/stage2",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 26535,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "546cf3a0a4f529769ee31c9d8ebb881c85e0c32e",
+      "path": "project/data/result/stage3/poi_cache/Atmos_Seattle_poi.csv",
+      "sha256": "b829150050e546aa7f3910cf4764b4992c1a42b04df1918c41ca2de5c205c6d0",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 42188,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "b3ffc6902598e20ce72ff54d9590a98c9c984765",
+      "path": "project/data/result/stage3/poi_cache/Derecho_Chicago_poi.csv",
+      "sha256": "d1266ed8c24c15b16a1a945f857843e2eabdcc834639cc2108ce2c44f701886f",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 7988,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "fc0733f085e3ec6915c436d921ba8f3432b71647",
+      "path": "project/data/result/stage3/poi_cache/Florence_MyrtleBeach_poi.csv",
+      "sha256": "ac6d6d6dd8df1c2c0d343777da57b9d294573ab5acd62e6510a2b60c898d8898",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 6018,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "e8432ebcfe7fb2b19306af038af2aacf3b17961e",
+      "path": "project/data/result/stage3/poi_cache/Florence_Wilmington_poi.csv",
+      "sha256": "0de241094fda2b022f0bfee7d8e22b2112e0fc3c36023c35a970f1979902f4cd",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 17044,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "51a8473f1ec8003923f5162a079d237cd4119119",
+      "path": "project/data/result/stage3/poi_cache/IceStorm_OKC_poi.csv",
+      "sha256": "a75a036cfe507d5931adee62c4b8930499ac228f012b3b19b2761f4a34269ee1",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 24804,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "269e55afdacde370f0726e712f7723bcd6b71182",
+      "path": "project/data/result/stage3/poi_cache/Irma_Savannah_poi.csv",
+      "sha256": "79d5bc2244dcdf3df71a73c43aabd3c6aae78b0eaa31795ca306c0a46d2f5fd3",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 43524,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "d8f1ceff887e646547d13a3f874de24d71c30611",
+      "path": "project/data/result/stage3/poi_cache/Isaias_Newark_poi.csv",
+      "sha256": "ceffe6d4405b8af48256f883e4032f3707665a5bec36c87b37d429b02d136a28",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 11282,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "033cb0a26ef6d2fece5db1c4f7c76641653fca80",
+      "path": "project/data/result/stage3/poi_cache/Isaias_Westchester_poi.csv",
+      "sha256": "3683ca1951feca9b42b27c5cf3b0ab1ddd40d640cae25e50ed53afa3e7020f50",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 9419,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "4be9df6dab6a4986f7c7a2857fbdbd5872c92bb4",
+      "path": "project/data/result/stage3/poi_cache/Matthew_Fayetteville_poi.csv",
+      "sha256": "40b79389e0ac7b6dc84555f97b203fecf13b516c5198e9904ac01683a01d6d0f",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 17380,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "0a9e4a8f64177752c48bfc17ce09a7210537f290",
+      "path": "project/data/result/stage3/poi_cache/Matthew_Jacksonville_poi.csv",
+      "sha256": "d808bc9dfb727b8844c54c64871a8e26653ed5d34819feb104598052f75aba14",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 41432,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "946d43f34462360bd0526296bd2bf003ff973ef9",
+      "path": "project/data/result/stage3/poi_cache/Noreaster_Boston_poi.csv",
+      "sha256": "f12a61fd0a023547b0d33a8a1549d67f3d3103d9a16e421f429fa8ce0835eca6",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 34507,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "df1c57f7cdde16996ee746dee76d65d6ede0b40e",
+      "path": "project/data/result/stage3/poi_cache/Severe_Detroit_poi.csv",
+      "sha256": "5a0d3e7bcb18548d6057f92f76db6798f3d6e36c948a6bfd79200f5830c94dd0",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 17100,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "bf4db2468403a3f01ec115e4c916223b74b2b338",
+      "path": "project/data/result/stage3/poi_cache/Severe_Nashville_poi.csv",
+      "sha256": "0c9147dd0baf2b327f84d5d644d68e9678d6cae4c07241e83c02681c5620fc1d",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 21931,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "eaf92cc1c04b8ac162a28590569c07c669b11c46",
+      "path": "project/data/result/stage3/poi_cache/Uri_Houston_poi.csv",
+      "sha256": "8da16c51594617ce3812c7679977b6092dcbff8841a6865176619fa4a8b29e83",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 31118,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "19a2b4364be779242482635636ecc29954a8908e",
+      "path": "project/data/result/stage3/poi_cache/Zeta_Atlanta_poi.csv",
+      "sha256": "90e18b2b5db8dc0d2542a96a06cce864923f7358df54244fcf1c18ef2b0d2c59",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 21240,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "fc3648f1878d576a7a77487643a653c782d33220",
+      "path": "project/data/result/stage3/poi_cache/Zeta_Birmingham_poi.csv",
+      "sha256": "cc84138ec435c51c4b2c503e43a2e4fd15fdac7bcbd22efc6bfe7ed447c64db9",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 5200,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "604bc0a48a7abb1fc6fcba2ad98dc5d433e290d9",
+      "path": "project/data/result/stage3/regression_results_modelD_extra.json",
+      "sha256": "09c01af9c4720dd70a32044d729d8c603d0d56b5e1d87cc0fcaeab4ec7fe0154",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2019,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "038629a13bd77219ed02372e045b7e31db848f41",
+      "path": "project/data/result/stage3/regression_results_modelD_full.json",
+      "sha256": "2fc2f562f3d6094eafa1bec1fe8e5f94786966e30415ec1d1b94296ad68a67ad",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 44140,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "037b331ed391046d5937affe2c448e6c3aa1c75e",
+      "path": "project/data/result/stage3/zipcode_panel_modelD.parquet",
+      "sha256": "9aacd2f69d94af1f0dcbaf27f90616549250d44d83fb4a2b1badf2c8a7c0ec1c",
+      "slice": "project/data/result/stage3",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 3406,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "d3922c33dcae592201fe663c1b94599343eb16bf",
+      "path": "project/nightlight-dashboard/README.md",
+      "sha256": "5f92bd3ee1acaa8aa73463d0c6346ef2c7b3f09b40675b6eee5c61bbc116b2d7",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 3676,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "2ea9e91df1b9e0d8fad07dcf306c6d6e99402c9a",
+      "path": "project/nightlight-dashboard/enrich_poi_names.py",
+      "sha256": "57a1b4e9d988afb43b9f9f95238aab90c7ea7afcc9ead713fd04176737072700",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 4902,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "c5d7a316cc612fcc34eb01a9567b6b61b729e4af",
+      "path": "project/nightlight-dashboard/export_cloud_stats.py",
+      "sha256": "420d1dfb1b2c4b98c6e9a46aaa533d65fc1ef36361e99a57b40c1b1a7a950f75",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 4772,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "eb1d739302d6e7246115c356fd2478fe0acc3f47",
+      "path": "project/nightlight-dashboard/export_ntl_frames.py",
+      "sha256": "7f6f47ee4ad33e303d927d127cd8958fd25e36633587bf904c681e61cd541b88",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 33667,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "2a2b2bcf8996319c8ddcb646329e42745c2a2a2b",
+      "path": "project/nightlight-dashboard/export_to_dashboard_modelD.py",
+      "sha256": "49c55f4232d6e7a676eeda214f9e75b8b75ef5c5080bc377cd6674a9bdd17f93",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 980,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "7b4c11e37e069549b3dbd7f1af91edebc8d7aaf7",
+      "path": "project/nightlight-dashboard/index.html",
+      "sha256": "b1f2f00efd83af01bfa3ee477ec932cf082c89c9ecfca35adde940d420cd1e53",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 56302,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "bd8c4b44717d97ecd51d2abb0b5caf1d1699c1bc",
+      "path": "project/nightlight-dashboard/package-lock.json",
+      "sha256": "5bce9cb2e0c48e41da865888cd941efaea245e30ac8a4274a0ec38b914ee55e2",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 381,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "d59ad3f8f4fc294468917036a696fe74b9b368b4",
+      "path": "project/nightlight-dashboard/package.json",
+      "sha256": "f9e32893c5acc3ce35379be04d7cc7e5e708137820ef5f55037c5cdfdd5edc8d",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 342522,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "64945828eb4ffde5661525ddfaf99501e0371bae",
+      "path": "project/nightlight-dashboard/public/data/cloud_fraction.json",
+      "sha256": "c321bf9ce00c490179fa1ece59a2b3fdc5126930c2da3ad044a7a0097f33a1fb",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 409743,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "ce569c79722b572821d78b35f406fb722d6d25b9",
+      "path": "project/nightlight-dashboard/public/data/cloud_stats.json",
+      "sha256": "728c646d586e935a1dccf07cef7a0b41b804b7424775bee5c13264fa5b4aa77e",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 3711,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "9fc8d6cb5d91f05c48d478974e039a68e4d2cf26",
+      "path": "project/nightlight-dashboard/public/data/eda_stats.json",
+      "sha256": "7bab613dcc9129f58d448d9003e0a5cf487f0d5752196e0a243c1904d5f533a8",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 734192,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "6094673c93b2326678618792d56b0a1777770063",
+      "path": "project/nightlight-dashboard/public/data/events_config.js",
+      "sha256": "b519da981307e3d867203435eed0af25d516d1440512c763612730499a63044c",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 45242,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "b656f00ea0faa997dac4407b341e47c90820fce6",
+      "path": "project/nightlight-dashboard/public/data/facilities_atmos-seattle.json",
+      "sha256": "846ff645ad78df4f3446a7771c69f5777b0f95eabbf082b94a9368c9d0cff0e6",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 87767,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "c874c94fc1c38f38ef2e45778f05e85d3864082e",
+      "path": "project/nightlight-dashboard/public/data/facilities_derecho-chicago.json",
+      "sha256": "352b311c6ccd1affb5cfe30bd99a90db35233eca874ab6144cbbd088d4d03415",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 6211,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "fd9da9066c6dd04cdb7f217a61f6289d683c0017",
+      "path": "project/nightlight-dashboard/public/data/facilities_eq-hatay.json",
+      "sha256": "1e3582000932b3e36121e4873470fbc36f0188b8b9e8b55cabec236516208c4a",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 35538,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "a1507e35ff82ae070f5307b526b632515e4a04a5",
+      "path": "project/nightlight-dashboard/public/data/facilities_eq-pr.json",
+      "sha256": "67877a65b8c4160516e1af7c4cb54baaa6fda52470c0700e9a77a17dbf5a5004",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 18068,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "71fedea8ac5cc9f386266a34e53d974fc20c8caa",
+      "path": "project/nightlight-dashboard/public/data/facilities_florence-sc.json",
+      "sha256": "fb03b731d5385154c9b320931fff4a6d275d54222b7884f06cd8d098616a8f9d",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 14047,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "73ccb010f714835ec7d4fc194ca66e224067016f",
+      "path": "project/nightlight-dashboard/public/data/facilities_florence-wilm.json",
+      "sha256": "d038b218c7a766438847b27e687653a1933a70c4c123ebfc8718f906f1b2c8c4",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 6076,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "eae9a72ff5ffb79aadc365188ea260bf924bec98",
+      "path": "project/nightlight-dashboard/public/data/facilities_ian-charlotte.json",
+      "sha256": "c11cb042d71d2a8b6ddc20e912e18df612ff275aaa68be7e0fbb1c5251d465eb",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 22702,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "c6ce50c08deecfa987bf64f07fa115670f92ad0c",
+      "path": "project/nightlight-dashboard/public/data/facilities_ian-fortmyers.json",
+      "sha256": "6b371c62d437a975079cada765d44bee3300285755a9132cedcaed7c24f634af",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 39874,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "5541e2b023b1d33086e094bb351a7865202453a7",
+      "path": "project/nightlight-dashboard/public/data/facilities_icestorm-okc.json",
+      "sha256": "f731a9757047378d444ae7fb8f7bbdeb63efcd3baaae5be3f89812ce5dc637ba",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 38505,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "84888bee3625d2cad7f0e34ca4f061a05fffe901",
+      "path": "project/nightlight-dashboard/public/data/facilities_ida.json",
+      "sha256": "df5c07904b7fdf6dc53bedb6eb54c5ab5a914a4875210baba9b6935027de9b10",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 59575,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "0d59ddce17b7235d4cfc0eee351960c1edd965f0",
+      "path": "project/nightlight-dashboard/public/data/facilities_irma-savannah.json",
+      "sha256": "77ab0ac08d8b78ea4d84aea869ad2f850b140bac6f490839e9a8d1e44e05b6a7",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 54686,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "eaedcec6100a7981c8842bd6847eb1c95754da6d",
+      "path": "project/nightlight-dashboard/public/data/facilities_irma.json",
+      "sha256": "03941f78cea0380b9159b74f951e784b27c657c7805d5373990af9b4253af66f",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 101346,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "b1200de28879a480261c309823a8a40d39096dcd",
+      "path": "project/nightlight-dashboard/public/data/facilities_isaias-nj.json",
+      "sha256": "49ba67a6b70c895c4184b9b71cee97cef7c806ef3db00611d2ecda6f50be53de",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 26943,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "6f6042e262f53c9d0b09bb1c531beee26afe55c2",
+      "path": "project/nightlight-dashboard/public/data/facilities_isaias-ny.json",
+      "sha256": "9f944e19f3488ed0335c7d99dc1e6c8044b187d2d93a57c7f49219bc51f624c0",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 20920,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "1a03c520eb98e2d7132dcee400aa14a6f61a0666",
+      "path": "project/nightlight-dashboard/public/data/facilities_laura.json",
+      "sha256": "0b47d0276daf11d0836a2a75862f0e29a538d27c58840300c7b1f68ce24721e4",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 59626,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "bc92e32429a7eda89945fa43fa184d02b256fe79",
+      "path": "project/nightlight-dashboard/public/data/facilities_maria.json",
+      "sha256": "ef7bde1a7b9fb4591aee3fab6611f3aebe22e5ba5f91f725e6df8aed971d31cd",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 39715,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "2099e75a89711ab561a7599bd36f472bc36e7f2c",
+      "path": "project/nightlight-dashboard/public/data/facilities_matthew-jax.json",
+      "sha256": "ba8d6ee537cf6bc456abd883ba1f4622cee6c91697712681b6b41d5529e2072a",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 22529,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "82ac97d146727cf0d9f9eb1e2737588f7ae8be2d",
+      "path": "project/nightlight-dashboard/public/data/facilities_matthew-nc.json",
+      "sha256": "aed62cdb153b1f07f5490da0ad05be940a62af7fcfde9bf494c0e78ba3040bbd",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 12217,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "5d8bf2ea50bb6d6cf393e459684380a1c006ae93",
+      "path": "project/nightlight-dashboard/public/data/facilities_michael.json",
+      "sha256": "8d0fb131b2489a3bbcd570bdc1cc4d490a8789c836e3b57cd46b8cab2589aa98",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 95431,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "526a12770f409ebf46c30d98ffe67645481dc456",
+      "path": "project/nightlight-dashboard/public/data/facilities_noreaster-boston.json",
+      "sha256": "756fb3dcd3c4847139026a9058ae3a15a6004f06844e00b76700d3b36fd8ebd7",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 81626,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "e6211f79913581b22428082f5ad2b8e95092d1df",
+      "path": "project/nightlight-dashboard/public/data/facilities_severe-detroit.json",
+      "sha256": "74d4bc76eacba9c6f4669b1e69ef6f7eb3789dce8c2727dbf85bf35e51c339c4",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 40452,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "fa513c9d66f7fad22a66053b945f6f5df52f05cf",
+      "path": "project/nightlight-dashboard/public/data/facilities_severe-nashville.json",
+      "sha256": "5afba2d45fb97fa65a5dd937691eb5d10dda42e167123a8a786ab6aee30ab163",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 44593,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "f02f1ba2f8934061f5222af566c2375c5ec953c6",
+      "path": "project/nightlight-dashboard/public/data/facilities_uri-houston.json",
+      "sha256": "db46e07e03a4a382503830c48849103e90f354b3ebd99d16b96891769e079104",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 71234,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "53907b729c9d9686f8480de35dd426def6fb9860",
+      "path": "project/nightlight-dashboard/public/data/facilities_zeta-atlanta.json",
+      "sha256": "4cf7bc967362868d2b84e4fbe220058359259f66138a17e933a44dce3850678a",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 50082,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "99d25f367e3a40f16f41504f201fb608f37477f9",
+      "path": "project/nightlight-dashboard/public/data/facilities_zeta-birmingham.json",
+      "sha256": "e1532b229a721f691d11ed92624e0aa003bf8ac1dd847302293b71b4dc943be5",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2587,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "3fde80131b0f5dcefe266e4f1beca3a7ecaf9985",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-01.png",
+      "sha256": "62b2fbd6254f52d626656eb3c86f698f1f443e4afa99382ba054c12907481cee",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2791,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "cd7d36f18b0d73de25070569aaeee12b95c2bf49",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-02.png",
+      "sha256": "4998498656976a9274d7d0e3eeb951a51885b9dd473e707ee432956bf271e0bf",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2886,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "15d337ea1fa47823e561ba2f139da48b960795b0",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-06.png",
+      "sha256": "897827d9591c6ae7186e216e0f23687f24048af5e45e00851aa36376c59ca6f0",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 3057,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "2c15e7b2bc999776bc77dd135c4dc38c44a87c90",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-09.png",
+      "sha256": "edf4f5a6555e8724d9730638b78e774e1ffa3af95cadb58e6cec24f0e260c3a6",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2972,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "d6d7fe2e2f9cb33d47d265963f01ae4003844977",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-10.png",
+      "sha256": "fbb344a3bedfd702192b45962c81bafedf7fb360f9daa49b94fb9872ae74b63b",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2829,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "7f769e325c88dc958d650bded2c2ee8a595464d1",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-11.png",
+      "sha256": "e9529b61a22803a207f8ce3b87103c8a0bd8b3cfc753a575c47c8f26026e989c",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2897,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "cbeaa79f2489db2e6f9f082b8e576f8fc88a7d88",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-12.png",
+      "sha256": "20885cc7f92e47a457f87f53eff2170138a6603e0c3eb4d6f778806e17031205",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2913,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "cff954d09c2d517c8302f04b23cc30b91d410a64",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-13.png",
+      "sha256": "cfb8ffe2a94588ac611dd7b95c750d09707612497b195b7179d48c690bc94f51",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2847,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "015a8f6dfcb8f6b2d06f249870d55cc968ad2198",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-14.png",
+      "sha256": "4939d715a4a04ac760d0c2fd431437c66d1f330f6438d6b691da3a7e0a11bb05",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2623,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "dfb0ef2b7303b18bfd67092d6deed610e6fc5e1b",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-16.png",
+      "sha256": "6daaa3991b17d95b39374b4a853609deb432e18df5638b6bced5154567012ca2",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2650,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "49a8f5df0f7cced0a2501c6dc07a3dace773efce",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-18.png",
+      "sha256": "f8f1e220b09e6b4bd66115665bc53c879b58143143676dbfb8efff19bc342e52",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2610,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "14a5b02d199f458d5c563ce3e8a67fafb134c108",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-20.png",
+      "sha256": "70fe5f7a2352458e3508c50da5f2756956cc187c3b7882b40f7d755d38e98725",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2186,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "4eb410c873a85bf4a5cc2913f11387a14bb4431f",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-21.png",
+      "sha256": "e48683673d65c6a5bda689179655b8df483b5ee06af07055dac96bca9edfee9e",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2555,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "d5e490353872a5599116920f90d8b41cb4d7b95e",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-22.png",
+      "sha256": "42fc6fd2338c37f029a5d16f05ed7e3cae0bcbd3a6bb134f95fe75bfcf477076",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2769,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "421c87228f4dbc001fcc65c1162387294be4fc44",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-23.png",
+      "sha256": "79b25ded39a0e2b4dd2a2899a7d0df15c314b99bd5917d9da573159c40e38560",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2804,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "2a45ff77071bfde57ba469934d174e111fb447b6",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-24.png",
+      "sha256": "3bee359d4635ee1b73aacd3bf8442eb08c5d0ba78248b6958baf06fde8784cce",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2251,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "097b4f40d88aecf7a4937842f095303ea92659b1",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-25.png",
+      "sha256": "5361c5ce7a93cf6126d9edac6b37188922159014c21d789e88f4b83f5184b9e5",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2819,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "f5d9f3c40df0d5ca6286bf5c257017a4ab8588ab",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-26.png",
+      "sha256": "d21d2f0d346cb14045a56ce4efc7bd6b481391f62a60afae74235df8fdf9a966",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2769,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "89b4b1eb335e270353f12bd5a8d0ed5cd522b361",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-28.png",
+      "sha256": "0d6b11d396736d486c41610339c0282db99eff1c1110cd060546c3282fbcca26",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2764,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "0fe62129bbe4846e5d17e6cc7f40cae48d14aa91",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-30.png",
+      "sha256": "1d8dd469899dccbd0c79bc1f8fcb558eb33ebb9cd4659093e610ea2d69f305ec",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2673,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "4d3d1bbc506d44005ce3b4df01cfbc86c881675a",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-08-31.png",
+      "sha256": "f5d70acb677539ca81722f665e12fc7fd220b3b3b7738131e6ff867e472405db",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2907,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "0a6e00abf78096220f8cb970b3e9feee2fca20e4",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-09-01.png",
+      "sha256": "adc772e1ad39481d60c58033ec33d7796ab360a35a133305018d5e4db545fc24",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2662,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "2d6213daa3b4d4f58b2f27e81dfed82d729476b3",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-09-02.png",
+      "sha256": "1670fe27dc1ef0a95adc955463cac72af765805f238568ac15a993aecdaadf2f",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2869,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "3acee2b89db9931dd9aabc3db718a75e5a451350",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-09-05.png",
+      "sha256": "714af5e8c9dde8bd45a9e8cdb4199d4c1f9395615627cb13c0c6644f0a59dd6e",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2862,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "67f8493dc3c15b2bb035dc751c375338d2eebe28",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-09-11.png",
+      "sha256": "a3846f45f34a706b43331d1f8bcca657c0e9861db08af58f047106395e5bfc71",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2850,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "8132420884b52c952205904bb66e0c60821cfb06",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-09-12.png",
+      "sha256": "9923cf6627b1ceb54fe28a7650facdfc8575e5af329da676c9ba0824eb675eaf",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2790,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "b69f94706d1b58e9edd855645efcd143b501a31b",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-09-18.png",
+      "sha256": "27346d084a3c9e87c99bce3c2d454d1f21528866f81abc037070fa9090911ba3",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 1867,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "22bad4a98fda93befb55b31e2e342288da10922a",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-09-27.png",
+      "sha256": "83c4a38dccd331e140c8c5c7c0c06454fd7f4b74f485e52eac1440674b0c7ad2",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 1954,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "0b3e3b31bab37e4a06485a7af113e1e43177e026",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-09-28.png",
+      "sha256": "c9f0ae4f8934a29fd0f56fbd7522ab4feda5747715b9adfd30db324aa174b244",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2894,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "de017f26aa35286ab895a44df065ad3565b9678c",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-03.png",
+      "sha256": "3d5c6842454511e5ff49ba94d22de7d81e47fc924e76acf5ec53752aeae88428",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2822,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "b2f60bdb036c54f56c86eb6461c738c9c72ab792",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-04.png",
+      "sha256": "fcb51ed16ab7a4792091b18f29696ffa403f78e18230da70cf46e13a7bf69d9a",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2858,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "9f571221d1458f4ba9dc04a562f2335305e10bbf",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-05.png",
+      "sha256": "bbd3c4e0b4edb2cb036269b90a5b23059776dbddab13e60d6aaa1cd855fe16c6",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2742,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "59572ee88336ec448026baa70424c4184dce23d0",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-06.png",
+      "sha256": "3c9ea8427758617e2b260945c89185b95e5a924755bd22e904fab47db0f17a8e",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2815,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "7f974fbf8edf9394e5ba077b9d1376fbf7209e35",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-08.png",
+      "sha256": "65928d7b99cfaabbb067ada05cca0933b45b7545f150e975e977fa96244b6c99",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2710,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "992a7c3cc53fae1735fec65b46522b9b213e309f",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-13.png",
+      "sha256": "f5d31c4f047d71c86e511a9da9c26ef9209970e8738fa38eddc739062481856c",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2273,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "93c9af0cfd77dc1ab03b076833f4ff28b53aa025",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-14.png",
+      "sha256": "c1dce4776a2c81b092df7950cb4c631b14f8173edf20846fb67f5d264178b165",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2666,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "22650438a3ab6c5fd0f008d8106f8e28e29177f9",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-15.png",
+      "sha256": "ad019477650bb1b9c2732b349ea333a7e89aaeb39ace61a4411ca89dc3e826d3",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2218,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "94b73aadc7da9c894dcdc969bb4b24820e705839",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-19.png",
+      "sha256": "b5d0d445e0e06d354fb2a28ea93acea86f5e48d86f4d6da3cbd534eaaeb5b886",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2426,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "802438cbdedafc21f13874db57525978ad9ee8bf",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-20.png",
+      "sha256": "1cfd93e28c520a101547b39b68bcd417db1dd5230ab7ad6217755d0bed3353e9",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2281,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "e426f9f67fee344111cf37fe6c8f42edfe931e76",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-21.png",
+      "sha256": "cacfdc38e8ddfb377b97c208bafea1c7241e27a5ca12c087808ef6eb228904f4",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2226,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "8e0258f8a904f67d9408d84b1ff9ed4e9d8f0abc",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-22.png",
+      "sha256": "34edcdab3b626d7bbcf47411d1e7218b234e71ca8491a2af0bbd3f39bd0cde59",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2159,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "728febe89cfdfecee787943aa2f685c91a7c6efa",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-23.png",
+      "sha256": "3b3c9b4e0af95329eca04bbafbecb84cc3a9100e4b8909f4c0e963ac928e0dda",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2253,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "f21b6f6667e2af5030eab178ec24ccbe02f8f3c0",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-24.png",
+      "sha256": "6b267ffc59fb92a422c4b2cb3a95f2a28119cd08255c518641e5921ea304e5e7",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2307,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "db60b42bd8fd4b23d0e9848c8446ebbf7ad65fc5",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-25.png",
+      "sha256": "301940da80d9052e803e8f2c70bc770aa18200714bacfe5262207bb5efc4a512",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2428,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "86bb2b1e217f3ef82d5dae5828159f9efef85779",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-26.png",
+      "sha256": "9d41e81d4f469aef480ff0ad890e833b35855abc7eb5b0fdc4f1b8a9ef4816db",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2239,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "d55292b0ef530b14c65e4551138b0acdb3379e06",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-27.png",
+      "sha256": "fa0a17a3b1900e1b680bafb543c52a545311f2d80def0e501663a3bddb248ec1",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2541,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "8af55c54d6beed6492831a79d6ff90cf3269c383",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-30.png",
+      "sha256": "4c1506862ce83f7263865cbefae99a176c0ddfd6788f8d8ea6e124b0b55b2b97",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2425,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "9e2deb52d9126e67bcab2616d40b950a5f2b0be9",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-10-31.png",
+      "sha256": "b72ff6ab384ba5051786f5179dc82447b38db1c0a808ba9c6fdf51aebf5cb728",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2511,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "a83ebb32c716ded22077205e6a9bab091f33f25a",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-11-01.png",
+      "sha256": "cb80f986f183f2813899200831df557e448716725230e070a52229ff6b94f67e",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2669,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "17f7ef78b2b75348e0a4574c059f2d3ad53642d7",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-11-02.png",
+      "sha256": "2b36d3cf44cf6dd565489b2c6addacce1de7e5078708d636e4a3fec64239e410",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2761,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "21fefe44b69f669800b6c8b9c03e0ed10f0e0234",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-11-03.png",
+      "sha256": "ffcff0814fbbcdc7d50d54c379591421f3b5250f87742daa81d304cae420e727",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2400,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "e0f123802dbddf72239535678baa64f3f9e730c9",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-11-04.png",
+      "sha256": "c3bc41ca4663541891fff95a28dd6122467fe926c973373f2b97a0de1af3ec37",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2616,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "71036d9905e1edc03a9daa548c06515e2baefcdf",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-11-05.png",
+      "sha256": "97e947e4adf538937a5b006bdc497749b6570be8c16ac3207c9cf27d029f6c20",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2769,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "2ce8f679a08fa2a1a49790fd595920267c962008",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-11-06.png",
+      "sha256": "c8aa1932b1ba80abf42de60d7d198f2584cc5c51d9c075e3c87b3dbc6e5a19e1",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2463,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "b86e104c2dfa0b67e75500180e8777b43591f336",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-11-11.png",
+      "sha256": "9f4fddbe6b5da05508b8c2a4fad3bb880d031526eb3f0ec14665d870f227ad34",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2493,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "047930db3586b9835eb3b068d0660e5ca886f09e",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-11-14.png",
+      "sha256": "a885d6b77f0d5889efba90c9d593eff2419d0929113a7a8d82eb5ff0640ab900",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2742,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "f594ae6661c1c876f8e8d4f290660250e81d5584",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-11-21.png",
+      "sha256": "c37c5dc62fbf96fe099f144ad06adea4e23b9f67974596daf9d812749d04da9a",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2718,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "5010fd2c7f1b20a9b4ad3b5705fa0d173236299b",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-11-22.png",
+      "sha256": "1c234c0e327644ff55bf72409fea8a640997fea11f6b15721d1a11e837f729e8",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2446,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "6bfd4780a739109b3cebfd5fcba3b5429e6e05c2",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-11-23.png",
+      "sha256": "528a767707f2693938227f392ba80af4af73ff3a9ce3e614e68e2c4de126e369",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2552,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "3753f80b4fb4dab301b721486726ed63b3d4dfe7",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-11-24.png",
+      "sha256": "4441ed8246a4cb06a103156235d5032b087c3781c2be9c55f6b9cf32b6abbfa6",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2592,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "d33ccf30d4583417ee27cec3ff5d8a7a598cdc53",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-11-25.png",
+      "sha256": "c1b8ed6d3a018d02d8dcb529a5589400e771cc74320993906e722432aa866146",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2725,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "cbda377fc847769490f696ac75b2b6b34695ec43",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-11-26.png",
+      "sha256": "47754903cbc50a7d62691cda907391181b878b9c1b8374146050437b6b57f588",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2810,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "25000cd4b064fa0f6f14193ef107644968d54f0a",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-11-27.png",
+      "sha256": "e13d10a88a2869cea970793b58c5e6be1e7287ea710326cc92a1079120ccff4f",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2632,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "b54f7c78729e6395966509fc8e9676f6f1002d0c",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_2017-11-28.png",
+      "sha256": "92080f2f6d33bd418629996b8455beebaa3fb1d65571f235eb8cf02c36f9ff9d",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2975,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "ba7c33cb6dc4f2ca8e19eb46b5c7c979abc635bc",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_bau.png",
+      "sha256": "34646cd356a4708ba1c4e0a397d7ddefd1e91eb96566f25bc88b0cd8afb75417",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2524,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "36ef76d6c3fc022463ed25500b4f1eb493a4a9f9",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-01.png",
+      "sha256": "202f52dcfa1b1c336ee9e6b9c40b56283ab59bc4b7e20260af66c91df15ab488",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2536,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "e8e8c2d3cdcfdb3e9ccab1dfd88f6b23e17bc2bd",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-02.png",
+      "sha256": "29f82fc430ae384cc418cb0552a3d87832d5c2e966f49cdbb272419a071d23d3",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2628,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "554a476884fb2bd486f009f2f62f83cb5bd9b2c1",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-06.png",
+      "sha256": "f199a36d668b21e848b8c81b6ec3175b5d03b54cef2da452c0caf4aef9cf1691",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2560,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "50854a4a587dc7ed29fb61aec075916a10f15d5c",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-09.png",
+      "sha256": "62f971905c37ffc3d3e3cdf57e1faf80450d85e233fd23444e9e6f58b8432784",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2536,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "038dcbfe4d6ead208da1fe22a643bd5fc0be9a8c",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-10.png",
+      "sha256": "e86e7c6bc4d2a35a378b22393b8d2fb306a84c0ecdd11ce8b8c8036df61aa350",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2608,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "ebc52f0cadf1e906a77e767ba556830fb3dd2847",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-11.png",
+      "sha256": "8d2db7c0ce58c64f9936cb5bcff689f12e7b938b2bf8dbab24c52297249caf76",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2643,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "a47e91c8c1866df30087efc5dcbaec17657c1acd",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-12.png",
+      "sha256": "f9779f46728a76943211d49f064173261e58cccafa78ab72bedab35d70b2f683",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2547,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "09e1b46efa315d5c3fe7ac309e925003da42a48c",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-13.png",
+      "sha256": "9538863d066d4123f6afdaa87184be9f2f46c7e32084b8b0442258a68c9a955c",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2644,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "d8a788bd3ff92eeecc8042c46ee2e0a22b50125e",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-14.png",
+      "sha256": "8c756bb62c98cbfe42b2db2e1533d8f18128f52f1186f9262ff92dbed4776e7a",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2382,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "bab7b62db6a57eb9e575cf1a0b30bce73561f01b",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-16.png",
+      "sha256": "bd74441edd36e2cdc2d29a4ecde372724252b5ce02a8a95b200abe75923c6d67",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2283,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "86b53bac9f0cbfd6952d7381536beff11a37bfc0",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-18.png",
+      "sha256": "81d22287c36d805f4eb6b34b2c9df71f12a4c6d85b4fb06eb965a9e9e6ca655f",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2535,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "7dc58aa7d130ca40923084cb9138bf2be10d8125",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-20.png",
+      "sha256": "246b0f0fc6e1945e9956d11f904c246459e93f341c62353e88611d0125087a92",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2123,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "03f1be7cd659de5f01b937420a653e7b4c05e93b",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-21.png",
+      "sha256": "8a0e225e66e9cc225e63d21aef218530f369971bfa752a3596c0c2d106d0ce5a",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2674,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "38b530b17353264e14799abea5db2d22178f4d67",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-22.png",
+      "sha256": "00fcec4b0b1fb369c5174dc689f0289bc7beacf99d0ac58643962c6ee8eb1a69",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2633,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "906c657768a552242f117443f1636c1e5ec2e12e",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-23.png",
+      "sha256": "0516b31901e8f0378e8a0bec5b420819c98b0c41c8e140e64a2ddff20d7e1b74",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2460,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "3af916102f4b3bb0f1a1f6ce64c2d0b1d14b2b08",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-24.png",
+      "sha256": "2d2dadaa734144bd8a347f9ca58448455dacd213e098ddfa76b46e218d3a3f5b",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2088,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "a0087c857f1ea81d8ae5de4310443e241a7ca089",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-25.png",
+      "sha256": "d2ef075da58c207795e44a9b44132f4c58aa60f8f73600c3ba93fe04d494938e",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2577,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "811a4a40f79d9f621967aee1e3255bcfb4d0aecf",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-26.png",
+      "sha256": "e524706cf909579996f21f061fb848c6b6cb7fa14b52dc293ab9dfae866b1a7a",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2487,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "83fd925aa3f02a051779713a60ff7bf5e0ed7b91",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-28.png",
+      "sha256": "c620e4b2e2899327cf4ed376596c88b18a3b07e0c3ffe813c33ae7a44fe17e2f",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2571,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "675517bd40c92862d04397efee9361b1cfef0687",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-30.png",
+      "sha256": "d0ff2f0f624fe9c173b76316a7976dfbedc602bc553d5eac4ff489b944f4cc36",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2482,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "dd82a8646111f4351a6140f646a4e3f0a2eca2ac",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-08-31.png",
+      "sha256": "8f827e94f4603d013adca17a1837cae3f2c768b8e515fd837c3b5f95e4d917fe",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2537,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "fcab17e32290f4d375094b14ef7e46236f1581eb",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-09-01.png",
+      "sha256": "c44847bcd932f68a178fe1389cdf33c6f8e993feafffb979144f4d7c47a3503c",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2396,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "9eb29c1a7fdaebe359faf333e6f3deee78ea5fec",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-09-02.png",
+      "sha256": "1e9065315d8ba0ccd5d21c1c4ad4b2c54883c1773e57e3e73247a2991a43f0ba",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2545,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "dbe45dd5408287806f0534fcbebc87e17040bdda",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-09-05.png",
+      "sha256": "8d150aa86d9d3a18981db7aa050eddef462c75283058979ff4c33a1fb39dce2d",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2608,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "416fd4e6c1323a49e2de52085d8220cd6bdae2c8",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-09-11.png",
+      "sha256": "3bccfa849b26756514e82f81e6a9f8c9aa533729f54e8a54aa9c2737c671d256",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2627,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "f1a24a9a4b6bf9671e4465e6f90475032e1ac495",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-09-12.png",
+      "sha256": "6504bb68f9ff093e714e3d9a20587a03b5d8815903247b59628413628f8ec51a",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2496,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "abd55d0428c0a8bdb48d79cfaf1d57bb4bcc756f",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-09-18.png",
+      "sha256": "5f0495d1438e738e87ae7516d06f5730ceca088aeb57092767470e5466b3f9dc",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 1903,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "2fad15e7671564723cfa9bce42aa0f6d5d2f51b4",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-09-27.png",
+      "sha256": "7f707059e53c94dae6bc212cd6e76883442ff8f3ded8c4a215c7e9eb1774de91",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2120,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "d0728ca66f67c9d33516eff22460b6f101b28fa6",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-09-28.png",
+      "sha256": "6af6385c41588e3f3aa310adeb8e4689ce2fc144fec947ce66439bd19dc937b3",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2398,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "e5fe7d17848402ce5eb84444104076e6d716cdab",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-03.png",
+      "sha256": "2ac7fd4d32654e098c30ea5f8cfce4190b9b0cd3ef1cb07086f16b7b41fdfe90",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2451,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "848e07a3fe05c6ce7dd4d24e229b772b532b9f09",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-04.png",
+      "sha256": "4afa4c31f061fc8fe6c03ac65605ea016982e311890a8d0f6bbd08b21a87f4c4",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2453,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "cf2395588e0281735450c69fd0bd330442e8655c",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-05.png",
+      "sha256": "6d354dc23bb703033b6968a4f4085ec282ae75601f7606602dc48a5874f89ebf",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2302,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "3a73dfccd96c5af3164fc8bfe817746b8eeba57f",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-06.png",
+      "sha256": "7e7b2f0e4214fba272517d08d3d5f515217866bf38a7999218feaca334d5aab0",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2311,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "d9f854bf2443db08d34d6c7c00eb77a697e6c66f",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-08.png",
+      "sha256": "fac350dff2b645d85f7a285abad15719fe210543b3152ab2c6713768e00cb542",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2239,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "7052946782f8d3e807b9ea3e1f81a280ca2a33ea",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-13.png",
+      "sha256": "b775a6a4339fbb61df47555d04a2e796d4da48ca65cd0d91ab0578abebb9ac98",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2188,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "64da27aad73dcca68974e0663fcd50b20702300c",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-14.png",
+      "sha256": "8c74d390d42e629d45f8c77bf1b60926be2189820c8eafd4549d8a986cc5f53e",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2404,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "17dd21f4dc14a5fb58ccc1afab611b9771d34c9a",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-15.png",
+      "sha256": "76307f187016a31bcb9920f9888095260d2c2604dd618f93e56361c61423e2fb",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2232,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "455544a550c2c727d93c1cb8214aaea3edf5913e",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-19.png",
+      "sha256": "b8a4d417009c617c791a15f33d8e4c42ed5f494852aa90d8142f76827ada5b53",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2369,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "f7f2ab3f77164f2a6cf6bebd0645870bfa78829c",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-20.png",
+      "sha256": "a2891bd1efce43b28767cb34572bff5a5894d0b4656bb9cccbef8d676c258130",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2175,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "f2257a4681f9c8a9138e27f72ba8ee9924112adf",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-21.png",
+      "sha256": "26866e90f0a29c3d5e592c18faa8c815c0ac9da488d01404d666ef9485671a32",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2217,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "dd3d0aeb0d822c3df17f9bb078bf2047f73442d8",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-22.png",
+      "sha256": "cb707e93682ea57ce249f2eca7b4ec14597e714e58aa205beac041a931529659",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2117,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "9946a009af5e41b7c848661d1224b1c02ea7c0f7",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-23.png",
+      "sha256": "02da154dab880b71da24b0f4a10fd8dc79b7c7f1676b268d4cb33a21644ac732",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2266,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "50aa171fab8602d9bf1afd80b58279178e9994cb",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-24.png",
+      "sha256": "a41c4758f48c17bc91dbaa4598b1b0b198e2a30f8028e067256ce56852300acf",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2376,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "4792e8aab0b37923a1d5dba859e127fadf91dd84",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-25.png",
+      "sha256": "9c6e6d5f703de3454165c456dce788c41283b7c8f19c8763f3625fec9a91f808",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2406,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "f01a661b9a98cba117d4d3c6e30cc84fcc08de75",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-26.png",
+      "sha256": "acd8ad6277623538e3e246797bff0e0c45a4806683dc0c282aeb7f63b26c3feb",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2118,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "70144c5acf56e7552f6fee2a1989901c0cd05fb2",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-27.png",
+      "sha256": "ed0a7f7403c24eb5a39a9b12a696be34ee64007b6760c5100210662bc3e8eee1",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2302,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "9948ad605f95de345ce1a0a1c5415d6fc15dab66",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-30.png",
+      "sha256": "277c350cdca18b3715db671e4b88dbbb38d1a861555108d2bc71828030d89ab1",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2420,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "e5de9b00c11d983e12fa233c833b13f8b4d24d6d",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-10-31.png",
+      "sha256": "a1d763b1ffa89447c1c2ba131bf057ee89f7db79130eb462a2f4fd8bb8917d6a",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2213,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "fa5b0b69f8459321dab2e1cd4b174101604dbbed",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-11-01.png",
+      "sha256": "dc713a3f2636b04216b7d3f195355c8c22b4b69bc482cafc55ad0636d0dbc652",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2348,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "0720c94060686daf1e92f24be1ccdfe22ba2e2a2",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-11-02.png",
+      "sha256": "b191d95fc4a4eb73b26d0fecc5fe7a558b13221f407e8451f37b43ee2a265784",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2386,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "8ca82138f1c5faa7b22dc4232044a0bc8b028847",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-11-03.png",
+      "sha256": "356662e7f8c390ce663040f9beba0e84dd509c43e1b16f596fc269c0cc529863",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2065,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "b2476f9f10f76cd8f8db3cea2158ab1cf448bd21",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-11-04.png",
+      "sha256": "0ee73e04439df04f8e70c30da7342f416ff5d8c8a54d14553c8e078be043dfa6",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2367,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "8d39db2c5cabb7928918c0bd9a367c95f26c0d04",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-11-05.png",
+      "sha256": "724d1ebf6886263be7aec7158cc597db3657d6420654d6f87241f87a86371a8a",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2392,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "eccdda1d00a7a662ad99b5bd60928aa86bae4a57",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-11-06.png",
+      "sha256": "290e755250cd4688db105c3e2f68a2a669af2a60bf04b0bf66dd30fb9bcd04c4",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2263,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "4cde278bda721efbef88df2c02ce85a32af43984",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-11-11.png",
+      "sha256": "6a030873a68e4593b7b43508b6797cc084efca66834bc46d61c07d33a9d5a06f",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2385,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "ef8ed7a2b3a5008ed80343c1af50dbde14835ec7",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-11-14.png",
+      "sha256": "8e475755f46d4ac081226d6ced75f47e0df2339a70d345bfb68583d8ecd875fa",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2663,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "8e591e90273bff94febb1bbe48084ecfc756117f",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-11-21.png",
+      "sha256": "c257414eb089872e1da6aa7ffd1663184b6b754194ca114ac422e76acbc8f782",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2580,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "65408ded35672b627bd687d9108dde64ec7181c5",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-11-22.png",
+      "sha256": "94852b100cb8d91afd770699e9d61982b5ffb1fbbe523921b0d18cb21e0aecfc",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2281,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "97903c923d3a4495c6278b57fca3a9dae919521d",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-11-23.png",
+      "sha256": "075a504ce009dc942c70c4d5cbb7f8a17e9f60dd10d37a2d602647539dd7b49e",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2392,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "ca417730bee7d4fc8fc303713f2479460e3236ea",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-11-24.png",
+      "sha256": "e48c39db397a98882fbb23d2fd3e321c9986d740a4eb4d0ecf556d56272a5422",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2417,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "5eb0c0d52edfe4b7796dc2e26be015c350cd58e4",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-11-25.png",
+      "sha256": "929834240ecb8253ecf7155c3e1b994a32547abc3ce2e913404685b76b52f760",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2698,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "8a04bbd8c631c3b1c460e28da6c17e962d7c997d",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-11-26.png",
+      "sha256": "550f76de8ce81f9eb5baf9c815f984c18818467e30cc8fd3cc9b9b63d0c0727f",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2640,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "d61af6738c56b030154e3a0704bbf68d34fdd638",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-11-27.png",
+      "sha256": "53a803c81ac3be7146012f8ba835785b3adf6c4193dc18f41b999b7bb134d280",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2504,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "594877cc78c095705b0ed4f8f329dcf9b63fdaf9",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_delta_2017-11-28.png",
+      "sha256": "9d06123514e5ea6906c1804cd11c6bcb63cadd39ec6254761211c01c228c32f1",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 10890,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "a3c94ba97ebcf6583ffe0fe6c7c098d05801fa5a",
+      "path": "project/nightlight-dashboard/public/data/frames/maria_frames.json",
+      "sha256": "e531f642c92b80a5d477f887d42cbff34a9892f88598a90730b0665ed2d71bc6",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 7047,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "a88acde4d2488f2d894beacc72abc4d6c2b46513",
+      "path": "project/nightlight-dashboard/public/data/loeo_results.json",
+      "sha256": "3eb4a037d56be1eb62e9e78567f6aa1c3879307fc47ba62247e680168d6b3642",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 219891,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "51bed944e4f849b16c266617d2ab482bc3f8d018",
+      "path": "project/nightlight-dashboard/public/data/miami_generator_validation.png",
+      "sha256": "0b08c79ce8a6f9f8964d12161a20302c918d84ad835b4535239f1f8c161b3897",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 343845,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "37d6a8b80da790adecb1c0f93e0e35b28d822b00",
+      "path": "project/nightlight-dashboard/public/data/prob_atmos-seattle.geojson",
+      "sha256": "3821b0ce3d0ad01953d4d8d22b1ca9523838b6d656e9f12ec59c0cae42373a57",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 378075,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "476d13549e598b0401aa009ddd33d466e49747de",
+      "path": "project/nightlight-dashboard/public/data/prob_derecho-chicago.geojson",
+      "sha256": "59a61d7a0a53a28b6c781717b3eb2d3f66076cb57486d97ea6d07b20af1e1ace",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 243050,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "55341418b7ab6b8f813d9585313beff3242a1375",
+      "path": "project/nightlight-dashboard/public/data/prob_eq-hatay.geojson",
+      "sha256": "1a8ab679710c23616f0f17d2bc74e53a1a018d43cce8a69269026f2e79f248b9",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 212029,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "8c7cc249d1ff6e543dee9005a8466916041b1323",
+      "path": "project/nightlight-dashboard/public/data/prob_eq-pr.geojson",
+      "sha256": "18137c493245e2c8bfb048531f19810a38de52963998eabb9027a7eb9e4409d2",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 233121,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "92a3fc4ff72c406d90aa397373e61701551b08c1",
+      "path": "project/nightlight-dashboard/public/data/prob_florence-sc.geojson",
+      "sha256": "7393db8b20d585ec619ba454ee1065798b9411d14be5710b6eaf28d2f298b545",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 221526,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "9539c5911b121f58e0404818bad92a67fefe8952",
+      "path": "project/nightlight-dashboard/public/data/prob_florence-wilm.geojson",
+      "sha256": "4f49ff50086b3b788e16d5def9568ed9c90836626d36e86f6d7bb7a4dce0a91e",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 119152,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "ab66a2463d31b9c0b5d01ca82623636a02286113",
+      "path": "project/nightlight-dashboard/public/data/prob_ian-charlotte.geojson",
+      "sha256": "80d08bac3f8b3fa556af338175d0b5cfa3baad31ca45ac8137410efa1ac8c7ee",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 445656,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "34ccfc85d2b1b4b9266b43d7ca946fa61b18f834",
+      "path": "project/nightlight-dashboard/public/data/prob_ian-fortmyers.geojson",
+      "sha256": "d61ddc5c379133a3a12ddd0516c875d694acbd7575ea3a2df5398f54ce48856b",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 571552,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "bf9702b0f3a98d1c9dd9cd277d6cfb129a0c047e",
+      "path": "project/nightlight-dashboard/public/data/prob_icestorm-okc.geojson",
+      "sha256": "c3ec4656388098f8c1de7ff492ab4bf5cd39c05e1845a025c0f034bf0878449f",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 366472,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "c4a913d53064136482a4b3d68f5b272da6a03fdd",
+      "path": "project/nightlight-dashboard/public/data/prob_ida.geojson",
+      "sha256": "1841b5244cba866b56989d9d3344f4a1a0764a6ca391658f7d2405fb031742a6",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 254473,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "da8155f96bc68de7e47fe4f4be3723fc4b0c57cf",
+      "path": "project/nightlight-dashboard/public/data/prob_irma-savannah.geojson",
+      "sha256": "eb798648881c31bd43b60938604daa54e62565054b3129203699b96d31c83286",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 348066,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "5095cd4654712db8262e76fb5b9b3ce8a74dd2db",
+      "path": "project/nightlight-dashboard/public/data/prob_irma.geojson",
+      "sha256": "8ab2d846ea34a61a069d95b533e644719f26bfe9dc00f3a0336f59cb1f45f5d5",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 610631,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "c46a1c82d125381a88d2539a953b77d214f451ee",
+      "path": "project/nightlight-dashboard/public/data/prob_isaias-nj.geojson",
+      "sha256": "0b456cf5bb150c78b7af04b596eb269e161e4dd7b01b3cb8b5e8dab16182cc42",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 307348,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "a60f8de32576d9375ed60c01341da3a8868d25c9",
+      "path": "project/nightlight-dashboard/public/data/prob_isaias-ny.geojson",
+      "sha256": "fc6e51f4e025ea03060b1e3a30fe0f557393dda9f8c76eacea81198ba1f82f07",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 251821,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "60fb7605891f8f60ec9c8276ca6cdedaf84ad7d7",
+      "path": "project/nightlight-dashboard/public/data/prob_laura.geojson",
+      "sha256": "9c1e4c2db1b99ce7b2d0cb8b4a54da168a668f8674b5bcb6e5a632ae9115b3cd",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 216279,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "67d8fce009c5e75a4b7a37dcf5fbfbee88728c6f",
+      "path": "project/nightlight-dashboard/public/data/prob_maria.geojson",
+      "sha256": "6b610033b60ced6ce3080c2b884087f3aa7ead1da8b4d5aac10b43077239f392",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 533601,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "1845695e417c3a42b84384db1daa99cd1634c4d0",
+      "path": "project/nightlight-dashboard/public/data/prob_matthew-jax.geojson",
+      "sha256": "ca7dcd55f6704ae4c9e2fc77053df2caadae4ed55caf7da7018514cd46e57add",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 315739,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "589baec0b26e464694884dd21124075927d7e4c4",
+      "path": "project/nightlight-dashboard/public/data/prob_matthew-nc.geojson",
+      "sha256": "891d85ba9e52976204527c970b28801ecc02ddd2f115b56bdb45bdbad6590d68",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 195398,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "b26bc11cc24359659f85004da505dfc30c55904e",
+      "path": "project/nightlight-dashboard/public/data/prob_michael.geojson",
+      "sha256": "224b3ed6e84154d69ece08d5366a7a52a79f176370e23416b99d35ac7f64f426",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 450119,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "0f86fd4e81e59f1ef89f0b86b45c0afacbec6b98",
+      "path": "project/nightlight-dashboard/public/data/prob_noreaster-boston.geojson",
+      "sha256": "3c41d2eb85afcb47507bf635d7d6f5299624331f973e4dabc4bb11f53f7b0d14",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 521727,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "e34013d39c53d0423fcd33be96d8fc43319ae86b",
+      "path": "project/nightlight-dashboard/public/data/prob_severe-detroit.geojson",
+      "sha256": "f6aed4b776f24cfcfe61c197b2cd502273cf6f403d68f65b219a0c8228b67ba5",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 531230,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "b2ed07dda8b0397083c1cdb5c49434e9f88a582f",
+      "path": "project/nightlight-dashboard/public/data/prob_severe-nashville.geojson",
+      "sha256": "1d482d9d8f0018258074b35a93d6fa4705de3c05d573c8fc0f58da46fd08d9d3",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 704987,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "cc0b7b77b4969ad3a9434f3a105de0d47f0f996d",
+      "path": "project/nightlight-dashboard/public/data/prob_uri-houston.geojson",
+      "sha256": "bf50efe11818c0df18de4b5947020b3f694575d01525a3a9ff65fb424c116bdb",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 681437,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "436bf8e0c25f89874fda136284a0547aea877c58",
+      "path": "project/nightlight-dashboard/public/data/prob_zeta-atlanta.geojson",
+      "sha256": "cc9b026934a1157d42560d7edbf93d2ea5f1c28f025cf132e51f78760efedc42",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 509028,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "4a4e7609a1c3ec1bd36e4c1a18bcfaf68475f01a",
+      "path": "project/nightlight-dashboard/public/data/prob_zeta-birmingham.geojson",
+      "sha256": "bb8358a07b6d8dcb83439383f814aff1721918dd8184338240cfdceaf1060508",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 13409,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "27d9540d021bf50a3c2de9f8bcb58aee554a5928",
+      "path": "project/nightlight-dashboard/public/data/results_summary.json",
+      "sha256": "adc188f4fdd9d03d37817532021bbf4d27630c7a6e02f2ab3056d94f398c7768",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 6328,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "1c4f927eac835e435fa421afb6f5620462c1bef0",
+      "path": "project/nightlight-dashboard/public/data/ts_atmos-seattle.json",
+      "sha256": "b68c5f51967e077af1d9be835705b9ace7118b4bd687e374592026b8f9871818",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 6597,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "49c778b4a17827b7d23fa03bac110d4c7e3ace35",
+      "path": "project/nightlight-dashboard/public/data/ts_derecho-chicago.json",
+      "sha256": "bf2b7def9b0fdd4f474ca2fbae46d5bbd51d351515aac800e152665a75e2f5d4",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 1591,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "bcf4ef9d098580ede54f779f406de9d5ee08c7f4",
+      "path": "project/nightlight-dashboard/public/data/ts_eq-hatay.json",
+      "sha256": "08b6ea80d351ea18ad7503282f024111ff106c93d64ff7e31075c31bd7f490d7",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 3612,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "89af74c357aea8a883b3721fb5284c2d632b2b59",
+      "path": "project/nightlight-dashboard/public/data/ts_eq-pr.json",
+      "sha256": "3f4636f9016753d9d944ee1fdd600e0f617cc51cc6d01c08dca6269df9cbadab",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 6311,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "28426af857d65eb030d95a3815e80359520e8ffa",
+      "path": "project/nightlight-dashboard/public/data/ts_florence-sc.json",
+      "sha256": "22aa3193c9fb828baff2735ba7355afceea45f497b302c106790f4853ccea384",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 6389,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "fd92fa1c71878243a35b4ed74f68473451b2bbc7",
+      "path": "project/nightlight-dashboard/public/data/ts_florence-wilm.json",
+      "sha256": "14e7b1e0a3735d43d24aef1b32f29e53e13730767992b693758fac3030b32404",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 5696,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "fb15ed0907a50c24d2b2612eda859b400d563566",
+      "path": "project/nightlight-dashboard/public/data/ts_ian-charlotte.json",
+      "sha256": "03305c81532c2cfa56a3e1955d6da49b61bcbc8212c5f9ea963c30ba31a3392c",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 6053,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "c60618605d07758bfbd1de6771debe6ed4030b16",
+      "path": "project/nightlight-dashboard/public/data/ts_ian-fortmyers.json",
+      "sha256": "27484af376bfeaf3bc06024e2240b1da5910b1d07c94485138b7c5936736665a",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 7318,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "d134991dd96d4bc37959abf54c5e2f67218e98d3",
+      "path": "project/nightlight-dashboard/public/data/ts_icestorm-okc.json",
+      "sha256": "8f74757514c76a8cefcab53a672d0252f28a67cdbdc4dfa17b5ad211f2eef02e",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 3233,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "87b765348dbfe3c53dc8adaa5410be14c7ac4263",
+      "path": "project/nightlight-dashboard/public/data/ts_ida.json",
+      "sha256": "329343f76517777dc35ffe0cf4fa34e074a876a40226bb94587d0d447ccb57fd",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 6804,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "9a3bbc782eabe2dd7679393936bbdfb5944ec8b3",
+      "path": "project/nightlight-dashboard/public/data/ts_irma-savannah.json",
+      "sha256": "29f99843587a41cf68f2407f3878482355eb33f2a6d135e0687e4ff1844107d9",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2583,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "4821a492bc234ce1031d6635948dc97e5352a51d",
+      "path": "project/nightlight-dashboard/public/data/ts_irma.json",
+      "sha256": "af3c46973f2f3bceadc2165c222e6aa9cd913deae1031deff4a300aa162263c1",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 5652,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "3a893ba0f894ed59966c768ce3f57abdc133fb18",
+      "path": "project/nightlight-dashboard/public/data/ts_isaias-nj.json",
+      "sha256": "97587450b0a86aa0425ed5a94a2e2cf33bae6e16847048004835624a6a9efb37",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 5428,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "750848883fb1e5d9cdd338a2d633ced3d542add1",
+      "path": "project/nightlight-dashboard/public/data/ts_isaias-ny.json",
+      "sha256": "210514cbc4dac46c2495a372e135d18def2e1e54a08170c6732765077abe2cf1",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 5760,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "ab095aafd2c1bb281110b7468e02ea13b1424ac1",
+      "path": "project/nightlight-dashboard/public/data/ts_laura.json",
+      "sha256": "22b806452fb5cc7f9b8252696c25da6d719b9ad1c91650869588e094a5948d12",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 4708,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "fac393936ceff102c102463c519488958b278b51",
+      "path": "project/nightlight-dashboard/public/data/ts_maria.json",
+      "sha256": "29f447fde3fc8abe956e7139a0a41d5114c5e34cfd9dbe5c93aa36dc1161a3df",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 5795,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "b8a51d453afa104b163ac5babfeca51b4a5d3ca2",
+      "path": "project/nightlight-dashboard/public/data/ts_matthew-jax.json",
+      "sha256": "48374002ba6843983a5e772bea2283a195a4d842c678a0a121062f77876cfb7a",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 5806,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "b80c5d66904a95fef5240bd6927c76d50d200a71",
+      "path": "project/nightlight-dashboard/public/data/ts_matthew-nc.json",
+      "sha256": "9528e8aa45e178a751a3a4b586c481ffaade86fb239364434e686ee5477661a7",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 3529,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "4a5cd9f779bae475ff4ca6d58bd204981ec6d97d",
+      "path": "project/nightlight-dashboard/public/data/ts_michael.json",
+      "sha256": "958c70dc6a2be0a0a0f03d5cc3d49e877a81966627ae75efe5d78ee407a33428",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 6022,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "2910a855059e8db6a82a736631568ee3d2f858d0",
+      "path": "project/nightlight-dashboard/public/data/ts_noreaster-boston.json",
+      "sha256": "13c8bb4aceb39b185749f47f6c48f5f6cb322cbb0922f990d6bfac6ee34c8482",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 6800,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "795edcaa3a7d4fefe64f66400c5d4d9ec4a0d6f6",
+      "path": "project/nightlight-dashboard/public/data/ts_severe-detroit.json",
+      "sha256": "cafe88b3592b60e6d493f935f682e2f3b61df7e673ee17875a5c9f701d46307a",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 4871,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "6da33ffe5878f7f9e00274564fbf4696da3c1071",
+      "path": "project/nightlight-dashboard/public/data/ts_severe-nashville.json",
+      "sha256": "9e0f903784c48565256955ac8366b99d7731d2cb00038f21e1de3aead92f6262",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 7035,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "943eaa1e2f1f8d46c21a1c81a153977d5916ccf3",
+      "path": "project/nightlight-dashboard/public/data/ts_uri-houston.json",
+      "sha256": "b9a1b6943e496162105a219d8136f3e4d19d0df85d3317f7b5c454f0e7f6431f",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 6388,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "bdfe4a59e6daa7b456bd7cc2f97842617e6f5d76",
+      "path": "project/nightlight-dashboard/public/data/ts_zeta-atlanta.json",
+      "sha256": "7588c860a9370112c8ea4f64547a9b11282358ad9f9dead317a6f3020522a8ff",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 6467,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "ccd32c68345bc82614a964feeb5da3facb7a654d",
+      "path": "project/nightlight-dashboard/public/data/ts_zeta-birmingham.json",
+      "sha256": "58a6577428ddedadea32566012f4b88e38a1e53d31f074c72089d46c9978d600",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 779638,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "bfe6cefcd30ae490899d87c160f1785fd45fc963",
+      "path": "project/nightlight-dashboard/public/earth-night.jpg",
+      "sha256": "d87de751a264e4f8ff69c68de5dab9606daee87a6f15ae743c93200743bd7ec1",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 590,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "c22abdd144b7dda5fa0b19084590a5ea504e3503",
+      "path": "project/nightlight-dashboard/public/favicon.svg",
+      "sha256": "60b64c60f8e1af0ab8c6abf0e50cf98c1031073b48bfaf63b5177ba32ee75ddc",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 885131,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "35ee91e4267e26015276b0ed73a526da2cb21b06",
+      "path": "project/nightlight-dashboard/public/map_preview.png",
+      "sha256": "55cd4404dccfbc56ceab34d297b874a9ef82cbedaaa8b7b804df7c3e7f103d6c",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 1219,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "4be4253a494e6c6802c4d37f0646c6da957ced60",
+      "path": "project/nightlight-dashboard/src/App.vue",
+      "sha256": "cdd4ec121bb8b8af1b970756b144dca6d8c1ef3c5559b39234b18067b29c0106",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 5403,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "b1e5b92bce478502ae5ae1edb9639af64616bc00",
+      "path": "project/nightlight-dashboard/src/assets/global.css",
+      "sha256": "6b6946d8ef7e703595f2c4f2dc6ad7453cc39ae1ee3c9840c488843d3dc19773",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 6429,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "6b39d84461a6c836b8f07c1ee209443eb69bdb26",
+      "path": "project/nightlight-dashboard/src/components/NavBar.vue",
+      "sha256": "7dd4905faad36689a4a390582f4013d483191ec8db4248340091be4c4e1166e3",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 14229,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "53a9b73a3c6187b58a67fa665b17c284a2558ccf",
+      "path": "project/nightlight-dashboard/src/components/RecoveryChart.vue",
+      "sha256": "0c55dfdccc9c1c042444beff6eadc234d8707008b065480ddd06493ff631cd28",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 180113,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "b6ea999afd2982a09570f267183dfb27801ae5ad",
+      "path": "project/nightlight-dashboard/src/data/events.js",
+      "sha256": "50ac31d49fea6caac985dae790f80ec8419f97065da23101ab19ed69797c49f0",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 1759,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "e8558280ee54b125dc2dd14d054666c061f25a2b",
+      "path": "project/nightlight-dashboard/src/data/loader.js",
+      "sha256": "9f6c07ee27c5782cb65bb794e7e7b18eed529256970d5984ac636101de4653d2",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 3296,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "77e6158f8609ff558b4e32d6b6c225e1ba561825",
+      "path": "project/nightlight-dashboard/src/data/timeseries.js",
+      "sha256": "4a45c8002c520cfae26ce34031f7298dfc3e58ef91c3f4f90841474edf7a7590",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 167,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "7c067d5e25c9b793329c621a63c423bf545a3b4b",
+      "path": "project/nightlight-dashboard/src/main.js",
+      "sha256": "2998f11bef14e1f05ed11ba84470ec6f7d376f6546fb1986f9a37e7da402979d",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 1227,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "7a77a80c787925d16312b9c327405a03571890d1",
+      "path": "project/nightlight-dashboard/src/router/index.js",
+      "sha256": "618d8da1e34d539b1c1449b5471f3b21afe79b903d949f4a8ae55aab35f787dc",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 16635,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "4e19b4043c0d7385d019fa93a69ffffce4f02897",
+      "path": "project/nightlight-dashboard/src/views/ChartsView.vue",
+      "sha256": "b95fa7edd9d070dbdfbc2f60863cc29f14ea7b37a8cd0d0ae11ccb759c95c24f",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 197234,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "138445b3ea43b4678d50c90135d681439392cb49",
+      "path": "project/nightlight-dashboard/src/views/DocsDetailView.vue",
+      "sha256": "94ebdc52f5635c4e8d2a010f2cba61fe369bca52aa108064fe72be243ad8c0a5",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 13703,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "f886e045c29901136e403e013e84c5b35408a15a",
+      "path": "project/nightlight-dashboard/src/views/DocsView.vue",
+      "sha256": "16e36b8fcd031bc2bf91fc33613d1af3ceff561675ad1ac39905410fc4b48642",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 18848,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "ad15082d84f03689ac3946426b4526228bc29c6c",
+      "path": "project/nightlight-dashboard/src/views/HomeView.vue",
+      "sha256": "ba57e84d07dfdb0e0564dd3c15e2143e0063a763d32be9264f956e11b19dfa57",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 55471,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "f3b7105eed2f520becdd8e82c8d35d2cc8c3e79c",
+      "path": "project/nightlight-dashboard/src/views/MapView.vue",
+      "sha256": "9baad324b366dd4993a46f8558dfb0f4e37950fa8baf3902c0bddb5cc0fb5f1e",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 35450,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "56ece2d75f7d9b8ebf63f41c14c4333a6d61c35b",
+      "path": "project/nightlight-dashboard/src/views/SlidesView.vue",
+      "sha256": "d36613b1e06894fa24fd6c636e7b0f0cae2a54ac94cd8da0079e69d934db58b5",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 433,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "6811391665bc2fc76760c7fec37d3fba64264e14",
+      "path": "project/nightlight-dashboard/vite.config.js",
+      "sha256": "e86488b89827793688d21ce9a48341791aa3623110891d834d8011bf54e57ca1",
+      "slice": "project/nightlight-dashboard",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 3988,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "3f9dfda816be89083aaf567b9190381c9095421f",
+      "path": "project/script/make_modelD_loeo_heatmap.py",
+      "sha256": "7fbbe21fb04a0f2e06a3e835a14cfeed050e15619a644cdfa2d94d7ca396d784",
+      "slice": "explicit-files",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 8302,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "6f4f23f23cfeca983f7dc604804142adff453126",
+      "path": "project/script/regen_modelD_prob_maps.py",
+      "sha256": "8eb1d8dcd30ce81bb6e36c8166f87c671cea3106830ce94513f5667742186d0f",
+      "slice": "explicit-files",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 16543,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "b11167ac541d58b7700ab72516d5ea16fce704e5",
+      "path": "project/script/regen_pre_figures.py",
+      "sha256": "c2825094df9061851cf534291de790ec763c9e801a5248b84da5a1eb2d30c108",
+      "slice": "explicit-files",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 6097,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "cd155a3fa8a91cf896c7d4d4d2f4ccdd4e7d8d56",
+      "path": "project/script/run_modelD_loeo_25events.py",
+      "sha256": "605219fbea9f43f685cea0b2fda9743b1fe1f3a151837f938c8ce211f9db5925",
+      "slice": "explicit-files",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 1082073,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "af294be24385a624d10caf09d08e79312898b978",
+      "path": "project/script/stage2_15events_modelD.ipynb",
+      "sha256": "de329221da27a75210ac9250ead35023efab3a627b854f98c1d0c9401d56aa4b",
+      "slice": "explicit-files",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 1039082,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "9326488f1270a2708ca331bb87193d1b157904e1",
+      "path": "project/script/stage2_25events.ipynb",
+      "sha256": "49f3f1f016f87718b839918d542b98ea3f3305d4f816d5564585e04ee6cd4693",
+      "slice": "explicit-files",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 7486,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "778b61b3348d2ad3147ec86341aceeb8e2a97ae5",
+      "path": "project/script/stage3_events.py",
+      "sha256": "69c428d881bdb88bb76eaa77be9e098c9acaaef9dc5991f9765009124a6cd962",
+      "slice": "explicit-files",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 2037,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "9e49d5e1913648701bf3ce2cfa58bb814fc49626",
+      "path": "project/script/stage3_export_all.py",
+      "sha256": "59e8609c525b9e39749f5f74ba586dd2ecfcfaf93d692cc6bf4f8a0f46713b00",
+      "slice": "explicit-files",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 17903,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "af6a4f005a5d2bcfb705cc0990cab20d6d4b84ad",
+      "path": "project/script/stage3_modelD_extra_regressions.py",
+      "sha256": "b7875f379814491df3eded226b908cfba427e54fe4c318e035de75e6c062c8bc",
+      "slice": "explicit-files",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 12138,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "03ebd4b36dd8b479eed03cb1aea68e29c1d35d09",
+      "path": "project/script/stage3_modelD_full_regressions.py",
+      "sha256": "1c50837d258e803bcf5bc51b68bc85b6a51ba596932614af2c2648beb628fae5",
+      "slice": "explicit-files",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 19911,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "45a28ce1c6bf22fe1d85205624eef7f2f7efb30a",
+      "path": "project/script/stage3_ntl_download.py",
+      "sha256": "4185d696f6a37e09c5fe5c6fed62be70fc6009f50f4557d3f3336a575027bfa5",
+      "slice": "explicit-files",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 5367,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "2c01fc506b223fd305589727af586173dc22465d",
+      "path": "project/script/stage3_osm_download.py",
+      "sha256": "8f72198a2f8731cbff2ecb95da45b319896ab28fb611ae1993684073cfd9af07",
+      "slice": "explicit-files",
+      "status": "skip-identical"
+    },
+    {
+      "action": "skip-identical",
+      "bytes": 19417,
+      "donor_commit": "1f63e190ce280852d68945dbfce486075adda69b",
+      "git_oid": "8496ff88319fa8b0ac266a722962741a25525924",
+      "path": "project/script/stage3_zipcode_analysis_modelD.py",
+      "sha256": "b2ced9ac29019812da4229d16d436333682bdede2b5becdca5defa359073b2e0",
+      "slice": "explicit-files",
+      "status": "skip-identical"
+    }
+  ],
+  "mode": "check",
+  "reachability_ref": "teammate/main",
+  "schema_version": 1,
+  "summary": {
+    "conflicts": 0,
+    "copy": 0,
+    "skip_identical": 343,
+    "total": 343
+  }
+}

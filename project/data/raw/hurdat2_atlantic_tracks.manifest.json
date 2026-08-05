@@ -1,0 +1,11 @@
+{
+  "citation": "NOAA National Hurricane Center (NHC), Atlantic hurricane database (HURDAT2), https://www.nhc.noaa.gov/data/#hurdat",
+  "dataset": "NOAA NHC Atlantic HURDAT2",
+  "output_sha256": "09712f2926b8026f79b09bf2457e4397a9495e2148c0c7170e9813c0287d3cce",
+  "retrieved_at": "2026-08-05T05:35:18Z",
+  "rows": 55605,
+  "source_sha256": "1b9b0c7beed5b4505838658b1d30e159fc84330c60891a58cfcf43ae55c37202",
+  "storms": 2004,
+  "url": "https://www.nhc.noaa.gov/data/hurdat/hurdat2-1851-2025-02272026.txt",
+  "vintage": "Atlantic 1851-2025; updated 2026-02-27"
+}
