@@ -158,4 +158,24 @@ describe('fail-closed public bundle scanner', () => {
 
     expect(result).toEqual({ ok: true, violations: [] })
   })
+
+  it('fails closed when a release gate lacks the reviewed passport manifest', async () => {
+    const root = await makeTree({
+      'src/App.vue': '<template><main>Public summary</main></template>',
+    })
+    const result = await scanPublicTree(root, { requireReviewedArtifacts: true })
+
+    expect(result.ok).toBe(false)
+    expect(result.violations.join('\n')).toMatch(/evidencePassportManifest\.json.*missing/i)
+  })
+
+  it('rejects reviewed passport manifest hash drift at the release gate', async () => {
+    const root = await makeTree({
+      'src/content/evidencePassportManifest.json': '{}',
+    })
+    const result = await scanPublicTree(root, { requireReviewedArtifacts: true })
+
+    expect(result.ok).toBe(false)
+    expect(result.violations.join('\n')).toMatch(/canonical hash/i)
+  })
 })

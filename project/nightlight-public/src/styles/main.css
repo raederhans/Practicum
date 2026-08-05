@@ -834,6 +834,169 @@ main:focus {
   line-height: 1.6;
 }
 
+.evidence-passport {
+  margin-top: 1.5rem;
+  border: 1px solid var(--line-strong);
+  background: var(--ink-raised);
+}
+
+.evidence-passport__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.55fr);
+  gap: 2rem;
+  align-items: end;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.evidence-passport__header h2,
+.evidence-passport__empty h3 {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 500;
+}
+
+.evidence-passport__header h2 {
+  font-size: clamp(1.7rem, 3vw, 2.8rem);
+}
+
+.evidence-passport__header > p,
+.evidence-passport__status p,
+.evidence-passport__empty p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.evidence-passport__status {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.passport-band,
+.component-state {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  border: 1px solid currentColor;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.passport-band {
+  padding: 0.55rem 0.65rem;
+  color: var(--acid);
+}
+
+.passport-band--sensitivity_only,
+.component-state--limited {
+  color: var(--amber);
+}
+
+.passport-band--repair_first,
+.component-state--unavailable {
+  color: var(--rust);
+}
+
+.passport-band--unassessed {
+  color: var(--muted);
+}
+
+.component-state {
+  padding: 0.35rem 0.45rem;
+  color: var(--acid);
+  font-size: 0.56rem;
+}
+
+.evidence-passport__table-wrap {
+  overflow-x: auto;
+}
+
+.passport-components {
+  margin: 0;
+  border-right: 0;
+  border-left: 0;
+}
+
+.passport-components th:first-child {
+  min-width: 180px;
+}
+
+.passport-components td:last-child {
+  min-width: 320px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.evidence-passport__claims {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--line);
+}
+
+.evidence-passport__claims article {
+  min-width: 0;
+  padding: 1.25rem 1.5rem;
+}
+
+.evidence-passport__claims article + article {
+  border-left: 1px solid var(--line);
+}
+
+.evidence-passport__claims h3,
+.evidence-passport__claims p {
+  margin: 0;
+}
+
+.evidence-passport__claims h3 {
+  margin-bottom: 0.55rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.61rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.evidence-passport__claims p {
+  line-height: 1.65;
+}
+
+.evidence-passport__source {
+  display: grid;
+  gap: 0.45rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.59rem;
+  line-height: 1.55;
+}
+
+.evidence-passport__source code {
+  overflow-wrap: anywhere;
+  color: var(--paper);
+}
+
+.evidence-passport__empty {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+  padding: 1.5rem;
+}
+
+.evidence-passport__empty h3 {
+  margin-bottom: 0.45rem;
+  font-size: 1.35rem;
+}
+
 .withheld-panel {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) minmax(260px, 0.6fr);
@@ -1438,14 +1601,21 @@ main:focus {
   .overview-grid,
   .license-ledger,
   .limits-ledger,
-  .method-principles {
+  .method-principles,
+  .evidence-passport__header {
     grid-template-columns: 1fr;
     gap: 2.5rem;
   }
 
   .autopsy-section--contrast,
-  .evidence-cards {
+  .evidence-cards,
+  .evidence-passport__claims {
     grid-template-columns: 1fr;
+  }
+
+  .evidence-passport__claims article + article {
+    border-top: 1px solid var(--line);
+    border-left: 0;
   }
 
   .metric-strip,
@@ -1554,8 +1724,14 @@ main:focus {
   }
 
   .withheld-panel,
-  .method-principles li {
+  .method-principles li,
+  .evidence-passport__empty {
     grid-template-columns: 1fr;
+  }
+
+  .evidence-passport__status {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .withheld-panel ul {

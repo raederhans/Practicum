@@ -274,3 +274,5 @@
 - [2026-03-11 00:33:45 UTC] BUG2 PR pilot V1 completed: awaiting canonical inventory
 - [2026-03-11 00:35:20 UTC] BUG2 PR pilot V1 started
 - [2026-03-11 00:35:21 UTC] BUG2 PR pilot V1 completed: awaiting canonical inventory
+- [2026-08-05 12:47:46 UTC] intl-stage-repair: score readiness
+- [2026-08-05 12:49:23 UTC] intl-stage-repair: score readiness

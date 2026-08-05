@@ -1,8 +1,10 @@
+import { createHash } from 'node:crypto'
 import { lstat, readdir, readFile } from 'node:fs/promises'
 import { basename, extname, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { verifyReleaseManifest } from './release-manifest.mjs'
+import { PUBLIC_EVIDENCE_PASSPORT_ARTIFACT, validatePublicEvidencePassportArtifact } from '../src/content/evidencePassportArtifact.js'
 import { PUBLIC_GENERALIZATION_ARTIFACT, validatePublicGeneralizationArtifact } from '../src/content/generalizationArtifact.js'
 
 const ignoredRootDirectories = new Set(['node_modules', '.git', '.vercel'])
@@ -55,6 +57,8 @@ const allowedExactFiles = new Set([
   'scripts/verify-public.mjs',
   'src/App.vue',
   'src/content/copy.js',
+  'src/content/evidencePassportArtifact.js',
+  'src/content/evidencePassportManifest.json',
   'src/content/generalizationArtifact.js',
   'src/content/study.js',
   'src/domain/filterEvents.js',
@@ -69,6 +73,7 @@ const allowedExactFiles = new Set([
   'src/views/MethodsView.vue',
   'src/views/OverviewView.vue',
   'tests/copy.test.js',
+  'tests/evidence-passport.test.js',
   'tests/generalization-artifact.test.js',
   'tests/public-boundary.test.js',
   'tests/release-manifest.test.js',
@@ -122,6 +127,11 @@ function normalizePath(path) {
   return path.split(sep).join('/')
 }
 
+function canonicalSha256(contents) {
+  const canonical = contents.replace(/\r\n?/g, '\n')
+  return createHash('sha256').update(canonical, 'utf8').digest('hex')
+}
+
 function isRuntimeSurface(relativePath) {
   return relativePath === 'index.html'
     || relativePath === 'vite.config.js'
@@ -136,7 +146,10 @@ function isAllowlistedFile(relativePath) {
     || /^dist\/assets\/[A-Za-z0-9_-]+\.(?:js|css)$/.test(relativePath)
 }
 
-export async function scanPublicTree(rootPath, { requireDist = false } = {}) {
+export async function scanPublicTree(
+  rootPath,
+  { requireDist = false, requireReviewedArtifacts = false } = {},
+) {
   const root = resolve(rootPath)
   const violations = []
   let distIndexFound = false
@@ -235,6 +248,20 @@ export async function scanPublicTree(rootPath, { requireDist = false } = {}) {
   await walk(root)
   const artifactViolations = validatePublicGeneralizationArtifact(PUBLIC_GENERALIZATION_ARTIFACT)
   violations.push(...artifactViolations.map((violation) => `src/content/generalizationArtifact.js: ${violation}`))
+  const passportViolations = validatePublicEvidencePassportArtifact(PUBLIC_EVIDENCE_PASSPORT_ARTIFACT)
+  violations.push(...passportViolations.map((violation) => `src/content/evidencePassportArtifact.js: ${violation}`))
+  if (requireReviewedArtifacts) {
+    const passportManifestPath = resolve(root, 'src/content/evidencePassportManifest.json')
+    try {
+      const passportManifest = await readFile(passportManifestPath, 'utf8')
+      if (canonicalSha256(passportManifest) !== PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.source.sha256) {
+        violations.push('src/content/evidencePassportManifest.json: canonical hash does not match the reviewed source lineage')
+      }
+    } catch (error) {
+      if (error?.code !== 'ENOENT') throw error
+      violations.push('src/content/evidencePassportManifest.json: reviewed manifest is missing')
+    }
+  }
   if (requireDist && !distIndexFound) {
     violations.push('dist/index.html: required production build is missing')
   }
@@ -248,7 +275,10 @@ export async function scanPublicTree(rootPath, { requireDist = false } = {}) {
 
 async function main() {
   const requireDist = process.argv.includes('--require-dist')
-  const result = await scanPublicTree(process.cwd(), { requireDist })
+  const result = await scanPublicTree(process.cwd(), {
+    requireDist,
+    requireReviewedArtifacts: true,
+  })
   if (!result.ok) {
     console.error('Public boundary verification failed:')
     for (const violation of result.violations) console.error(`- ${violation}`)

@@ -2,6 +2,10 @@
 import { computed, ref, watch } from 'vue'
 
 import { DATA_BOUNDARY } from '../content/copy.js'
+import {
+  PUBLIC_EVIDENCE_PASSPORT_ARTIFACT,
+  evidencePassportByEventId,
+} from '../content/evidencePassportArtifact.js'
 import { EVENTS, EVENT_TYPES } from '../content/study.js'
 import { filterEvents } from '../domain/filterEvents.js'
 import { projectPoint } from '../domain/projectPoint.js'
@@ -13,6 +17,19 @@ const selectedId = ref(EVENTS[0].id)
 
 const visibleEvents = computed(() => filterEvents(EVENTS, { type: selectedType.value, query: query.value }))
 const selectedEvent = computed(() => visibleEvents.value.find((event) => event.id === selectedId.value) ?? null)
+const selectedPassport = computed(() => evidencePassportByEventId(selectedEvent.value?.id))
+const componentDefinitions = new Map(
+  PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.componentDefinitions.map((definition) => [definition.id, definition]),
+)
+const componentStatusLabels = Object.freeze({
+  available: 'Available',
+  limited: 'Limited',
+  unavailable: 'Unavailable',
+})
+
+function componentDefinition(componentId) {
+  return componentDefinitions.get(componentId)
+}
 
 watch(visibleEvents, (events) => {
   selectedId.value = resolveSelectedId(events, selectedId.value)
@@ -110,6 +127,87 @@ watch(visibleEvents, (events) => {
           </button>
         </div>
         <p v-else class="atlas-index__empty">No broad event references match these filters.</p>
+      </div>
+    </section>
+
+    <section
+      v-if="selectedEvent"
+      class="evidence-passport"
+      aria-labelledby="evidence-passport-title"
+      aria-live="polite"
+    >
+      <header class="evidence-passport__header">
+        <div>
+          <p class="eyebrow"><span>Admission note</span> Evidence passport</p>
+          <h2 id="evidence-passport-title">{{ selectedEvent.name }} · {{ selectedEvent.location }}</h2>
+        </div>
+        <p>
+          This is an analysis admission heuristic. It describes whether the project can inspect this event with its
+          current evidence—not how well a community recovered.
+        </p>
+      </header>
+
+      <template v-if="selectedPassport">
+        <div class="evidence-passport__status">
+          <span :class="`passport-band passport-band--${selectedPassport.readinessBand}`">
+            {{ selectedPassport.readinessLabel }}
+          </span>
+          <p>{{ PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.bandDefinitions.find(({ id }) => id === selectedPassport.readinessBand)?.meaning }}</p>
+        </div>
+
+        <div class="evidence-passport__table-wrap">
+          <table class="evidence-table passport-components">
+            <caption>Reviewed component-level evidence; the project does not display or interpret an overall score</caption>
+            <thead>
+              <tr>
+                <th scope="col">Component</th>
+                <th scope="col">Points</th>
+                <th scope="col">State</th>
+                <th scope="col">What it checks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="component in selectedPassport.components" :key="component.id">
+                <th scope="row">{{ componentDefinition(component.id)?.label }}</th>
+                <td><strong>{{ component.points }}</strong> / {{ component.maxPoints }}</td>
+                <td>
+                  <span :class="`component-state component-state--${component.status}`">
+                    {{ componentStatusLabels[component.status] }}
+                  </span>
+                </td>
+                <td>{{ componentDefinition(component.id)?.meaning }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="evidence-passport__claims">
+          <article>
+            <h3>Supported claim</h3>
+            <p>{{ selectedPassport.supportedClaim }}</p>
+          </article>
+          <article>
+            <h3>Unsupported claim</h3>
+            <p>{{ selectedPassport.unsupportedClaim }}</p>
+          </article>
+        </div>
+
+        <footer class="evidence-passport__source">
+          <span>Artifact {{ PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.version }} · {{ selectedPassport.publicationStatus }}</span>
+          <span>Source SHA-256 <code>{{ PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.source.sha256 }}</code></span>
+          <span>{{ PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.source.attribution }}</span>
+        </footer>
+      </template>
+
+      <div v-else class="evidence-passport__empty">
+        <span class="passport-band passport-band--unassessed">Not assessed in v1</span>
+        <div>
+          <h3>No reviewed Evidence Passport exists for this event.</h3>
+          <p>
+            Missing assessment is not evidence of poor data or worse recovery. This event remains in the broad public
+            index, while its component evidence stays unclaimed until a reviewed source is admitted.
+          </p>
+        </div>
       </div>
     </section>
 

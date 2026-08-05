@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "artifactVersion": "1.0.0",
+  "generatedDate": "2026-08-05",
+  "source": {
+    "id": "event-readiness-public-components-v1",
+    "version": "readiness-score-rules-v1",
+    "privateArtifactId": "event-readiness-components-v1",
+    "privateCanonicalSha256": "5d2f93b69913cfe93c48cc2ea81e08499502536d92f81f72a1cbe2dcfe4a3586",
+    "canonicalization": "UTF-8 text with line endings normalized to LF",
+    "rights": "Mixed-source non-reversible quality assessment; individual source terms apply",
+    "attribution": "ORNL EAGLE-I; NASA Black Marble VNP46A2 Collection 2; OpenStreetMap contributors; U.S. Census Bureau 2022 ACS 5-year and 2022 TIGER/Line; WorldPop Turkey 2020; no endorsement implied",
+    "publicationStatus": "reviewed-derived-aggregate"
+  },
+  "componentDefinitions": [
+    {
+      "id": "observation-quality",
+      "label": "Observation quality",
+      "maxPoints": 30,
+      "meaning": "Whether the aggregate analytical target is sufficiently observed rather than censored or missing."
+    },
+    {
+      "id": "post-event-coverage",
+      "label": "Post-event coverage",
+      "maxPoints": 20,
+      "meaning": "Whether enough post-event night-light acquisitions are available for the analytical window."
+    },
+    {
+      "id": "context-coverage",
+      "label": "Context coverage",
+      "maxPoints": 20,
+      "meaning": "Whether the event has enough reviewed contextual point coverage for the current workflow."
+    },
+    {
+      "id": "covariate-completeness",
+      "label": "Covariate completeness",
+      "maxPoints": 20,
+      "meaning": "Whether the reviewed population covariate is complete enough for the current analytical role."
+    },
+    {
+      "id": "data-integrity",
+      "label": "Data integrity",
+      "maxPoints": 10,
+      "meaning": "Whether internal missingness and non-missing values pass the consistency check."
+    }
+  ],
+  "bandDefinitions": [
+    {
+      "id": "mainline_ready",
+      "label": "Observation-ready",
+      "meaning": "The reviewed components meet the current mainline analysis-admission threshold."
+    },
+    {
+      "id": "sensitivity_only",
+      "label": "Sensitivity-only",
+      "meaning": "The event can inform sensitivity analysis, but at least one component limits mainline use."
+    },
+    {
+      "id": "repair_first",
+      "label": "Repair-first",
+      "meaning": "The reviewed components require data repair before mainline analytical use."
+    }
+  ],
+  "passports": [
+    {
+      "eventId": "eq-pr",
+      "readinessBand": "mainline_ready",
+      "componentPoints": {
+        "observation-quality": 30,
+        "post-event-coverage": 12,
+        "context-coverage": 20,
+        "covariate-completeness": 20,
+        "data-integrity": 10
+      }
+    },
+    {
+      "eventId": "ida",
+      "readinessBand": "mainline_ready",
+      "componentPoints": {
+        "observation-quality": 30,
+        "post-event-coverage": 12,
+        "context-coverage": 20,
+        "covariate-completeness": 20,
+        "data-integrity": 10
+      }
+    },
+    {
+      "eventId": "ian-charlotte",
+      "readinessBand": "mainline_ready",
+      "componentPoints": {
+        "observation-quality": 30,
+        "post-event-coverage": 20,
+        "context-coverage": 20,
+        "covariate-completeness": 20,
+        "data-integrity": 10
+      }
+    },
+    {
+      "eventId": "ian-fortmyers",
+      "readinessBand": "mainline_ready",
+      "componentPoints": {
+        "observation-quality": 30,
+        "post-event-coverage": 20,
+        "context-coverage": 20,
+        "covariate-completeness": 20,
+        "data-integrity": 10
+      }
+    },
+    {
+      "eventId": "irma",
+      "readinessBand": "mainline_ready",
+      "componentPoints": {
+        "observation-quality": 30,
+        "post-event-coverage": 12,
+        "context-coverage": 20,
+        "covariate-completeness": 20,
+        "data-integrity": 10
+      }
+    },
+    {
+      "eventId": "laura",
+      "readinessBand": "mainline_ready",
+      "componentPoints": {
+        "observation-quality": 30,
+        "post-event-coverage": 20,
+        "context-coverage": 12,
+        "covariate-completeness": 20,
+        "data-integrity": 10
+      }
+    },
+    {
+      "eventId": "eq-hatay",
+      "readinessBand": "sensitivity_only",
+      "componentPoints": {
+        "observation-quality": 24,
+        "post-event-coverage": 0,
+        "context-coverage": 12,
+        "covariate-completeness": 20,
+        "data-integrity": 10
+      }
+    },
+    {
+      "eventId": "maria",
+      "readinessBand": "sensitivity_only",
+      "componentPoints": {
+        "observation-quality": 0,
+        "post-event-coverage": 12,
+        "context-coverage": 20,
+        "covariate-completeness": 20,
+        "data-integrity": 10
+      }
+    },
+    {
+      "eventId": "michael",
+      "readinessBand": "repair_first",
+      "componentPoints": {
+        "observation-quality": 0,
+        "post-event-coverage": 12,
+        "context-coverage": 6,
+        "covariate-completeness": 20,
+        "data-integrity": 10
+      }
+    }
+  ]
+}

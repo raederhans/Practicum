@@ -1,10 +1,11 @@
-name: Deploy Dashboard to GitHub Pages
+name: Deploy Public Observatory to GitHub Pages
 
 on:
   push:
     branches: [main]
     paths:
-      - 'project/nightlight-dashboard/**'
+      - 'project/nightlight-public/**'
+      - '.github/workflows/deploy-dashboard.yml'
   workflow_dispatch:
 
 concurrency:
@@ -22,23 +23,31 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 20
+          cache: npm
+          cache-dependency-path: project/nightlight-public/package-lock.json
 
       - name: Install dependencies
-        working-directory: project/nightlight-dashboard
+        working-directory: project/nightlight-public
         run: npm ci
 
-      - name: Test
-        working-directory: project/nightlight-dashboard
-        run: npm test
+      - name: Test and verify source boundary
+        working-directory: project/nightlight-public
+        run: npm test && npm run verify:public
 
-      - name: Build
-        working-directory: project/nightlight-dashboard
+      - name: Build for repository base path
+        working-directory: project/nightlight-public
+        env:
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
         run: npm run build
+
+      - name: Verify production boundary and release manifest
+        working-directory: project/nightlight-public
+        run: npm run verify:public -- --require-dist
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
-          path: project/nightlight-dashboard/dist
+          path: project/nightlight-public/dist
 
   deploy:
     needs: build

@@ -1,0 +1,7 @@
+# Repository-root Vercel import: deny by default and upload only the public app.
+/*
+!vercel.json
+!project/
+project/*
+!project/nightlight-public/
+!project/nightlight-public/**

@@ -29,6 +29,8 @@ ROOT = SCRIPT_PATH.parents[3]
 if str(MODELING_DIR) not in sys.path:
     sys.path.insert(0, str(MODELING_DIR))
 
+from support.readiness_scoring import score_observation
+
 
 def _load_exploration_module():
     path = MODELING_DIR / "pipelines" / "03_exploration_pipeline.py"
@@ -679,15 +681,10 @@ def _post_tif_counts(events_cfg: Dict[str, object]) -> pd.DataFrame:
 
 
 def _score_obs(row: pd.Series) -> int:
-    obs = float(row.get("observed_rate_v2", 0.0) or 0.0)
-    censor = float(row.get("high_censoring_share", 1.0) or 1.0)
-    if obs >= 0.99 and censor <= 0.01:
-        return 30
-    if obs >= 0.97:
-        return 24
-    if obs >= 0.95:
-        return 18
-    return 0
+    return score_observation(
+        row.get("observed_rate_v2", 0.0),
+        row.get("high_censoring_share", 1.0),
+    )
 
 
 def _score_post_coverage(post_tif_n: int) -> int:
