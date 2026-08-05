@@ -27,6 +27,10 @@
 - The donor 0.7472/0.7408/0.63 values are retired provenance because they use RF band 1 and EPSG:3857. The regenerated severity-tertile ratio is 0.551, but event/county-event clustered checks do not support an equity claim; the dashboard labels it descriptive-only.
 - `PROJECT_PROVENANCE.md` records the collaborative origin, contributor boundary, donor commit, and third-party-data release gate. The dashboard leads with Qiushi Yu's personal continuation and preserves Zhiyuan Zhao attribution.
 - The reviewed implementation is committed locally as `acc4b2def96a4e653a604f33e8f462472fe1671d`; it is one commit ahead of `origin/main` at the time this closure record is prepared. No push, merge, or deployment occurred.
+- On 2026-08-05 the user explicitly prioritized a working GitHub/Vercel website over publishing the underlying data and delegated the public code-license choice. The publication design therefore uses MIT for owned code, a separate data-rights exclusion, and an aggregate-only website.
+- The existing `Practicum` public history is not a safe release vehicle because historical restricted files remain retrievable. Publication will use a new clean repository containing only the standalone public-site subtree.
+- The standalone public tree now passes 51 Vitest checks, Vite build, source/dist allowlist scanning, release-manifest hash verification, npm audit, Gitleaks, independent code/security approval, five-route Chromium smoke, Atlas filter-state interaction, desktop/mobile rendering, and zero browser warnings/errors. No raw or fine-grained data is present.
+- Official ORNL Figshare metadata identifies the EAGLE-I 2014–2022 release as CC BY 4.0. The public site may therefore publish non-reversible aggregate statistics with source/license/change attribution, while raw records, time series, facility coordinates, probability grids, and other fine-grained artifacts remain excluded.
 
 ## Gap classification
 
@@ -79,6 +83,9 @@
 | 2026-08-05 | Security review verified that the public origin already exposes 52 partner-restricted EAGLE-I CSVs (215,544,230 bytes) and an unauthenticated raw URL returns HTTP 200. | Correct the release controls locally, but keep public push/deploy closed; a deletion-only commit cannot retract public Git history. |
 | 2026-08-05 | Final code review initially found glyphless-style labels and failed-basemap recovery gaps; the repair also exposed a stale-map asynchronous data race in real Chromium. | Bind detail loads to their owning map instance, require a loaded style before layer writes, omit all text layers without glyphs, clear the global map reference before teardown, and verify both event-loaded Satellite switching and post-failure recovery before committing. |
 | 2026-08-05 | Final independent code re-review returned APPROVE with zero blocking findings. | Create the local Lore commits, but do not convert local verification into publication approval. |
+| 2026-08-05 | The user permits data omission as long as GitHub and Vercel remain usable and deployable, and delegates the license choice. | Select MIT for owned code only; publish no restricted/uncertain data, no fine-grained derived layers, and no original repository history. |
+| 2026-08-05 | Official deployment/licensing review confirms that license notices do not cure unlicensed public redistribution and that Pages and Vercel require different base paths. | Build one clean source tree with environment-specific base paths, fail-closed release scanning, and independent live verification. |
+| 2026-08-05 | ORNL's official EAGLE-I Figshare release is CC BY 4.0 and permits sharing/adaptation with attribution; local source-version equivalence is not assumed for raw-file redistribution. | Publish only independently processed, non-reversible aggregate metrics with DOI/license/change/no-endorsement attribution; continue excluding raw and fine-grained assets. |
 
 ## Live process ownership
 
@@ -99,11 +106,12 @@
 | Formal Stage 3 regeneration | Primary agent | Inputs: `cache/experiments/stage3-inputs-20260805-v1`; formal outputs: `project/data/result/stage3/`; SHA-256 values in `canonical_results_v1.json` | Complete: 1,002 rows/22 events; full and extra regressions regenerated after statistical fixes. A final isolated rerun after fixing Moran row alignment and deterministic permutation inference reproduced the formal extra-result SHA-256 `c03c4959…49c7db`. M1+ remains 0.7603/0.7543; M3 has 22 event blocks and zero cross-event edges but remains diagnostic-only; M6/M7 are not identifiable; 0.551 is descriptive-only. |
 | Dashboard final browser smoke | Primary agent | Final isolated local preview on `127.0.0.1:43174`; Playwright evidence is ignored local tooling output | Complete and stopped: Maria probability/facility resources loaded before switching to Satellite; the glyph-free style retained one canvas with no warning, console error, or page error. An injected Positron style failure produced the expected error/zero-canvas state, then Voyager restored one canvas and cleared the error with no page exception. Earlier route, lock, and 1,380 px LOEO checks remain passed. Port 43174 is released. |
 | Final local validation | Primary agent | Fresh commands after all review fixes | Complete: Python `85 passed, 7 subtests passed`; compileall passed; seven tracked JSON documents parsed; four formal SHA-256 values match `canonical_results_v1.json`; npm audit reports zero vulnerabilities; Vitest 17/17 and Vite production build pass; independent final code review is APPROVE. |
+| Public website build and browser smoke | Primary agent | Standalone source `project/nightlight-public/`; browser evidence under ignored `cache/browser-artifacts/nightlight-public-final/`; isolated `127.0.0.1:43185` | Complete and stopped: 51/51 tests, build, manifest, source/dist boundary, audit, and Gitleaks pass. All five routes, Atlas filter-state recovery, 1,440 px desktop and 390 px mobile layouts passed with zero console warnings/errors and same-origin static requests only. Preview PID 34468 was verified before stop; port 43185 is released. |
 
 ## Handoff
 
-Implementation and validation are complete. The functional implementation is committed locally as `acc4b2def96a4e653a604f33e8f462472fe1671d`; this record closes the local synchronization workflow. Public push and Pages deployment remain blocked by the EAGLE-I tracked-data/history decision.
+The local synchronization remains complete. A new publication phase is active and deliberately isolated from the existing restricted Git history.
 
 ## Next step
 
-Before any public push or Pages deployment, resolve EAGLE-I redistribution rights and choose a clean-repository or controlled-history-remediation path, then run a separate publication review.
+Export the verified aggregate-only subtree into an unrelated clean Git history, then publish and independently verify GitHub Pages and Vercel.

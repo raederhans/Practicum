@@ -31,6 +31,10 @@ After the audit, implement the approved Steps 3–5: verify complete history in 
 - [x] Stage 8: Acquire publicly obtainable upstream data and run bounded regeneration experiments.
 - [x] Stage 9: Normalize geographic scope and published metrics, then verify analysis and dashboard behavior.
 - [x] Stage 10: Review, create local Lore commits, and leave public push/Pages deployment behind an explicit production gate.
+- [x] Stage 11: Define an aggregate-only public product, MIT code-license boundary, third-party notices, and a fail-closed data policy.
+- [x] Stage 12: Implement and test a standalone public website that remains useful without restricted source data or fine-grained derived artifacts.
+- [x] Stage 13: Produce a clean allowlisted release tree, scan both source and built output, and verify every public route in a real browser.
+- [ ] Stage 14: Publish the clean tree to a new GitHub repository, enable GitHub Pages, deploy an independent Vercel project, and verify live assets and routes.
 
 ## Acceptance criteria
 
@@ -45,6 +49,10 @@ After the audit, implement the approved Steps 3–5: verify complete history in 
 - Every acquired dataset has an official source, retrieval method, license/redistribution classification, checksum or stable identifier, and reproducibility status.
 - Canonical scope and result values are asserted by automated checks and used consistently by the dashboard build.
 - The dashboard installs from its lockfile, builds locally, and passes route/static-asset smoke checks before any deployment action.
+- The public repository and its complete new history contain no raw EAGLE-I files, fine-grained probability grids, facility-coordinate exports, local model artifacts, credentials, or parent-project analysis data.
+- The public website works with only event-level public metadata, methodology, attribution, and aggregated/descriptive results; unavailable layers use an explicit withheld state rather than mock or fallback data.
+- MIT applies only to original public-site code and owned documentation; datasets and third-party materials are separately excluded or attributed in the public documentation.
+- Vercel uses a root-relative build, GitHub Pages uses its repository subpath, and both live surfaces pass root, emitted-asset, route, and browser-console checks.
 
 ## Non-goals
 
@@ -53,6 +61,7 @@ After the audit, implement the approved Steps 3–5: verify complete history in 
 - No claim of authorship where the Git history does not support it.
 - No copying of unpublished or unavailable data.
 - No legal conclusion beyond the repository evidence and GitHub's general licensing guidance.
+- No rewrite, deletion, or reuse of the existing public `Practicum` repository history as the release vehicle; publication uses a new clean repository.
 
 ## Risks and constraints
 
@@ -64,3 +73,4 @@ After the audit, implement the approved Steps 3–5: verify complete history in 
 - On 2026-08-05 the user confirmed that teammate reuse permission exists; attribution and provenance still remain required project records.
 - Some official data sources require credentials, institutional access, rate-limited APIs, or acceptance of terms and therefore may remain only partially reproducible.
 - Large downloads and regeneration jobs require a single live-process owner, stable logs, isolated caches, and explicit stop conditions.
+- A public notice cannot cure unauthorized redistribution. Restricted or uncertain data must stay outside the new Git history, Vite inputs, `dist`, and Vercel upload boundary.

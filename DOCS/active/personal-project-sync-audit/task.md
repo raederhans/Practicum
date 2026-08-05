@@ -2,7 +2,7 @@
 
 ## Current status
 
-Audit, implementation, final local verification, and the functional Lore commit are complete on `codex/personal-project-sync`, created from `main@1e3bcdade293b7e4c87ec4e00807cf3e86711bbc`. The reviewed donor allowlist was imported with zero conflicts and then deliberately personalized. The implementation is recorded in `acc4b2def96a4e653a604f33e8f462472fe1671d`; no remote push or deployment has occurred.
+The verified local synchronization is complete on `codex/personal-project-sync`. The task is reopened for a separate publication phase: create an aggregate-only standalone website, export it into a new clean GitHub history, and verify independent GitHub Pages and Vercel deployments without publishing restricted data.
 
 ## Checklist
 
@@ -21,6 +21,13 @@ Audit, implementation, final local verification, and the functional Lore commit 
 - [x] Normalize canonical geographic scope and metrics.
 - [x] Run targeted analysis validation, frontend build, and browser/static-asset smoke checks.
 - [x] Review and create local Lore commits; leave remote publication gated.
+- [x] Define and test the public code/data/license boundary.
+- [x] Implement the standalone aggregate-only personal website.
+- [x] Build and scan a clean release tree and production `dist`.
+- [x] Verify all public routes and responsive behavior in a real browser.
+- [ ] Create and publish a new clean GitHub repository with workflow-driven Pages.
+- [ ] Create and publish an independent Vercel project from the same clean release tree.
+- [ ] Verify both live sites, emitted assets, routes, attribution, and absence of restricted files.
 
 ## Validation evidence
 
@@ -60,6 +67,10 @@ Audit, implementation, final local verification, and the functional Lore commit 
 | Security release review | No high-confidence secrets or restricted raw fields were found in the dashboard artifact, but the existing public Git history exposes partner-restricted EAGLE-I files. Public push/deploy remains blocked pending rights confirmation and history/repository remediation. |
 | Attribution and release state | `PROJECT_PROVENANCE.md` credits both contributors; the personal dashboard leads with Qiushi Yu and credits Zhiyuan Zhao; no push or deployment occurred. |
 | Functional Lore commit | `acc4b2def96a4e653a604f33e8f462472fe1671d`; 370 reviewed files, local only. |
+| Publication decision | User permits omission of data and authorizes choosing the license; selected boundary is MIT for owned public-site code only, with data excluded and separately documented. |
+| Release vehicle | A new standalone repository will be created; the existing public `Practicum` history will not be reused because it already contains restricted data. |
+| Standalone public validation | Vitest 51/51, Vite production build, release-manifest verification, fail-closed source/dist boundary, npm audit, and Gitleaks all pass. Independent code and security re-reviews both return APPROVE. |
+| Standalone browser validation | Overview, Atlas, Findings, Methods, and Credits routes load in Chromium. Atlas selection/filter recovery works; 1,440 px and 390 px layouts render; console reports 0 errors/0 warnings; observed requests are same-origin static assets only. Preview PID ownership was verified and port 43185 was released. |
 
 ## Open risks and remaining work
 
@@ -70,4 +81,4 @@ Audit, implementation, final local verification, and the functional Lore commit 
 - Stage 3 results are explicitly classified as EAGLE-I-derived targets with `rights-review-required`; local scientific validation does not itself grant publication rights.
 - Some original data may require credentials or non-public transfer; each unavailable item needs a recorded reproducibility limitation and an official-data alternative where scientifically valid.
 - The public `origin` history already exposes 52 partner-restricted EAGLE-I CSVs (215,544,230 bytes), and an unauthenticated raw URL returned HTTP 200 during security review. A deletion-only commit cannot retract history; keep public push/deploy blocked until redistribution rights and a clean-repository or controlled-history-remediation plan are resolved.
-- Public push and GitHub Pages deployment remain separate external-production actions after local validation.
+- Public release remains open until the clean repository and both live deployments pass data-boundary and browser verification.
