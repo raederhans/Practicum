@@ -39,9 +39,16 @@ describe('dependency install policy', () => {
 
 describe('Vercel upload boundary', () => {
   it('ignores only root entries before unignoring approved source directories', async () => {
-    const rules = (await readFile(new URL('../.vercelignore', import.meta.url), 'utf8'))
-      .split(/\r?\n/)
-      .filter(Boolean)
+    let contents
+    try {
+      contents = await readFile(new URL('../.vercelignore', import.meta.url), 'utf8')
+    } catch (error) {
+      expect(error.code).toBe('ENOENT')
+      expect(process.env.VERCEL).toBe('1')
+      return
+    }
+
+    const rules = contents.split(/\r?\n/).filter(Boolean)
 
     expect(rules[0]).toBe('/*')
     expect(rules).toEqual(expect.arrayContaining(['!src', '!public', '!scripts', '!tests']))
