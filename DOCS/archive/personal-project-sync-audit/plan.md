@@ -1,5 +1,7 @@
 # Plan
 
+Status: archived after all 14 stages and independent release verification completed on 2026-08-05.
+
 ## Goal
 
 Identify what the local project is missing relative to the teammate's final public repository and demo site, then define a safe synchronization path that preserves the user's original analysis and collection work.
@@ -34,7 +36,7 @@ After the audit, implement the approved Steps 3–5: verify complete history in 
 - [x] Stage 11: Define an aggregate-only public product, MIT code-license boundary, third-party notices, and a fail-closed data policy.
 - [x] Stage 12: Implement and test a standalone public website that remains useful without restricted source data or fine-grained derived artifacts.
 - [x] Stage 13: Produce a clean allowlisted release tree, scan both source and built output, and verify every public route in a real browser.
-- [ ] Stage 14: Publish the clean tree to a new GitHub repository, enable GitHub Pages, deploy an independent Vercel project, and verify live assets and routes.
+- [x] Stage 14: Publish the clean tree to a new GitHub repository, enable GitHub Pages, deploy an independent Vercel project, and verify live assets and routes.
 
 ## Acceptance criteria
 

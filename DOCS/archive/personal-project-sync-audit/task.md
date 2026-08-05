@@ -2,7 +2,7 @@
 
 ## Current status
 
-The verified local synchronization is complete on `codex/personal-project-sync`. The task is reopened for a separate publication phase: create an aggregate-only standalone website, export it into a new clean GitHub history, and verify independent GitHub Pages and Vercel deployments without publishing restricted data.
+Archived as complete on 2026-08-05 after independent verification. The verified local synchronization and publication phases are complete on `codex/personal-project-sync`. The aggregate-only website is published from an unrelated clean Git history, and both GitHub Pages and Vercel have passed live verification without publishing restricted data.
 
 ## Checklist
 
@@ -25,9 +25,9 @@ The verified local synchronization is complete on `codex/personal-project-sync`.
 - [x] Implement the standalone aggregate-only personal website.
 - [x] Build and scan a clean release tree and production `dist`.
 - [x] Verify all public routes and responsive behavior in a real browser.
-- [ ] Create and publish a new clean GitHub repository with workflow-driven Pages.
-- [ ] Create and publish an independent Vercel project from the same clean release tree.
-- [ ] Verify both live sites, emitted assets, routes, attribution, and absence of restricted files.
+- [x] Create and publish a new clean GitHub repository with workflow-driven Pages.
+- [x] Create and publish an independent Vercel project from the same clean release tree.
+- [x] Verify both live sites, emitted assets, routes, attribution, and absence of restricted files.
 
 ## Validation evidence
 
@@ -69,16 +69,22 @@ The verified local synchronization is complete on `codex/personal-project-sync`.
 | Functional Lore commit | `acc4b2def96a4e653a604f33e8f462472fe1671d`; 370 reviewed files, local only. |
 | Publication decision | User permits omission of data and authorizes choosing the license; selected boundary is MIT for owned public-site code only, with data excluded and separately documented. |
 | Release vehicle | A new standalone repository will be created; the existing public `Practicum` history will not be reused because it already contains restricted data. |
-| Standalone public validation | Vitest 51/51, Vite production build, release-manifest verification, fail-closed source/dist boundary, npm audit, and Gitleaks all pass. Independent code and security re-reviews both return APPROVE. |
+| Standalone public validation | Vitest 53/53, Vite production build, release-manifest verification, fail-closed source/dist boundary, npm audit, and Gitleaks all pass. Independent code and security re-reviews both return APPROVE. |
 | Standalone browser validation | Overview, Atlas, Findings, Methods, and Credits routes load in Chromium. Atlas selection/filter recovery works; 1,440 px and 390 px layouts render; console reports 0 errors/0 warnings; observed requests are same-origin static assets only. Preview PID ownership was verified and port 43185 was released. |
+| Clean public history | New repository `raederhans/nightlight-disaster-dashboard`; final `main=c0ab511ac106cf5bc99f65d602afe3a8d4f71d85`. History contains three reviewed commits and 37 tracked files. Gitleaks history scan passes; forbidden raw/data/model path search is empty. |
+| Vercel upload gate | Vercel CLI 58.5.1 dry-run reports Vite, exactly 34 approved upload files, and exact equality with tracked source minus GitHub-only metadata. A real RED exposed and repaired the original recursive-ignore rule. |
+| GitHub Pages release | Workflow run `30991589506` succeeds for `c0ab511`; live URL `https://raederhans.github.io/nightlight-disaster-dashboard/`. All 11 emitted files match release-manifest bytes and SHA-256; five hash routes load with zero console warnings/errors. |
+| Vercel release | Project `prj_IbPZoPT9AexNfUbrquAjPj2HLYv7`; production deployment `dpl_4Xv3c8vK1A8Ea1N8cqtJcma1rXxs` is READY for `c0ab511`; stable URL `https://nightlight-disaster-dashboard.vercel.app/`. Cloud build passes 53/53 tests and public boundary, all 11 emitted hashes match, security headers pass, and five routes report zero console warnings/errors. |
+| Temporary credential cleanup | Vercel-generated root `.env.local` and `.vercel/.env.production.local` were removed by exact verified paths after use. They were ignored and never entered Git or the Vercel dry-run upload set; `.vercel/project.json` remains locally for project linking. |
+| Independent completion verification | PASS with no blocking finding. The verifier matched GitHub `main`, Pages workflow/deployment, Vercel production metadata/build logs, task records, live assets, and both 11-file manifests to `c0ab511`; all live hash comparisons had zero mismatches. |
 
 ## Open risks and remaining work
 
 - Complete history is now available in the isolated reference clone; the active worktree remains shallow by design and must not be used alone for later ancestry claims.
 - Missing public data prevents a full Stage 0-to-3 rerun from this checkout alone.
-- Repository-level reuse terms are not stated in a LICENSE file; the user's confirmed teammate permission is now accompanied by explicit collaborator attribution and provenance, but a future public license decision remains open.
+- The original `Practicum` repository has no project-wide LICENSE and remains a historical/restricted-data source. The standalone public repository resolves this boundary with MIT for owned code/documentation, explicit collaborator attribution, and separate third-party/data notices.
 - The personal branch now normalizes the headline numbers and geographic scope; the teammate's already-published site remains a historical reference and is unchanged.
 - Stage 3 results are explicitly classified as EAGLE-I-derived targets with `rights-review-required`; local scientific validation does not itself grant publication rights.
 - Some original data may require credentials or non-public transfer; each unavailable item needs a recorded reproducibility limitation and an official-data alternative where scientifically valid.
-- The public `origin` history already exposes 52 partner-restricted EAGLE-I CSVs (215,544,230 bytes), and an unauthenticated raw URL returned HTTP 200 during security review. A deletion-only commit cannot retract history; keep public push/deploy blocked until redistribution rights and a clean-repository or controlled-history-remediation plan are resolved.
-- Public release remains open until the clean repository and both live deployments pass data-boundary and browser verification.
+- The public `origin` history already exposes 52 partner-restricted EAGLE-I CSVs (215,544,230 bytes), and an unauthenticated raw URL returned HTTP 200 during security review. A deletion-only commit cannot retract history; keep deployment from the original `Practicum` history blocked. The standalone release is safe because it uses a separate clean repository.
+- The clean public release is complete. The original `Practicum` repository remains unchanged as a historical/restricted-data source and must not be reused as this site's deployment history.
