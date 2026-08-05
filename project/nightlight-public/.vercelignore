@@ -1,12 +1,8 @@
-*
-!src/
-!src/**
-!public/
-!public/**
-!scripts/
-!scripts/**
-!tests/
-!tests/**
+/*
+!src
+!public
+!scripts
+!tests
 !index.html
 !package.json
 !package-lock.json

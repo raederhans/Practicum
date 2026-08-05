@@ -26,3 +26,24 @@ describe('atlas keyboard contract', () => {
     expect(atlas).toMatch(/:aria-pressed="selectedEvent\?\.id === event\.id"/)
   })
 })
+
+describe('dependency install policy', () => {
+  it('approves only the pinned esbuild install script required by Vite', async () => {
+    const packageJson = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
+    const packageLock = JSON.parse(await readFile(new URL('../package-lock.json', import.meta.url), 'utf8'))
+
+    expect(packageLock.packages['node_modules/esbuild'].version).toBe('0.25.12')
+    expect(packageJson.allowScripts).toEqual({ 'esbuild@0.25.12': true })
+  })
+})
+
+describe('Vercel upload boundary', () => {
+  it('ignores only root entries before unignoring approved source directories', async () => {
+    const rules = (await readFile(new URL('../.vercelignore', import.meta.url), 'utf8'))
+      .split(/\r?\n/)
+      .filter(Boolean)
+
+    expect(rules[0]).toBe('/*')
+    expect(rules).toEqual(expect.arrayContaining(['!src', '!public', '!scripts', '!tests']))
+  })
+})
