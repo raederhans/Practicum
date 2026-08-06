@@ -2,7 +2,7 @@
 
 ## Current status
 
-Complete and verified. The implementation, independent reviews, analytics recommendation, final repository checks, and scoped local Lore commit are included in this delivery.
+Scientific audit remediation is implemented and verified on `codex/atlas-compare-audit-remediation`, ready for local integration into `codex/personal-project-sync`. The original implementation evidence remains historical. High findings H1-H3 are closed by repository evidence; H4 remains a restricted-environment provenance gate and continues to block public deployment.
 
 ## Checklist
 
@@ -18,6 +18,15 @@ Complete and verified. The implementation, independent reviews, analytics recomm
 - [x] Complete code/scientific/security review and simplification pass.
 - [x] Research lightweight web analytics for later comprehension proxies and record a recommendation.
 - [x] Create a scoped local Lore commit and update registry/final facts.
+- [x] Remove headline match-count scorecard framing and revise live-region semantics.
+- [x] Add conservative measurement-frame boundary metadata without inventing per-event equivalence.
+- [x] Make comparison schema handling fail closed for missing, duplicate, malformed, reordered, or future components.
+- [x] Separate event display type from documented hazard family.
+- [x] Disclose the upstream weighted readiness-band construction.
+- [x] Label presets as editorial and non-representative.
+- [x] Run focused/full/Root/Pages/browser verification.
+- [ ] Create a remediation Lore commit and integrate it into `codex/personal-project-sync`.
+- [ ] Obtain restricted-environment private provenance verification with zero skips before public scientific release.
 
 ## Validation evidence
 
@@ -42,6 +51,15 @@ Complete and verified. The implementation, independent reviews, analytics recomm
 | Independent code review | Two accessibility findings were reproduced and fixed with red-green evidence: the duplicate implicit live region and missing shared radio-group name. No correctness or comparison-domain defect remained. |
 | Independent security/scientific review | Risk `LOW`; no blocking finding, secret, LLM/runtime network use, new dependency, restricted field, aggregate ranking, or source/dist boundary defect. Full dependency audit reported zero known vulnerabilities. |
 | Final candidate verification | Fresh 95/95 suite; Root and Pages 11-file builds/verifiers; Root `dist` restored; browser smoke passed 375/768/1024/1440 with one live region, arrow-key radio grouping, zero console/page/request failures, and zero external requests. |
+| Remediation TDD red | The first focused run failed 19 assertions for the deliberately absent fail-closed schema contract, measurement boundary, hazard-family split, and revised UI semantics; 24 pre-existing assertions still passed. |
+| Remediation focused green | 49/49 across Compare rules, Evidence Passport, study taxonomy, and static shell. Negative inputs cover missing/undefined/duplicate/reordered/extra components, changed maxima, invalid status, empty arrays, and current-version plus future-version schema drift. All 72 directed pairs among the nine controlled reviewed Passports are explicitly locked as `paired-v1`. |
+| Remediation full validation | Fresh 111/111 suite; Vite transformed 40 modules; Root build emitted 11 files and the source/dist verifier passed. |
+| Root/Pages release boundary | Pages base `/Practicum/` and Root base each emitted 11 files and passed `verify:public -- --require-dist`; Root `dist` was restored. `npm audit --audit-level=low` reported 0 vulnerabilities. |
+| Controlled artifact result | All nine current reviewed Passports pass the public artifact validator and the 600 directed-pair suite. The fail-closed findings apply to future/abnormal public-function inputs, not an observed error in the current nine controlled Passports. |
+| Private provenance gate | `test_public_evidence_passport_provenance.py`: 2 passed, 1 skipped because the private readiness source is unavailable in this clone. This is not zero-skip provenance evidence and H4 remains High. |
+| Remediation browser QA | Root build passed at 375/768/1024/1440 and 1280→640 200%-equivalent reflow with zero horizontal overflow. Measurement limits precede two coverage-only summaries; one live region; native radio arrow-key behavior; visible 2px focus; reduced-motion durations `0.01ms`; cross-hazard and missing-Passport states correct; no console warnings/errors or external resources. |
+| Contrast spot check | New measurement-boundary and coverage-summary text measured 8.02:1 to 16.66:1 against the composited dark background. |
+| Live-resource cleanup | Playwright session `atlas-remediation` closed; exact preview process stopped; port 4176 verified free. The verifier caught Playwright's temporary snapshot directory; those six owned snapshots and the empty directory were removed, then the full 111/111 validation passed. Screenshots are outside the repository under the task visualization directory. |
 
 ## Open risks
 
@@ -49,3 +67,4 @@ Complete and verified. The implementation, independent reviews, analytics recomm
 - One or both events may be unassessed; missing component comparisons remain visibly unavailable and have dedicated automated coverage.
 - There is no real-user comprehension evidence. Browser smoke proves mechanics and readability constraints, not that visitors interpret the scientific boundary correctly.
 - Analytics integration remains a separate product/privacy change because it would replace the current no-analytics and `connect-src 'none'` contract.
+- The public clone cannot independently recompute the private readiness inputs; this remains a High release gate until restricted provenance tests complete with zero skips.

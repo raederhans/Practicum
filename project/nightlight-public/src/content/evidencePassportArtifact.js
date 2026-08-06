@@ -20,6 +20,21 @@ const REVIEWED_SOURCE = Object.freeze({
   publicationStatus: reviewedManifest.source.publicationStatus,
 })
 
+const COMPARISON_BOUNDARY = Object.freeze({
+  status: 'comparability-not-established',
+  schemaScope: 'shared-v1-rule-schema-only',
+  knownProductContext: 'The reviewed mixed-source attribution includes NASA Black Marble VNP46A2 Collection 2.',
+  unknownConditions: Object.freeze([
+    'per-event sensor and platform equivalence',
+    'acquisition and pre/post window equivalence',
+    'spatial-unit and population-denominator equivalence',
+    'context and covariate source equivalence',
+    'missingness mechanism and sampling-shift equivalence',
+  ]),
+  privateSourceVerification: 'restricted-environment-required',
+  statement: 'The public artifact supports descriptive v1 rule-bin pairing only; it does not establish cross-event measurement equivalence.',
+})
+
 const REVIEWED_PASSPORTS = new Map(
   reviewedManifest.passports.map((passport) => [passport.eventId, passport]),
 )
@@ -32,11 +47,12 @@ const BAND_CLAIMS = Object.freeze({
 
 const UNSUPPORTED_CLAIM = 'This does not measure community recovery, disaster outcome, resilience, fairness, causality, or policy performance, and it is not an event ranking.'
 
-const ARTIFACT_FIELDS = new Set(['version', 'generatedDate', 'title', 'source', 'componentDefinitions', 'bandDefinitions', 'passports'])
+const ARTIFACT_FIELDS = new Set(['version', 'generatedDate', 'title', 'source', 'comparisonBoundary', 'componentDefinitions', 'bandDefinitions', 'passports'])
 const SOURCE_FIELDS = new Set(['id', 'version', 'sha256', 'canonicalization', 'rights', 'attribution', 'publicationStatus'])
+const COMPARISON_BOUNDARY_FIELDS = new Set(['status', 'schemaScope', 'knownProductContext', 'unknownConditions', 'privateSourceVerification', 'statement'])
 const COMPONENT_DEFINITION_FIELDS = new Set(['id', 'label', 'maxPoints', 'meaning'])
 const BAND_DEFINITION_FIELDS = new Set(['id', 'label', 'meaning'])
-const PASSPORT_FIELDS = new Set(['eventId', 'readinessBand', 'readinessLabel', 'components', 'supportedClaim', 'unsupportedClaim', 'publicationStatus', 'sourceArtifactId'])
+const PASSPORT_FIELDS = new Set(['eventId', 'schemaVersion', 'readinessBand', 'readinessLabel', 'components', 'supportedClaim', 'unsupportedClaim', 'publicationStatus', 'sourceArtifactId'])
 const COMPONENT_FIELDS = new Set(['id', 'points', 'maxPoints', 'status'])
 const PROHIBITED_FIELD_NAMES = new Set([
   'eventcount', 'observedrate', 'highcensoringshare', 'poicount', 'totalscore',
@@ -66,6 +82,7 @@ function makePassport(eventId) {
   }))
   return Object.freeze({
     eventId,
+    schemaVersion: reviewedManifest.artifactVersion,
     readinessBand,
     readinessLabel: readinessLabel(readinessBand),
     components: Object.freeze(components),
@@ -83,6 +100,7 @@ export const PUBLIC_EVIDENCE_PASSPORT_ARTIFACT = Object.freeze({
   generatedDate: reviewedManifest.generatedDate,
   title: 'Public Evidence Passport Artifact v1',
   source: REVIEWED_SOURCE,
+  comparisonBoundary: COMPARISON_BOUNDARY,
   componentDefinitions: COMPONENT_DEFINITIONS,
   bandDefinitions: BAND_DEFINITIONS,
   passports: Object.freeze(PASSPORT_EVENT_IDS.map(makePassport)),
@@ -134,6 +152,15 @@ export function validatePublicEvidencePassportArtifact(artifact) {
   if (!sameFields(artifact.source, REVIEWED_SOURCE, SOURCE_FIELDS)) violations.push('source does not match the reviewed source definition')
   if (!/^[a-f0-9]{64}$/.test(artifact.source?.sha256 || '')) violations.push('source needs a SHA-256 hash')
 
+  const unknownBoundaryField = unknownField(artifact.comparisonBoundary, COMPARISON_BOUNDARY_FIELDS, 'comparisonBoundary')
+  if (unknownBoundaryField) violations.push(`unknown comparison-boundary field is not public: ${unknownBoundaryField}`)
+  if (
+    !sameFields(artifact.comparisonBoundary, COMPARISON_BOUNDARY, new Set([...COMPARISON_BOUNDARY_FIELDS].filter((field) => field !== 'unknownConditions')))
+    || JSON.stringify(artifact.comparisonBoundary?.unknownConditions) !== JSON.stringify(COMPARISON_BOUNDARY.unknownConditions)
+  ) {
+    violations.push('comparison boundary does not match the reviewed public limitation')
+  }
+
   if (!Array.isArray(artifact.componentDefinitions) || artifact.componentDefinitions.length !== COMPONENT_DEFINITIONS.length) {
     violations.push('component definitions are incomplete')
   }
@@ -166,6 +193,7 @@ export function validatePublicEvidencePassportArtifact(artifact) {
     const reviewedPassport = REVIEWED_PASSPORTS.get(eventId)
     const reviewedBand = reviewedPassport?.readinessBand
     if (!reviewedPassport || !reviewedBand) violations.push(`event passport ${eventId} is not reviewed`)
+    if (passport?.schemaVersion !== artifact.version) violations.push(`event passport ${eventId} has an unreviewed schema version`)
     if (passport?.readinessBand !== reviewedBand) violations.push(`event passport ${eventId} has an unreviewed band`)
     if (passport?.readinessLabel !== readinessLabel(reviewedBand)) violations.push(`event passport ${eventId} has an unreviewed label`)
     if (passport?.supportedClaim !== BAND_CLAIMS[reviewedBand] || passport?.unsupportedClaim !== UNSUPPORTED_CLAIM) {

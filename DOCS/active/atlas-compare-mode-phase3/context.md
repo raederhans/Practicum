@@ -18,12 +18,12 @@
 | 2026-08-06 | Keep comparison inside Atlas rather than adding a sixth route. | Reuse the existing event selection, visual language, route tests, and public shell. |
 | 2026-08-06 | Use deterministic rules for all runtime facts and warnings. | No DeepSeek key or LLM output enters the static client; results remain reproducible and testable. |
 | 2026-08-06 | Treat hazard family as primary compatibility context. | Different hazard families always receive a prominent cross-category warning. |
-| 2026-08-06 | Use year gap, rounded broad-center distance, Passport coverage, and matching component states as independent numeric summaries. | Numbers change with selection but cannot be added into a recovery or observability ranking. |
+| 2026-08-06 | Initially use year gap, rounded broad-center distance, Passport coverage, and matching component states as independent numeric summaries. | Historical pre-audit decision; later architecture and scientific reviews retired these headline comparisons. |
 | 2026-08-06 | Reject radar charts and composite compatibility scores. | Avoid implied overall area/quality and preserve accessible text plus paired component tracks. |
 | 2026-08-06 | Curated presets carry authored notes while factual status remains rule-generated. | Editorial guidance is distinguishable from computed evidence. |
 | 2026-08-06 | Defer analytics integration until post-implementation research. | Preserve `connect-src 'none'`, avoid collecting visitors before a privacy/measurement decision, and keep this phase deployable offline. |
 | 2026-08-06 | Domain TDD passed after an expected missing-module red run. | `compareEvents.js` now owns category-first peer repair, compatibility language, four independent summaries, missing-evidence behavior, and four presets; no product template has changed yet. |
-| 2026-08-06 | Architecture review rejected year-gap and broad-center-distance summary cards. | Broad centers remain orientation-only and year proximity is not compatibility. Cards now count reviewed/comparable/exact/different evidence categories without summing points. A second red-green TDD cycle locked the refinement. |
+| 2026-08-06 | Architecture review rejected year-gap and broad-center-distance summary cards. | Historical pre-audit refinement: broad centers remain orientation-only and year proximity is not compatibility. The subsequent scientific audit also retired exact/different headline counts. |
 | 2026-08-06 | UX review recommended a two-mode Atlas with independent comparison state. | Default `Explore one event` preserves the existing map/index; `Compare events` uses separate left/right IDs, grouped native selects, preset buttons, one live summary, and a responsive category ledger. |
 | 2026-08-06 | Compare Mode production code passed focused tests, compile, manifest generation, and source/dist verification. | The next gate is fresh full validation followed by real-browser interaction and responsive inspection. |
 | 2026-08-06 | Full validation and real-browser inspection passed. | The 95-test suite, Root/Pages builds, three responsive viewports, all evidence states, console/network capture, screenshots, and live-resource cleanup are complete. |
@@ -74,16 +74,42 @@ Official references:
 
 Never send event IDs, location text, free-form input, URLs with personal query parameters, device identifiers, or a stable user ID.
 
-### Preset baseline versus real results
+### Historical preset baseline versus real results
 
-The current automated baseline is legitimate preset evidence: all four presets select the intended pair, the same-storm preset yields `2/2`, `5/5`, `5/5`, `0/5`, the same-place cross-hazard preset yields `2/2`, `5/5`, `4/5`, `1/5`, and required warnings appear. These are deterministic product results, not visitor analytics.
+The pre-audit automated baseline proved that all four presets selected the intended pair and that the then-current exact/different counters were deterministic. Those match counters are now retired from headline summaries because software repeatability cannot prove measurement equivalence. Current tests retain pair selection, warnings, coverage, schema validation, and row-level relation checks; none are visitor analytics or comprehension evidence.
 
 A future dashboard may define target hypotheses for discovery, manual-pair continuation, boundary exposure, and helpfulness votes. Those targets must be labeled `target` until real traffic exists; the product must never ship seeded or fabricated observed counts.
 
 ## Handoff
 
-Implementation is complete. Do not edit the Passport manifest, add network calls, expose an API key, create a total score, or install analytics during final review. Keep all final mutations in the current integration worktree; delegated agents remain read-only reviewers.
+The original implementation was complete before the scientific audit reopened it. During remediation, do not edit the reviewed Passport manifest, add network calls, expose an API key, create a new total score, or install analytics. The displayed admission band remains an upstream weighted-sum result and must be disclosed honestly.
 
 ## Next step
 
 Phase 3 is locally integrated and verified. A later release may push and deploy this candidate only through the repository's separate release gates. Analytics remains an optional Phase 4 product/privacy decision, not hidden follow-up work in this phase.
+
+## Scientific audit remediation
+
+| Date | Decision | Impact |
+| --- | --- | --- |
+| 2026-08-06 | Reopen Phase 3 after independent scientific audit. | The candidate remains software-consistent, but public deployment is blocked by scorecard framing, unestablished measurement comparability, incomplete weighted-band disclosure, and unavailable private-source recomputation evidence. |
+| 2026-08-06 | Keep the reviewed manifest and its canonical hash unchanged. | Remediation may publish conservative comparison-boundary metadata, but it must not invent per-event sensor, window, spatial-unit, missingness, or source equivalence. |
+| 2026-08-06 | Treat private provenance as an external restricted-environment gate. | Public code may make the gap explicit, but this worktree cannot honestly turn two skipped private tests into verified provenance. |
+| 2026-08-06 | Use `codex/atlas-compare-audit-remediation` as the isolated implementation branch. | The target branch remains `codex/personal-project-sync`; the user's untracked research and the retained Generalization worktree stay untouched. |
+
+### Remediation live-process contract
+
+- Owner: primary integration agent in `C:\Users\raede\.codex\worktrees\814c\Practicum`.
+- Long validation working directory: `project/nightlight-public`.
+- Browser preview port: allocate only after confirming ownership; one preview owner; stop the exact process tree after QA.
+- Build output: the isolated worktree's ignored `dist/`; restore the Root build after Pages-base verification.
+- Success: focused tests, full validation, Root/Pages verifier, responsive browser QA, clean tracked status apart from scoped remediation files.
+- Stop: three identical failures under the same assumption, port ownership conflict, or evidence requiring invented private facts.
+
+### Remediation verification outcome
+
+- The current nine reviewed Passports validate against the unchanged reviewed manifest and canonical source hash. No current controlled Passport produced a schema error.
+- `buildEventComparison` now accepts only the exact reviewed v1 component IDs, order, maxima, points/status relation, event ownership, and Passport schema version. Abnormal or future inputs return `schemaStatus: not-comparable`, no paired rows, and no inferred difference counts.
+- The UI leads with hazard-family context and an explicit measurement-frame boundary, then shows only reviewed-Passport and paired-row coverage. Exact/different headline counts and their live-region wording are retired.
+- The public artifact can state the restricted provenance gap, but it cannot close it. The local provenance run remains 2 passed and 1 skipped because the private readiness source is absent.
+- Fresh evidence: 49/49 focused; 111/111 full; Root/Pages 11-file builds and verifiers; dependency audit 0; responsive browser QA at 375/768/1024/1440 plus 1280→640 reflow; one live region; no overflow, console warnings/errors, or external resources; port 4176 cleaned up.

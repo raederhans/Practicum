@@ -5,7 +5,7 @@ import { filterEvents } from '../src/domain/filterEvents.js'
 import { projectPoint } from '../src/domain/projectPoint.js'
 import { resolveSelectedId } from '../src/domain/resolveSelectedId.js'
 
-const allowedEventKeys = ['id', 'name', 'year', 'location', 'region', 'type', 'center']
+const allowedEventKeys = ['id', 'name', 'year', 'location', 'region', 'type', 'hazardFamily', 'center']
 
 describe('public study facts', () => {
   it('publishes only the approved aggregate facts', () => {
@@ -53,14 +53,17 @@ describe('public study facts', () => {
         expect(Number(coordinate.toFixed(1))).toBe(coordinate)
       }
       expect(JSON.stringify(event)).not.toMatch(/facility|probab|time.?series|grid|zip/i)
+      expect(event.hazardFamily).toMatch(/^(Tropical cyclone|Earthquake|Winter storm|Severe convective storm|Atmospheric river)$/)
     }
+    expect(EVENTS.find(({ id }) => id === 'isaias-nj')).toEqual(expect.objectContaining({ type: 'Tropical storm', hazardFamily: 'Tropical cyclone' }))
+    expect(EVENTS.find(({ id }) => id === 'atmos-seattle')).toEqual(expect.objectContaining({ type: 'Atmospheric river', hazardFamily: 'Atmospheric river' }))
   })
 })
 
 describe('atlas filtering', () => {
-  it('filters by type and case-insensitive query without mutating the source', () => {
+  it('filters by hazard family and case-insensitive query without mutating the source', () => {
     const source = EVENTS.slice()
-    const filtered = filterEvents(EVENTS, { type: 'Hurricane', query: 'maria' })
+    const filtered = filterEvents(EVENTS, { hazardFamily: 'Tropical cyclone', query: 'maria' })
 
     expect(filtered).toHaveLength(1)
     expect(filtered[0].name).toContain('Maria')
@@ -68,7 +71,7 @@ describe('atlas filtering', () => {
   })
 
   it('returns all events for empty filters', () => {
-    expect(filterEvents(EVENTS, { type: 'All', query: '' })).toEqual(EVENTS)
+    expect(filterEvents(EVENTS, { hazardFamily: 'All', query: '' })).toEqual(EVENTS)
   })
 })
 

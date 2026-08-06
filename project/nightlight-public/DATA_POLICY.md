@@ -7,7 +7,7 @@
 - Descriptive model summaries: R² 0.7603, adjusted R² 0.7543, and n = 977.
 - A value of 0.551 labeled only as descriptive sensitivity, with no causal or fairness conclusion.
 - `Public Generalization Artifact v1`: a small allowlisted set of aggregate model-role metrics, including an explicitly labeled held-out-event damage-ranking result. Each value carries cohort, sample lock, validation design, source artifact identifier/version/SHA-256, quality, publication status, license, and attribution.
-- `Public Evidence Passport Artifact v1`: five separate, coarse analysis-readiness components for nine reviewed events in the public index, plus an analysis-admission band and a SHA-256-bound reviewed manifest. Sixteen other public events are explicitly unassessed. The application does not display, interpret, or rank events by an overall score; the published component points remain visible and can be arithmetically summed.
+- `Public Evidence Passport Artifact v1`: five separate, coarse analysis-readiness components for nine reviewed events in the public index, plus an analysis-admission band and a SHA-256-bound reviewed manifest. Sixteen other public events are explicitly unassessed. Compare Mode computes no new total, average, or rank. The displayed admission band was assigned upstream from a weighted sum of the five workflow-rule outputs; neither the band nor any arithmetic over visible points is an event-quality, recovery, or outcome measure. Independent recomputation from the private inputs requires the restricted source environment.
 - The original study's 25-event index, reduced to disaster name, year, broad location, hazard family, and one center rounded to one decimal.
 - Methods, interpretation limits, credits, and licensing notices.
 

@@ -8,8 +8,8 @@ Extend the existing public Atlas with an honest, category-first comparison mode.
 
 - Keep Compare Mode inside the existing Atlas route.
 - Allow any two distinct events from the current 25-event public index.
-- Put hazard category and compatibility warnings before numeric detail.
-- Use a small set of dynamic numeric summaries as the visual spine.
+- Put hazard family, measurement limits, and compatibility warnings before numeric detail.
+- Use only coverage counts as compact navigation aids; do not make value agreement the visual spine.
 - Generate summaries with deterministic rules; use no runtime LLM or exposed API key.
 - Include several curated preset comparisons with short authored notes.
 - Defer real-user comprehension testing; research a minimal privacy-respecting web-analytics option only after implementation and verification.
@@ -18,15 +18,15 @@ Extend the existing public Atlas with an honest, category-first comparison mode.
 
 - This mode compares public metadata and the availability/state of reviewed evidence. It does not compare recovery outcomes.
 - Hazard-family match is the primary compatibility signal. Broad-region match, international-context mismatch, year gap, and Evidence Passport coverage are secondary context.
-- The four numeric summaries are independent: year gap, approximate broad-center distance, reviewed Passport coverage, and matching component states when both events have reviewed Passports.
-- Component points remain separated by component and are never summed, averaged, ranked, or converted into a composite shape/area.
+- The original candidate used four independent numeric summaries: year gap, approximate broad-center distance, reviewed Passport coverage, and matching component states when both events have reviewed Passports.
+- Compare Mode does not compute a new total, average, rank, or composite shape/area. The displayed admission band was assigned upstream from a weighted sum of the five workflow-rule outputs and must be labeled as such.
 - Approximate distance is calculated only from the already-public one-decimal event centers and is rounded to avoid false precision.
 - Missing Passport evidence remains `not assessed`; no values, states, or compatibility claims are imputed.
 - Compatibility language describes whether the comparison is easier or harder to interpret. It never declares two disasters equivalent.
 
 ### Post-architecture refinement
 
-The initial candidate summaries included year gap and approximate broad-center distance. The architecture review rejected those two numbers because event centers are published only as map-orientation references and year proximity does not establish measurement compatibility. The implemented four-number spine is therefore: reviewed Passport coverage, comparable component coverage, exact published component values, and different published component values. This is an explicit evidence-driven deviation, not a silent plan rewrite.
+The initial candidate summaries included year gap and approximate broad-center distance. The architecture review rejected those two numbers because event centers are published only as map-orientation references and year proximity does not establish measurement compatibility. A pre-audit implementation replaced them with reviewed/comparable/exact/different counts. The scientific audit then retired exact/different headline counts because agreement between rule-bin values does not establish measurement equivalence. The current design keeps only reviewed-Passport and paired-row coverage counts, followed by a component ledger and explicit measurement limits.
 
 ## Scope
 
@@ -72,3 +72,18 @@ The initial candidate summaries included year gap and approximate broad-center d
 - Stop if arbitrary comparison cannot clearly distinguish metadata-only, partial-evidence, and paired-evidence states.
 - Stop if a third identical test failure shows the assumed contract or environment is wrong.
 - Keep the user's untracked `DOCS/archive/personal-project-evolution-research/` untouched.
+
+## Scientific audit remediation addendum
+
+The independent post-implementation audit changed the release gate without rewriting the original delivery history. The remediation phase must:
+
+- remove exact/different match counts from the headline summary and live-region announcement;
+- treat paired component values as descriptive v1 rule-bin rows, never as a similarity percentage;
+- fail closed when Passport versions, component IDs, order, maxima, points, or statuses do not match the reviewed schema;
+- separate the display event type from a documented hazard-family field;
+- state that per-event measurement-frame equivalence is not established by the public artifact;
+- disclose that the displayed readiness band was assigned upstream from a weighted sum, while Compare Mode computes no new total;
+- label presets as editorial examples rather than a representative sample;
+- preserve the private provenance gate: no public claim that the private inputs were independently recomputed until restricted-environment tests complete with zero skips.
+
+Public deployment remains blocked until the four High findings have either been closed with evidence or, for private provenance, explicitly satisfied by the restricted verification gate.

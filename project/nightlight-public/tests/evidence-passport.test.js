@@ -32,6 +32,10 @@ describe('Public Evidence Passport Artifact v1', () => {
     const { PUBLIC_EVIDENCE_PASSPORT_ARTIFACT, validatePublicEvidencePassportArtifact } = module
     expect(validatePublicEvidencePassportArtifact(PUBLIC_EVIDENCE_PASSPORT_ARTIFACT)).toEqual([])
     expect(PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.version).toBe('1.0.0')
+    expect(PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.comparisonBoundary).toEqual(expect.objectContaining({
+      status: 'comparability-not-established',
+      privateSourceVerification: 'restricted-environment-required',
+    }))
     expect(PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.passports.map(({ eventId }) => eventId)).toEqual([
       'eq-pr',
       'ida',
@@ -66,6 +70,7 @@ describe('Public Evidence Passport Artifact v1', () => {
       expect(passport.supportedClaim).toBeTruthy()
       expect(passport.unsupportedClaim).toMatch(/community|recovery|outcome|ranking/i)
       expect(passport.publicationStatus).toBe('reviewed-derived-aggregate')
+      expect(passport.schemaVersion).toBe('1.0.0')
     }
     expect(collectKeys(artifact).join('\n')).not.toMatch(/eventCount|observedRate|highCensoringShare|poiCount|totalScore|increment|recommendedRole|facility|time.?series|grid|zip/i)
   })
@@ -108,6 +113,8 @@ describe('Atlas Evidence Passport surface', () => {
     expect(atlas).toMatch(/supportedClaim/)
     expect(atlas).toMatch(/unsupportedClaim/)
     expect(atlas).toMatch(/analysis admission heuristic/i)
+    expect(atlas).toMatch(/weighted sum/i)
+    expect(atlas).toMatch(/private-source recomputation.*restricted/i)
   })
 
   it('pins the WorldPop notice to the actual Turkey 2020 layer record', async () => {
@@ -138,6 +145,12 @@ describe('Atlas Compare Mode surface', () => {
     expect(atlas).toMatch(/comparison\.summaries/)
     expect(atlas).toMatch(/comparison\.componentPairs/)
     expect(atlas).toMatch(/Not assessed in v1/)
+    expect(atlas).toMatch(/No similarity score is computed/i)
+    expect(atlas).toMatch(/measurement comparability.*not established/i)
+    expect(atlas).toMatch(/PRESET_DISCLAIMER/)
+    expect(atlas).toMatch(/weighted sum/i)
+    expect(atlas).not.toMatch(/Exact published values/i)
+    expect(atlas).not.toMatch(/Different published values/i)
     expect(atlas).not.toMatch(/winner|leaderboard|total.?score|recovery.?score/i)
   })
 
@@ -146,6 +159,7 @@ describe('Atlas Compare Mode surface', () => {
 
     expect(atlas).toMatch(/class="comparison-live-summary"[^>]*aria-live="polite"[^>]*aria-atomic="true"/)
     expect(atlas).toMatch(/comparisonLiveSummary/)
+    expect(atlas).not.toMatch(/published component values match exactly/)
     expect(atlas).not.toMatch(/class="atlas-comparison"[^>]*aria-live=/)
   })
 })

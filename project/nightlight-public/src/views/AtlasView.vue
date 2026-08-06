@@ -6,9 +6,10 @@ import {
   PUBLIC_EVIDENCE_PASSPORT_ARTIFACT,
   evidencePassportByEventId,
 } from '../content/evidencePassportArtifact.js'
-import { EVENTS, EVENT_TYPES } from '../content/study.js'
+import { EVENTS, HAZARD_FAMILIES } from '../content/study.js'
 import {
   PRESET_COMPARISONS,
+  PRESET_DISCLAIMER,
   buildEventComparison,
   resolveComparisonPeerId,
 } from '../domain/compareEvents.js'
@@ -18,12 +19,12 @@ import { resolveSelectedId } from '../domain/resolveSelectedId.js'
 
 const viewMode = ref('explore')
 const query = ref('')
-const selectedType = ref('All')
+const selectedHazardFamily = ref('All')
 const selectedId = ref(EVENTS[0].id)
 const comparisonLeftId = ref(EVENTS[0].id)
 const comparisonRightId = ref(resolveComparisonPeerId(EVENTS, comparisonLeftId.value, comparisonLeftId.value))
 
-const visibleEvents = computed(() => filterEvents(EVENTS, { type: selectedType.value, query: query.value }))
+const visibleEvents = computed(() => filterEvents(EVENTS, { hazardFamily: selectedHazardFamily.value, query: query.value }))
 const selectedEvent = computed(() => visibleEvents.value.find((event) => event.id === selectedId.value) ?? null)
 const selectedPassport = computed(() => evidencePassportByEventId(selectedEvent.value?.id))
 const comparisonLeftEvent = computed(() => EVENTS.find(({ id }) => id === comparisonLeftId.value) ?? null)
@@ -38,12 +39,13 @@ const comparison = computed(() => {
     comparisonRightEvent.value,
     comparisonLeftPassport.value,
     comparisonRightPassport.value,
+    PUBLIC_EVIDENCE_PASSPORT_ARTIFACT,
   )
 })
 const eventGroups = Object.freeze(
-  EVENT_TYPES.filter((type) => type !== 'All').map((type) => Object.freeze({
-    type,
-    events: Object.freeze(EVENTS.filter((event) => event.type === type)),
+  HAZARD_FAMILIES.filter((hazardFamily) => hazardFamily !== 'All').map((hazardFamily) => Object.freeze({
+    hazardFamily,
+    events: Object.freeze(EVENTS.filter((event) => event.hazardFamily === hazardFamily)),
   })),
 )
 const activePresetId = computed(() => PRESET_COMPARISONS.find(({ eventIds }) => (
@@ -90,11 +92,10 @@ function swapComparisonEvents() {
 
 const comparisonLiveSummary = computed(() => {
   if (!comparison.value) return 'Choose two different events to compare.'
-  const exactValues = comparison.value.summaries.find(({ id }) => id === 'exact-published-values')?.value
-  if (exactValues === null) {
-    return `Comparison updated. ${comparison.value.compatibility.label}. ${comparison.value.passportCoverage} of 2 reviewed Passports; component comparison is not available.`
+  if (comparison.value.schemaStatus !== 'paired-v1') {
+    return `Comparison updated. ${comparison.value.compatibility.label}. ${comparison.value.passportCoverage} of 2 reviewed Passports; component pairing is unavailable.`
   }
-  return `Comparison updated. ${comparison.value.compatibility.label}. ${exactValues} of 5 published component values match exactly.`
+  return `Comparison updated. ${comparison.value.compatibility.label}. Review the interpretation limits and each v1 component row separately. No similarity score is computed.`
 })
 
 watch(visibleEvents, (events) => {
@@ -144,8 +145,8 @@ watch(comparisonLeftId, (eventId) => {
       </label>
       <label>
         <span>Hazard family</span>
-        <select v-model="selectedType">
-          <option v-for="type in EVENT_TYPES" :key="type" :value="type">{{ type }}</option>
+        <select v-model="selectedHazardFamily">
+          <option v-for="hazardFamily in HAZARD_FAMILIES" :key="hazardFamily" :value="hazardFamily">{{ hazardFamily }}</option>
         </select>
       </label>
       <p><strong>{{ visibleEvents.length }}</strong> / {{ EVENTS.length }} broad references</p>
@@ -231,7 +232,8 @@ watch(comparisonLeftId, (eventId) => {
         </div>
         <p>
           This is an analysis admission heuristic. It describes whether the project can inspect this event with its
-          current evidence—not how well a community recovered.
+          current evidence—not how well a community recovered. The displayed band was assigned upstream from a
+          weighted sum of five workflow rule outputs; it is not an event-quality measure.
         </p>
       </header>
 
@@ -245,7 +247,7 @@ watch(comparisonLeftId, (eventId) => {
 
         <div class="evidence-passport__table-wrap">
           <table class="evidence-table passport-components">
-            <caption>Reviewed component-level evidence; the project does not display or interpret an overall score</caption>
+            <caption>Reviewed component-level evidence; the displayed admission band was assigned upstream from a weighted sum, and Compare Mode computes no new overall score</caption>
             <thead>
               <tr>
                 <th scope="col">Component</th>
@@ -283,6 +285,7 @@ watch(comparisonLeftId, (eventId) => {
         <footer class="evidence-passport__source">
           <span>Artifact {{ PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.version }} · {{ selectedPassport.publicationStatus }}</span>
           <span>Source SHA-256 <code>{{ PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.source.sha256 }}</code></span>
+          <span>Private-source recomputation requires restricted-environment verification and is not performed by this public build.</span>
           <span>{{ PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.source.attribution }}</span>
         </footer>
       </template>
@@ -307,7 +310,7 @@ watch(comparisonLeftId, (eventId) => {
           <h2 id="atlas-comparison-title">Compare reviewed evidence.</h2>
         </div>
         <p>
-          Choose any two public events. Hazard category leads the reading; reviewed component values appear only when
+          Choose any two public events. The documented hazard family leads the reading; reviewed component values appear only when
           both events have an Evidence Passport. This view does not compare recovery outcomes.
         </p>
       </header>
@@ -315,7 +318,7 @@ watch(comparisonLeftId, (eventId) => {
       <section class="comparison-presets" aria-labelledby="comparison-presets-title">
         <div>
           <h3 id="comparison-presets-title">Guided comparisons</h3>
-          <p>Explanatory examples—not benchmarks, recommendations, or preferred pairs.</p>
+          <p>{{ PRESET_DISCLAIMER }}</p>
         </div>
         <div class="comparison-presets__grid">
           <button
@@ -336,7 +339,7 @@ watch(comparisonLeftId, (eventId) => {
         <label for="comparison-left-event">
           <span>Event A</span>
           <select id="comparison-left-event" v-model="comparisonLeftId">
-            <optgroup v-for="group in eventGroups" :key="group.type" :label="group.type">
+            <optgroup v-for="group in eventGroups" :key="group.hazardFamily" :label="group.hazardFamily">
               <option
                 v-for="event in group.events"
                 :key="event.id"
@@ -364,7 +367,7 @@ watch(comparisonLeftId, (eventId) => {
         <label for="comparison-right-event">
           <span>Event B</span>
           <select id="comparison-right-event" v-model="comparisonRightId">
-            <optgroup v-for="group in eventGroups" :key="group.type" :label="group.type">
+            <optgroup v-for="group in eventGroups" :key="group.hazardFamily" :label="group.hazardFamily">
               <option
                 v-for="event in group.events"
                 :key="event.id"
@@ -384,13 +387,13 @@ watch(comparisonLeftId, (eventId) => {
 
       <div v-if="comparisonLeftEvent && comparisonRightEvent" class="comparison-events">
         <article>
-          <span>Event A · {{ comparisonLeftEvent.type }}</span>
+          <span>Event A · {{ comparisonLeftEvent.type }} · {{ comparisonLeftEvent.hazardFamily }}</span>
           <h3>{{ comparisonLeftEvent.name }}</h3>
           <p>{{ comparisonLeftEvent.location }} · {{ comparisonLeftEvent.region }} · {{ comparisonLeftEvent.year }}</p>
           <strong>{{ passportLabel(comparisonLeftEvent.id) }}</strong>
         </article>
         <article>
-          <span>Event B · {{ comparisonRightEvent.type }}</span>
+          <span>Event B · {{ comparisonRightEvent.type }} · {{ comparisonRightEvent.hazardFamily }}</span>
           <h3>{{ comparisonRightEvent.name }}</h3>
           <p>{{ comparisonRightEvent.location }} · {{ comparisonRightEvent.region }} · {{ comparisonRightEvent.year }}</p>
           <strong>{{ passportLabel(comparisonRightEvent.id) }}</strong>
@@ -415,6 +418,20 @@ watch(comparisonLeftId, (eventId) => {
       <aside v-if="activePreset" class="comparison-preset-note">
         <span>Preset reading note</span>
         <p>{{ activePreset.note }}</p>
+      </aside>
+
+      <aside v-if="comparison" class="comparison-measurement-boundary">
+        <div>
+          <span>Measurement frame / descriptive only</span>
+          <h3>Cross-event measurement comparability is not established.</h3>
+          <p>{{ comparison.measurementBoundary.statement }}</p>
+        </div>
+        <ul>
+          <li v-for="condition in comparison.measurementBoundary.unknownConditions || []" :key="condition">
+            {{ condition }}
+          </li>
+        </ul>
+        <p>Private-source recomputation remains a restricted-environment release gate.</p>
       </aside>
 
       <p class="comparison-live-summary" aria-live="polite" aria-atomic="true">
@@ -442,8 +459,8 @@ watch(comparisonLeftId, (eventId) => {
             <h3 id="comparison-components-title">Reviewed component ledger</h3>
           </div>
           <p>
-            Each number is shown against its own component maximum. Values are not added, averaged, ordered, or used
-            to identify an event-level result.
+            Each number is shown against its own component maximum. Compare Mode computes no new total, average,
+            ordering, or event result. The displayed readiness band was assigned upstream from a weighted sum.
           </p>
         </header>
 
@@ -469,10 +486,26 @@ watch(comparisonLeftId, (eventId) => {
           </div>
           <div class="comparison-component__relation">
             <span>Relationship</span>
-            <strong>{{ pair.samePublishedValue ? 'Exact published value' : 'Published values differ' }}</strong>
-            <p>{{ pair.sameState ? 'The published states match.' : 'The published states differ.' }}</p>
+            <strong>{{ pair.samePublishedValue ? 'Same v1 rule-bin value' : 'Different v1 rule-bin values' }}</strong>
+            <p>
+              {{ pair.sameState ? 'The published states match.' : 'The published states differ.' }}
+              Measurement equivalence is not established.
+            </p>
           </div>
         </article>
+      </section>
+
+      <section
+        v-else-if="comparison?.schemaStatus === 'not-comparable'"
+        class="comparison-unassessed"
+        aria-labelledby="comparison-schema-title"
+      >
+        <span class="passport-band passport-band--unassessed">Schema not comparable</span>
+        <div>
+          <h3 id="comparison-schema-title">Component pairing was withheld.</h3>
+          <p>The Passport version, component IDs, order, maxima, points, or states did not match the reviewed v1 schema.</p>
+          <p>Malformed or missing rows are not counted as differences.</p>
+        </div>
       </section>
 
       <section v-else class="comparison-unassessed" aria-labelledby="comparison-unassessed-title">
@@ -493,8 +526,9 @@ watch(comparisonLeftId, (eventId) => {
         <span>Boundary / always applies</span>
         <h3>Compare evidence, not outcomes.</h3>
         <p>
-          Component points are discrete analysis-admission rule outputs. No total, average, event rank, or overall
-          observability measure is computed, and matching values do not make events equivalent.
+          Component points are discrete analysis-admission rule outputs. No similarity score is computed. Compare Mode
+          computes no new total, average, event rank, or overall observability measure; the existing readiness band was
+          assigned upstream from a weighted sum. Same v1 rule-bin values do not make events equivalent.
         </p>
       </footer>
     </section>

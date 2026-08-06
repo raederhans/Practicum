@@ -1222,6 +1222,49 @@ main:focus {
   line-height: 1.6;
 }
 
+.comparison-measurement-boundary {
+  display: grid;
+  grid-template-columns: minmax(250px, 0.75fr) minmax(0, 1fr);
+  gap: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+  border-left: 4px solid var(--rust);
+  background: rgba(235, 118, 95, 0.045);
+}
+
+.comparison-measurement-boundary h3,
+.comparison-measurement-boundary p,
+.comparison-measurement-boundary ul {
+  margin: 0;
+}
+
+.comparison-measurement-boundary h3 {
+  margin-top: 0.3rem;
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 500;
+}
+
+.comparison-measurement-boundary p,
+.comparison-measurement-boundary li {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.comparison-measurement-boundary ul {
+  padding-left: 1.1rem;
+}
+
+.comparison-measurement-boundary > p {
+  grid-column: 1 / -1;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .comparison-live-summary {
   position: absolute;
   width: 1px;
@@ -1234,7 +1277,7 @@ main:focus {
 
 .comparison-summary {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin: 0;
   border-bottom: 1px solid var(--line);
 }
@@ -1261,7 +1304,7 @@ main:focus {
   margin: 0.5rem 0 0;
   color: var(--paper);
   font-family: var(--serif);
-  font-size: clamp(2.1rem, 4vw, 4rem);
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
   line-height: 0.95;
 }
 
@@ -2155,6 +2198,14 @@ main:focus {
   .comparison-preset-note {
     grid-template-columns: 1fr;
     gap: 2.5rem;
+  }
+
+  .comparison-measurement-boundary {
+    grid-template-columns: 1fr;
+  }
+
+  .comparison-measurement-boundary > p {
+    grid-column: auto;
   }
 
   .autopsy-section--contrast,

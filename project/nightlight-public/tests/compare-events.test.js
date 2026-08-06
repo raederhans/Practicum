@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
-import { evidencePassportByEventId } from '../src/content/evidencePassportArtifact.js'
+import {
+  PUBLIC_EVIDENCE_PASSPORT_ARTIFACT,
+  evidencePassportByEventId,
+} from '../src/content/evidencePassportArtifact.js'
 import { EVENTS } from '../src/content/study.js'
 
 const compareModuleUrl = new URL('../src/domain/compareEvents.js', import.meta.url)
@@ -17,8 +20,25 @@ function eventById(eventId) {
   return EVENTS.find(({ id }) => id === eventId)
 }
 
+async function compare(
+  leftId,
+  rightId,
+  leftPassport = evidencePassportByEventId(leftId),
+  rightPassport = evidencePassportByEventId(rightId),
+  artifact = PUBLIC_EVIDENCE_PASSPORT_ARTIFACT,
+) {
+  const { buildEventComparison } = await import(compareModuleUrl.href)
+  return buildEventComparison(
+    eventById(leftId),
+    eventById(rightId),
+    leftPassport,
+    rightPassport,
+    artifact,
+  )
+}
+
 describe('Atlas event comparison rules', () => {
-  it('repairs a duplicate peer with a category-first alternative and preserves a valid peer', async () => {
+  it('repairs a duplicate peer with a hazard-family-first alternative and preserves a valid peer', async () => {
     const module = await loadCompareModule()
     expect(module.loadError).toBeUndefined()
 
@@ -29,74 +49,42 @@ describe('Atlas event comparison rules', () => {
       const secondRepair = module.resolveComparisonPeerId(EVENTS, event.id, event.id)
       expect(firstRepair).not.toBe(event.id)
       expect(secondRepair).toBe(firstRepair)
-      if (EVENTS.some((candidate) => candidate.id !== event.id && candidate.type === event.type)) {
-        expect(eventById(firstRepair).type).toBe(event.type)
+      if (EVENTS.some((candidate) => candidate.id !== event.id && candidate.hazardFamily === event.hazardFamily)) {
+        expect(eventById(firstRepair).hazardFamily).toBe(event.hazardFamily)
       }
     }
   })
 
-  it('puts hazard family before broad region and evidence availability in its compatibility language', async () => {
-    const module = await loadCompareModule()
-    expect(module.loadError).toBeUndefined()
-
-    const sameContext = module.buildEventComparison(
-      eventById('irma'),
-      eventById('michael'),
-      evidencePassportByEventId('irma'),
-      evidencePassportByEventId('michael'),
-    )
+  it('uses documented hazard family before broad region in compatibility language', async () => {
+    const sameContext = await compare('irma', 'michael')
     expect(sameContext.compatibility.id).toBe('category-region-aligned')
     expect(sameContext.compatibility.label).toMatch(/hazard.*region/i)
 
-    const crossHazard = module.buildEventComparison(
-      eventById('maria'),
-      eventById('eq-pr'),
-      evidencePassportByEventId('maria'),
-      evidencePassportByEventId('eq-pr'),
-    )
+    const crossHazard = await compare('maria', 'eq-pr')
     expect(crossHazard.compatibility.id).toBe('cross-hazard')
     expect(crossHazard.warnings.join(' ')).toMatch(/hazard famil/i)
 
-    const internationalBoundary = module.buildEventComparison(
-      eventById('eq-pr'),
-      eventById('eq-hatay'),
-      evidencePassportByEventId('eq-pr'),
-      evidencePassportByEventId('eq-hatay'),
-    )
+    const internationalBoundary = await compare('eq-pr', 'eq-hatay')
     expect(internationalBoundary.compatibility.id).toBe('category-aligned')
     expect(internationalBoundary.warnings.join(' ')).toMatch(/international context/i)
   })
 
-  it('returns independent dynamic summaries without inventing a total or ranking', async () => {
-    const module = await loadCompareModule()
-    expect(module.loadError).toBeUndefined()
-
-    const comparison = module.buildEventComparison(
-      eventById('maria'),
-      eventById('eq-pr'),
-      evidencePassportByEventId('maria'),
-      evidencePassportByEventId('eq-pr'),
-    )
+  it('uses only coverage summaries and keeps value relationships in the component ledger', async () => {
+    const comparison = await compare('maria', 'eq-pr')
     const summaries = Object.fromEntries(comparison.summaries.map((summary) => [summary.id, summary]))
 
     expect(summaries['reviewed-passports'].value).toBe(2)
-    expect(summaries['comparable-components'].value).toBe(5)
-    expect(summaries['exact-published-values'].value).toBe(4)
-    expect(summaries['different-published-values'].value).toBe(1)
+    expect(summaries['paired-component-rows'].value).toBe(5)
+    expect(summaries['exact-published-values']).toBeUndefined()
+    expect(summaries['different-published-values']).toBeUndefined()
     expect(comparison.componentPairs).toHaveLength(5)
-    expect(JSON.stringify(comparison)).not.toMatch(/total.?score|leaderboard|recovery.?score|rank(?:ing)?/i)
+    expect(comparison.measurementBoundary.status).toBe('comparability-not-established')
+    expect(comparison.warnings.join(' ')).toMatch(/measurement.*not established|descriptive.*only/i)
+    expect(JSON.stringify(comparison)).not.toMatch(/leaderboard|recovery.?score|rank(?:ing)?/i)
   })
 
-  it('keeps component comparison unavailable when either event lacks a reviewed Passport', async () => {
-    const module = await loadCompareModule()
-    expect(module.loadError).toBeUndefined()
-
-    const comparison = module.buildEventComparison(
-      eventById('maria'),
-      eventById('matthew-jax'),
-      evidencePassportByEventId('maria'),
-      evidencePassportByEventId('matthew-jax'),
-    )
+  it('keeps component pairing unavailable when either event lacks a reviewed Passport', async () => {
+    const comparison = await compare('maria', 'matthew-jax')
     const evidenceOnlySummaries = comparison.summaries.filter(({ id }) => id !== 'reviewed-passports')
 
     expect(comparison.passportCoverage).toBe(1)
@@ -105,7 +93,7 @@ describe('Atlas event comparison rules', () => {
     expect(comparison.warnings.join(' ')).toMatch(/1 of 2.*reviewed Evidence Passport/i)
   })
 
-  it('supports all 600 directed pairs in the public 25-event index and rejects self-comparison', async () => {
+  it('supports all 600 directed pairs and rejects self-comparison', async () => {
     const module = await loadCompareModule()
     expect(module.loadError).toBeUndefined()
 
@@ -116,6 +104,7 @@ describe('Atlas event comparison rules', () => {
         left,
         evidencePassportByEventId(left.id),
         evidencePassportByEventId(left.id),
+        PUBLIC_EVIDENCE_PASSPORT_ARTIFACT,
       )).toThrow(/distinct events/i)
 
       for (const right of EVENTS) {
@@ -125,9 +114,10 @@ describe('Atlas event comparison rules', () => {
           right,
           evidencePassportByEventId(left.id),
           evidencePassportByEventId(right.id),
+          PUBLIC_EVIDENCE_PASSPORT_ARTIFACT,
         )
         pairCount += 1
-        expect(comparison.summaries).toHaveLength(4)
+        expect(comparison.summaries).toHaveLength(2)
         expect(comparison.summaries.every(({ value }) => value === null || Number.isFinite(value))).toBe(true)
         expect(comparison.warnings.length).toBeGreaterThan(0)
 
@@ -136,16 +126,99 @@ describe('Atlas event comparison rules', () => {
           left,
           evidencePassportByEventId(right.id),
           evidencePassportByEventId(left.id),
+          PUBLIC_EVIDENCE_PASSPORT_ARTIFACT,
         )
         expect(reverse.summaries.map(({ id, value, maximum }) => ({ id, value, maximum }))).toEqual(
           comparison.summaries.map(({ id, value, maximum }) => ({ id, value, maximum })),
         )
+        expect(reverse.schemaStatus).toBe(comparison.schemaStatus)
       }
     }
     expect(pairCount).toBe(600)
   })
 
-  it('ships four valid curated presets with authored notes', async () => {
+  it('produces no schema error for any directed pair among the nine controlled reviewed Passports', async () => {
+    const reviewedEventIds = PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.passports.map(({ eventId }) => eventId)
+    let reviewedPairCount = 0
+
+    for (const leftId of reviewedEventIds) {
+      for (const rightId of reviewedEventIds) {
+        if (leftId === rightId) continue
+        const comparison = await compare(leftId, rightId)
+        reviewedPairCount += 1
+        expect(comparison.passportCoverage).toBe(2)
+        expect(comparison.schemaStatus).toBe('paired-v1')
+        expect(comparison.componentPairs).toHaveLength(5)
+      }
+    }
+
+    expect(reviewedPairCount).toBe(72)
+  })
+
+  it.each([
+    ['a missing right component', (left, right) => { right.components.pop() }],
+    ['an undefined right component', (left, right) => { right.components[2] = undefined }],
+    ['a duplicate right component ID', (left, right) => { right.components[4] = { ...right.components[3] } }],
+    ['a duplicate left component ID', (left) => { left.components[4] = { ...left.components[3] } }],
+    ['a changed maximum', (left, right) => { right.components[0].maxPoints += 1 }],
+    ['an invalid status for the same points', (left, right) => { right.components[0].status = 'limited' }],
+    ['an empty component array', (left) => { left.components = [] }],
+    ['a sixth component', (left) => { left.components.push({ ...left.components[0], id: 'future-sixth' }) }],
+    ['a future Passport schema', (left, right) => { left.schemaVersion = '2.0.0'; right.schemaVersion = '2.0.0' }],
+  ])('fails closed for %s without throwing or producing asymmetric counts', async (_, mutate) => {
+    const left = structuredClone(evidencePassportByEventId('maria'))
+    const right = structuredClone(evidencePassportByEventId('eq-pr'))
+    mutate(left, right)
+
+    const forward = await compare('maria', 'eq-pr', left, right)
+    const reverse = await compare('eq-pr', 'maria', right, left)
+
+    expect(forward.schemaStatus).toBe('not-comparable')
+    expect(forward.componentPairs).toEqual([])
+    expect(reverse.componentPairs).toEqual([])
+    expect(forward.summaries.find(({ id }) => id === 'paired-component-rows')?.value).toBeNull()
+    expect(reverse.summaries.find(({ id }) => id === 'paired-component-rows')?.value).toBeNull()
+    expect(forward.warnings.join(' ')).toMatch(/schema.*withheld|not comparable/i)
+  })
+
+  it('rejects an unknown or future artifact schema instead of using a hard-coded five', async () => {
+    const futureArtifact = structuredClone(PUBLIC_EVIDENCE_PASSPORT_ARTIFACT)
+    futureArtifact.version = '2.0.0'
+    futureArtifact.componentDefinitions.push({ id: 'future-sixth', label: 'Future', maxPoints: 10, meaning: 'Unreviewed.' })
+
+    const comparison = await compare('maria', 'eq-pr', undefined, undefined, futureArtifact)
+
+    expect(comparison.schemaStatus).toBe('not-comparable')
+    expect(comparison.componentPairs).toEqual([])
+    expect(comparison.summaries.find(({ id }) => id === 'paired-component-rows')?.maximum).toBeNull()
+  })
+
+  it.each([
+    ['reordered v1 definitions', (artifact) => { artifact.componentDefinitions.reverse() }],
+    ['a duplicate v1 definition ID', (artifact) => { artifact.componentDefinitions[4].id = artifact.componentDefinitions[3].id }],
+    ['a changed v1 definition maximum', (artifact) => { artifact.componentDefinitions[0].maxPoints += 1 }],
+    ['a missing v1 definition', (artifact) => { artifact.componentDefinitions.pop() }],
+    ['an added v1 definition', (artifact) => { artifact.componentDefinitions.push({ id: 'future-sixth', maxPoints: 20 }) }],
+  ])('fails closed for %s even when the artifact still claims version 1.0.0', async (_, mutate) => {
+    const artifact = structuredClone(PUBLIC_EVIDENCE_PASSPORT_ARTIFACT)
+    mutate(artifact)
+
+    const comparison = await compare(
+      'maria',
+      'eq-pr',
+      evidencePassportByEventId('maria'),
+      evidencePassportByEventId('eq-pr'),
+      artifact,
+    )
+
+    expect(comparison.passportCoverage).toBe(0)
+    expect(comparison.schemaStatus).toBe('not-comparable')
+    expect(comparison.componentPairs).toEqual([])
+    expect(comparison.summaries.find(({ id }) => id === 'paired-component-rows')?.maximum).toBeNull()
+    expect(comparison.warnings.join(' ')).toMatch(/schema.*withheld/i)
+  })
+
+  it('ships four valid curated presets with an explicit non-representative disclaimer', async () => {
     const module = await loadCompareModule()
     expect(module.loadError).toBeUndefined()
 
@@ -161,5 +234,6 @@ describe('Atlas event comparison rules', () => {
       expect(preset.eventIds.every((eventId) => eventById(eventId))).toBe(true)
       expect(preset.note.length).toBeGreaterThan(40)
     }
+    expect(module.PRESET_DISCLAIMER).toMatch(/editorial.*not.*representative/i)
   })
 })
