@@ -119,3 +119,33 @@ describe('Atlas Evidence Passport surface', () => {
     expect(notices).not.toMatch(/summary\?id=49896|WP00684/)
   })
 })
+
+describe('Atlas Compare Mode surface', () => {
+  it('keeps comparison inside Atlas with native controls, presets, and a category-first result ledger', async () => {
+    const atlas = await readFile(new URL('../src/views/AtlasView.vue', import.meta.url), 'utf8')
+
+    expect(atlas).toMatch(/PRESET_COMPARISONS/)
+    expect(atlas).toMatch(/buildEventComparison/)
+    expect(atlas).toMatch(/resolveComparisonPeerId/)
+    expect(atlas).toMatch(/<fieldset[^>]*class="atlas-view-mode"/)
+    expect(atlas).toMatch(/<legend>Evidence view<\/legend>/)
+    expect(atlas).toMatch(/type="radio"[^>]*value="explore"/)
+    expect(atlas).toMatch(/type="radio"[^>]*value="compare"/)
+    expect(atlas).toMatch(/<optgroup/)
+    expect(atlas).toMatch(/v-for="preset in PRESET_COMPARISONS"/)
+    expect(atlas).toMatch(/@click="applyPreset\(preset\)"/)
+    expect(atlas).toMatch(/@click="swapComparisonEvents"/)
+    expect(atlas).toMatch(/comparison\.summaries/)
+    expect(atlas).toMatch(/comparison\.componentPairs/)
+    expect(atlas).toMatch(/Not assessed in v1/)
+    expect(atlas).not.toMatch(/winner|leaderboard|total.?score|recovery.?score/i)
+  })
+
+  it('announces one concise comparison update instead of making the full result a live region', async () => {
+    const atlas = await readFile(new URL('../src/views/AtlasView.vue', import.meta.url), 'utf8')
+
+    expect(atlas).toMatch(/class="comparison-live-summary"[^>]*aria-live="polite"[^>]*aria-atomic="true"/)
+    expect(atlas).toMatch(/comparisonLiveSummary/)
+    expect(atlas).not.toMatch(/class="atlas-comparison"[^>]*aria-live=/)
+  })
+})

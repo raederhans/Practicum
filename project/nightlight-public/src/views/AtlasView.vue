@@ -7,17 +7,49 @@ import {
   evidencePassportByEventId,
 } from '../content/evidencePassportArtifact.js'
 import { EVENTS, EVENT_TYPES } from '../content/study.js'
+import {
+  PRESET_COMPARISONS,
+  buildEventComparison,
+  resolveComparisonPeerId,
+} from '../domain/compareEvents.js'
 import { filterEvents } from '../domain/filterEvents.js'
 import { projectPoint } from '../domain/projectPoint.js'
 import { resolveSelectedId } from '../domain/resolveSelectedId.js'
 
+const viewMode = ref('explore')
 const query = ref('')
 const selectedType = ref('All')
 const selectedId = ref(EVENTS[0].id)
+const comparisonLeftId = ref(EVENTS[0].id)
+const comparisonRightId = ref(resolveComparisonPeerId(EVENTS, comparisonLeftId.value, comparisonLeftId.value))
 
 const visibleEvents = computed(() => filterEvents(EVENTS, { type: selectedType.value, query: query.value }))
 const selectedEvent = computed(() => visibleEvents.value.find((event) => event.id === selectedId.value) ?? null)
 const selectedPassport = computed(() => evidencePassportByEventId(selectedEvent.value?.id))
+const comparisonLeftEvent = computed(() => EVENTS.find(({ id }) => id === comparisonLeftId.value) ?? null)
+const comparisonRightEvent = computed(() => EVENTS.find(({ id }) => id === comparisonRightId.value) ?? null)
+const comparisonLeftPassport = computed(() => evidencePassportByEventId(comparisonLeftEvent.value?.id))
+const comparisonRightPassport = computed(() => evidencePassportByEventId(comparisonRightEvent.value?.id))
+const comparison = computed(() => {
+  if (!comparisonLeftEvent.value || !comparisonRightEvent.value) return null
+  if (comparisonLeftEvent.value.id === comparisonRightEvent.value.id) return null
+  return buildEventComparison(
+    comparisonLeftEvent.value,
+    comparisonRightEvent.value,
+    comparisonLeftPassport.value,
+    comparisonRightPassport.value,
+  )
+})
+const eventGroups = Object.freeze(
+  EVENT_TYPES.filter((type) => type !== 'All').map((type) => Object.freeze({
+    type,
+    events: Object.freeze(EVENTS.filter((event) => event.type === type)),
+  })),
+)
+const activePresetId = computed(() => PRESET_COMPARISONS.find(({ eventIds }) => (
+  eventIds[0] === comparisonLeftId.value && eventIds[1] === comparisonRightId.value
+))?.id ?? null)
+const activePreset = computed(() => PRESET_COMPARISONS.find(({ id }) => id === activePresetId.value) ?? null)
 const componentDefinitions = new Map(
   PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.componentDefinitions.map((definition) => [definition.id, definition]),
 )
@@ -31,8 +63,51 @@ function componentDefinition(componentId) {
   return componentDefinitions.get(componentId)
 }
 
+function passportLabel(eventId) {
+  return evidencePassportByEventId(eventId)?.readinessLabel ?? 'Not assessed in v1'
+}
+
+function eventOptionLabel(event) {
+  return `${event.name} — ${event.location} (${event.year}) — ${passportLabel(event.id)}`
+}
+
+function formatSummaryValue(summary) {
+  if (summary.value === null) return '—'
+  return `${summary.prefix}${summary.value}${summary.maximum ? ` / ${summary.maximum}` : ''}`
+}
+
+function applyPreset(preset) {
+  viewMode.value = 'compare'
+  comparisonLeftId.value = preset.eventIds[0]
+  comparisonRightId.value = preset.eventIds[1]
+}
+
+function swapComparisonEvents() {
+  const previousLeftId = comparisonLeftId.value
+  comparisonLeftId.value = comparisonRightId.value
+  comparisonRightId.value = previousLeftId
+}
+
+const comparisonLiveSummary = computed(() => {
+  if (!comparison.value) return 'Choose two different events to compare.'
+  const exactValues = comparison.value.summaries.find(({ id }) => id === 'exact-published-values')?.value
+  if (exactValues === null) {
+    return `Comparison updated. ${comparison.value.compatibility.label}. ${comparison.value.passportCoverage} of 2 reviewed Passports; component comparison is not available.`
+  }
+  return `Comparison updated. ${comparison.value.compatibility.label}. ${exactValues} of 5 published component values match exactly.`
+})
+
 watch(visibleEvents, (events) => {
   selectedId.value = resolveSelectedId(events, selectedId.value)
+}, { flush: 'sync' })
+
+watch(selectedId, (eventId) => {
+  if (viewMode.value !== 'explore' || !eventId) return
+  comparisonLeftId.value = eventId
+}, { flush: 'sync' })
+
+watch(comparisonLeftId, (eventId) => {
+  comparisonRightId.value = resolveComparisonPeerId(EVENTS, eventId, comparisonRightId.value)
 }, { flush: 'sync' })
 </script>
 
@@ -49,7 +124,20 @@ watch(visibleEvents, (events) => {
       </p>
     </header>
 
-    <section class="atlas-controls" aria-label="Filter event index">
+    <fieldset class="atlas-view-mode">
+      <legend>Evidence view</legend>
+      <label :class="{ 'is-active': viewMode === 'explore' }">
+        <input v-model="viewMode" type="radio" name="atlas-evidence-view" value="explore">
+        <span><strong>Explore one event</strong><small>Map, index, and one Evidence Passport</small></span>
+      </label>
+      <label :class="{ 'is-active': viewMode === 'compare' }">
+        <input v-model="viewMode" type="radio" name="atlas-evidence-view" value="compare">
+        <span><strong>Compare events</strong><small>Category-first evidence inspection</small></span>
+      </label>
+    </fieldset>
+
+    <template v-if="viewMode === 'explore'">
+      <section class="atlas-controls" aria-label="Filter event index">
       <label>
         <span>Search the index</span>
         <input v-model="query" type="search" placeholder="Event, place, or year" autocomplete="off">
@@ -61,9 +149,9 @@ watch(visibleEvents, (events) => {
         </select>
       </label>
       <p><strong>{{ visibleEvents.length }}</strong> / {{ EVENTS.length }} broad references</p>
-    </section>
+      </section>
 
-    <section class="atlas-workbench">
+      <section class="atlas-workbench">
       <div class="atlas-map">
         <div class="atlas-map__legend">
           <span><i></i> broad event center</span>
@@ -128,14 +216,14 @@ watch(visibleEvents, (events) => {
         </div>
         <p v-else class="atlas-index__empty">No broad event references match these filters.</p>
       </div>
-    </section>
+      </section>
 
-    <section
-      v-if="selectedEvent"
-      class="evidence-passport"
-      aria-labelledby="evidence-passport-title"
-      aria-live="polite"
-    >
+      <section
+        v-if="selectedEvent"
+        class="evidence-passport"
+        aria-labelledby="evidence-passport-title"
+        aria-live="polite"
+      >
       <header class="evidence-passport__header">
         <div>
           <p class="eyebrow"><span>Admission note</span> Evidence passport</p>
@@ -209,6 +297,206 @@ watch(visibleEvents, (events) => {
           </p>
         </div>
       </div>
+      </section>
+    </template>
+
+    <section v-else class="atlas-comparison" aria-labelledby="atlas-comparison-title">
+      <header class="comparison-header">
+        <div>
+          <p class="eyebrow"><span>Comparison note</span> Evidence before outcome</p>
+          <h2 id="atlas-comparison-title">Compare reviewed evidence.</h2>
+        </div>
+        <p>
+          Choose any two public events. Hazard category leads the reading; reviewed component values appear only when
+          both events have an Evidence Passport. This view does not compare recovery outcomes.
+        </p>
+      </header>
+
+      <section class="comparison-presets" aria-labelledby="comparison-presets-title">
+        <div>
+          <h3 id="comparison-presets-title">Guided comparisons</h3>
+          <p>Explanatory examples—not benchmarks, recommendations, or preferred pairs.</p>
+        </div>
+        <div class="comparison-presets__grid">
+          <button
+            v-for="preset in PRESET_COMPARISONS"
+            :key="preset.id"
+            type="button"
+            :aria-pressed="activePresetId === preset.id"
+            :class="{ 'is-active': activePresetId === preset.id }"
+            @click="applyPreset(preset)"
+          >
+            <strong>{{ preset.label }}</strong>
+            <span>{{ preset.context }}</span>
+          </button>
+        </div>
+      </section>
+
+      <div class="comparison-selectors" aria-describedby="comparison-selector-note">
+        <label for="comparison-left-event">
+          <span>Event A</span>
+          <select id="comparison-left-event" v-model="comparisonLeftId">
+            <optgroup v-for="group in eventGroups" :key="group.type" :label="group.type">
+              <option
+                v-for="event in group.events"
+                :key="event.id"
+                :value="event.id"
+                :disabled="event.id === comparisonRightId"
+              >
+                {{ eventOptionLabel(event) }}
+              </option>
+            </optgroup>
+          </select>
+        </label>
+
+        <button
+          type="button"
+          class="comparison-swap"
+          aria-label="Swap Event A and Event B"
+          @click="swapComparisonEvents"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 7h11m0 0-3-3m3 3-3 3M17 17H6m0 0 3 3m-3-3 3-3" />
+          </svg>
+          <span>Swap A / B</span>
+        </button>
+
+        <label for="comparison-right-event">
+          <span>Event B</span>
+          <select id="comparison-right-event" v-model="comparisonRightId">
+            <optgroup v-for="group in eventGroups" :key="group.type" :label="group.type">
+              <option
+                v-for="event in group.events"
+                :key="event.id"
+                :value="event.id"
+                :disabled="event.id === comparisonLeftId"
+              >
+                {{ eventOptionLabel(event) }}
+              </option>
+            </optgroup>
+          </select>
+        </label>
+      </div>
+      <p id="comparison-selector-note" class="comparison-selector-note">
+        All 25 public references remain selectable here, independent of the map filters. The same event cannot occupy
+        both sides.
+      </p>
+
+      <div v-if="comparisonLeftEvent && comparisonRightEvent" class="comparison-events">
+        <article>
+          <span>Event A · {{ comparisonLeftEvent.type }}</span>
+          <h3>{{ comparisonLeftEvent.name }}</h3>
+          <p>{{ comparisonLeftEvent.location }} · {{ comparisonLeftEvent.region }} · {{ comparisonLeftEvent.year }}</p>
+          <strong>{{ passportLabel(comparisonLeftEvent.id) }}</strong>
+        </article>
+        <article>
+          <span>Event B · {{ comparisonRightEvent.type }}</span>
+          <h3>{{ comparisonRightEvent.name }}</h3>
+          <p>{{ comparisonRightEvent.location }} · {{ comparisonRightEvent.region }} · {{ comparisonRightEvent.year }}</p>
+          <strong>{{ passportLabel(comparisonRightEvent.id) }}</strong>
+        </article>
+      </div>
+
+      <aside
+        v-if="comparison"
+        class="comparison-compatibility"
+        :class="`comparison-compatibility--${comparison.compatibility.tone}`"
+      >
+        <div>
+          <span>Interpretation status</span>
+          <h3>{{ comparison.compatibility.label }}</h3>
+          <p>{{ comparison.compatibility.summary }}</p>
+        </div>
+        <ul>
+          <li v-for="warning in comparison.warnings" :key="warning">{{ warning }}</li>
+        </ul>
+      </aside>
+
+      <aside v-if="activePreset" class="comparison-preset-note">
+        <span>Preset reading note</span>
+        <p>{{ activePreset.note }}</p>
+      </aside>
+
+      <p class="comparison-live-summary" aria-live="polite" aria-atomic="true">
+        {{ comparisonLiveSummary }}
+      </p>
+
+      <dl v-if="comparison" class="comparison-summary" aria-label="Dynamic evidence summary">
+        <div v-for="summary in comparison.summaries" :key="summary.id">
+          <dt>{{ summary.label }}</dt>
+          <dd>{{ formatSummaryValue(summary) }}</dd>
+          <span v-if="summary.value !== null">{{ summary.suffix }}</span>
+          <span v-else>Not available</span>
+          <p>{{ summary.note }}</p>
+        </div>
+      </dl>
+
+      <section
+        v-if="comparison?.componentPairs.length"
+        class="comparison-components"
+        aria-labelledby="comparison-components-title"
+      >
+        <header>
+          <div>
+            <p class="eyebrow"><span>Five categories</span> Points stay separate</p>
+            <h3 id="comparison-components-title">Reviewed component ledger</h3>
+          </div>
+          <p>
+            Each number is shown against its own component maximum. Values are not added, averaged, ordered, or used
+            to identify an event-level result.
+          </p>
+        </header>
+
+        <article v-for="pair in comparison.componentPairs" :key="pair.id" class="comparison-component">
+          <div class="comparison-component__definition">
+            <span>Evidence category</span>
+            <h4>{{ componentDefinition(pair.id)?.label }}</h4>
+            <p>{{ componentDefinition(pair.id)?.meaning }}</p>
+          </div>
+          <div class="comparison-component__event">
+            <span>Event A</span>
+            <strong>{{ pair.left.points }} / {{ pair.left.maxPoints }}</strong>
+            <em :class="`component-state component-state--${pair.left.status}`">
+              {{ componentStatusLabels[pair.left.status] }}
+            </em>
+          </div>
+          <div class="comparison-component__event">
+            <span>Event B</span>
+            <strong>{{ pair.right.points }} / {{ pair.right.maxPoints }}</strong>
+            <em :class="`component-state component-state--${pair.right.status}`">
+              {{ componentStatusLabels[pair.right.status] }}
+            </em>
+          </div>
+          <div class="comparison-component__relation">
+            <span>Relationship</span>
+            <strong>{{ pair.samePublishedValue ? 'Exact published value' : 'Published values differ' }}</strong>
+            <p>{{ pair.sameState ? 'The published states match.' : 'The published states differ.' }}</p>
+          </div>
+        </article>
+      </section>
+
+      <section v-else class="comparison-unassessed" aria-labelledby="comparison-unassessed-title">
+        <span class="passport-band passport-band--unassessed">Component comparison unavailable</span>
+        <div>
+          <h3 id="comparison-unassessed-title">One or both events are Not assessed in v1.</h3>
+          <p v-if="comparisonLeftEvent && !comparisonLeftPassport">
+            <strong>{{ comparisonLeftEvent.name }}</strong> has no reviewed public Evidence Passport.
+          </p>
+          <p v-if="comparisonRightEvent && !comparisonRightPassport">
+            <strong>{{ comparisonRightEvent.name }}</strong> has no reviewed public Evidence Passport.
+          </p>
+          <p>Not assessed means missing reviewed public evidence—not zero, poor data, or worse recovery.</p>
+        </div>
+      </section>
+
+      <footer class="comparison-boundary">
+        <span>Boundary / always applies</span>
+        <h3>Compare evidence, not outcomes.</h3>
+        <p>
+          Component points are discrete analysis-admission rule outputs. No total, average, event rank, or overall
+          observability measure is computed, and matching values do not make events equivalent.
+        </p>
+      </footer>
     </section>
 
     <aside class="withheld-panel">

@@ -159,6 +159,16 @@ describe('fail-closed public bundle scanner', () => {
     expect(result).toEqual({ ok: true, violations: [] })
   })
 
+  it('allows only the reviewed comparison domain module and its focused test at the new paths', async () => {
+    const root = await makeTree({
+      'src/domain/compareEvents.js': 'export const comparison = { kind: "public-context" }',
+      'tests/compare-events.test.js': 'export const contract = "category-first"',
+    })
+    const result = await scanPublicTree(root)
+
+    expect(result).toEqual({ ok: true, violations: [] })
+  })
+
   it('fails closed when a release gate lacks the reviewed passport manifest', async () => {
     const root = await makeTree({
       'src/App.vue': '<template><main>Public summary</main></template>',
