@@ -2,7 +2,7 @@
 
 ## Current status
 
-Scientific audit remediation commit `a7a577e3960c8259459db9d2ec47513510868e25` is locally integrated into `codex/personal-project-sync`. The original implementation evidence remains historical. High findings H1-H3 are closed by repository evidence; H4 remains a restricted-environment provenance gate and continues to block public deployment.
+Scientific audit remediation commit `a7a577e3960c8259459db9d2ec47513510868e25` and integration record `610a8915fcf64b8aa4621f707d30420d5c8fab39` are locally integrated into `codex/personal-project-sync`. High findings H1-H4 now have closure evidence: H4 passed 6/6 with zero skips in the restricted main worktree. A final supervisor signature must bind the post-closeout commit before any deployment.
 
 ## Checklist
 
@@ -26,7 +26,7 @@ Scientific audit remediation commit `a7a577e3960c8259459db9d2ec47513510868e25` i
 - [x] Label presets as editorial and non-representative.
 - [x] Run focused/full/Root/Pages/browser verification.
 - [x] Create a remediation Lore commit and integrate it into `codex/personal-project-sync`.
-- [ ] Obtain restricted-environment private provenance verification with zero skips before public scientific release.
+- [x] Obtain restricted-environment private provenance verification with zero skips before public scientific release.
 
 ## Validation evidence
 
@@ -56,7 +56,9 @@ Scientific audit remediation commit `a7a577e3960c8259459db9d2ec47513510868e25` i
 | Remediation full validation | Fresh 111/111 suite; Vite transformed 40 modules; Root build emitted 11 files and the source/dist verifier passed. |
 | Root/Pages release boundary | Pages base `/Practicum/` and Root base each emitted 11 files and passed `verify:public -- --require-dist`; Root `dist` was restored. `npm audit --audit-level=low` reported 0 vulnerabilities. |
 | Controlled artifact result | All nine current reviewed Passports pass the public artifact validator and the 600 directed-pair suite. The fail-closed findings apply to future/abnormal public-function inputs, not an observed error in the current nine controlled Passports. |
-| Private provenance gate | `test_public_evidence_passport_provenance.py`: 2 passed, 1 skipped because the private readiness source is unavailable in this clone. This is not zero-skip provenance evidence and H4 remains High. |
+| Isolated provenance attempt | Historical isolated-worktree result: `test_public_evidence_passport_provenance.py` passed 2 checks and skipped 1 because ignored private outputs are not copied into linked worktrees. This did not close H4. |
+| Restricted H4 closure | In the main worktree containing the ignored private outputs, `test_public_evidence_passport_provenance.py` plus `test_event_readiness_contract.py` passed 6/6 with zero skips. The canonical private-components hash, 9×5 published mapping, nine admission bands, and observation rule matched the public manifest; no restricted rows entered output, Git index, or public dist. This verifies consistency with the reviewed private outputs, not a full rerun of every upstream remote-sensing, POI, or covariate pipeline. |
+| Independent closeout review | The scientific-audit task accepted H1/H2, closed H4 at exact `610a891`, and identified two small closeout items: invalid-supplied-plus-unassessed schema precedence and an explicit `Analysis-admission status` prefix. Both now have focused red-green coverage; final exact-SHA re-sign remains required. |
 | Remediation browser QA | Root build passed at 375/768/1024/1440 and 1280→640 200%-equivalent reflow with zero horizontal overflow. Measurement limits precede two coverage-only summaries; one live region; native radio arrow-key behavior; visible 2px focus; reduced-motion durations `0.01ms`; cross-hazard and missing-Passport states correct; no console warnings/errors or external resources. |
 | Contrast spot check | New measurement-boundary and coverage-summary text measured 8.02:1 to 16.66:1 against the composited dark background. |
 | Live-resource cleanup | Playwright session `atlas-remediation` closed; exact preview process stopped; port 4176 verified free. The verifier caught Playwright's temporary snapshot directory; those six owned snapshots and the empty directory were removed, then the full 111/111 validation passed. Screenshots are outside the repository under the task visualization directory. |
@@ -68,4 +70,4 @@ Scientific audit remediation commit `a7a577e3960c8259459db9d2ec47513510868e25` i
 - One or both events may be unassessed; missing component comparisons remain visibly unavailable and have dedicated automated coverage.
 - There is no real-user comprehension evidence. Browser smoke proves mechanics and readability constraints, not that visitors interpret the scientific boundary correctly.
 - Analytics integration remains a separate product/privacy change because it would replace the current no-analytics and `connect-src 'none'` contract.
-- The public clone cannot independently recompute the private readiness inputs; this remains a High release gate until restricted provenance tests complete with zero skips.
+- The public clone cannot contain or independently reproduce the withheld upstream inputs. Restricted consistency tests are zero-skip, but their claim is limited to the reviewed private outputs, 9×5 public mapping, admission bands, and tested readiness rule—not full upstream pipeline reproducibility.

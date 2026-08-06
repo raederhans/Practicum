@@ -178,7 +178,13 @@ export function buildEventComparison(leftEvent, rightEvent, leftPassport, rightP
   const leftPassportValid = Boolean(definitions && leftPassport && passportMatchesSchema(leftEvent, leftPassport, artifact, definitions))
   const rightPassportValid = Boolean(definitions && rightPassport && passportMatchesSchema(rightEvent, rightPassport, artifact, definitions))
   const passportCoverage = Number(leftPassportValid) + Number(rightPassportValid)
-  const schemaStatus = suppliedPassportCoverage < 2
+  const hasInvalidSuppliedPassport = Boolean(
+    (leftPassport && !leftPassportValid)
+    || (rightPassport && !rightPassportValid),
+  )
+  const schemaStatus = hasInvalidSuppliedPassport
+    ? 'not-comparable'
+    : suppliedPassportCoverage < 2
     ? 'unavailable'
     : leftPassportValid && rightPassportValid
       ? 'paired-v1'

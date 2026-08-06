@@ -181,6 +181,19 @@ describe('Atlas event comparison rules', () => {
     expect(forward.warnings.join(' ')).toMatch(/schema.*withheld|not comparable/i)
   })
 
+  it('reports an invalid supplied Passport before a missing peer assessment', async () => {
+    const malformedLeft = structuredClone(evidencePassportByEventId('maria'))
+    malformedLeft.components.pop()
+
+    const comparison = await compare('maria', 'matthew-jax', malformedLeft, undefined)
+
+    expect(comparison.passportCoverage).toBe(0)
+    expect(comparison.schemaStatus).toBe('not-comparable')
+    expect(comparison.componentPairs).toEqual([])
+    expect(comparison.warnings.join(' ')).toMatch(/schema.*withheld/i)
+    expect(comparison.warnings.join(' ')).not.toMatch(/0 of 2 events.*reviewed Evidence Passport/i)
+  })
+
   it('rejects an unknown or future artifact schema instead of using a hard-coded five', async () => {
     const futureArtifact = structuredClone(PUBLIC_EVIDENCE_PASSPORT_ARTIFACT)
     futureArtifact.version = '2.0.0'

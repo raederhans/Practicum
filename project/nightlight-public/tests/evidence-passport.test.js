@@ -34,7 +34,7 @@ describe('Public Evidence Passport Artifact v1', () => {
     expect(PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.version).toBe('1.0.0')
     expect(PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.comparisonBoundary).toEqual(expect.objectContaining({
       status: 'comparability-not-established',
-      privateSourceVerification: 'restricted-environment-required',
+      privateSourceVerification: 'restricted-environment-verified',
     }))
     expect(PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.passports.map(({ eventId }) => eventId)).toEqual([
       'eq-pr',
@@ -114,7 +114,7 @@ describe('Atlas Evidence Passport surface', () => {
     expect(atlas).toMatch(/unsupportedClaim/)
     expect(atlas).toMatch(/analysis admission heuristic/i)
     expect(atlas).toMatch(/weighted sum/i)
-    expect(atlas).toMatch(/private-source recomputation.*restricted/i)
+    expect(atlas).toMatch(/private-source consistency.*restricted/i)
   })
 
   it('pins the WorldPop notice to the actual Turkey 2020 layer record', async () => {
@@ -149,6 +149,7 @@ describe('Atlas Compare Mode surface', () => {
     expect(atlas).toMatch(/measurement comparability.*not established/i)
     expect(atlas).toMatch(/PRESET_DISCLAIMER/)
     expect(atlas).toMatch(/weighted sum/i)
+    expect(atlas).toMatch(/Analysis-admission status/)
     expect(atlas).not.toMatch(/Exact published values/i)
     expect(atlas).not.toMatch(/Different published values/i)
     expect(atlas).not.toMatch(/winner|leaderboard|total.?score|recovery.?score/i)

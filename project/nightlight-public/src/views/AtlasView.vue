@@ -285,7 +285,7 @@ watch(comparisonLeftId, (eventId) => {
         <footer class="evidence-passport__source">
           <span>Artifact {{ PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.version }} · {{ selectedPassport.publicationStatus }}</span>
           <span>Source SHA-256 <code>{{ PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.source.sha256 }}</code></span>
-          <span>Private-source recomputation requires restricted-environment verification and is not performed by this public build.</span>
+          <span>Private-source consistency checks were verified in the restricted environment; private inputs are not present in this public build.</span>
           <span>{{ PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.source.attribution }}</span>
         </footer>
       </template>
@@ -390,13 +390,13 @@ watch(comparisonLeftId, (eventId) => {
           <span>Event A · {{ comparisonLeftEvent.type }} · {{ comparisonLeftEvent.hazardFamily }}</span>
           <h3>{{ comparisonLeftEvent.name }}</h3>
           <p>{{ comparisonLeftEvent.location }} · {{ comparisonLeftEvent.region }} · {{ comparisonLeftEvent.year }}</p>
-          <strong>{{ passportLabel(comparisonLeftEvent.id) }}</strong>
+          <strong>Analysis-admission status: {{ passportLabel(comparisonLeftEvent.id) }}</strong>
         </article>
         <article>
           <span>Event B · {{ comparisonRightEvent.type }} · {{ comparisonRightEvent.hazardFamily }}</span>
           <h3>{{ comparisonRightEvent.name }}</h3>
           <p>{{ comparisonRightEvent.location }} · {{ comparisonRightEvent.region }} · {{ comparisonRightEvent.year }}</p>
-          <strong>{{ passportLabel(comparisonRightEvent.id) }}</strong>
+          <strong>Analysis-admission status: {{ passportLabel(comparisonRightEvent.id) }}</strong>
         </article>
       </div>
 
@@ -431,7 +431,7 @@ watch(comparisonLeftId, (eventId) => {
             {{ condition }}
           </li>
         </ul>
-        <p>Private-source recomputation remains a restricted-environment release gate.</p>
+        <p>Private-source consistency was verified in the restricted environment; this public build cannot reproduce the withheld upstream inputs.</p>
       </aside>
 
       <p class="comparison-live-summary" aria-live="polite" aria-atomic="true">

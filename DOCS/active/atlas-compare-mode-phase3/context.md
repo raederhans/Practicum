@@ -96,6 +96,8 @@ Phase 3 is locally integrated and verified. A later release may push and deploy 
 | 2026-08-06 | Keep the reviewed manifest and its canonical hash unchanged. | Remediation may publish conservative comparison-boundary metadata, but it must not invent per-event sensor, window, spatial-unit, missingness, or source equivalence. |
 | 2026-08-06 | Treat private provenance as an external restricted-environment gate. | Public code may make the gap explicit, but this worktree cannot honestly turn two skipped private tests into verified provenance. |
 | 2026-08-06 | Use `codex/atlas-compare-audit-remediation` as the isolated implementation branch. | The target branch remains `codex/personal-project-sync`; the user's untracked research and the retained Generalization worktree stay untouched. |
+| 2026-08-06 | Close H4 using the ignored private outputs in the restricted main worktree. | The prescribed provenance/readiness suite passed 6/6 with zero skips. This proves consistency of the canonical private components, 9×5 mapping, nine bands, and tested observation rule; it does not claim a full rerun of every upstream source pipeline. |
+| 2026-08-06 | Apply the independent closeout plan before release signature. | Invalid supplied Passports now take precedence over a missing peer assessment, Compare cards say `Analysis-admission status`, and stale H4 release-gate language is retired. |
 
 ### Remediation live-process contract
 
@@ -111,5 +113,5 @@ Phase 3 is locally integrated and verified. A later release may push and deploy 
 - The current nine reviewed Passports validate against the unchanged reviewed manifest and canonical source hash. No current controlled Passport produced a schema error.
 - `buildEventComparison` now accepts only the exact reviewed v1 component IDs, order, maxima, points/status relation, event ownership, and Passport schema version. Abnormal or future inputs return `schemaStatus: not-comparable`, no paired rows, and no inferred difference counts.
 - The UI leads with hazard-family context and an explicit measurement-frame boundary, then shows only reviewed-Passport and paired-row coverage. Exact/different headline counts and their live-region wording are retired.
-- The public artifact can state the restricted provenance gap, but it cannot close it. The local provenance run remains 2 passed and 1 skipped because the private readiness source is absent.
+- The isolated worktree could not close provenance because ignored private outputs were absent there. The restricted main worktree subsequently passed both provenance/readiness files 6/6 with zero skips; public code records only the verification boundary, never the restricted rows.
 - Fresh evidence: 49/49 focused; 111/111 full; Root/Pages 11-file builds and verifiers; dependency audit 0; responsive browser QA at 375/768/1024/1440 plus 1280→640 reflow; one live region; no overflow, console warnings/errors, or external resources; port 4176 cleaned up.

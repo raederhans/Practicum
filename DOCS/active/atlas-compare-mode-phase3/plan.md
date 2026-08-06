@@ -87,3 +87,7 @@ The independent post-implementation audit changed the release gate without rewri
 - preserve the private provenance gate: no public claim that the private inputs were independently recomputed until restricted-environment tests complete with zero skips.
 
 Public deployment remains blocked until the four High findings have either been closed with evidence or, for private provenance, explicitly satisfied by the restricted verification gate.
+
+### Closeout result
+
+The restricted verification gate subsequently passed 6/6 with zero skips in the main evidence worktree. H1-H4 therefore have bounded closure evidence. Before deployment, the scientific supervisor must bind a final signature to the exact post-closeout commit and confirm the small mixed-schema and admission-label fixes without broadening the provenance claim into full upstream pipeline reproducibility.

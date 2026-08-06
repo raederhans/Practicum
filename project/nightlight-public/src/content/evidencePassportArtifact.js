@@ -31,7 +31,7 @@ const COMPARISON_BOUNDARY = Object.freeze({
     'context and covariate source equivalence',
     'missingness mechanism and sampling-shift equivalence',
   ]),
-  privateSourceVerification: 'restricted-environment-required',
+  privateSourceVerification: 'restricted-environment-verified',
   statement: 'The public artifact supports descriptive v1 rule-bin pairing only; it does not establish cross-event measurement equivalence.',
 })
 
