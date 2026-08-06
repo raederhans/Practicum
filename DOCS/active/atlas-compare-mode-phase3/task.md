@@ -2,7 +2,7 @@
 
 ## Current status
 
-Scientific audit remediation is implemented and verified on `codex/atlas-compare-audit-remediation`, ready for local integration into `codex/personal-project-sync`. The original implementation evidence remains historical. High findings H1-H3 are closed by repository evidence; H4 remains a restricted-environment provenance gate and continues to block public deployment.
+Scientific audit remediation commit `a7a577e3960c8259459db9d2ec47513510868e25` is locally integrated into `codex/personal-project-sync`. The original implementation evidence remains historical. High findings H1-H3 are closed by repository evidence; H4 remains a restricted-environment provenance gate and continues to block public deployment.
 
 ## Checklist
 
@@ -25,7 +25,7 @@ Scientific audit remediation is implemented and verified on `codex/atlas-compare
 - [x] Disclose the upstream weighted readiness-band construction.
 - [x] Label presets as editorial and non-representative.
 - [x] Run focused/full/Root/Pages/browser verification.
-- [ ] Create a remediation Lore commit and integrate it into `codex/personal-project-sync`.
+- [x] Create a remediation Lore commit and integrate it into `codex/personal-project-sync`.
 - [ ] Obtain restricted-environment private provenance verification with zero skips before public scientific release.
 
 ## Validation evidence
@@ -60,6 +60,7 @@ Scientific audit remediation is implemented and verified on `codex/atlas-compare
 | Remediation browser QA | Root build passed at 375/768/1024/1440 and 1280→640 200%-equivalent reflow with zero horizontal overflow. Measurement limits precede two coverage-only summaries; one live region; native radio arrow-key behavior; visible 2px focus; reduced-motion durations `0.01ms`; cross-hazard and missing-Passport states correct; no console warnings/errors or external resources. |
 | Contrast spot check | New measurement-boundary and coverage-summary text measured 8.02:1 to 16.66:1 against the composited dark background. |
 | Live-resource cleanup | Playwright session `atlas-remediation` closed; exact preview process stopped; port 4176 verified free. The verifier caught Playwright's temporary snapshot directory; those six owned snapshots and the empty directory were removed, then the full 111/111 validation passed. Screenshots are outside the repository under the task visualization directory. |
+| Post-integration target validation | `codex/personal-project-sync@a7a577e`: fresh 111/111 tests, Root 11-file build, and source/dist public verifier passed in the target worktree. The unrelated untracked evolution-research directory remained untouched. |
 
 ## Open risks
 
