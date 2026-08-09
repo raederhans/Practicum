@@ -264,7 +264,7 @@
                   <td><strong>EAGLE-I</strong></td>
                   <td>Power outage records (event selection)</td>
                   <td class="mono">County, hourly</td>
-                  <td><a href="https://eagle-i.doe.gov" class="inline-link" target="_blank">DOE EAGLE-I</a> · partner access required</td>
+                  <td><a href="https://eagle-i.doe.gov" class="inline-link" target="_blank">DOE EAGLE-I</a> · official upstream release is public under CC BY 4.0; repository derivative lineage is unproven</td>
                 </tr>
                 <tr>
                   <td><strong>OpenStreetMap</strong></td>
@@ -361,11 +361,14 @@
           <h2 id="sec-2-2">3.2 EAGLE-I Power Outage Records</h2>
           <p>
             The U.S. Department of Energy's EAGLE-I system provides county-level hourly power
-            outage counts, which we use for event selection and temporal alignment. EAGLE-I
-            aggregates outage reports from utilities across the country, giving us a county-level
-            reference for when and where reported blackouts occurred. Access is partner-restricted,
-            so the records are used only in authorized local analysis and are not redistributed.
-            This data source is what
+            outage counts, which the study used for event selection and temporal alignment.
+            EAGLE-I aggregates outage reports from utilities across the country, giving a
+            county-level reference for when and where reported blackouts occurred. The official
+            upstream EAGLE-I release is public and licensed under CC BY 4.0. This repository contains
+            52 tracked group/merged/with_events CSV derivatives, but their parent release version,
+            transformation chain, and event-join source remain unproven. This personal/public site
+            does not redistribute those tracked derivatives. Reviewed outputs and software checks do
+            not establish upstream lineage or scientific validity. This data source is what
             tells us which disasters caused significant, sustained power outages worth studying
             with satellite imagery.
           </p>
@@ -2025,7 +2028,7 @@ for h in hospitals[:3]:
             <table>
               <thead><tr><th>Dataset</th><th>Source</th><th>Role</th></tr></thead>
               <tbody>
-                <tr><td>Power outages</td><td class="mono">EAGLE-I (2014–2023, partner-restricted)</td><td>Local exploratory county-event severity; not redistributed by this site</td></tr>
+                <tr><td>Power outages</td><td class="mono">EAGLE-I official upstream release (public, CC BY 4.0)</td><td>Repository transformed/event-joined derivative lineage unproven; tracked derivatives not redistributed by this site</td></tr>
                 <tr><td>Facility density</td><td class="mono">OSM Overpass API</td><td>Current facility snapshot; not a historical event-time inventory</td></tr>
                 <tr><td>Backup power probability</td><td class="mono">Stage 2 ensemble, TIF band 3</td><td>Aggregated to ZCTA using the reproducible ensemble contract</td></tr>
                 <tr><td>Hurricane tracks</td><td class="mono">NHC HURDAT2</td><td>Reproducible Atlantic-track alternative after IBTrACS access returned 403</td></tr>
@@ -2425,7 +2428,7 @@ for h in hospitals[:3]:
               <tbody>
                 <tr><td>VNP46A2 daily NTL</td><td class="mono">GEE: NASA/VIIRS/002/VNP46A2</td></tr>
                 <tr><td>VNP46A3 monthly NTL</td><td class="mono">GEE: NASA/VIIRS/002/VNP46A3</td></tr>
-                <tr><td>EAGLE-I outage data</td><td>Partner-restricted; authorized local input only, not redistributed</td></tr>
+                <tr><td>EAGLE-I outage data</td><td>Official upstream release is public under CC BY 4.0; the repository's 52 transformed/event-joined derivatives have unproven parent/version lineage and are not redistributed by this site</td></tr>
                 <tr><td>Facility POI</td><td>OpenStreetMap Overpass API via <code>stage3_osm_download.py</code>, with request receipt and checksum</td></tr>
                 <tr><td>Public Stage 3 inputs</td><td>2020 Census TIGER, 2022 ACS 5-year, and NHC HURDAT2; see <code>source_manifest_v1.json</code></td></tr>
                 <tr><td>Stage 3 pipeline</td><td><code>stage3_zipcode_analysis_modelD.py</code> plus full and extra regression scripts</td></tr>
@@ -2492,8 +2495,10 @@ Exact versions: project/script/requirements-stage3.txt</code></pre>
               <a href="https://developers.google.com/earth-engine/datasets/catalog/NASA_VIIRS_002_VNP46A2" class="inline-link" target="_blank">Google Earth Engine</a>
               or <a href="https://ladsweb.modaps.eosdis.nasa.gov" class="inline-link" target="_blank">NASA LAADS DAAC</a>.
               EAGLE-I is documented by the
-              <a href="https://eagle-i.doe.gov" class="inline-link" target="_blank">U.S. Department of Energy</a>,
-              but the project records it as partner-restricted and does not treat it as a public redistribution source.
+              <a href="https://eagle-i.doe.gov" class="inline-link" target="_blank">U.S. Department of Energy</a>.
+              Its official upstream release is public under CC BY 4.0. This repository does not
+              redistribute its tracked transformed/event-joined derivatives because their parent
+              release version, transformation chain, and event-join source remain unproven.
             </div>
           </div>
         </template>

@@ -85,7 +85,7 @@ const sections = [
   {
     id: 'data', num: '03',
     title: 'Data Collection & Processing',
-    summary: 'Since no generator registry exists, we combine public NASA Black Marble imagery and OpenStreetMap facilities with authorized local EAGLE-I outage records. EAGLE-I is partner-restricted and is not redistributed by this personal version. Pixels within 750m of a facility are labeled "near generator"; all others are the control group. This creates an imperfect but scalable proxy-label panel across 25 events while keeping the access boundary explicit.',
+    summary: "Since no generator registry exists, the analysis combines public NASA Black Marble imagery and OpenStreetMap facilities with EAGLE-I outage records. The official upstream EAGLE-I release is public and licensed under CC BY 4.0. This repository's tracked transformed and event-joined CSV lineage remains unproven, so this personal/public site does not redistribute those tracked derivatives. Pixels within 750m of a facility are labeled \"near generator\"; all others are the control group. This creates an imperfect but scalable proxy-label panel across 25 events while keeping the lineage boundary explicit.",
     tags: ['VNP46A2', 'EAGLE-I', 'OSM', 'Buffer Zones', 'Cloud QC'],
   },
   {
@@ -133,8 +133,8 @@ const sections = [
   {
     id: 'repro', num: '11',
     title: 'Reproducibility',
-    summary: 'The source manifest separates public inputs (Census TIGER/ACS, NHC HURDAT2, NASA, OpenStreetMap) from partner-restricted EAGLE-I records. Public-source downloaders, checksums, pinned Stage 3 dependencies, and generated artifact hashes make the reproducible portion auditable; restricted-input analyses require authorized local access.',
-    tags: ['Source Manifest', 'Checksums', 'Restricted-Data Gate'],
+    summary: 'The official upstream EAGLE-I release is public under CC BY 4.0, but the parent release version, transformation chain, and event-join source for this repository\'s 52 tracked group/merged/with_events CSV derivatives remain unproven. Public-source downloaders, checksums, pinned dependencies, and artifact hashes make reviewed software outputs auditable; they do not establish upstream lineage or scientific validity. This personal/public site does not redistribute those tracked derivatives.',
+    tags: ['Source Manifest', 'Checksums', 'Lineage Gate'],
   },
   {
     id: 'references', num: '12',

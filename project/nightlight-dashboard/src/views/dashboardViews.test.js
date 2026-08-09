@@ -7,6 +7,34 @@ const readView = name => readFile(new URL(`./${name}`, import.meta.url), 'utf8')
 
 
 describe('dashboard view regressions', () => {
+  it('separates the public EAGLE-I release from unproven repository derivative lineage', async () => {
+    const [overview, detail] = await Promise.all([
+      readView('DocsView.vue'),
+      readView('DocsDetailView.vue'),
+    ])
+    const documentation = `${overview}\n${detail}`
+    const overviewText = overview.replace(/\s+/g, ' ')
+    const detailText = detail.replace(/\s+/g, ' ')
+
+    expect(documentation).not.toMatch(/partner-restricted|partner access required|authorized local/i)
+    expect(overviewText).toContain(
+      'The official upstream EAGLE-I release is public and licensed under CC BY 4.0.'
+    )
+    expect(overviewText).toContain(
+      "This repository's tracked transformed and event-joined CSV lineage remains unproven"
+    )
+    expect(detailText).toContain('52 tracked group/merged/with_events CSV derivatives')
+    expect(detailText).toContain(
+      'their parent release version, transformation chain, and event-join source remain unproven'
+    )
+    expect(detailText).toContain(
+      'This personal/public site does not redistribute those tracked derivatives.'
+    )
+    expect(detailText).toContain(
+      'Reviewed outputs and software checks do not establish upstream lineage or scientific validity.'
+    )
+  })
+
   it('sizes a 25-event LOEO chart to 1380px and allows horizontal scrolling', async () => {
     const source = await readView('ChartsView.vue')
     const layout = source.match(
