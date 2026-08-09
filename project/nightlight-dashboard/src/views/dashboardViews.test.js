@@ -33,6 +33,11 @@ describe('dashboard view regressions', () => {
     expect(detailText).toContain(
       'Reviewed outputs and software checks do not establish upstream lineage or scientific validity.'
     )
+    expect(detailText).toContain(
+      'The Pages/site build does not bundle these tracked transformed/event-joined derivatives.'
+    )
+    expect(detailText).toContain('The public repository currently tracks them')
+    expect(detailText).not.toContain('This repository does not redistribute')
   })
 
   it('sizes a 25-event LOEO chart to 1380px and allows horizontal scrolling', async () => {

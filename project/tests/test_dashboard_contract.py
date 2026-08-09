@@ -130,6 +130,7 @@ def test_dashboard_states_public_upstream_lineage_and_local_release_boundaries()
             "src/views/DocsDetailView.vue",
         )
     )
+    normalized_prose = " ".join(prose.split())
 
     assert "official upstream EAGLE-I release is public" in prose
     assert "CC BY 4.0" in prose
@@ -137,7 +138,10 @@ def test_dashboard_states_public_upstream_lineage_and_local_release_boundaries()
     assert "partner-restricted" not in prose
     assert "partner access required" not in prose
     assert "authorized local" not in prose
-    assert "not redistributed" in prose
+    assert "tracked derivatives not redistributed by this site" in prose
+    assert "The Pages/site build does not bundle" in normalized_prose
+    assert "The public repository currently tracks them" in normalized_prose
+    assert "This repository does not redistribute" not in normalized_prose
     assert "has not been publicly deployed" in prose
     assert "All data sources are publicly available" not in prose
     assert "DOE EAGLE-I portal (public)" not in prose

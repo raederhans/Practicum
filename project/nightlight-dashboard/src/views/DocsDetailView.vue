@@ -2496,9 +2496,10 @@ Exact versions: project/script/requirements-stage3.txt</code></pre>
               or <a href="https://ladsweb.modaps.eosdis.nasa.gov" class="inline-link" target="_blank">NASA LAADS DAAC</a>.
               EAGLE-I is documented by the
               <a href="https://eagle-i.doe.gov" class="inline-link" target="_blank">U.S. Department of Energy</a>.
-              Its official upstream release is public under CC BY 4.0. This repository does not
-              redistribute its tracked transformed/event-joined derivatives because their parent
-              release version, transformation chain, and event-join source remain unproven.
+              Its official upstream release is public under CC BY 4.0. The Pages/site build does not
+              bundle these tracked transformed/event-joined derivatives. The public repository currently
+              tracks them, while their parent release version, transformation chain, event-join source,
+              downstream rights, and historical Git governance remain unresolved.
             </div>
           </div>
         </template>
