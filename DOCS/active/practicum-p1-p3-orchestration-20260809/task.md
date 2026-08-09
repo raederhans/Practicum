@@ -2,7 +2,7 @@
 
 ## Current status
 
-`in-progress` — three isolated worktrees exist; P1 and P2 are active, while P3 worktree setup is complete but its real thread ID is still pending.
+`in-progress` — P1 and P2 are `ready-for-integration`; the canonical P3 task remains active. A duplicate P3 task was stopped as a justified no-op and removed from Git worktree topology.
 
 ## Checklist
 
@@ -11,7 +11,7 @@
 - [x] Reconcile the previous plan with current code surfaces and scientific/accessibility boundaries.
 - [x] Define disjoint P1/P2/P3 path ownership and live-resource ownership.
 - [x] Create P1, P2, and P3 Codex worktree tasks from the project default branch.
-- [ ] Record task IDs, host IDs, worktree paths, branches, and initial status.
+- [x] Record task IDs, host IDs, worktree paths, branches, and initial status.
 - [ ] Monitor the three lanes through compact task snapshots; route blockers and prevent scope drift.
 - [ ] Receive full `ready-for-integration`, blocked, or no-op delivery packages from all lanes.
 - [ ] Review each diff and validation independently; classify cross-lane overlap and integration order.
@@ -25,3 +25,4 @@
 - P3 may find MapLibre's library payload is already isolated and not safely reducible. It must not introduce brittle splitting or regress map behavior merely to silence a warning.
 - A P2 change under `project/nightlight-public/**` would trigger the existing Pages workflow when pushed to `main`; final production synchronization therefore remains a primary-task release decision.
 - The user research directory is unrelated untracked WIP and must never enter lane branches or integration commits.
+- The stopped duplicate P3 directory `C:\Users\raede\.codex\worktrees\b19a\Practicum` is no longer registered as a Git worktree, but Windows policy blocked recursive deletion of its generated dependency/build residue; do not treat it as an active lane or integration source.

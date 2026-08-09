@@ -14,9 +14,9 @@
 
 | Lane | Thread / host | Worktree / branch | Owned paths | Live resources | State | Handoff requirement |
 | --- | --- | --- | --- | --- | --- | --- |
-| P1 reproducibility | `019fe697-b3b0-7782-a3e8-f6fb37853c26` / `local` | `C:/Users/raede/.codex/worktrees/3fa1/Practicum`; detached `a79921b` | Modeling, manifests, scripts, matching Python tests | Lane-owned Python processes and worktree-local outputs; no unrecorded shared cache mutation | `active` | Evidence-backed implementation or blocker; no full-reproduction overclaim |
-| P2 understanding/accessibility | `019fe697-c99b-7273-b3a6-18e9e58c6a13` / `local` | `C:/Users/raede/.codex/worktrees/3ab1/Practicum`; detached `a79921b` | `project/nightlight-public/**` | Lane-owned browser/server, dedicated port 5174, generated artifacts removed | `active` | Technical QA + minimal repairs/tests + executable human-study protocol; no fake participants |
-| P3 performance/architecture | Setup client `client-new-thread:df45b861-8ca2-46d2-8ca6-3a0f39b55b49` / `local` | `C:/Users/raede/.codex/worktrees/3a29/Practicum`; detached `a79921b` | `project/nightlight-dashboard/**` | Lane-owned build/browser/server, dedicated port 5175 | `setup-pending` | Wait for real thread ID; then baseline/final metrics, behavior tests, minimal improvement or justified no-op |
+| P1 reproducibility | `019fe697-b3b0-7782-a3e8-f6fb37853c26` / `local` | `C:/Users/raede/.codex/worktrees/3fa1/Practicum`; detached `a79921b` | Modeling, manifests, scripts, matching Python tests | No remaining lane-owned process or generated test artifact | `ready-for-integration` | 104 passed, 2 expected private-source skips, 7 subtests; reviewed-output receipts pass, full-upstream and modeling entrypoint fail closed with explicit blockers |
+| P2 understanding/accessibility | `019fe697-c99b-7273-b3a6-18e9e58c6a13` / `local` | `C:/Users/raede/.codex/worktrees/3ab1/Practicum`; detached `a79921b` | `project/nightlight-public/**` | Lane used 43189; browser/server stopped and port released; 5174/5175 untouched | `ready-for-integration` | 119/119 public tests, production-preview browser evidence, minimal focus/title repairs, and an executable blank human-study protocol; no fake participants |
+| P3 performance/architecture | `019fe6b2-49d7-7511-8a7b-da806bae3020` / `local` | `C:/Users/raede/.codex/worktrees/3a29/Practicum`; detached `a79921b` | `project/nightlight-dashboard/**` | Lane-owned build/browser/server on a newly verified free high port; 5174/5175 excluded | `active` | Baseline/final metrics, behavior tests, minimal improvement or justified no-op |
 
 ## Shared-process rules
 
@@ -34,7 +34,8 @@
 | 2026-08-09 20:53 +08:00 | Accept honest blocked/no-op lane results. | Restricted data, absent human participants, or non-actionable bundle warnings must not be converted into fabricated progress. |
 | 2026-08-09 20:53 +08:00 | Defer production push decisions for P2 public-app changes to the primary task. | A normal main push may automatically deploy GitHub Pages and therefore needs a separate release review. |
 | 2026-08-09 20:56 +08:00 | All three creation requests returned and three detached worktrees exist at exact baseline `a79921b`; P1 and P2 have real active thread IDs, while P3 still exposes only its setup client ID. | Register P1/P2 as active and P3 as setup-pending; do not create a duplicate P3 task or treat its worktree as an active execution lane until the real thread appears. |
+| 2026-08-09 21:25 +08:00 | The original P3 setup materialized as thread `019fe6b2-49d7-7511-8a7b-da806bae3020` in `3a29`. A second request had already been issued after the user identified the missing start; it materialized in `b19a` and was stopped as a duplicate no-op. | Keep `3a29` as the sole canonical P3 lane. The duplicate thread is archived; its Git worktree registration was removed. Recursive disk deletion of the generated `b19a` residue was blocked by policy and remains an explicit cleanup gap. |
 
 ## Next action
 
-Continue compact P1/P2 supervision, wait for P3's real thread ID without duplicating its worktree, then update the pending identity and begin P3 supervision.
+Supervise the canonical P3 baseline-to-final measurement. Then independently review all three delivery packages before sequential integration.
