@@ -65,11 +65,12 @@ describe('Public Generalization Artifact v1', () => {
 })
 
 describe('Generalization Autopsy accessibility shell', () => {
-  it('keeps five routes reachable with an active-item scroll target and visible focus treatment', async () => {
+  it('keeps five routes reachable without moving the sequential focus start point', async () => {
     const app = await readFile(new URL('../src/App.vue', import.meta.url), 'utf8')
     const styles = await readFile(new URL('../src/styles/main.css', import.meta.url), 'utf8')
 
-    expect(app).toMatch(/scrollIntoView/)
+    expect(app).toMatch(/navigation\.scrollLeft\s*=/)
+    expect(app).not.toMatch(/scrollIntoView/)
     expect(app).toMatch(/function updateRouteContext\(\)[\s\S]*?revealActiveNavigation\(\)[\s\S]*?onMounted\(updateRouteContext\)/)
     expect(app).toMatch(/aria-current/)
     expect(styles).toMatch(/\.site-nav\s*\{[\s\S]*overflow-x:\s*auto/)

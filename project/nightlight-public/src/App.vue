@@ -14,14 +14,18 @@ const route = useRoute()
 const navigationElement = ref(null)
 const mainElement = ref(null)
 const siteTitle = 'Nightlight Disaster Observatory'
-let hasRenderedRoute = false
+let enteredRoutePath = route.path
 
 function revealActiveNavigation() {
   nextTick(() => {
     requestAnimationFrame(() => {
-      navigationElement.value
-        ?.querySelector('[aria-current="page"]')
-        ?.scrollIntoView({ block: 'nearest', inline: 'center' })
+      const navigation = navigationElement.value
+      const activeItem = navigation?.querySelector('[aria-current="page"]')
+      if (!navigation || !activeItem) return
+
+      const centeredLeft = activeItem.offsetLeft - ((navigation.clientWidth - activeItem.offsetWidth) / 2)
+      const maxScrollLeft = Math.max(0, navigation.scrollWidth - navigation.clientWidth)
+      navigation.scrollLeft = Math.max(0, Math.min(centeredLeft, maxScrollLeft))
     })
   })
 }
@@ -37,10 +41,10 @@ function focusRouteHeading() {
 
 function handleRouteEnter() {
   updateRouteContext()
-  if (hasRenderedRoute) {
+  if (route.path !== enteredRoutePath) {
+    enteredRoutePath = route.path
     focusRouteHeading()
   }
-  hasRenderedRoute = true
 }
 
 watch(() => route.path, updateRouteContext, { flush: 'post' })

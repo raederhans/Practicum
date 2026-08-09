@@ -66,12 +66,12 @@ describe('route-change focus contract', () => {
     expect(styles).not.toMatch(/\.atlas-controls\s+(?:input|select)[\s\S]{0,240}outline:\s*none/)
   })
 
-  it('does not move focus on the first route render', async () => {
+  it('does not mistake the first route change for the first render', async () => {
     const app = await readFile(new URL('../src/App.vue', import.meta.url), 'utf8')
 
-    expect(app).toMatch(/let hasRenderedRoute = false/)
-    expect(app).toMatch(/if \(hasRenderedRoute\)\s*{\s*focusRouteHeading\(\)\s*}/)
-    expect(app).toMatch(/hasRenderedRoute = true/)
+    expect(app).toMatch(/let enteredRoutePath = route\.path/)
+    expect(app).toMatch(/if \(route\.path !== enteredRoutePath\)\s*{[\s\S]*?enteredRoutePath = route\.path[\s\S]*?focusRouteHeading\(\)/)
+    expect(app).not.toMatch(/hasRenderedRoute/)
   })
 
   it('syncs document and navigation context after asynchronous route content enters', async () => {

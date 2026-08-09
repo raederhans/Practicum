@@ -1,5 +1,11 @@
 # Nightlight Public App: Small Real-User Study Protocol
 
+## Current project status — deferred
+
+**This is a deferred, optional historical instrument.** It is retained because its tasks and blank result structure may be useful if the personal project later chooses to run ethical human research. It is not the current release gate, it is not required to complete the owner-run proxy phase, and it contains no result.
+
+The current feasible path is the research-supported proxy plan under `DOCS/active/proxy-evidence-phase-20260809/`. Automated checks, solo communication review, or AI/adversarial review must not populate the participant tables below or be renamed as participant evidence.
+
 ## Evidence status
 
 This file is a protocol and blank instrument, not a findings report. **No sessions have been run, no participants have been recruited, and no usability or comprehension result is claimed here.** Add results only after a participant has consented and completed a recorded session under this protocol.
