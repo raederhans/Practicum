@@ -2,7 +2,7 @@
 
 ## Current status
 
-Scientific audit remediation commit `a7a577e3960c8259459db9d2ec47513510868e25` and integration record `610a8915fcf64b8aa4621f707d30420d5c8fab39` are locally integrated into `codex/personal-project-sync`. High findings H1-H4 now have closure evidence: H4 passed 6/6 with zero skips in the restricted main worktree. A final supervisor signature must bind the post-closeout commit before any deployment.
+`integrated` — scientific remediation `a7a577e`, integration record `610a891`, and exact-SHA closeout `992fe58` are on `main`. The prior independent supervisor PASS remains historical evidence bound to `992fe58`. Repository integration later changed only the Generalization artifact's reviewed `study.js` hash in `1a45d73`; fresh public 112/112, Python 96/96 plus 7 subtests, and combined Generalization/H4 8/8 with zero skips passed, but no new independent exact-SHA re-sign is claimed.
 
 ## Checklist
 
@@ -58,11 +58,12 @@ Scientific audit remediation commit `a7a577e3960c8259459db9d2ec47513510868e25` a
 | Controlled artifact result | All nine current reviewed Passports pass the public artifact validator and the 600 directed-pair suite. The fail-closed findings apply to future/abnormal public-function inputs, not an observed error in the current nine controlled Passports. |
 | Isolated provenance attempt | Historical isolated-worktree result: `test_public_evidence_passport_provenance.py` passed 2 checks and skipped 1 because ignored private outputs are not copied into linked worktrees. This did not close H4. |
 | Restricted H4 closure | In the main worktree containing the ignored private outputs, `test_public_evidence_passport_provenance.py` plus `test_event_readiness_contract.py` passed 6/6 with zero skips. The canonical private-components hash, 9×5 published mapping, nine admission bands, and observation rule matched the public manifest; no restricted rows entered output, Git index, or public dist. This verifies consistency with the reviewed private outputs, not a full rerun of every upstream remote-sensing, POI, or covariate pipeline. |
-| Independent closeout review | The scientific-audit task accepted H1/H2, closed H4 at exact `610a891`, and identified two small closeout items: invalid-supplied-plus-unassessed schema precedence and an explicit `Analysis-admission status` prefix. Both now have focused red-green coverage; final exact-SHA re-sign remains required. |
+| Independent closeout review | The scientific-audit task accepted H1-H4/M1-M3 and signed exact `992fe58` after 36/36 focused and 6/6 restricted zero-skip verification. The later `1a45d73` Generalization-only hash repair has fresh automated gates but not a new independent signature. |
 | Remediation browser QA | Root build passed at 375/768/1024/1440 and 1280→640 200%-equivalent reflow with zero horizontal overflow. Measurement limits precede two coverage-only summaries; one live region; native radio arrow-key behavior; visible 2px focus; reduced-motion durations `0.01ms`; cross-hazard and missing-Passport states correct; no console warnings/errors or external resources. |
 | Contrast spot check | New measurement-boundary and coverage-summary text measured 8.02:1 to 16.66:1 against the composited dark background. |
 | Live-resource cleanup | Playwright session `atlas-remediation` closed; exact preview process stopped; port 4176 verified free. The verifier caught Playwright's temporary snapshot directory; those six owned snapshots and the empty directory were removed, then the full 111/111 validation passed. Screenshots are outside the repository under the task visualization directory. |
 | Post-integration target validation | `codex/personal-project-sync@a7a577e`: fresh 111/111 tests, Root 11-file build, and source/dist public verifier passed in the target worktree. The unrelated untracked evolution-research directory remained untouched. |
+| Repository integration validation | On `main@1a45d73`, public validation passed 112/112 with an 11-file release manifest; repository Python passed 96/96 plus 7 subtests; combined Generalization provenance and H4 passed 8/8 with zero skips. GitHub's Linux build/test/base-path verifier and artifact upload also passed; Pages deploy itself failed because the repository Pages site is not enabled. |
 
 ## Open risks
 
