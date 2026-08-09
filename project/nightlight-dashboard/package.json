@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "analyze:bundle": "vite build --manifest && node scripts/report-bundle.mjs",
     "preview": "vite preview",
     "test": "vitest run"
   },
