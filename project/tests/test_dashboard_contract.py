@@ -122,7 +122,7 @@ def test_personal_dashboard_leads_with_owner_and_credits_the_collaboration():
     assert "Original practicum with Zhiyuan Zhao" in slides
 
 
-def test_dashboard_states_restricted_data_and_local_release_boundaries():
+def test_dashboard_states_public_upstream_lineage_and_local_release_boundaries():
     prose = "\n".join(
         read(relative_path)
         for relative_path in (
@@ -131,7 +131,12 @@ def test_dashboard_states_restricted_data_and_local_release_boundaries():
         )
     )
 
-    assert "partner-restricted" in prose
+    assert "official upstream EAGLE-I release is public" in prose
+    assert "CC BY 4.0" in prose
+    assert "repository derivative lineage is unproven" in prose
+    assert "partner-restricted" not in prose
+    assert "partner access required" not in prose
+    assert "authorized local" not in prose
     assert "not redistributed" in prose
     assert "has not been publicly deployed" in prose
     assert "All data sources are publicly available" not in prose
