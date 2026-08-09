@@ -1,0 +1,347 @@
+{
+  "schema_version": 1,
+  "purpose": "Fail-closed receipts for bounded reviewed-output checks and an explicit audit of the still-blocked full-upstream modeling boundary.",
+  "source_manifest_path": "project/data/manifests/source_manifest_v1.json",
+  "scopes": {
+    "reviewed-modeling": {
+      "claim": "reviewed-output consistency",
+      "description": "Checks committed derived panels, configuration, source catalog, and environment metadata without starting a modeling run. This is the bounded H4 claim only.",
+      "full_upstream_reproduction_established": false,
+      "receipt_ids": [
+        "panel-v1",
+        "panel-v1-with-nlcd",
+        "event-profile-v1",
+        "recovery-panel-v1",
+        "bug2-pilot-plan-v1",
+        "bug-detectability-lookup-v1",
+        "bug-prior-lookup-v1",
+        "event-increment-plan-v1",
+        "events-10",
+        "events-6",
+        "hazard-mainline-candidates-v1",
+        "intl-stage-repair-v1",
+        "model-defaults",
+        "readiness-score-rules-v1",
+        "modeling-requirements",
+        "source-manifest-v1"
+      ],
+      "limitations": [
+        "Does not reconstruct the committed derived panels from raw remote-sensing, outage, POI, population, or land-cover inputs.",
+        "Does not establish a new independent exact-SHA scientific sign-off.",
+        "Does not expand H4 beyond reviewed-output consistency."
+      ]
+    },
+    "full-upstream": {
+      "claim": "full upstream reproduction",
+      "description": "Checks every reviewed-modeling receipt plus locally retained public-source outputs and all declared upstream source boundaries. It must remain blocked until every boundary is receipted and redistribution rules are satisfied.",
+      "full_upstream_reproduction_established": false,
+      "receipt_ids": [
+        "panel-v1",
+        "panel-v1-with-nlcd",
+        "event-profile-v1",
+        "recovery-panel-v1",
+        "bug2-pilot-plan-v1",
+        "bug-detectability-lookup-v1",
+        "bug-prior-lookup-v1",
+        "event-increment-plan-v1",
+        "events-10",
+        "events-6",
+        "hazard-mainline-candidates-v1",
+        "intl-stage-repair-v1",
+        "model-defaults",
+        "readiness-score-rules-v1",
+        "modeling-requirements",
+        "source-manifest-v1",
+        "acs-zcta-2022-output",
+        "hurdat2-atlantic-output"
+      ],
+      "limitations": []
+    }
+  },
+  "receipts": [
+    {
+      "id": "panel-v1",
+      "path": "project/modeling/pixel_data/all_events_pixel_panel_v1.parquet",
+      "role": "committed derived modeling input",
+      "version": "all-events-pixel-panel-v1",
+      "license": "Derived artifact; upstream licenses and restricted-source terms remain controlling. This receipt does not grant redistribution rights.",
+      "git_state": "tracked",
+      "sha256": "ae9a4b602a8e610595f90c0443616c51e6352ef60ab6b757f57693e725a01fbd",
+      "sha256_mode": "bytes",
+      "canonical_bytes": 489234
+    },
+    {
+      "id": "panel-v1-with-nlcd",
+      "path": "project/modeling/pixel_data/all_events_pixel_panel_v1_with_nlcd.parquet",
+      "role": "committed derived modeling input",
+      "version": "all-events-pixel-panel-v1-with-nlcd",
+      "license": "Derived artifact; upstream licenses and restricted-source terms remain controlling. This receipt does not grant redistribution rights.",
+      "git_state": "tracked",
+      "sha256": "8700b96819228657eaa8c49a9874823c8556c25b3627e30324ea83e83240c24a",
+      "sha256_mode": "bytes",
+      "canonical_bytes": 496636
+    },
+    {
+      "id": "event-profile-v1",
+      "path": "project/modeling/pixel_data/event_profile_v1.csv",
+      "role": "committed derived modeling input",
+      "version": "event-profile-v1",
+      "license": "Derived artifact; upstream licenses and restricted-source terms remain controlling. This receipt does not grant redistribution rights.",
+      "git_state": "tracked",
+      "sha256": "4f63f5ffe31593945a5d4b079a85775bf90d3b7c61dfb810e4944ff36af8ef6f",
+      "sha256_mode": "git-text-lf",
+      "canonical_bytes": 2096
+    },
+    {
+      "id": "recovery-panel-v1",
+      "path": "project/modeling/pixel_data/recovery_daily_panel_v1.parquet",
+      "role": "committed derived modeling input",
+      "version": "recovery-daily-panel-v1",
+      "license": "Derived artifact; upstream licenses and restricted-source terms remain controlling. This receipt does not grant redistribution rights.",
+      "git_state": "tracked",
+      "sha256": "dc19d7b17dfadb7182a194fa3ee83cb6dd653a6dbbcaa49524d11f5dc1f9022e",
+      "sha256_mode": "bytes",
+      "canonical_bytes": 725851
+    },
+    {
+      "id": "bug2-pilot-plan-v1",
+      "path": "project/modeling/config/bug2_pilot_plan_v1.json",
+      "role": "model configuration",
+      "version": "bug2-pilot-plan-v1",
+      "license": "Repository configuration; no repository-wide license is declared.",
+      "git_state": "tracked",
+      "sha256": "11b4181c7d8f94d83ff87fcd8d67eda152226deae9f24611daba9fc9563f40d9",
+      "sha256_mode": "git-text-lf",
+      "canonical_bytes": 2816
+    },
+    {
+      "id": "bug-detectability-lookup-v1",
+      "path": "project/modeling/config/bug_detectability_lookup_v1.json",
+      "role": "model configuration",
+      "version": "bug-detectability-lookup-v1",
+      "license": "Repository configuration; no repository-wide license is declared.",
+      "git_state": "tracked",
+      "sha256": "03624648a5a12492270fe29709070bb5ec8c9feaacf9445a54e2e4b794b6afb6",
+      "sha256_mode": "git-text-lf",
+      "canonical_bytes": 2624
+    },
+    {
+      "id": "bug-prior-lookup-v1",
+      "path": "project/modeling/config/bug_prior_lookup_v1.json",
+      "role": "model configuration",
+      "version": "bug-prior-lookup-v1",
+      "license": "Repository configuration; no repository-wide license is declared.",
+      "git_state": "tracked",
+      "sha256": "55e00eb14ff6b6704ad8a2abec1d0e06d5bf758380cab96c8509b13ef56edfdb",
+      "sha256_mode": "git-text-lf",
+      "canonical_bytes": 2199
+    },
+    {
+      "id": "event-increment-plan-v1",
+      "path": "project/modeling/config/event_increment_plan_v1.json",
+      "role": "model configuration",
+      "version": "event-increment-plan-v1",
+      "license": "Repository configuration; no repository-wide license is declared.",
+      "git_state": "tracked",
+      "sha256": "07d431e19f4e96b428c13f7a4d45a377df82cc5744588e099a34322f5e15e031",
+      "sha256_mode": "git-text-lf",
+      "canonical_bytes": 2626
+    },
+    {
+      "id": "events-10",
+      "path": "project/modeling/config/events_10.json",
+      "role": "event configuration",
+      "version": "events-10@receipt-v1",
+      "license": "Repository configuration; source-data terms remain controlling.",
+      "git_state": "tracked",
+      "sha256": "7e45f0faf7ff18eb48bec5369a65d1f277960f75131ffedf596586f31ae09e1e",
+      "sha256_mode": "git-text-lf",
+      "canonical_bytes": 4756
+    },
+    {
+      "id": "events-6",
+      "path": "project/modeling/config/events_6.json",
+      "role": "event configuration",
+      "version": "events-6@receipt-v1",
+      "license": "Repository configuration; source-data terms remain controlling.",
+      "git_state": "tracked",
+      "sha256": "f8058ce47106f1afdd5c2e81d3b8bf4124e75ec788d9345a8ba893f567e60dfa",
+      "sha256_mode": "git-text-lf",
+      "canonical_bytes": 1876
+    },
+    {
+      "id": "hazard-mainline-candidates-v1",
+      "path": "project/modeling/config/hazard_mainline_candidates_v1.json",
+      "role": "model configuration",
+      "version": "hazard-mainline-candidates-v1",
+      "license": "Repository configuration; no repository-wide license is declared.",
+      "git_state": "tracked",
+      "sha256": "504baafe81b09dacd711722b2bf122da78a147aae1c9ad0b326eaf3cb42d8d31",
+      "sha256_mode": "git-text-lf",
+      "canonical_bytes": 406
+    },
+    {
+      "id": "intl-stage-repair-v1",
+      "path": "project/modeling/config/intl_stage_repair_v1.json",
+      "role": "model configuration",
+      "version": "intl-stage-repair-v1",
+      "license": "Repository configuration; source-data terms remain controlling.",
+      "git_state": "tracked",
+      "sha256": "a5d96e960d6d75e61f437c1e4712c11d64c1315764925434672bed6a10c67b45",
+      "sha256_mode": "git-text-lf",
+      "canonical_bytes": 974
+    },
+    {
+      "id": "model-defaults",
+      "path": "project/modeling/config/model_defaults.json",
+      "role": "model configuration",
+      "version": "model-defaults@receipt-v1",
+      "license": "Repository configuration; no repository-wide license is declared.",
+      "git_state": "tracked",
+      "sha256": "4f495dc681511a8628c1cdf070ce638741f5dd3970140d6e103cd02e18ca5712",
+      "sha256_mode": "git-text-lf",
+      "canonical_bytes": 401
+    },
+    {
+      "id": "readiness-score-rules-v1",
+      "path": "project/modeling/config/readiness_score_rules_v1.json",
+      "role": "reviewed-output rule configuration",
+      "version": "readiness-score-rules-v1",
+      "license": "Repository configuration; no repository-wide license is declared.",
+      "git_state": "tracked",
+      "sha256": "9ee248267bcb234ef9323cdfd58507c3b20b208c13bd726f0c5c6e7fdf4cf6b9",
+      "sha256_mode": "git-text-lf",
+      "canonical_bytes": 1162
+    },
+    {
+      "id": "modeling-requirements",
+      "path": "project/modeling/requirements-modeling.txt",
+      "role": "environment dependency manifest",
+      "version": "modeling-environment@receipt-v1",
+      "license": "Package licenses remain those of the named dependencies; this file is not a license grant.",
+      "git_state": "tracked",
+      "sha256": "89572967af792818bc780d8a19c13c545aa437b14d52ae1bd8d58ea5d26c2e7a",
+      "sha256_mode": "git-text-lf",
+      "canonical_bytes": 382
+    },
+    {
+      "id": "source-manifest-v1",
+      "path": "project/data/manifests/source_manifest_v1.json",
+      "role": "upstream version, access, license, and acquisition catalog",
+      "version": "source-manifest-v1",
+      "license": "Metadata only; each source entry records its controlling license or terms.",
+      "git_state": "tracked",
+      "sha256": "1c5354ff702152b0e67b3f2ce81f0dd8cb4e42135728a56794dd8fdc7383254e",
+      "sha256_mode": "git-text-lf",
+      "canonical_bytes": 10912
+    },
+    {
+      "id": "acs-zcta-2022-output",
+      "path": "project/data/raw/acs_zcta_2022.csv",
+      "role": "locally retained public-source normalized output",
+      "version": "2022 ACS 5-year B01003 and B19013",
+      "license": "U.S. Census Bureau public data; retain source and vintage attribution.",
+      "git_state": "tracked",
+      "sha256": "2cae6c00da19cb97ce0ccbd2600f5e3bfdd85cdfa1a310339cce0421537c1df3",
+      "sha256_mode": "bytes",
+      "canonical_bytes": 998266
+    },
+    {
+      "id": "hurdat2-atlantic-output",
+      "path": "project/data/raw/hurdat2_atlantic_tracks.csv",
+      "role": "locally retained public-source normalized output",
+      "version": "Atlantic 1851-2025; updated 2026-02-27",
+      "license": "NOAA/NHC public data; cite the database, vintage, and access date.",
+      "git_state": "tracked",
+      "sha256": "09712f2926b8026f79b09bf2457e4397a9495e2148c0c7170e9813c0287d3cce",
+      "sha256_mode": "git-text-lf",
+      "canonical_bytes": 1600665
+    }
+  ],
+  "upstream_boundaries": [
+    {
+      "source_id": "nasa_vnp46a2",
+      "input_classes": ["public", "missing"],
+      "availability": "partial local files without a complete versioned granule receipt",
+      "full_rerun_ready": false,
+      "blocker_code": "missing-versioned-granule-receipt",
+      "detail": "Collection/version, complete granule list, retrieval metadata, and per-granule checksums are not recorded for the active analysis."
+    },
+    {
+      "source_id": "eagle_i",
+      "input_classes": ["restricted"],
+      "availability": "partner-restricted local input",
+      "full_rerun_ready": false,
+      "blocker_code": "restricted-input-receipt-and-rights-unproven",
+      "detail": "Authorized-access receipt, export version/window, and publication-rights review are not recorded for a full rerun.",
+      "git_path": "project/data/raw/Outage_Dataset_R1",
+      "required_git_state": "untracked"
+    },
+    {
+      "source_id": "osm_overpass",
+      "input_classes": ["public", "mutable", "ignored", "missing"],
+      "availability": "mutable live source with one validation acquisition whose local evidence path is an ignored cache",
+      "full_rerun_ready": false,
+      "blocker_code": "mutable-source-snapshot-incomplete",
+      "detail": "The recorded one-event drift check is not a complete, immutable snapshot receipt for every event used by the active analyses.",
+      "git_path": "cache/source-data/osm-20260805/zeta_atlanta/osm_retrieval_manifest.json",
+      "required_git_state": "ignored"
+    },
+    {
+      "source_id": "census_tiger_zcta_county",
+      "input_classes": ["public", "missing"],
+      "availability": "historical download receipts recorded; local archives absent from this checkout",
+      "full_rerun_ready": false,
+      "blocker_code": "verified-download-cache-not-present",
+      "detail": "The two archive receipts are recorded, but the corresponding ignored local archives are not present in this worktree."
+    },
+    {
+      "source_id": "census_acs_zcta_2022",
+      "input_classes": ["public"],
+      "availability": "versioned local public-source output with receipt",
+      "full_rerun_ready": true,
+      "satisfied_by_receipt_ids": ["acs-zcta-2022-output"],
+      "detail": "The local normalized output matches the recorded acquisition checksum."
+    },
+    {
+      "source_id": "noaa_ibtracs",
+      "input_classes": ["public", "missing"],
+      "availability": "official endpoint unavailable during acquisition; versioned HURDAT2 alternative recorded",
+      "full_rerun_ready": true,
+      "satisfied_by_receipt_ids": ["hurdat2-atlantic-output"],
+      "detail": "The source manifest explicitly routes this run to the versioned NOAA/NHC HURDAT2 alternative."
+    },
+    {
+      "source_id": "noaa_hurdat2_atlantic",
+      "input_classes": ["public"],
+      "availability": "versioned local public-source output with receipt",
+      "full_rerun_ready": true,
+      "satisfied_by_receipt_ids": ["hurdat2-atlantic-output"],
+      "detail": "The line-ending-normalized local output matches the recorded acquisition checksum."
+    },
+    {
+      "source_id": "miami_dade_open_data",
+      "input_classes": ["public", "mutable", "missing"],
+      "availability": "public catalog without a selected immutable dataset receipt",
+      "full_rerun_ready": false,
+      "blocker_code": "catalog-selection-required",
+      "detail": "Item ID, service URL, dataset-specific terms, retrieval timestamp, and checksum remain unrecorded."
+    },
+    {
+      "source_id": "nlcd",
+      "input_classes": ["public", "missing"],
+      "availability": "derived NLCD panel present without the raw versioned input receipt",
+      "full_rerun_ready": false,
+      "blocker_code": "versioned-land-cover-receipt-missing",
+      "detail": "Land-cover year/release, raw file checksums, and complete acquisition receipt are not recorded for reconstruction."
+    },
+    {
+      "source_id": "worldpop",
+      "input_classes": ["public", "missing"],
+      "availability": "public catalog without a selected immutable layer receipt",
+      "full_rerun_ready": false,
+      "blocker_code": "catalog-selection-required",
+      "detail": "Country, year, resolution, constrained variant, license, retrieval URL, and checksum remain unrecorded."
+    }
+  ]
+}
