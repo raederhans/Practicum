@@ -1,5 +1,7 @@
 # Dashboard Performance and Architecture Context
 
+Archive status: analyzer and route-boundary guard integrated; MapLibre warning remains an explicit future decision.
+
 ## Current truth
 
 - Worktree: `C:\Users\raede\.codex\worktrees\3a29\Practicum`.

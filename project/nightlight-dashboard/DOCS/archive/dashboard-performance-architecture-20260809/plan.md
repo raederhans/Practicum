@@ -1,5 +1,7 @@
 # Dashboard Performance and Architecture Plan
 
+Archive status: integrated as `82d4f97`; runtime payload stayed unchanged by design.
+
 ## Goal
 
 Measure the dashboard's production bundle and route-loading boundaries, then make only a low-risk change whose value is supported by before/after evidence.

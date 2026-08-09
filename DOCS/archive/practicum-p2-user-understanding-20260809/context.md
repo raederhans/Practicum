@@ -1,5 +1,7 @@
 # P2 User Understanding and Accessibility Context
 
+Archive status: implementation and technical validation complete; real-user results remain uncollected.
+
 ## Baseline
 
 - Worktree: `C:\Users\raede\.codex\worktrees\3ab1\Practicum`

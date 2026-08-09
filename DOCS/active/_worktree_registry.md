@@ -2,26 +2,27 @@
 
 | Worktree / path | Task | Base branch / commit | Current branch / HEAD | Goal | State | Hotspots | Tests | Overlap | Order | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `C:\Users\raede\Desktop\essay help master\Practicum` | P1-P3 orchestration owner | `main` / `2d8112104ab57ef7f6452ef99dc05ff9bbfb4427` | `main@1d2a0b151ad32a3858be82decf3f81b51cc6f4b8`; ahead of `origin/main` pending release | Integrated P3 performance guardrail, P2 route accessibility/study instrument, and P1 fail-closed reproducibility boundary | `ready-for-review` | Pages workflow release and scientific/public claim boundaries | Dashboard 20/20 + bundle analysis; public 119/119 + build/boundary/browser smoke; Python 106 + 7 subtests; expected full-upstream/full-run blockers verified | User research WIP remains untracked; P1/P2 directories removed; 3a29 and b19a are unregistered Windows-policy residue only | 0 | Push main, verify Pages exact SHA/live routes, then archive the orchestration record |
+| `C:\Users\raede\Desktop\essay help master\Practicum` | P1-P3 orchestration closeout | `main` / `2d8112104ab57ef7f6452ef99dc05ff9bbfb4427` | product release `2a47f363dc768c7dbb43f11f3457159c6d6d8a80`; synchronized with `origin/main` before docs-only closeout | Integrated P3 performance guardrail, P2 route accessibility/study instrument, and P1 fail-closed reproducibility boundary | `integrated` | Scientific/public claim boundaries and future Actions runtime maintenance | Dashboard 20/20 + bundle analysis; public 119/119 + build/boundary/live browser; Python 106 + 7 subtests; expected full-upstream/full-run blockers verified; Pages run 31317312185 succeeded | User research WIP remains untracked; P1/P2 directories removed; 3a29 and b19a are unregistered Windows-policy residue only | 0 | Start future work from synchronized main with one bounded worktree and explicit ownership |
 
 States: `in-progress`, `blocked`, `ready-for-review`, `ready-for-integration`, `integrated`, `abandoned`.
 
 ## Delivery package
 
-- Summary: `codex/personal-project-sync` integrated; Atlas branch absorbed; original Generalization branch superseded by the LF-safe integrated version; stale public `study.js` hash repaired; local/remote main synchronized; workflow-driven GitHub Pages enabled and published.
-- Files: 439 candidate files plus the two-line provenance hash repair and closeout records. Generated Playwright artifacts were removed; research WIP was preserved.
-- Diff from base: candidate was 13 commits ahead/0 behind `main`; one narrow repair commit followed after full Python validation exposed the stale pointer.
-- Commit and branch state: only local `main` remains; normal pushes only; no rebase, force-push, teammate-remote write, or history rewrite.
-- Divergence from main: none after closeout; `main` is the sole registered worktree branch.
-- Overlap and conflict risk: incoming app sources did not overlap primary WIP; apparent app directories contained only ignored dependencies/build output.
-- Validation evidence: see `DOCS/archive/repository-integration-20260809/task.md` and ignored logs under `cache/logs/repository-integration-20260809/`.
-- Publication evidence: run `31310854793` succeeded at `70dae02`; the live 11-file manifest matched byte length and SHA-256; five hash routes rendered with zero console errors/warnings and no page-level overflow at mobile/desktop widths.
-- Unverified risks: no full raw-input scientific reproduction; no new independent exact-SHA sign-off; no manual assistive-technology study; pinned Actions now emit Node 20 deprecation warnings while GitHub forces Node 24.
+- Summary: P3 bundle guardrail, P2 route accessibility plus blank user-study instrument, and P1 fail-closed reproducibility receipts integrated sequentially and published.
+- Files: 32 changed release paths across task records, dashboard tooling, public UX/tests, and modeling provenance/tests; user research WIP remained excluded.
+- Diff from base: five normal commits from `2d81121` through release-ready `2a47f36`; no history rewrite or force-push.
+- Commit and branch state: only local `main` is registered; normal pushes only; no teammate-remote write.
+- Divergence from main: none after release push; the docs-only closeout commit follows without retriggering Pages.
+- Overlap and conflict risk: lane product paths were disjoint; shared state and live ports were supervised by the primary owner.
+- Validation evidence: dashboard 20/20 plus bundle analysis; public 119/119 plus build, boundary, local/live browser; Python 106 plus 7 subtests and explicit blocker exit codes.
+- Publication evidence: run `31317312185` succeeded at `2a47f36`; the live 11-file manifest matched byte length and SHA-256; Overview and Atlas live focus/title/overflow/console checks passed.
+- Unverified risks: no full raw-input scientific reproduction; no new independent exact-SHA sign-off; no actual user study or manual assistive-technology matrix; MapLibre remains 803,051 B; Actions emit a Node 20 deprecation annotation while GitHub forces Node 24.
 - Recommended integration method: future work starts from `main` and uses one bounded feature worktree with explicit ownership and closeout gates.
 
 ## Cleanup evidence
 
-- Removed Git worktrees: `c24c` Generalization source, `814c` Atlas remediation, and the temporary repository integration worktree.
-- Deleted local branches: `codex/personal-project-sync`, `codex/atlas-compare-audit-remediation`, `codex/generalization-autopsy-phase1`, `modeling-6events`, `push-clean-modeling`, `push-clean-modeling-docs`, and the temporary integration branch.
-- Recovery: `a7a577e`, `992fe58`, `5136851`, and `bf1a7e3` remain reachable through `main` or `teammate/main`. The superseded `5607c07` patch is preserved under `C:/Users/raede/.codex/integration-backups/Practicum/20260809-repository-integration/`.
-- Non-Git residue: empty `c24c/Practicum` and `814c/Practicum` directory shells may remain until the Codex/Windows handle owner releases them; neither is registered and neither contains files.
+- Removed Git worktrees: P1 `3fa1`, P2 `3ab1`, canonical P3 `3a29`, and duplicate P3 `b19a` registrations; P1/P2 directory bodies were deleted.
+- Archived Codex tasks: P1, P2, canonical P3, and duplicate P3.
+- Generated artifacts: main Playwright sessions closed; owned ports 43217/55473/43189 released; exact Playwright snapshots and task logs deleted. One empty main temp directory shell remains because policy rejected directory removal.
+- Recovery: lane commits remain reachable through `main` as `82d4f97`, `e7e95be`, and `1d2a0b1`; detached candidates also remain reachable through their integrated descendants until normal Git pruning.
+- Non-Git residue: `3a29/Practicum` and `b19a/Practicum` directory bodies remain after Git registration removal because Windows/policy denied recursive deletion. Neither is a registered worktree or valid integration source.

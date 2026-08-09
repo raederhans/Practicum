@@ -36,7 +36,8 @@
 | 2026-08-09 20:56 +08:00 | All three creation requests returned and three detached worktrees exist at exact baseline `a79921b`; P1 and P2 have real active thread IDs, while P3 still exposes only its setup client ID. | Register P1/P2 as active and P3 as setup-pending; do not create a duplicate P3 task or treat its worktree as an active execution lane until the real thread appears. |
 | 2026-08-09 21:25 +08:00 | The original P3 setup materialized as thread `019fe6b2-49d7-7511-8a7b-da806bae3020` in `3a29`. A second request had already been issued after the user identified the missing start; it materialized in `b19a` and was stopped as a duplicate no-op. | Keep `3a29` as the sole canonical P3 lane. The duplicate thread is archived; its Git worktree registration was removed. Recursive disk deletion of the generated `b19a` residue was blocked by policy and remains an explicit cleanup gap. |
 | 2026-08-09 21:56 +08:00 | P3, P2, and P1 were committed and integrated in the planned order as `82d4f97`, `e7e95be`, and `1d2a0b1`; fresh main validation passed for each lane. | Authorize the existing Pages workflow release. Keep full-upstream modeling blocked and keep the real-user study result tables blank. |
+| 2026-08-09 22:03 +08:00 | Pages run `31317312185` succeeded for `2a47f36`; the live release manifest and browser behavior matched the release candidate. | Close and archive the orchestration task. Route future work to P0 Actions runtime maintenance, real-user evidence, and full-upstream input remediation as separate tasks. |
 
 ## Next action
 
-Push the release-ready main branch, wait for the Pages workflow, verify the live site and exact deployment SHA, then close the umbrella task.
+Start future work from synchronized `main`; do not reuse the unregistered `3a29` or `b19a` directory residue as worktrees.

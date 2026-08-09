@@ -30,10 +30,9 @@
 | Local production browser audit | `npm run preview -- --host 127.0.0.1 --port 43189 --strictPort` plus Playwright CLI | Five routes × 4 widths plus Compare Mode × 4 widths = 24/24 no-overflow checks; unique titles and focusable H1s; active nav visible; Compare boundary/live summary present; keyboard navigation focused new H1 with visible 2px outline; Atlas search/select outline visible; console 0 errors/warnings; requests local/static only. |
 | Process and artifact cleanup | Close `p2live`/`p2local`/`p2final`; stop verified owned listener PIDs 71772 and 16344; delete exact generated files with `apply_patch` after recursive removal was policy-blocked | `playwright-cli list`: no browsers; 43189 released; 5174/PID 9956 and 5175/PID 25772 unchanged; 0 generated files remain in temp and `dist` directory shells. |
 
-## Remaining work
+## Closeout and remaining evidence
 
-- Integration owner: review and commit only the enumerated P2 files, reconcile shared-shell overlaps, and rerun validation on the actual integration candidate.
-- Research owner: recruit and consent real participants, execute `USER_STUDY_PROTOCOL.md`, and add results without converting planned thresholds into findings.
-- Optional later evidence: manual screen-reader/browser-family/zoom-reflow testing. No such evidence is claimed here.
-
-Passing tests and browser checks establish only local lane readiness. Nothing is staged, committed, merged, pushed, or deployed.
+- Integrated as `e7e95be` and deployed in Pages release `2a47f36` through successful run `31317312185`.
+- Live browser verification confirmed the new route title and focus behavior at 320px with zero console errors/warnings.
+- Research owner still needs to recruit and consent real participants, execute `USER_STUDY_PROTOCOL.md`, and add results without converting planned thresholds into findings.
+- Optional later evidence: manual screen-reader, browser-family, and zoom-reflow testing. No such evidence is claimed here.

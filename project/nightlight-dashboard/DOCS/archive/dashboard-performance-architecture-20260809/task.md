@@ -44,4 +44,4 @@
 - MapLibre remains a `803,051 B` minified map-route dependency and keeps Vite's 500 kB warning. Reducing it likely requires a dependency/version or worker-loading decision outside this low-risk lane.
 - HTTP/base-path smoke was run, but no real WebGL/browser rendering or throttled-network timing was performed; existing map behavior is covered by the unchanged bundle plus existing unit regressions, not a fresh browser interaction run.
 - The analyzer reports transfer-size direction using gzip over emitted files; it does not predict CDN cache hits, HTTP compression configuration, device parse time, or runtime WebGL performance.
-- Integration, push, and shared-record updates remain owned by the primary task.
+- Integrated as `82d4f97`; `main` and `origin/main` were synchronized after validation. The runtime remains an honest measured no-op.

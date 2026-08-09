@@ -48,7 +48,15 @@ Run three isolated implementation tasks for P1 scientific reproducibility, P2 us
 - [x] Stage 2: supervise P1/P2/P3 until each is `ready-for-integration`, `blocked` with evidence, or intentionally no-op.
 - [x] Stage 3: independently review each delivery package, changed paths, validation, scientific/product claims, and cross-lane overlap.
 - [x] Stage 4: integrate eligible work in order P3, then P2, then P1; validate after each integration and resolve only evidence-backed conflicts.
-- [ ] Stage 5: run final combined validation, decide whether any public-app change is authorized for production push, synchronize Git/registry, and clean eligible worktrees.
+- [x] Stage 5: run final combined validation, decide whether any public-app change is authorized for production push, synchronize Git/registry, and clean eligible worktrees.
+
+## Closeout
+
+- Integrated commits: P3 `82d4f97`, P2 `e7e95be`, P1 `1d2a0b1`.
+- Release commit: `2a47f363dc768c7dbb43f11f3457159c6d6d8a80`.
+- Pages run: `31317312185`, successful for the exact release commit.
+- Live URL: `https://raederhans.github.io/Practicum/`.
+- Registered Git topology after cleanup: main worktree only.
 
 ## Acceptance criteria
 

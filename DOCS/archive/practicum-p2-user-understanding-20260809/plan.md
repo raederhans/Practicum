@@ -1,5 +1,7 @@
 # P2 User Understanding and Accessibility Plan
 
+Archive status: integrated as `e7e95be` and deployed in release `2a47f36`.
+
 ## Goal
 
 Verify the deployed and local Nightlight public application for interpretation, keyboard, focus, navigation, semantic-alternative, contrast, and responsive risks; repair only reproducible issues inside `project/nightlight-public/**`; and provide a small executable real-user study instrument without inventing participants or findings.
