@@ -14,7 +14,7 @@ const UNIT_BY_METRIC = Object.freeze({
   'Descriptive sensitivity ratio': 'ratio [unitless]',
 })
 const REVIEWED_SOURCE_HASHES = Object.freeze({
-  'public-study-summary-v1': '8d00fde7164d05c3d2912f0d7714a6dc0b5240194ff0ea2eae527403a06565ee',
+  'public-study-summary-v1': 'cd23c75b327bb5c329195997de35dc667f20b50519135736926c3d9e4d38d067',
   'cross-event-stop-decision-v3x': '306c6ce4736bbd73df526fa0176e78d296b7eb6fe0c8ee515880525fd0c3cb1e',
 })
 const REVIEWED_PUBLIC_METRICS = Object.freeze({
@@ -65,7 +65,7 @@ export const PUBLIC_GENERALIZATION_ARTIFACT = Object.freeze({
     Object.freeze({
       id: 'public-study-summary-v1',
       version: 'study.js@1',
-      sha256: '8d00fde7164d05c3d2912f0d7714a6dc0b5240194ff0ea2eae527403a06565ee',
+      sha256: 'cd23c75b327bb5c329195997de35dc667f20b50519135736926c3d9e4d38d067',
       source: 'Reviewed aggregate study summary',
       license: 'CC BY 4.0 aggregate derivation with attribution',
       attribution: 'ORNL EAGLE-I aggregate derivation; no endorsement implied',
