@@ -2,14 +2,20 @@
 
 | Worktree / path | Task | Base branch / commit | Current branch / HEAD | Goal | State | Hotspots | Tests | Overlap | Order | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `C:\Users\raede\Desktop\essay help master\Practicum` | Next evidence phase integration owner | `main` / `223fc653dba2768dad99df9d032beaedd9234d6a` | `main` / `c72e26e`, ahead of `origin/main` pending release | Supervise original P1/P2/P3 tasks, review deliveries, integrate, validate, push, and clean | `ready-for-review` | Shared task records, integration, release and claim boundaries | Dashboard 21/21 + bundle; public 123/123 + build/boundary/browser; Python 112 + 7 subtests; reviewed/full preflights verified | User research WIP remains untracked and excluded | 0 | Commit lane archives and release record, push, verify Pages, then clean and archive umbrella |
-| `C:\Users\raede\.codex\worktrees\3fa1\Practicum` | Original P1 `019fe697-b3b0-7782-a3e8-f6fb37853c26` | detached `223fc65` | candidate `5ede841`, integrated as `a410ae2` | Resolve or classify full-upstream provenance, licensing, receipt, and access blockers without history rewrite | `integrated` | `project/data/manifests`, modeling entrypoints, direct tests | 26 + 7 subtests; reviewed ready; full-upstream blocked with seven gaps | No P2/P3 paths; no shared coordination edits | 3 | Remove registered worktree after release and archive original task |
-| `C:\Users\raede\.codex\worktrees\3ab1\Practicum` | Original P2 `019fe697-c99b-7273-b3a6-18e9e58c6a13` | detached `223fc65` | candidate `223631a`, integrated as `232577e` | Produce authoritative research-backed proxy evaluation and an independent solo-feasible next plan | `integrated` | `project/nightlight-public/**` | 123/123 + build/boundary; main browser focus/320px/console/network checks passed | No P1/P3 paths; no shared coordination edits | 2 | Lane record archived; remove registered worktree after release and archive original task |
-| `C:\Users\raede\.codex\worktrees\3a29\Practicum` | Original P3 `019fe6b2-49d7-7511-8a7b-da806bae3020` | detached `223fc65` | candidate `90dea17`, integrated as `7db66b9` | Measure production-like navigation timing and decide whether architecture work is evidence-backed | `integrated` | `project/nightlight-dashboard/**`; performance live processes released | 21/21 + bundle analysis; 56 selected samples rechecked | No P1/P2 paths; no shared coordination edits | 1 | Lane record archived; remove registered worktree after release and archive original task |
+| `C:\Users\raede\Desktop\essay help master\Practicum` | Next evidence phase closeout | `main` / `223fc653dba2768dad99df9d032beaedd9234d6a` | product release `e18b91a32cd92d379e4328889df1c0139f43ccee`; docs-only closeout follows | P3 measured no-op, P2 proxy/solo plan, P1 reproducibility classification, release review, Pages publication, and cleanup | `integrated` | Future user-evidence work, upstream receipts, throttled performance, and Actions runtime maintenance | Dashboard 21/21 + bundle; public 123/123 + build/boundary/live browser; Python 112 + 7 subtests; Pages run 31322447014 and 11-file hash check succeeded | Personal research WIP remains untracked; 3fa1/3ab1/3a29 are empty unregistered directory shells only; 591a remains registered and untouched | 0 | Start the independent solo evidence phase from synchronized main; retain the seven full-upstream blockers until their exact evidence is collected |
 
 States: `in-progress`, `blocked`, `ready-for-review`, `ready-for-integration`, `integrated`, `abandoned`.
 
-## Delivery package
+## Next evidence phase closeout
+
+- Product release: `e18b91a32cd92d379e4328889df1c0139f43ccee`; Pages run `31322447014` succeeded.
+- P1: LF-canonical 52-file receipt plus seven honest full-upstream blockers; reviewed-modeling remains ready, not independently scientifically validated.
+- P2: proxy evidence and a solo-feasible next plan; no participant or assistive-technology claim.
+- P3: measured runtime no-op; MapLibre remains isolated and external map-resource settle remains the main measured delay.
+- Cleanup: original task IDs archived; three lane worktree registrations removed; main-owned browsers and ports released; personal research WIP untouched.
+- Residue: three empty worktree directory shells remain because the Codex app holds Windows directory handles; they contain zero files and no Git metadata.
+
+## Prior orchestration delivery package
 
 - Summary: P3 bundle guardrail, P2 route accessibility plus blank user-study instrument, and P1 fail-closed reproducibility receipts integrated sequentially and published.
 - Files: 32 changed release paths across task records, dashboard tooling, public UX/tests, and modeling provenance/tests; user research WIP remained excluded.
@@ -22,7 +28,7 @@ States: `in-progress`, `blocked`, `ready-for-review`, `ready-for-integration`, `
 - Unverified risks: no full raw-input scientific reproduction; no new independent exact-SHA sign-off; no actual user study or manual assistive-technology matrix; MapLibre remains 803,051 B; Actions emit a Node 20 deprecation annotation while GitHub forces Node 24.
 - Recommended integration method: future work starts from `main` and uses one bounded feature worktree with explicit ownership and closeout gates.
 
-## Cleanup evidence
+## Prior orchestration cleanup evidence
 
 - Removed Git worktrees: P1 `3fa1`, P2 `3ab1`, canonical P3 `3a29`, and duplicate P3 `b19a` registrations; P1/P2 directory bodies were deleted.
 - Archived Codex tasks: P1, P2, canonical P3, and duplicate P3.

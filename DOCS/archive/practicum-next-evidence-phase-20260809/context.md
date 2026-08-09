@@ -30,3 +30,11 @@
 - Modeling: the final full project suite passed 112 plus 7 subtests. The EAGLE-I tree receipt now canonicalizes text line endings and verifies 52 paths, `213,419,815` canonical bytes, and inventory SHA-256 `5bcf40ce8a8791f405d4dc68a0cd85c6c010990f4ddecf2913443d05f52a9744`. `reviewed-modeling` is ready with 16 checks, while `full-upstream` intentionally remains blocked with 19 checks and seven explicit evidence gaps.
 - Governance: the dashboard now states that the Pages/site build does not bundle the tracked EAGLE-I derivatives, while the public repository currently tracks them and their lineage, downstream rights, and historical Git governance remain unresolved.
 - All main-owned browser/server resources used for verification were closed; port 43627 was released. The user-owned personal-project research directory remains untracked and untouched.
+
+## 2026-08-10 — release closeout
+
+- `main@e18b91a32cd92d379e4328889df1c0139f43ccee` was pushed normally and became the exact head of successful Pages run `31322447014`.
+- The downloaded CI Pages artifact and live `release-manifest.json` were byte-identical. Every one of the 11 live files matched the declared byte length and SHA-256.
+- Live Chromium verified the Overview-to-Atlas keyboard path, route title/H1 focus, 320px no-overflow behavior, zero console warnings/errors, and nine HTTP 200 requests.
+- All main-owned Playwright sessions were closed. The three lane task IDs were archived and their worktree registrations were removed; only empty unregistered directory shells remain because Windows reported active directory handles.
+- The final docs-only closeout commit does not touch `project/nightlight-public/**`, so it does not retrigger the Pages workflow.

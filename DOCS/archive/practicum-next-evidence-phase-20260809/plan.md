@@ -49,7 +49,7 @@ Continue the original P1, P2, and P3 Codex tasks from synchronized `main@223fc65
 - [x] Dispatch P1, P2, and P3 with updated scope, ownership, validation, and stop conditions.
 - [x] Supervise each task to `ready-for-integration`, evidence-backed `blocked`, or justified no-op.
 - [x] Review diffs, citations, measurements, claims, path overlap, and live-process cleanup independently.
-- [ ] Integrate eligible deliveries sequentially, validate on main, push, update records, and clean worktrees. Integration, local validation, and P2/P3 lane archival are complete; push, Pages verification, umbrella archival, and cleanup remain.
+- [x] Integrate eligible deliveries sequentially, validate on main, push, update records, and clean worktrees. Product release `e18b91a` and Pages run `31322447014` succeeded; all task/worktree registrations are closed and residual directory shells are documented.
 
 ## Acceptance criteria
 
