@@ -7,7 +7,7 @@ import { DATA_BOUNDARY } from '../content/copy.js'
     <header class="page-heading page-heading--split">
       <div>
         <p class="eyebrow"><span>Field note 05</span> Credits / data policy</p>
-        <h1>Credit the work.<br><em>Keep the line clear.</em></h1>
+        <h1 tabindex="-1">Credit the work.<br><em>Keep the line clear.</em></h1>
       </div>
       <p>
         Code licensing, contributor credit, source attribution, and data publication rights are separate.

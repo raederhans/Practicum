@@ -117,7 +117,7 @@ watch(comparisonLeftId, (eventId) => {
     <header class="page-heading page-heading--split">
       <div>
         <p class="eyebrow"><span>Field note 02</span> Study atlas</p>
-        <h1>Broad context,<br><em>bounded detail.</em></h1>
+        <h1 tabindex="-1">Broad context,<br><em>bounded detail.</em></h1>
       </div>
       <p>
         Explore a hand-cleaned event index using names, years, broad locations, and centers rounded to one decimal.

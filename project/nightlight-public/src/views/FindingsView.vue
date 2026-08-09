@@ -25,7 +25,7 @@ const roleRows = Object.freeze([
     <header class="page-heading page-heading--split">
       <div>
         <p class="eyebrow"><span>Field note 03</span> Generalization Autopsy</p>
-        <h1>Useful here.<br><em>Unproven there.</em></h1>
+        <h1 tabindex="-1">Useful here.<br><em>Unproven there.</em></h1>
       </div>
       <p>
         A model can describe variation in a known sample and still fail the harder test of travelling

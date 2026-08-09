@@ -25,6 +25,7 @@ const allowedTopLevel = new Set([
   'CREDITS.md',
   'DATA_POLICY.md',
   'THIRD_PARTY_NOTICES.md',
+  'USER_STUDY_PROTOCOL.md',
   '.gitignore',
   '.vercelignore',
 ])
@@ -49,6 +50,7 @@ const allowedExactFiles = new Set([
   'LICENSE',
   'README.md',
   'THIRD_PARTY_NOTICES.md',
+  'USER_STUDY_PROTOCOL.md',
   'index.html',
   'package-lock.json',
   'package.json',
@@ -83,6 +85,7 @@ const allowedExactFiles = new Set([
   'tests/static-shell.test.js',
   'tests/study.test.js',
   'tests/support/temporaryRoot.js',
+  'tests/user-study-protocol.test.js',
   'vercel.json',
   'vite.config.js',
 ])

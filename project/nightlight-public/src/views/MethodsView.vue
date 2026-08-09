@@ -3,7 +3,7 @@
     <header class="page-heading page-heading--split">
       <div>
         <p class="eyebrow"><span>Field note 04</span> Methods</p>
-        <h1>A traceable path<br><em>from light to model.</em></h1>
+        <h1 tabindex="-1">A traceable path<br><em>from light to model.</em></h1>
       </div>
       <p>
         The public edition describes the workflow but does not ship inputs, fine-grained derivatives,

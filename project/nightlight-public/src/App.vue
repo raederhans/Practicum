@@ -12,6 +12,9 @@ const navigation = [
 
 const route = useRoute()
 const navigationElement = ref(null)
+const mainElement = ref(null)
+const siteTitle = 'Nightlight Disaster Observatory'
+let hasRenderedRoute = false
 
 function revealActiveNavigation() {
   nextTick(() => {
@@ -23,8 +26,25 @@ function revealActiveNavigation() {
   })
 }
 
-watch(() => route.path, revealActiveNavigation, { flush: 'post' })
-onMounted(revealActiveNavigation)
+function updateRouteContext() {
+  document.title = route.meta.pageTitle ? `${route.meta.pageTitle} | ${siteTitle}` : siteTitle
+  revealActiveNavigation()
+}
+
+function focusRouteHeading() {
+  mainElement.value?.querySelector('h1')?.focus()
+}
+
+function handleRouteEnter() {
+  updateRouteContext()
+  if (hasRenderedRoute) {
+    focusRouteHeading()
+  }
+  hasRenderedRoute = true
+}
+
+watch(() => route.path, updateRouteContext, { flush: 'post' })
+onMounted(updateRouteContext)
 </script>
 
 <template>
@@ -55,9 +75,9 @@ onMounted(revealActiveNavigation)
       </div>
     </header>
 
-    <main id="main-content" tabindex="-1">
+    <main id="main-content" ref="mainElement" tabindex="-1">
       <RouterView v-slot="{ Component }">
-        <Transition name="route" mode="out-in">
+        <Transition name="route" mode="out-in" @after-enter="handleRouteEnter">
           <component :is="Component" />
         </Transition>
       </RouterView>

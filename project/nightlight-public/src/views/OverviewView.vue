@@ -8,7 +8,7 @@ import { STUDY_SUMMARY } from '../content/study.js'
     <section class="hero">
       <div class="hero__copy">
         <p class="eyebrow"><span>Field note 00</span> Public research edition</p>
-        <h1>Reading recovery<br><em>in the dark.</em></h1>
+        <h1 tabindex="-1">Reading recovery<br><em>in the dark.</em></h1>
         <p class="hero__lead">
           A two-stage study of disaster impacts, electricity outages, and changes in nighttime light—
           presented here as an inspectable portfolio without publishing restricted fine-grained records.

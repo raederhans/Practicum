@@ -18,4 +18,15 @@ describe('public navigation contract', () => {
       expect(typeof route.component).toBe('function')
     }
   })
+
+  it('gives every route a unique document title for navigation context', () => {
+    expect(routes.map(({ meta }) => meta?.pageTitle)).toEqual([
+      'Overview',
+      'Study Atlas',
+      'Findings',
+      'Methods',
+      'Credits / Policy',
+    ])
+    expect(new Set(routes.map(({ meta }) => meta?.pageTitle)).size).toBe(routes.length)
+  })
 })

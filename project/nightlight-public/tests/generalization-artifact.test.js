@@ -70,7 +70,7 @@ describe('Generalization Autopsy accessibility shell', () => {
     const styles = await readFile(new URL('../src/styles/main.css', import.meta.url), 'utf8')
 
     expect(app).toMatch(/scrollIntoView/)
-    expect(app).toMatch(/onMounted\(revealActiveNavigation\)/)
+    expect(app).toMatch(/function updateRouteContext\(\)[\s\S]*?revealActiveNavigation\(\)[\s\S]*?onMounted\(updateRouteContext\)/)
     expect(app).toMatch(/aria-current/)
     expect(styles).toMatch(/\.site-nav\s*\{[\s\S]*overflow-x:\s*auto/)
     expect(styles).toMatch(/:focus-visible/)

@@ -227,8 +227,8 @@ a {
   animation: status-pulse 2.4s ease-in-out infinite;
 }
 
-main:focus {
-  outline: none;
+main:focus-visible {
+  outline-offset: -2px;
 }
 
 .page {
@@ -619,7 +619,6 @@ main:focus {
   border-radius: 0;
   color: var(--paper);
   background: transparent;
-  outline: none;
 }
 
 .atlas-controls input {

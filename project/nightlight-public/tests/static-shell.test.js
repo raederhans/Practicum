@@ -41,6 +41,47 @@ describe('atlas keyboard contract', () => {
   })
 })
 
+describe('route-change focus contract', () => {
+  it('moves focus to a programmatically focusable page heading after navigation', async () => {
+    const app = await readFile(new URL('../src/App.vue', import.meta.url), 'utf8')
+    const viewPaths = [
+      '../src/views/OverviewView.vue',
+      '../src/views/AtlasView.vue',
+      '../src/views/FindingsView.vue',
+      '../src/views/MethodsView.vue',
+      '../src/views/CreditsView.vue',
+    ]
+
+    expect(app).toMatch(/querySelector\(['"]h1['"]\)\?\.focus\(\)/)
+    for (const viewPath of viewPaths) {
+      const view = await readFile(new URL(viewPath, import.meta.url), 'utf8')
+      expect(view).toMatch(/<h1\s+tabindex="-1">/)
+    }
+  })
+
+  it('does not suppress the shared focus indicator on route targets or atlas filters', async () => {
+    const styles = await readFile(new URL('../src/styles/main.css', import.meta.url), 'utf8')
+
+    expect(styles).not.toMatch(/main:focus\s*{\s*outline:\s*none/)
+    expect(styles).not.toMatch(/\.atlas-controls\s+(?:input|select)[\s\S]{0,240}outline:\s*none/)
+  })
+
+  it('does not move focus on the first route render', async () => {
+    const app = await readFile(new URL('../src/App.vue', import.meta.url), 'utf8')
+
+    expect(app).toMatch(/let hasRenderedRoute = false/)
+    expect(app).toMatch(/if \(hasRenderedRoute\)\s*{\s*focusRouteHeading\(\)\s*}/)
+    expect(app).toMatch(/hasRenderedRoute = true/)
+  })
+
+  it('syncs document and navigation context after asynchronous route content enters', async () => {
+    const app = await readFile(new URL('../src/App.vue', import.meta.url), 'utf8')
+
+    expect(app).toMatch(/function handleRouteEnter\(\)[\s\S]*?updateRouteContext\(\)/)
+    expect(app).toMatch(/@after-enter="handleRouteEnter"/)
+  })
+})
+
 describe('dependency install policy', () => {
   it('approves only the pinned esbuild install script required by Vite', async () => {
     const packageJson = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
