@@ -2,7 +2,7 @@
 
 ## Status
 
-`ready-for-integration`
+`integrated` — candidate `9ef90ae` was integrated into `main` as `e7e95be`; fresh main validation passed 119/119 tests, production build/public boundary, and route-focus browser smoke.
 
 ## Checklist
 

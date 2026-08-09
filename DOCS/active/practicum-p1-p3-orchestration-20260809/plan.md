@@ -44,10 +44,10 @@ Run three isolated implementation tasks for P1 scientific reproducibility, P2 us
 ## Stages
 
 - [x] Stage 0: verify the clean integration baseline, load workflow rules, define path and live-resource ownership, and prepare this record.
-- [ ] Stage 1: create three isolated Codex worktree tasks and record thread/worktree identities.
-- [ ] Stage 2: supervise P1/P2/P3 until each is `ready-for-integration`, `blocked` with evidence, or intentionally no-op.
-- [ ] Stage 3: independently review each delivery package, changed paths, validation, scientific/product claims, and cross-lane overlap.
-- [ ] Stage 4: integrate eligible work in order P3, then P2, then P1; validate after each integration and resolve only evidence-backed conflicts.
+- [x] Stage 1: create three isolated Codex worktree tasks and record thread/worktree identities.
+- [x] Stage 2: supervise P1/P2/P3 until each is `ready-for-integration`, `blocked` with evidence, or intentionally no-op.
+- [x] Stage 3: independently review each delivery package, changed paths, validation, scientific/product claims, and cross-lane overlap.
+- [x] Stage 4: integrate eligible work in order P3, then P2, then P1; validate after each integration and resolve only evidence-backed conflicts.
 - [ ] Stage 5: run final combined validation, decide whether any public-app change is authorized for production push, synchronize Git/registry, and clean eligible worktrees.
 
 ## Acceptance criteria

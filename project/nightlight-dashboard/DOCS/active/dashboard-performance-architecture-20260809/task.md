@@ -2,7 +2,7 @@
 
 ## Current status
 
-`ready-for-integration` — product runtime is a measured no-op; reproducible bundle reporting and route-boundary regression coverage are implemented and freshly verified.
+`integrated` — candidate `1ecd6c9` was integrated into `main` as `82d4f97`; product runtime remains a measured no-op, while reproducible bundle reporting and route-boundary regression coverage pass fresh main validation.
 
 ## Checklist
 
