@@ -265,9 +265,9 @@
       "role": "tracked transformed and event-joined EAGLE-I working inputs",
       "git_state": "tracked",
       "path_count": 52,
-      "total_bytes": 215544230,
+      "total_bytes": 213419815,
       "inventory_algorithm": "sha256-lf-lines-v1",
-      "inventory_sha256": "2e436ca4ba63581661ca5df4b366e7a4e95246775a78d2bfaa6f66e01bb838db",
+      "inventory_sha256": "5bcf40ce8a8791f405d4dc68a0cd85c6c010990f4ddecf2913443d05f52a9744",
       "license": "The official source release is CC BY 4.0. This receipt identifies repository bytes only and does not establish the parent release, transformation lineage, or rights for joined event data.",
       "lineage_status": "ambiguous"
     }

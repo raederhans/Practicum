@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
 import re
 import subprocess
@@ -129,7 +130,8 @@ def test_eagle_i_public_release_and_tracked_derivatives_stay_distinct() -> None:
     }["eagle-i-tracked-derivatives-v1"]
     assert tree_receipt["path"] == "project/data/raw/Outage_Dataset_R1"
     assert tree_receipt["path_count"] == 52
-    assert tree_receipt["total_bytes"] == 215_544_230
+    assert tree_receipt["total_bytes"] == 213_419_815
+    assert tree_receipt["inventory_algorithm"] == "sha256-lf-lines-v1"
     assert re.fullmatch(r"[0-9a-f]{64}", tree_receipt["inventory_sha256"])
     assert tree_receipt["lineage_status"] == "ambiguous"
 
@@ -335,4 +337,38 @@ def test_eagle_i_tracked_tree_receipt_detects_inventory_drift(tmp_path: Path) ->
     assert report["status"] == "blocked"
     assert "tracked-tree-checksum-mismatch" in {
         item["code"] for item in report["blockers"]
+    }
+
+
+def test_tracked_tree_inventory_is_stable_across_text_checkout_line_endings(
+    tmp_path: Path, monkeypatch
+) -> None:
+    validator = _load_validator()
+    relative_path = "tracked/example.csv"
+    target = tmp_path / relative_path
+    target.parent.mkdir(parents=True)
+    monkeypatch.setattr(
+        validator,
+        "_git_tracked_paths",
+        lambda root, tree_path: [relative_path],
+    )
+
+    target.write_bytes(b"name,value\r\nalpha,1\r\n")
+    windows_inventory = validator._tracked_tree_inventory(
+        tmp_path, "tracked", "sha256-lf-lines-v1"
+    )
+    target.write_bytes(b"name,value\nalpha,1\n")
+    unix_inventory = validator._tracked_tree_inventory(
+        tmp_path, "tracked", "sha256-lf-lines-v1"
+    )
+
+    canonical = b"name,value\nalpha,1\n"
+    inventory_line = (
+        f"{relative_path}\t{len(canonical)}\t"
+        f"{hashlib.sha256(canonical).hexdigest()}\n"
+    ).encode("utf-8")
+    assert windows_inventory == unix_inventory == {
+        "path_count": 1,
+        "total_bytes": len(canonical),
+        "inventory_sha256": hashlib.sha256(inventory_line).hexdigest(),
     }

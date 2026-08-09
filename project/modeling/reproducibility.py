@@ -100,7 +100,7 @@ def _tracked_tree_inventory(
         target = root / path
         if not target.is_file():
             raise FileNotFoundError(path)
-        content = target.read_bytes()
+        content = _canonical_bytes(target, "git-text-lf")
         total_bytes += len(content)
         digest = hashlib.sha256(content).hexdigest()
         lines.append(f"{path}\t{len(content)}\t{digest}\n")
