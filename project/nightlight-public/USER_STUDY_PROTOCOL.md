@@ -4,7 +4,7 @@
 
 **This is a deferred, optional historical instrument.** It is retained because its tasks and blank result structure may be useful if the personal project later chooses to run ethical human research. It is not the current release gate, it is not required to complete the owner-run proxy phase, and it contains no result.
 
-The current feasible path is the research-supported proxy plan under `DOCS/active/proxy-evidence-phase-20260809/`. Automated checks, solo communication review, or AI/adversarial review must not populate the participant tables below or be renamed as participant evidence.
+The current feasible path is the research-supported proxy plan recorded under `DOCS/archive/proxy-evidence-phase-20260809/`. Automated checks, solo communication review, or AI/adversarial review must not populate the participant tables below or be renamed as participant evidence.
 
 ## Evidence status
 

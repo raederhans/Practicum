@@ -2,7 +2,7 @@
 
 ## Current status
 
-`ready_for_integration` — performance/runtime justified no-op plus a documentation-accuracy follow-up. The reusable measurement harness, protocol/report, and 56 selected per-sample rows are ready for the integration owner; routing, MapLibre ownership, Vite/chunk configuration, and emitted performance/runtime assets remain unchanged. A later P1-evidence follow-up updates two user-visible documentation views and their contract test without claiming a performance improvement or new scientific validation.
+`integrated` — candidate `90dea17f112fb641d164d1e46f9a7d3d75f1b529` was integrated into `main` as `7db66b9`. The performance/runtime decision remains a justified no-op; routing, MapLibre ownership, Vite/chunk configuration, and emitted runtime assets remain unchanged. The P1-evidence documentation correction is included without claiming a performance improvement or new scientific validation.
 
 ## Checklist
 
@@ -100,10 +100,10 @@ The user-visible documentation now states that this personal/public site does no
 
 ### Lane-local evidence and handoff
 
-- `DOCS/active/dashboard-navigation-performance-20260809/plan.md`: protocol, decision gate, and closeout criteria.
-- `DOCS/active/dashboard-navigation-performance-20260809/context.md`: verified base, architecture/deployment context, limitations, and live-process contract.
-- `DOCS/active/dashboard-navigation-performance-20260809/task.md`: measured report, decision, commands/results, risks, and handoff state.
-- `DOCS/active/dashboard-navigation-performance-20260809/measurements.csv`: 42 local dashboard rows plus 14 non-equivalent deployment-context rows; timing fields rounded to three decimals.
+- `DOCS/archive/dashboard-navigation-performance-20260809/plan.md`: protocol, decision gate, and closeout criteria.
+- `DOCS/archive/dashboard-navigation-performance-20260809/context.md`: verified base, architecture/deployment context, limitations, and live-process contract.
+- `DOCS/archive/dashboard-navigation-performance-20260809/task.md`: measured report, decision, commands/results, risks, and handoff state.
+- `DOCS/archive/dashboard-navigation-performance-20260809/measurements.csv`: 42 local dashboard rows plus 14 non-equivalent deployment-context rows; timing fields rounded to three decimals.
 
 ### Documentation accuracy and contract follow-up
 
@@ -123,3 +123,10 @@ Overlap risk remains low and dashboard-local. The five performance paths are new
 - Third-party CARTO/style/tile responses may add variance or fail independently of dashboard code.
 - The app exposes no explicit MapLibre `load`/ready marker, so canvas attachment and network quiet must remain clearly labeled proxies.
 - The live GitHub Pages artifact may not contain this dashboard at all.
+
+## Integration verification
+
+- Main reran the dashboard suite: 21/21 tests passed.
+- Main reran `npm run analyze:bundle`: MapLibre remained isolated from the home closure at `803,051 B` raw / `217,871 B` gzip.
+- Main checked the reusable probe syntax and the selected CSV: 56 rows, 42 local, 14 deployment-context, zero network-quiet timeouts, and no home row with MapLibre transfer.
+- The combined full Python suite exposed one stale root contract that still required `partner-restricted`; the integration owner repaired that test in `588c9aa`. Release review later caught a different public-repository distribution overstatement in the detailed callout; `c72e26e` now distinguishes Pages packaging from public Git tracking. The final full suite passed 112 tests plus 7 subtests.

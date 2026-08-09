@@ -68,4 +68,4 @@ The first `Start-Process` attempt was rejected before launch. Two later shell/lo
 
 ## Handoff checkpoint
 
-Current state: `ready-for-integration`. Research, documentation, minimal focus repair, TDD, static validation, production-browser proxy checks, review, and owned-resource cleanup are complete. No Git index, ref, branch, worktree, remote, deployment, registry, or production setting has been changed.
+Current state: `integrated`. Research, documentation, minimal focus repair, TDD, static validation, production-browser proxy checks, review, and owned-resource cleanup are complete. Candidate `223631a02356eaa99866be17278f417a4174cbbc` was integrated into `main` as `232577e`; the umbrella integration task owns remote release, Pages verification, task archival, and worktree cleanup.

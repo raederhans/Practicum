@@ -2,7 +2,7 @@
 
 ## Status
 
-`ready-for-integration`
+`integrated` — candidate `223631a02356eaa99866be17278f417a4174cbbc` was integrated into `main` as `232577e`. Remote release and Pages verification are owned by the umbrella integration task.
 
 ## Checklist
 
@@ -33,6 +33,8 @@ None. Real-participant evidence is intentionally outside the current completion 
 - Browser: 20/20 route-width checks and 4/4 Compare checks passed; console warnings/errors, request failures, and HTTP responses at 400 or above were all zero.
 - Teardown: P2 browser sessions were closed, port 43231 was released, and P2 browser snapshots, logs, and generated `dist` files were removed. Unrelated 5174/5175 listeners and the P3 browser session were not changed.
 
-## Handoff state
+## Integration evidence
 
-The lane is ready for integration as an uncommitted worktree diff. It has not been staged, committed, merged, pushed, deployed, or release-admitted.
+- Main independently reran `npm run validate`: 123/123 tests passed together with the production build and required public/dist boundary.
+- Fresh main-owned Chromium verification reproduced the intended first-Tab order, moved focus to the Atlas H1 after keyboard route activation, found no 320px page overflow, reported zero console errors, and observed nine static requests returning HTTP 200.
+- The lane is integrated and locally admitted. It still does not constitute participant, primary-audience, screen-reader, speech, switch-device, or scientific-comprehension evidence.

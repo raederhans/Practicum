@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { describe, expect, it } from 'vitest'
 
-const phaseRoot = new URL('../DOCS/active/proxy-evidence-phase-20260809/', import.meta.url)
+const phaseRoot = new URL('../DOCS/archive/proxy-evidence-phase-20260809/', import.meta.url)
 
 async function readOptional(relativePath) {
   try {
