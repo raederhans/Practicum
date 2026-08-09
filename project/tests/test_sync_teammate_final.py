@@ -120,7 +120,16 @@ class ManifestContractTests(unittest.TestCase):
         for source in sources.values():
             self.assertTrue(required.issubset(source), source["id"])
             self.assertTrue(source["official_urls"], source["id"])
-        self.assertEqual("partner-restricted", sources["eagle_i"]["status"])
+        eagle_i = sources["eagle_i"]
+        self.assertEqual(
+            "public-release-local-derivatives-lineage-unproven",
+            eagle_i["status"],
+        )
+        self.assertEqual("CC BY 4.0", eagle_i["official_release"]["license"])
+        self.assertEqual(
+            "10.6084/m9.figshare.24237376.v4",
+            eagle_i["official_release"]["versioned_doi"],
+        )
 
     def test_canonical_results_only_asserts_evidenced_values(self):
         results = json.loads(

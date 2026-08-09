@@ -7,31 +7,65 @@
       "name": "NASA VIIRS/NPP Gap-Filled Lunar BRDF-Adjusted Nighttime Lights Daily L3 Global 500m SIN Grid VNP46A2",
       "official_urls": [
         "https://ladsweb.modaps.eosdis.nasa.gov/missions-and-measurements/products/VNP46A2/",
-        "https://search.earthdata.nasa.gov/search?q=VNP46A2"
+        "https://search.earthdata.nasa.gov/search?q=VNP46A2",
+        "https://developers.google.com/earth-engine/datasets/catalog/NASA_VIIRS_002_VNP46A2",
+        "https://doi.org/10.5067/VIIRS/VNP46A2.002"
       ],
-      "auth": "NASA Earthdata Login required for download",
-      "license": "NASA Earth Science data policy; retain dataset citation and metadata",
-      "version": "Collection/version must be recorded per downloaded granule; not inferred from filenames",
+      "auth": "The active scripts use Google Earth Engine and require an authorized Earth Engine account for export",
+      "license": "NASA LP DAAC data are freely accessible; dataset citation is requested for publications and derived works",
+      "version": "Collection 2; Earth Engine image collection NASA/VIIRS/002/VNP46A2; DOI 10.5067/VIIRS/VNP46A2.002",
       "redistribution": "metadata-and-derived-products-review-required",
-      "reproducibility": "official-download-reproducible-with-account-and-granule-list",
+      "reproducibility": "collection-identified-but-event-export-assets-and-checksums-not-receipted",
       "status": "required-upstream-not-vendored",
+      "immutable_identifiers": {
+        "earth_engine_collection": "NASA/VIIRS/002/VNP46A2",
+        "collection": "002",
+        "doi": "10.5067/VIIRS/VNP46A2.002"
+      },
       "local_targets": ["project/data/raw", "project/data/processed"]
     },
     {
       "id": "eagle_i",
-      "name": "U.S. DOE EAGLE-I outage data",
-      "official_urls": ["https://eagle-i.doe.gov/"],
-      "auth": "access may require registration or authorization",
-      "license": "terms-controlled; verify grant-specific or portal terms before reuse",
-      "version": "query/export timestamp and event window must be recorded",
-      "redistribution": "do-not-redistribute-without-confirmed-terms",
-      "reproducibility": "conditional-on-authorized-access",
-      "status": "partner-restricted",
+      "name": "ORNL EAGLE-I recorded electricity outages",
+      "official_urls": [
+        "https://doi.ccs.ornl.gov/dataset/ccec86f0-e144-5de8-aee0-fb26028b26e1",
+        "https://openenergyhub.ornl.gov/explore/dataset/eaglei_outages_2014/",
+        "https://figshare.com/articles/dataset/24237376",
+        "https://api.figshare.com/v2/articles/24237376"
+      ],
+      "auth": "none for the cited public Figshare release and ORNL OpenEnergy catalog entry",
+      "license": "CC BY 4.0 for Figshare article 24237376 version 4 and the ORNL OpenEnergy catalog entry",
+      "version": "Figshare article 24237376 version 4, published 2026-02-25; repository files cover 2014-2023 but their parent release version is not recorded",
+      "redistribution": "public-source-permitted-with-CC-BY-attribution; transformed-or-joined-files-require-lineage-review",
+      "reproducibility": "official-release-metadata-receipted-but-local-transformation-lineage-unproven",
+      "status": "public-release-local-derivatives-lineage-unproven",
+      "official_release": {
+        "article_id": 24237376,
+        "version": 4,
+        "versioned_doi": "10.6084/m9.figshare.24237376.v4",
+        "ornl_dataset_doi": "10.13139/ORNLNCCS/1975202",
+        "license": "CC BY 4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "published_at": "2026-02-25T18:52:23Z",
+        "metadata_api": "https://api.figshare.com/v2/articles/24237376",
+        "files_used_by_repository_year_range": [
+          {"file_id": 42547717, "name": "eaglei_outages_2014.csv", "bytes": 78056250, "md5": "c7bfcf4b7fd26292f8d8801a26e8c52f"},
+          {"file_id": 42547822, "name": "eaglei_outages_2015.csv", "bytes": 598963737, "md5": "774d837e6a0d4f20aab5c82448538d37"},
+          {"file_id": 42547825, "name": "eaglei_outages_2016.csv", "bytes": 619779314, "md5": "8e4e85e81db474a708278aabef1198ec"},
+          {"file_id": 42547828, "name": "eaglei_outages_2017.csv", "bytes": 698796929, "md5": "4faaeeb3b3e8e2d13d0e9238617ce3ce"},
+          {"file_id": 42547879, "name": "eaglei_outages_2018.csv", "bytes": 999210542, "md5": "726543e4a392e220108b035ba4c52e43"},
+          {"file_id": 42547885, "name": "eaglei_outages_2019.csv", "bytes": 1102778792, "md5": "0ff77af0106486eb7bdc6c5051bd916a"},
+          {"file_id": 42547894, "name": "eaglei_outages_2020.csv", "bytes": 1170699724, "md5": "3b1e76e7ff0445da2b9a2fe4819c0e88"},
+          {"file_id": 42547891, "name": "eaglei_outages_2021.csv", "bytes": 1141058232, "md5": "b5a5912be793ca22dddcc73ca2c3379d"},
+          {"file_id": 42547897, "name": "eaglei_outages_2022.csv", "bytes": 1187596176, "md5": "0cd04f23ac90ec4ec20ce3a63dcfa25a"},
+          {"file_id": 44574907, "name": "eaglei_outages_2023.csv", "bytes": 1199752423, "md5": "4ef3f9290884b4151a43333d28f67369"}
+        ]
+      },
       "local_targets": ["project/data/raw/Outage_Dataset_R1"],
       "derived_targets": [
         {
           "path": "project/data/result/stage3",
-          "publication_status": "rights-review-required"
+          "publication_status": "lineage-review-required"
         }
       ]
     },
@@ -203,22 +237,36 @@
       "official_urls": ["https://www.mrlc.gov/data"],
       "auth": "none for public downloads",
       "license": "U.S. Geological Survey data; cite product, year, and release",
-      "version": "land-cover year and release must be recorded",
+      "version": "Active Earth Engine export helper selects USGS/NLCD_RELEASES/2021_REL/NLCD/2021 for CONUS and USGS/NLCD_RELEASES/2016_REL/NLCD/2016 for Puerto Rico",
       "redistribution": "permitted-with-source-citation",
-      "reproducibility": "versioned-official-download",
-      "status": "public-download",
+      "reproducibility": "earth-engine-assets-identified-but-export-receipts-and-checksums-missing",
+      "status": "public-version-selected-export-receipt-missing",
+      "immutable_identifiers": {
+        "conus_earth_engine_asset": "USGS/NLCD_RELEASES/2021_REL/NLCD/2021",
+        "puerto_rico_earth_engine_asset": "USGS/NLCD_RELEASES/2016_REL/NLCD/2016",
+        "current_annual_nlcd_collection_doi_for_catalog_context_only": "10.5066/P94UXNTS"
+      },
       "local_targets": ["project/data/raw/nlcd", "project/data/result/stage2"]
     },
     {
       "id": "worldpop",
       "name": "WorldPop gridded population data",
-      "official_urls": ["https://hub.worldpop.org/"],
+      "official_urls": [
+        "https://hub.worldpop.org/",
+        "https://www.worldpop.org/rest/data/pop/wpgp?iso3=TUR",
+        "https://www.worldpop.org/rest/data/pop/wpgp?iso3=BHS",
+        "https://hub.worldpop.org/geodata/summary?id=6443"
+      ],
       "auth": "none for public catalog downloads",
-      "license": "dataset-specific WorldPop license; retain citation and verify selected layer",
-      "version": "country, year, resolution, and constrained/unconstrained variant must be recorded",
+      "license": "WorldPop catalog datasets are generally CC BY 4.0, with ODbL applying to layers derived from OSM or specified building/road sources; the selected file license must be retained",
+      "version": "Repository configuration selects TUR 2020 and BHS 2020, but the download code selects the first API file without locking resolution or constrained/unconstrained variant",
       "redistribution": "dataset-specific-attribution-required",
-      "reproducibility": "versioned-catalog-download-after-layer-selection",
-      "status": "public-catalog-dataset-selection-required",
+      "reproducibility": "country-and-year-selected-but-immutable-file-receipt-missing",
+      "status": "public-selection-partial-receipt-missing",
+      "selected_parameters": [
+        {"event_id": "earthquake_hatay", "iso3": "TUR", "year": 2020},
+        {"event_id": "dorian_freeport", "iso3": "BHS", "year": 2020}
+      ],
       "local_targets": ["project/data/raw/worldpop", "project/data/result/stage2"]
     }
   ]

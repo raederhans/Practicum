@@ -13,6 +13,13 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MANIFEST = ROOT / "project" / "data" / "manifests" / "reproducibility_inputs_v1.json"
+ALLOWED_DISPOSITIONS = {
+    "resolved",
+    "externally-actionable",
+    "permission-gated",
+    "unavailable",
+    "ambiguous",
+}
 
 
 def _load_json(path: Path) -> dict[str, Any]:
@@ -60,6 +67,52 @@ def _git_ignores(root: Path, relative_path: str) -> bool | None:
     return None
 
 
+def _git_tracked_paths(root: Path, relative_path: str) -> list[str] | None:
+    try:
+        completed = subprocess.run(
+            ["git", "-C", str(root), "ls-files", "-z", "--", relative_path],
+            check=False,
+            capture_output=True,
+        )
+    except OSError:
+        return None
+    if completed.returncode != 0:
+        return None
+    return sorted(
+        item.decode("utf-8")
+        for item in completed.stdout.split(b"\0")
+        if item
+    )
+
+
+def _tracked_tree_inventory(
+    root: Path, relative_path: str, algorithm: str
+) -> dict[str, Any]:
+    if algorithm != "sha256-lf-lines-v1":
+        raise ValueError(f"Unsupported tracked-tree algorithm: {algorithm}")
+    paths = _git_tracked_paths(root, relative_path)
+    if paths is None:
+        raise RuntimeError("Git tracking state could not be verified.")
+
+    lines: list[str] = []
+    total_bytes = 0
+    for path in paths:
+        target = root / path
+        if not target.is_file():
+            raise FileNotFoundError(path)
+        content = target.read_bytes()
+        total_bytes += len(content)
+        digest = hashlib.sha256(content).hexdigest()
+        lines.append(f"{path}\t{len(content)}\t{digest}\n")
+
+    inventory = "".join(lines).encode("utf-8")
+    return {
+        "path_count": len(paths),
+        "total_bytes": total_bytes,
+        "inventory_sha256": hashlib.sha256(inventory).hexdigest(),
+    }
+
+
 def _blocker(code: str, detail: str, **context: Any) -> dict[str, Any]:
     return {"code": code, "detail": detail, **context}
 
@@ -82,6 +135,7 @@ def validate_scope(
     scope_config = scopes[scope]
     blockers: list[dict[str, Any]] = []
     checks: list[dict[str, Any]] = []
+    dispositions: list[dict[str, Any]] = []
 
     receipt_items = manifest.get("receipts", [])
     receipts: dict[str, dict[str, Any]] = {}
@@ -225,9 +279,84 @@ def validate_scope(
                 if item.get("id")
             }
 
+        tree_receipts: dict[str, dict[str, Any]] = {}
+        verified_tree_receipts: set[str] = set()
+        for tree_receipt in manifest.get("tracked_tree_receipts", []):
+            receipt_id = tree_receipt.get("id")
+            if not receipt_id or receipt_id in tree_receipts:
+                blockers.append(
+                    _blocker(
+                        "invalid-tracked-tree-receipt-id",
+                        "Every tracked-tree receipt must have a unique non-empty id.",
+                        receipt_id=receipt_id,
+                    )
+                )
+                continue
+            tree_receipts[receipt_id] = tree_receipt
+            if tree_receipt.get("git_state") != "tracked":
+                blockers.append(
+                    _blocker(
+                        "invalid-tracked-tree-git-state",
+                        "A tracked-tree receipt must explicitly require tracked files.",
+                        receipt_id=receipt_id,
+                    )
+                )
+                continue
+            try:
+                inventory = _tracked_tree_inventory(
+                    root,
+                    tree_receipt.get("path", ""),
+                    tree_receipt.get("inventory_algorithm", ""),
+                )
+            except (FileNotFoundError, RuntimeError, ValueError) as exc:
+                blockers.append(
+                    _blocker(
+                        "tracked-tree-unverifiable",
+                        str(exc),
+                        receipt_id=receipt_id,
+                        path=tree_receipt.get("path"),
+                    )
+                )
+                continue
+
+            for field, code in (
+                ("path_count", "tracked-tree-count-mismatch"),
+                ("total_bytes", "tracked-tree-size-mismatch"),
+                ("inventory_sha256", "tracked-tree-checksum-mismatch"),
+            ):
+                if inventory[field] != tree_receipt.get(field):
+                    blockers.append(
+                        _blocker(
+                            code,
+                            "A tracked-tree input does not match its aggregate receipt.",
+                            receipt_id=receipt_id,
+                            path=tree_receipt.get("path"),
+                            expected=tree_receipt.get(field),
+                            actual=inventory[field],
+                        )
+                    )
+                    break
+            else:
+                verified_tree_receipts.add(receipt_id)
+                checks.append(
+                    {
+                        "receipt_id": receipt_id,
+                        "path": tree_receipt.get("path"),
+                        "status": "verified",
+                        "sha256": inventory["inventory_sha256"],
+                        "canonical_bytes": inventory["total_bytes"],
+                        "path_count": inventory["path_count"],
+                        "receipt_kind": "tracked-tree",
+                    }
+                )
+
         boundaries = manifest.get("upstream_boundaries", [])
-        boundary_ids = {item.get("source_id") for item in boundaries}
-        if boundary_ids != set(source_by_id):
+        boundary_source_ids = [item.get("source_id") for item in boundaries]
+        boundary_ids = set(boundary_source_ids)
+        if (
+            boundary_ids != set(source_by_id)
+            or len(boundary_source_ids) != len(boundary_ids)
+        ):
             blockers.append(
                 _blocker(
                     "source-boundary-coverage-mismatch",
@@ -238,6 +367,51 @@ def validate_scope(
         for boundary in boundaries:
             source_id = boundary.get("source_id")
             source = source_by_id.get(source_id, {})
+            disposition = boundary.get("disposition")
+            full_rerun_ready = boundary.get("full_rerun_ready", False)
+            missing_boundary_metadata = [
+                field
+                for field in ("detail", "next_action", "evidence")
+                if not boundary.get(field)
+            ]
+            if not full_rerun_ready and not boundary.get("blocker_code"):
+                missing_boundary_metadata.append("blocker_code")
+            if missing_boundary_metadata:
+                blockers.append(
+                    _blocker(
+                        "source-boundary-metadata-incomplete",
+                        "An upstream boundary lacks required blocker, action, or evidence metadata.",
+                        source_id=source_id,
+                        missing_fields=missing_boundary_metadata,
+                    )
+                )
+            dispositions.append(
+                {
+                    "source_id": source_id,
+                    "disposition": disposition,
+                    "full_rerun_ready": full_rerun_ready,
+                    "blocker_code": boundary.get("blocker_code"),
+                }
+            )
+            if disposition not in ALLOWED_DISPOSITIONS:
+                blockers.append(
+                    _blocker(
+                        "invalid-boundary-disposition",
+                        "Every upstream boundary must use an allowed disposition.",
+                        source_id=source_id,
+                        disposition=disposition,
+                    )
+                )
+            elif full_rerun_ready != (disposition == "resolved"):
+                blockers.append(
+                    _blocker(
+                        "boundary-disposition-readiness-mismatch",
+                        "Resolved disposition and full-rerun readiness must agree.",
+                        source_id=source_id,
+                        disposition=disposition,
+                        full_rerun_ready=full_rerun_ready,
+                    )
+                )
             missing_metadata = [
                 field
                 for field in ("status", "version", "license", "reproducibility")
@@ -264,12 +438,24 @@ def validate_scope(
                         )
                     )
 
-            if not boundary.get("full_rerun_ready", False):
+            tree_receipt_id = boundary.get("tracked_tree_receipt_id")
+            if tree_receipt_id and tree_receipt_id not in verified_tree_receipts:
+                blockers.append(
+                    _blocker(
+                        "boundary-receipt-unverified",
+                        "An upstream boundary depends on an unverified tracked-tree receipt.",
+                        source_id=source_id,
+                        receipt_id=tree_receipt_id,
+                    )
+                )
+
+            if not full_rerun_ready:
                 blockers.append(
                     _blocker(
                         boundary.get("blocker_code", "upstream-boundary-not-ready"),
                         boundary.get("detail", "The upstream boundary is not ready."),
                         source_id=source_id,
+                        disposition=disposition,
                     )
                 )
 
@@ -324,6 +510,7 @@ def validate_scope(
         ),
         "checks": checks,
         "blockers": blockers,
+        "dispositions": dispositions,
         "limitations": scope_config.get("limitations", []),
     }
 
@@ -341,6 +528,13 @@ def print_report(report: dict[str, Any]) -> None:
         )
         suffix = f" {context}" if context else ""
         print(f"BLOCKED code={item['code']}{suffix}: {item['detail']}")
+    for item in report["dispositions"]:
+        print(
+            "DISPOSITION "
+            f"source_id={item['source_id']} "
+            f"value={item['disposition']} "
+            f"full_rerun_ready={item['full_rerun_ready']}"
+        )
     for limitation in report["limitations"]:
         print(f"LIMITATION: {limitation}")
 

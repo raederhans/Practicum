@@ -90,28 +90,37 @@ class SourceAcquisitionContractTests(unittest.TestCase):
         ibtracs = sources["noaa_ibtracs"]
         self.assertEqual("noaa_hurdat2_atlantic", ibtracs["run_alternative"])
 
-    def test_restricted_eagle_i_manifest_points_to_the_real_local_directory(self) -> None:
+    def test_public_eagle_i_release_keeps_local_derivative_lineage_unresolved(self) -> None:
         manifest = json.loads(SOURCE_MANIFEST.read_text(encoding="utf-8"))
         sources = {item["id"]: item for item in manifest["sources"]}
         eagle_i = sources["eagle_i"]
 
-        restricted_path = "project/data/raw/Outage_Dataset_R1"
-        self.assertEqual([restricted_path], eagle_i["local_targets"])
-        self.assertTrue((ROOT / restricted_path).is_dir())
+        tracked_path = "project/data/raw/Outage_Dataset_R1"
+        self.assertEqual([tracked_path], eagle_i["local_targets"])
+        self.assertTrue((ROOT / tracked_path).is_dir())
         self.assertEqual(
             [
                 {
                     "path": "project/data/result/stage3",
-                    "publication_status": "rights-review-required",
+                    "publication_status": "lineage-review-required",
                 }
             ],
             eagle_i["derived_targets"],
         )
-        self.assertEqual("partner-restricted", eagle_i["status"])
         self.assertEqual(
-            "do-not-redistribute-without-confirmed-terms",
+            "public-release-local-derivatives-lineage-unproven",
+            eagle_i["status"],
+        )
+        self.assertEqual(
+            "public-source-permitted-with-CC-BY-attribution; "
+            "transformed-or-joined-files-require-lineage-review",
             eagle_i["redistribution"],
         )
+        release = eagle_i["official_release"]
+        self.assertEqual(24_237_376, release["article_id"])
+        self.assertEqual(4, release["version"])
+        self.assertEqual("CC BY 4.0", release["license"])
+        self.assertEqual(10, len(release["files_used_by_repository_year_range"]))
 
 
 if __name__ == "__main__":

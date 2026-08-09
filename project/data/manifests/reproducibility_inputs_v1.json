@@ -231,9 +231,9 @@
       "version": "source-manifest-v1",
       "license": "Metadata only; each source entry records its controlling license or terms.",
       "git_state": "tracked",
-      "sha256": "1c5354ff702152b0e67b3f2ce81f0dd8cb4e42135728a56794dd8fdc7383254e",
+      "sha256": "b53fddb5293edba9ef5b63d3dc9a0bac99bab7f0364c89673ac177944c5b2167",
       "sha256_mode": "git-text-lf",
-      "canonical_bytes": 10912
+      "canonical_bytes": 14739
     },
     {
       "id": "acs-zcta-2022-output",
@@ -258,24 +258,54 @@
       "canonical_bytes": 1600665
     }
   ],
+  "tracked_tree_receipts": [
+    {
+      "id": "eagle-i-tracked-derivatives-v1",
+      "path": "project/data/raw/Outage_Dataset_R1",
+      "role": "tracked transformed and event-joined EAGLE-I working inputs",
+      "git_state": "tracked",
+      "path_count": 52,
+      "total_bytes": 215544230,
+      "inventory_algorithm": "sha256-lf-lines-v1",
+      "inventory_sha256": "2e436ca4ba63581661ca5df4b366e7a4e95246775a78d2bfaa6f66e01bb838db",
+      "license": "The official source release is CC BY 4.0. This receipt identifies repository bytes only and does not establish the parent release, transformation lineage, or rights for joined event data.",
+      "lineage_status": "ambiguous"
+    }
+  ],
   "upstream_boundaries": [
     {
       "source_id": "nasa_vnp46a2",
-      "input_classes": ["public", "missing"],
-      "availability": "partial local files without a complete versioned granule receipt",
+      "input_classes": ["public", "permission-gated", "missing"],
+      "availability": "Collection 2 and the active Earth Engine collection are identified, but event export assets and checksums are not receipted",
       "full_rerun_ready": false,
-      "blocker_code": "missing-versioned-granule-receipt",
-      "detail": "Collection/version, complete granule list, retrieval metadata, and per-granule checksums are not recorded for the active analysis."
+      "blocker_code": "earth-engine-export-receipt-missing",
+      "detail": "The active scripts identify NASA/VIIRS/002/VNP46A2 and DOI 10.5067/VIIRS/VNP46A2.002, but authorized export asset IDs, event windows, retrieval metadata, and checksums are not recorded.",
+      "disposition": "permission-gated",
+      "next_action": "An authorized Earth Engine owner must export or inventory every event asset and record asset IDs, windows, timestamps, and checksums without replacing existing raw caches.",
+      "evidence": [
+        "repository:project/script/stage3_export_all.py",
+        "official:https://developers.google.com/earth-engine/datasets/catalog/NASA_VIIRS_002_VNP46A2",
+        "doi:10.5067/VIIRS/VNP46A2.002"
+      ]
     },
     {
       "source_id": "eagle_i",
-      "input_classes": ["restricted"],
-      "availability": "partner-restricted local input",
+      "input_classes": ["public", "tracked", "ambiguous"],
+      "availability": "The official release is public under CC BY 4.0; 52 tracked transformed and event-joined files have a byte receipt but no recorded parent version or deterministic transform",
       "full_rerun_ready": false,
-      "blocker_code": "restricted-input-receipt-and-rights-unproven",
-      "detail": "Authorized-access receipt, export version/window, and publication-rights review are not recorded for a full rerun.",
-      "git_path": "project/data/raw/Outage_Dataset_R1",
-      "required_git_state": "untracked"
+      "blocker_code": "tracked-derived-lineage-unproven",
+      "detail": "The official EAGLE-I release is public under CC BY 4.0, but the tracked transformed and event-joined files are not tied to a recorded parent release and deterministic transform.",
+      "disposition": "ambiguous",
+      "next_action": "Identify the exact Figshare/ORNL parent file version and transformation or join code for all 52 tracked files; integration owner must separately decide whether historical Git governance is required.",
+      "evidence": [
+        "repository:project/data/raw/Outage_Dataset_R1",
+        "repository-commit:13f1a7bb60fe6c23c7aba9910f3d1fd04f050fcd",
+        "official:https://api.figshare.com/v2/articles/24237376",
+        "doi:10.6084/m9.figshare.24237376.v4",
+        "doi:10.13139/ORNLNCCS/1975202"
+      ],
+      "tracked_tree_receipt_id": "eagle-i-tracked-derivatives-v1",
+      "resolved_blocker_codes": ["restricted-input-git-tracked"]
     },
     {
       "source_id": "osm_overpass",
@@ -284,6 +314,12 @@
       "full_rerun_ready": false,
       "blocker_code": "mutable-source-snapshot-incomplete",
       "detail": "The recorded one-event drift check is not a complete, immutable snapshot receipt for every event used by the active analyses.",
+      "disposition": "externally-actionable",
+      "next_action": "Record a dated OSM extract or per-event Overpass response receipt, query, endpoint, timestamp, checksum, and ODbL attribution for every modeled event.",
+      "evidence": [
+        "repository:project/data/manifests/source_manifest_v1.json#osm_overpass",
+        "official:https://www.openstreetmap.org/copyright"
+      ],
       "git_path": "cache/source-data/osm-20260805/zeta_atlanta/osm_retrieval_manifest.json",
       "required_git_state": "ignored"
     },
@@ -293,7 +329,13 @@
       "availability": "historical download receipts recorded; local archives absent from this checkout",
       "full_rerun_ready": false,
       "blocker_code": "verified-download-cache-not-present",
-      "detail": "The two archive receipts are recorded, but the corresponding ignored local archives are not present in this worktree."
+      "detail": "The two archive receipts are recorded, but the corresponding ignored local archives are not present in this worktree.",
+      "disposition": "externally-actionable",
+      "next_action": "An isolated data owner may re-download the two immutable TIGER/Line 2020 archives and verify the recorded byte counts and SHA-256 values in a lane-owned cache.",
+      "evidence": [
+        "official:https://www2.census.gov/geo/tiger/TIGER2020/ZCTA520/tl_2020_us_zcta520.zip",
+        "official:https://www2.census.gov/geo/tiger/TIGER2020/COUNTY/tl_2020_us_county.zip"
+      ]
     },
     {
       "source_id": "census_acs_zcta_2022",
@@ -301,7 +343,10 @@
       "availability": "versioned local public-source output with receipt",
       "full_rerun_ready": true,
       "satisfied_by_receipt_ids": ["acs-zcta-2022-output"],
-      "detail": "The local normalized output matches the recorded acquisition checksum."
+      "detail": "The local normalized output matches the recorded acquisition checksum.",
+      "disposition": "resolved",
+      "next_action": "Keep the existing vintage, API response, and normalized-output receipts unchanged unless the source is intentionally upgraded.",
+      "evidence": ["repository:project/data/manifests/source_manifest_v1.json#census_acs_zcta_2022"]
     },
     {
       "source_id": "noaa_ibtracs",
@@ -309,7 +354,10 @@
       "availability": "official endpoint unavailable during acquisition; versioned HURDAT2 alternative recorded",
       "full_rerun_ready": true,
       "satisfied_by_receipt_ids": ["hurdat2-atlantic-output"],
-      "detail": "The source manifest explicitly routes this run to the versioned NOAA/NHC HURDAT2 alternative."
+      "detail": "The source manifest explicitly routes this run to the versioned NOAA/NHC HURDAT2 alternative.",
+      "disposition": "resolved",
+      "next_action": "Keep the explicit HURDAT2 alternative receipt; do not silently switch back to IBTrACS without a versioned receipt.",
+      "evidence": ["repository:project/data/manifests/source_manifest_v1.json#noaa_ibtracs"]
     },
     {
       "source_id": "noaa_hurdat2_atlantic",
@@ -317,7 +365,10 @@
       "availability": "versioned local public-source output with receipt",
       "full_rerun_ready": true,
       "satisfied_by_receipt_ids": ["hurdat2-atlantic-output"],
-      "detail": "The line-ending-normalized local output matches the recorded acquisition checksum."
+      "detail": "The line-ending-normalized local output matches the recorded acquisition checksum.",
+      "disposition": "resolved",
+      "next_action": "Retain the NOAA/NHC vintage, source checksum, normalized checksum, and access date together.",
+      "evidence": ["repository:project/data/manifests/source_manifest_v1.json#noaa_hurdat2_atlantic"]
     },
     {
       "source_id": "miami_dade_open_data",
@@ -325,23 +376,45 @@
       "availability": "public catalog without a selected immutable dataset receipt",
       "full_rerun_ready": false,
       "blocker_code": "catalog-selection-required",
-      "detail": "Item ID, service URL, dataset-specific terms, retrieval timestamp, and checksum remain unrecorded."
+      "detail": "The repository mentions Miami-Dade generator permits but does not identify the ArcGIS item or service that produced the retained validation artifact.",
+      "disposition": "ambiguous",
+      "next_action": "A domain owner must identify the exact public item or service from the historical acquisition evidence before any new download or license claim.",
+      "evidence": [
+        "repository:project/script/regen_pre_figures.py",
+        "repository:project/modeling/config/bug2_pilot_plan_v1.json",
+        "official:https://gis-mdc.opendata.arcgis.com/"
+      ]
     },
     {
       "source_id": "nlcd",
-      "input_classes": ["public", "missing"],
-      "availability": "derived NLCD panel present without the raw versioned input receipt",
+      "input_classes": ["public", "permission-gated", "missing"],
+      "availability": "The active Earth Engine asset IDs are known, but the exported per-event files and checksums are absent",
       "full_rerun_ready": false,
-      "blocker_code": "versioned-land-cover-receipt-missing",
-      "detail": "Land-cover year/release, raw file checksums, and complete acquisition receipt are not recorded for reconstruction."
+      "blocker_code": "earth-engine-export-receipt-missing",
+      "detail": "The export helper selects 2021 NLCD for CONUS and 2016 NLCD for Puerto Rico, but authorized export task IDs, files, timestamps, and checksums are not recorded.",
+      "disposition": "permission-gated",
+      "next_action": "An authorized Earth Engine owner must receipt the six event exports from the two recorded asset IDs and verify them against the derived panel.",
+      "evidence": [
+        "repository:project/modeling/gee/export_nlcd_500m.js",
+        "repository:project/modeling_tracking/progress_record/01_phase2_nlcd_closure.md",
+        "official:https://www.mrlc.gov/data"
+      ]
     },
     {
       "source_id": "worldpop",
       "input_classes": ["public", "missing"],
-      "availability": "public catalog without a selected immutable layer receipt",
+      "availability": "TUR 2020 and BHS 2020 are configured, but the API response file variant, immutable URL, license and checksum are not receipted",
       "full_rerun_ready": false,
-      "blocker_code": "catalog-selection-required",
-      "detail": "Country, year, resolution, constrained variant, license, retrieval URL, and checksum remain unrecorded."
+      "blocker_code": "immutable-layer-receipt-missing",
+      "detail": "Country and year are selected, but the downloader chooses the first API file without locking resolution, constrained variant, immutable URL, dataset-specific license, or checksum.",
+      "disposition": "externally-actionable",
+      "next_action": "Resolve and record the exact TUR 2020 and BHS 2020 file entries, variants, URLs, license terms, byte counts and checksums before rerunning international-stage repair.",
+      "evidence": [
+        "repository:project/modeling/config/intl_stage_repair_v1.json",
+        "repository:project/modeling/experimental/intl_stage_repair_v1.py",
+        "official:https://www.worldpop.org/rest/data/pop/wpgp?iso3=TUR",
+        "official:https://www.worldpop.org/rest/data/pop/wpgp?iso3=BHS"
+      ]
     }
   ]
 }
