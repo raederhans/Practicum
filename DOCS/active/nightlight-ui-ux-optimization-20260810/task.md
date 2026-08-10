@@ -2,19 +2,19 @@
 
 ## Status
 
-`dispatch-preparing`
+`parallel-implementation-in-progress`
 
 ## Checklist
 
 - [x] Confirm current main/origin SHA, worktree inventory, protected WIP, and retained `591a` exclusion.
 - [x] Define four disjoint implementation lanes and shared class-hook contract.
 - [x] Define live-process ownership and isolated ports.
-- [ ] Create and verify `codex/nightlight-ui-ux-base` baseline commit.
-- [ ] Dispatch Phase A task.
-- [ ] Dispatch Phase B task.
-- [ ] Dispatch Phase C task.
-- [ ] Dispatch Phase D task.
-- [ ] Record task/thread/worktree identities in the registry.
+- [x] Create and verify `codex/nightlight-ui-ux-base` baseline commit.
+- [x] Dispatch Phase A task.
+- [x] Dispatch Phase B task.
+- [x] Dispatch Phase C task.
+- [x] Dispatch Phase D task.
+- [x] Record task/thread/worktree identities in the registry.
 - [ ] Collect four `ready-for-integration` deliveries.
 - [ ] Integrate A -> B -> C -> D with per-lane validation.
 - [ ] Run final public validation and controlled browser matrix.
@@ -33,4 +33,4 @@
 
 ## Pending integration evidence
 
-No phase is `ready-for-integration` yet. Thread creation is asynchronous; task identities and progress will be recorded after dispatch.
+No phase is `ready-for-integration` yet. A, B, C, and D are confirmed active from the exact baseline and have each reported initial in-progress work.

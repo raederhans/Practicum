@@ -36,6 +36,17 @@ Each child must verify its port is free and its process identity before starting
 - Integration order is sequential even though implementation is parallel.
 - No child task receives Git integration authority; the primary task owns staging, commits after the baseline, refs, merges, pushes, registry, and cleanup.
 
+## Dispatch identities
+
+Exact shared baseline: `codex/nightlight-ui-ux-base@962431b680845a91b0b5b96807c77630dc82dd89`.
+
+| Phase | Thread/client identity | Worktree | Dispatch state |
+| --- | --- | --- | --- |
+| A | `019fec40-8293-7eb3-b03c-224ddcd85e6f` | `C:\Users\raede\.codex\worktrees\f00e\Practicum` | active; confirmed initial repository and browser-verification work |
+| B | `019fec40-8293-7eb3-b03c-226d54ef8486` | `C:\Users\raede\.codex\worktrees\fd8e\Practicum` | active; confirmed initial hierarchy and disclosure-contract work |
+| C | `019fec42-d0b0-7c92-9ed3-15176c8c3785` | `C:\Users\raede\.codex\worktrees\2a26\Practicum` | active; confirmed initial Atlas workflow, URL-state, and mobile-view work |
+| D | `019fec40-b5ad-72b3-8be4-212c26dd35eb` | `C:\Users\raede\.codex\worktrees\feae\Practicum` | active; confirmed initial CSS-contract and baseline work |
+
 ## Handoff requirements for every child
 
 Return: exact base/HEAD, changed files, diff summary, new class hooks, behavior evidence, test commands and exit codes, browser evidence, live-process cleanup state, unverified risks, file/semantic overlap, and recommended integration method. Do not return only “done.”
