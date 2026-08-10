@@ -1,7 +1,12 @@
 <template>
   <div class="map-page">
     <!-- Full-screen map container -->
-    <div ref="mapContainer" class="map-container" :class="{ 'map-container--fading': mapFading }" />
+    <div
+      ref="mapContainer"
+      class="map-container"
+      :class="{ 'map-container--fading': mapFading }"
+      :data-map-ready="mapReady ? 'true' : 'false'"
+    />
 
     <div v-if="dataError" class="map-data-error" role="alert">
       <strong>Data unavailable</strong>
@@ -313,6 +318,7 @@ function buildBufferFromGeoJSON(facilityGeoJSON) {
 
 const route        = useRoute()
 const mapContainer = ref(null)
+const mapReady     = ref(false)
 let map            = null
 let overviewFlyTimer = null
 let lastMapView = { center: [-40, 33], zoom: 1.3 }
@@ -712,6 +718,7 @@ function installMapInteractions(mapInstance) {
 }
 
 function releaseMapInstance(mapInstance) {
+  mapReady.value = false
   if (map === mapInstance) map = null
   try {
     mapInstance?.stop()
@@ -723,6 +730,7 @@ function releaseMapInstance(mapInstance) {
 
 // ── Initialize map ──
 onMounted(() => {
+  mapReady.value = false
   // Auto-collapse sidebars on mobile
   if (window.innerWidth <= 768) {
     sidebarCollapsed.value = true
@@ -743,6 +751,7 @@ onMounted(() => {
   map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-left')
 
   map.on('load', async () => {
+    mapReady.value = true
     map.getCanvas().focus()
     addFacilityIcons(map)
 
@@ -819,6 +828,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  mapReady.value = false
   if (overviewFlyTimer !== null) clearTimeout(overviewFlyTimer)
   const mapToRelease = map
   map = null
@@ -1189,6 +1199,7 @@ function switchBasemap(id) {
   lastMapView = resolveBasemapView(previousMap, lastMapView)
   const container = mapContainer.value
   mapFading.value = true
+  mapReady.value = false
   activeBasemap.value = id
   if (previousMap) {
     previousMap.stop()
@@ -1227,6 +1238,7 @@ function switchBasemap(id) {
     replacementMap.on('load', async () => {
       loadStarted = true
       if (map !== replacementMap) return
+      mapReady.value = true
 
       try {
         addFacilityIcons(replacementMap)

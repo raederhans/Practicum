@@ -128,8 +128,8 @@
             </div>
             <span class="map-card__cta">Explore Map →</span>
           </div>
-          <div class="map-card__img">
-            <img :src="`${base}map_preview.png`" alt="Map preview" />
+          <div ref="mapPreviewContainer" class="map-card__img">
+            <img v-if="mapPreviewVisible" :src="`${base}map_preview.png`" alt="Map preview" loading="lazy" />
           </div>
         </RouterLink>
       </div>
@@ -140,11 +140,13 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { EVENTS } from '@/data/events.js'
 
 const router = useRouter()
 const base = import.meta.env.BASE_URL
+const mapPreviewContainer = ref(null)
+const mapPreviewVisible = ref(false)
 
 function scrollToIntro() {
   document.getElementById('intro')?.scrollIntoView({ behavior: 'smooth' })
@@ -162,6 +164,7 @@ const stats = [
 
 // Scroll-driven hero fade + reveal animations
 let observer
+let mapPreviewObserver
 let scrollHandler
 
 onMounted(() => {
@@ -192,9 +195,21 @@ onMounted(() => {
     { threshold: 0.15 }
   )
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
+
+  mapPreviewObserver = new IntersectionObserver(
+    entries => {
+      if (entries.some(entry => entry.isIntersecting)) {
+        mapPreviewVisible.value = true
+        mapPreviewObserver?.disconnect()
+      }
+    },
+    { rootMargin: '0px', threshold: 0.01 }
+  )
+  if (mapPreviewContainer.value) mapPreviewObserver.observe(mapPreviewContainer.value)
 })
 onUnmounted(() => {
   observer?.disconnect()
+  mapPreviewObserver?.disconnect()
   if (scrollHandler) window.removeEventListener('scroll', scrollHandler)
 })
 </script>

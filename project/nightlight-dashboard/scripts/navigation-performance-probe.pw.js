@@ -4,10 +4,14 @@ async page => {
     baseUrl: `${location.origin}${location.pathname}`,
     targetKind: new URLSearchParams(location.search).get('p3Target') ?? 'dashboard',
     runCount: new URLSearchParams(location.search).get('p3Runs') ?? '7',
+    networkProfile: new URLSearchParams(location.search).get('p3Profile') ?? 'none',
+    measurementScope: new URLSearchParams(location.search).get('p3Scope') ?? 'all',
   }))
   const targetKind = invocation.targetKind
   const runCount = Number(invocation.runCount)
   const baseUrl = invocation.baseUrl
+  const networkProfile = invocation.networkProfile
+  const measurementScope = invocation.measurementScope
   const viewport = { width: 1365, height: 768 }
   const quietWindowMs = 750
   const quietTimeoutMs = 15_000
@@ -21,6 +25,12 @@ async page => {
   }
   if (!['dashboard', 'deployment'].includes(targetKind)) {
     throw new Error('P3_PERF_TARGET must be dashboard or deployment')
+  }
+  if (!['none', 'slow4g'].includes(networkProfile)) {
+    throw new Error('P3_PERF_PROFILE must be none or slow4g')
+  }
+  if (!['all', 'home', 'map'].includes(measurementScope)) {
+    throw new Error('P3_PERF_SCOPE must be all, home, or map')
   }
 
   const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`
@@ -88,16 +98,43 @@ async page => {
       if (state.signals.mapCanvasAttached == null && document.querySelector('.maplibregl-canvas')) {
         state.signals.mapCanvasAttached = performance.now()
       }
+      if (state.signals.mapReady == null && document.querySelector('[data-map-ready="true"]')) {
+        state.signals.mapReady = performance.now()
+      }
+      const preview = document.querySelector('img[src*="map_preview.png"]')
+      if (state.signals.mapPreviewLoaded == null && preview?.complete && preview.naturalWidth > 0) {
+        state.signals.mapPreviewLoaded = performance.now()
+      }
     }
 
-    new MutationObserver(detectSignals).observe(document, { childList: true, subtree: true })
+    new MutationObserver(detectSignals).observe(document, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['data-map-ready'],
+    })
     document.addEventListener('DOMContentLoaded', detectSignals, { once: true })
+    document.addEventListener('load', event => {
+      if (event.target instanceof HTMLImageElement && /map_preview\.png(?:$|\?)/.test(event.target.currentSrc)) {
+        state.signals.mapPreviewLoaded = performance.now()
+      }
+    }, true)
   })
 
   const context = page.context()
   const cdp = await context.newCDPSession(page)
   await cdp.send('Network.enable')
   await cdp.send('Performance.enable')
+  const emulatedNetwork = networkProfile === 'slow4g' ? {
+    offline: false,
+    latency: 150,
+    downloadThroughput: 200_000,
+    uploadThroughput: 93_750,
+    connectionType: 'cellular4g',
+  } : null
+  if (emulatedNetwork) {
+    await cdp.send('Network.emulateNetworkConditions', emulatedNetwork)
+  }
 
   const clearBrowserCache = async () => {
     await cdp.send('Network.setCacheDisabled', { cacheDisabled: false })
@@ -145,14 +182,14 @@ async page => {
     }
   }
 
-  const resetDocumentProbe = async signalName => page.evaluate(name => {
+  const resetDocumentProbe = async signalNames => page.evaluate(names => {
     const probe = window.__p3PerformanceProbe
     if (!probe) throw new Error('Performance probe init script did not run')
     probe.longTasks = []
-    probe.signals[name] = null
+    for (const name of names) probe.signals[name] = null
     performance.clearResourceTimings()
     return performance.now()
-  }, signalName)
+  }, Array.isArray(signalNames) ? signalNames : [signalNames])
 
   const collectPageMetrics = async ({ phaseStart, signalName, beforeCdp, networkQuiet }) => {
     const browserMetrics = await page.evaluate(({ start, signal }) => {
@@ -180,6 +217,10 @@ async page => {
         .slice(0, 12)
       const longTasks = probe.longTasks.filter(entry => entry.startTime >= start)
       const signalValue = probe.signals[signal]
+      const relativeSignals = Object.fromEntries(Object.entries(probe.signals).map(([name, value]) => [
+        `${name}Ms`,
+        Number.isFinite(value) && value >= start ? value - start : null,
+      ]))
 
       return {
         navigation: navigation ? {
@@ -194,6 +235,7 @@ async page => {
         } : null,
         signalMs: Number.isFinite(signalValue) ? signalValue - start : null,
         signalName: signal,
+        signals: relativeSignals,
         resources: {
           count: resources.length,
           transferSize: resources.reduce((total, entry) => total + entry.transferSize, 0),
@@ -272,22 +314,22 @@ async page => {
 
     if (cacheState === 'warm') {
       const warmupTracker = beginNetworkTracking()
-      await navigateHashAndWait({ route: '/map', selector: '.maplibregl-canvas' })
+      await navigateHashAndWait({ route: '/map', selector: '[data-map-ready="true"]' })
       await waitForNetworkQuiet(warmupTracker)
       currentNetworkTracker = null
       await navigateHashAndWait({ route: '/', selector: '.hero__title' })
       await page.waitForFunction(() => !document.querySelector('.maplibregl-canvas'))
     }
 
-    const phaseStart = await resetDocumentProbe('mapCanvasAttached')
+    const phaseStart = await resetDocumentProbe(['mapCanvasAttached', 'mapReady'])
     const beforeCdp = await readCdpMetrics()
     const tracker = beginNetworkTracking()
-    await navigateHashAndWait({ route: '/map', selector: '.maplibregl-canvas' })
+    await navigateHashAndWait({ route: '/map', selector: '[data-map-ready="true"]' })
     const networkQuiet = await waitForNetworkQuiet(tracker)
     currentNetworkTracker = null
     const metrics = await collectPageMetrics({
       phaseStart,
-      signalName: 'mapCanvasAttached',
+      signalName: 'mapReady',
       beforeCdp,
       networkQuiet,
     })
@@ -311,6 +353,7 @@ async page => {
     return {
       count: sorted.length,
       median: quantile(sorted, 0.5),
+      p95: sorted[Math.ceil(sorted.length * 0.95) - 1],
       min: sorted[0],
       max: sorted[sorted.length - 1],
       p25,
@@ -327,6 +370,10 @@ async page => {
     'navigation.domContentLoadedMs',
     'navigation.loadEventEndMs',
     'signalMs',
+    'signals.homeAttachedMs',
+    'signals.mapPreviewLoadedMs',
+    'signals.mapCanvasAttachedMs',
+    'signals.mapReadyMs',
     'networkQuiet.durationMs',
     'resources.transferSize',
     'resources.mapView.durationMs',
@@ -406,28 +453,32 @@ async page => {
   const dashboardEquivalent = targetKind === 'dashboard' || deploymentInspection.dashboardEquivalent
   if (dashboardEquivalent) {
     for (let iteration = 1; iteration <= runCount; iteration += 1) {
-      await runAndRecord(() => runDirectPhase({
-        scenario: 'home-direct-cold', route: '/', cacheState: 'cold',
-        selector: '.hero__title', signalName: 'homeAttached', iteration,
-      }))
-      await runAndRecord(() => runDirectPhase({
-        scenario: 'home-direct-warm', route: '/', cacheState: 'warm',
-        selector: '.hero__title', signalName: 'homeAttached', iteration,
-      }))
-      await runAndRecord(() => runDirectPhase({
-        scenario: 'map-direct-cold', route: '/map', cacheState: 'cold',
-        selector: '.maplibregl-canvas', signalName: 'mapCanvasAttached', iteration,
-      }))
-      await runAndRecord(() => runDirectPhase({
-        scenario: 'map-direct-warm', route: '/map', cacheState: 'warm',
-        selector: '.maplibregl-canvas', signalName: 'mapCanvasAttached', iteration,
-      }))
-      await runAndRecord(() => runSpaMapPhase({
-        scenario: 'home-to-map-spa-cold', cacheState: 'cold', iteration,
-      }))
-      await runAndRecord(() => runSpaMapPhase({
-        scenario: 'home-to-map-spa-warm', cacheState: 'warm', iteration,
-      }))
+      if (measurementScope !== 'map') {
+        await runAndRecord(() => runDirectPhase({
+          scenario: 'home-direct-cold', route: '/', cacheState: 'cold',
+          selector: '.hero__title', signalName: 'homeAttached', iteration,
+        }))
+        await runAndRecord(() => runDirectPhase({
+          scenario: 'home-direct-warm', route: '/', cacheState: 'warm',
+          selector: '.hero__title', signalName: 'homeAttached', iteration,
+        }))
+      }
+      if (measurementScope !== 'home') {
+        await runAndRecord(() => runDirectPhase({
+          scenario: 'map-direct-cold', route: '/map', cacheState: 'cold',
+          selector: '[data-map-ready="true"]', signalName: 'mapReady', iteration,
+        }))
+        await runAndRecord(() => runDirectPhase({
+          scenario: 'map-direct-warm', route: '/map', cacheState: 'warm',
+          selector: '[data-map-ready="true"]', signalName: 'mapReady', iteration,
+        }))
+        await runAndRecord(() => runSpaMapPhase({
+          scenario: 'home-to-map-spa-cold', cacheState: 'cold', iteration,
+        }))
+        await runAndRecord(() => runSpaMapPhase({
+          scenario: 'home-to-map-spa-warm', cacheState: 'warm', iteration,
+        }))
+      }
     }
   } else {
     for (let iteration = 1; iteration <= runCount; iteration += 1) {
@@ -463,12 +514,17 @@ async page => {
       browserName: browser?.browserType().name() ?? 'unknown',
       browserVersion: browser?.version() ?? 'unknown',
       cacheMethod: 'CDP Network.clearBrowserCache; warm measurements follow one unmeasured warm-up',
+      networkProfile,
+      measurementScope,
+      emulatedNetwork,
       quietWindowMs,
       quietTimeoutMs,
       signalLimitations: {
         homeAttached: 'DOM attachment of .hero__title',
         bodyAttached: 'DOM attachment of body for non-equivalent deployment context only',
         mapCanvasAttached: 'DOM attachment of .maplibregl-canvas; this is not MapLibre style load',
+        mapReady: 'data-map-ready=true set synchronously inside the active MapLibre load event handler',
+        mapPreviewLoaded: 'load completion of map_preview.png when the browser requests it; null means it was not fetched in the measured phase',
         networkQuiet: 'No tracked HTTP(S) request in flight for the quiet window; third-party map traffic may affect it',
         scriptAttribution: 'CDP task/script duration and Long Tasks are page-level, not per-chunk execution attribution',
       },

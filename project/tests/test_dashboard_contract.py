@@ -189,10 +189,10 @@ def test_pages_workflow_scopes_permissions_to_each_job():
 def test_pages_workflow_pins_official_actions_to_reviewed_commits():
     workflow = PAGES_WORKFLOW.read_text(encoding="utf-8")
     reviewed_actions = {
-        "actions/checkout": ("11d5960a326750d5838078e36cf38b85af677262", "v4.4.0"),
-        "actions/setup-node": ("49933ea5288caeca8642d1e84afbd3f7d6820020", "v4.4.0"),
-        "actions/upload-pages-artifact": ("56afc609e74202658d3ffba0e8f6dda462b719fa", "v3.0.1"),
-        "actions/deploy-pages": ("d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e", "v4.0.5"),
+        "actions/checkout": ("93cb6efe18208431cddfb8368fd83d5badbf9bfd", "v5.0.1"),
+        "actions/setup-node": ("a0853c24544627f65ddf259abe73b1d18a591444", "v5.0.0"),
+        "actions/upload-pages-artifact": ("fc324d3547104276b827a68afc52ff2a11cc49c9", "v5.0.0"),
+        "actions/deploy-pages": ("cd2ce8fcbc39b97be8ca5fce6e763baed58fa128", "v5.0.0"),
     }
 
     for action, (commit, version) in reviewed_actions.items():
