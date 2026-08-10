@@ -3,9 +3,9 @@
     <header class="page-heading page-heading--split">
       <div>
         <p class="eyebrow"><span>Field note 04</span> Methods</p>
-        <h1 tabindex="-1">A traceable path<br><em>from light to model.</em></h1>
+        <h1 class="focus-target" data-route-focus tabindex="-1">A traceable path<br><em>from light to model.</em></h1>
       </div>
-      <p>
+      <p class="page-lede">
         The public edition describes the workflow but does not ship inputs, fine-grained derivatives,
         intermediate tables, or fitted model artifacts.
       </p>
@@ -15,20 +15,20 @@
       <article>
         <span class="method-timeline__number">01</span>
         <div>
-          <p class="eyebrow">Signal preparation</p>
-          <h2>Establish comparable nighttime-light traces.</h2>
-          <p>Align event windows, apply quality screens, and separate pre-event reference periods from post-event change.</p>
+          <p class="eyebrow">Input boundary</p>
+          <h2>Review source rights, event windows, and usable evidence.</h2>
+          <p>Nighttime-light, outage, and place-context inputs remain inside the analytical workspace at their approved grain. Missing or restricted inputs are not replaced with demonstrations.</p>
         </div>
-        <p class="method-timeline__output">Output retained privately:<br><strong>quality-controlled temporal extracts</strong></p>
+        <p class="method-timeline__output">Private boundary:<br><strong>raw and fine-grained inputs</strong></p>
       </article>
       <article>
         <span class="method-timeline__number">02</span>
         <div>
-          <p class="eyebrow">Event-level analysis</p>
-          <h2>Describe disruption and return across 25 events.</h2>
-          <p>Summarize the scale and timing of visible change across 17 jurisdictions without treating light as a direct welfare measure.</p>
+          <p class="eyebrow">Signal processing</p>
+          <h2>Establish quality-controlled nighttime-light traces.</h2>
+          <p>Align event windows, apply quality screens, and separate pre-event reference periods from post-event change without treating light as a direct welfare measure.</p>
         </div>
-        <p class="method-timeline__output">Public result:<br><strong>sample scale and broad context</strong></p>
+        <p class="method-timeline__output">Output retained privately:<br><strong>temporal extracts and intermediate tables</strong></p>
       </article>
       <article>
         <span class="method-timeline__number">03</span>
@@ -38,6 +38,24 @@
           <p>Construct ZIP-event observations, screen complete cases, and report descriptive fit with explicit interpretation limits.</p>
         </div>
         <p class="method-timeline__output">Public result:<br><strong>aggregated model diagnostics</strong></p>
+      </article>
+      <article>
+        <span class="method-timeline__number">04</span>
+        <div>
+          <p class="eyebrow">Analysis admission</p>
+          <h2>Keep five Evidence Passport checks separate.</h2>
+          <p>Reviewed rule outputs describe whether the declared workflow can inspect an event. Missing assessment remains Not assessed; unavailable components remain unavailable rather than becoming zero.</p>
+        </div>
+        <p class="method-timeline__output">Public result:<br><strong>component states and admission band</strong></p>
+      </article>
+      <article>
+        <span class="method-timeline__number">05</span>
+        <div>
+          <p class="eyebrow">Public artifact</p>
+          <h2>Admit only reviewed aggregates with traceable lineage.</h2>
+          <p>Each public value carries its role, cohort, sample lock, validation design, source version, and SHA-256. The static site bundles local artifacts only and makes no runtime data request.</p>
+        </div>
+        <p class="method-timeline__output">Published boundary:<br><strong>aggregate-only static artifacts</strong></p>
       </article>
     </section>
 

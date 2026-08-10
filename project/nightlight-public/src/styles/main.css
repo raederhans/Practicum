@@ -12,6 +12,7 @@
   --amber-soft: #d88e36;
   --acid: #e8ff75;
   --rust: #eb765f;
+  --focus-ring: var(--acid);
   --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
   --sans: Aptos, "Segoe UI", Candara, sans-serif;
   --mono: "Cascadia Mono", "IBM Plex Mono", Consolas, monospace;
@@ -27,13 +28,11 @@
 }
 
 html {
-  min-width: 320px;
   background: var(--ink);
   scroll-behavior: smooth;
 }
 
 body {
-  min-width: 320px;
   min-height: 100vh;
   margin: 0;
   background:
@@ -91,7 +90,7 @@ a {
 }
 
 :focus-visible {
-  outline: 2px solid var(--acid);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 4px;
 }
 
@@ -257,6 +256,16 @@ main:focus-visible {
   text-wrap: pretty;
 }
 
+.focus-target {
+  scroll-margin-block-start: 1rem;
+}
+
+.page-lede {
+  color: #becac4;
+  font-family: var(--serif);
+  line-height: 1.65;
+}
+
 .page h1,
 .page-heading h1,
 .hero h1 {
@@ -329,6 +338,45 @@ main:focus-visible {
 .button--quiet:hover {
   border-color: var(--acid);
   background: rgba(232, 255, 117, 0.055);
+}
+
+.definition-disclosure {
+  max-width: 840px;
+  margin-top: 1.5rem;
+  border: 1px solid var(--line-strong);
+  background: rgba(11, 24, 21, 0.72);
+}
+
+.definition-disclosure summary {
+  padding: 0.9rem 1rem;
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.definition-disclosure[open] summary {
+  border-bottom: 1px solid var(--line);
+}
+
+.definition-disclosure > div {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.definition-disclosure p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.definition-disclosure strong {
+  color: var(--paper);
 }
 
 .signal-panel {
@@ -501,6 +549,7 @@ main:focus-visible {
   font-weight: 400;
   letter-spacing: -0.045em;
   line-height: 1.03;
+  overflow-wrap: anywhere;
 }
 
 .research-note {
@@ -567,6 +616,15 @@ main:focus-visible {
   grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.72fr);
   gap: clamp(2rem, 7vw, 8rem);
   align-items: end;
+}
+
+.page-heading--split > *,
+.finding-hero > *,
+.method-principles > *,
+.policy-grid > *,
+.policy-facts > *,
+.license-ledger > * {
+  min-width: 0;
 }
 
 .page-heading h1 {
@@ -641,7 +699,6 @@ main:focus-visible {
   color: var(--muted);
   font-family: var(--mono);
   font-size: 0.65rem;
-  white-space: nowrap;
 }
 
 .atlas-controls > p strong {
@@ -1463,8 +1520,7 @@ main:focus-visible {
   border-bottom: 1px solid var(--line);
 }
 
-.passport-band,
-.component-state {
+.status-badge {
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
@@ -1504,6 +1560,18 @@ main:focus-visible {
 
 .evidence-passport__table-wrap {
   overflow-x: auto;
+}
+
+.data-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-color: var(--muted) transparent;
+  scrollbar-width: thin;
+}
+
+.data-table-wrap .evidence-table {
+  min-width: min(44rem, 100%);
 }
 
 .passport-components {
@@ -1579,6 +1647,10 @@ main:focus-visible {
   padding: 1.5rem;
 }
 
+.state-panel {
+  min-width: 0;
+}
+
 .evidence-passport__empty h3 {
   margin-bottom: 0.45rem;
   font-size: 1.35rem;
@@ -1639,6 +1711,7 @@ main:focus-visible {
 .finding-hero {
   display: grid;
   grid-template-columns: minmax(270px, 0.42fr) minmax(0, 1fr);
+  margin: 0;
   border: 1px solid var(--line-strong);
 }
 
@@ -1659,6 +1732,7 @@ main:focus-visible {
   font-size: 0.62rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  overflow-wrap: anywhere;
 }
 
 .finding-hero__number strong {
@@ -1764,6 +1838,10 @@ main:focus-visible {
   color: var(--muted);
   font-size: 0.85rem;
   line-height: 1.55;
+}
+
+.data-table-wrap > .evidence-table {
+  margin-top: 1.5rem;
 }
 
 .evidence-table caption {
@@ -2095,8 +2173,42 @@ main:focus-visible {
   text-underline-offset: 0.22rem;
 }
 
+.policy-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--line-strong);
+  border-left: 1px solid var(--line-strong);
+}
+
+.policy-facts article {
+  min-width: 0;
+  padding: 1.5rem;
+  border-right: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.policy-facts h2 {
+  margin: 1.8rem 0 0.7rem;
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.policy-facts p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.65;
+}
+
 .license-ledger {
   border-bottom: 1px solid var(--line-strong);
+}
+
+.license-ledger strong {
+  overflow-wrap: anywhere;
 }
 
 .site-footer {
@@ -2314,7 +2426,14 @@ main:focus-visible {
 
   .hero h1,
   .page-heading h1 {
-    font-size: clamp(3.15rem, 18vw, 5.5rem);
+    font-size: clamp(3rem, 17vw, 5.5rem);
+  }
+
+  .section-intro h2,
+  .license-ledger h2,
+  .limits-ledger h2,
+  .method-principles h2 {
+    font-size: clamp(2rem, 11vw, 5.3rem);
   }
 
   .hero__actions,
@@ -2328,12 +2447,22 @@ main:focus-visible {
 
   .atlas-controls,
   .policy-grid,
+  .policy-facts,
   .atlas-view-mode,
   .comparison-selectors,
   .comparison-events,
   .comparison-presets__grid,
   .comparison-component {
     grid-template-columns: 1fr;
+  }
+
+  .policy-grid article {
+    padding: 1rem;
+  }
+
+  .policy-grid h2,
+  .policy-grid p {
+    overflow-wrap: anywhere;
   }
 
   .atlas-controls > p {
@@ -2354,6 +2483,7 @@ main:focus-visible {
 
   .finding-hero__number {
     min-height: 300px;
+    padding: 1rem;
   }
 
   .finding-hero__chart {
@@ -2423,6 +2553,72 @@ main:focus-visible {
   .evidence-table th,
   .evidence-table td {
     padding: 0.7rem;
+  }
+}
+
+@media (forced-colors: active) {
+  :root {
+    --ink: Canvas;
+    --ink-raised: Canvas;
+    --ink-soft: Canvas;
+    --paper: CanvasText;
+    --muted: CanvasText;
+    --faint: CanvasText;
+    --line: CanvasText;
+    --line-strong: CanvasText;
+    --amber: LinkText;
+    --amber-soft: LinkText;
+    --acid: Highlight;
+    --rust: Mark;
+    --focus-ring: Highlight;
+  }
+
+  body,
+  .site-header,
+  .signal-panel,
+  .atlas-map,
+  .atlas-index,
+  .atlas-comparison,
+  .evidence-passport,
+  .evidence-card,
+  .definition-disclosure {
+    background: Canvas;
+  }
+
+  :focus-visible {
+    outline-width: 3px;
+    outline-color: Highlight;
+  }
+
+  .status-light,
+  .atlas-map__legend i,
+  .atlas-point__dot,
+  .event-pulse {
+    background: Highlight;
+    box-shadow: none;
+    forced-color-adjust: none;
+  }
+
+  .fit-bar--primary,
+  .fit-bar--secondary {
+    fill: Highlight;
+    forced-color-adjust: none;
+  }
+
+  .signal-trace,
+  .signal-afterglow,
+  .event-line,
+  .atlas-coastline {
+    stroke: CanvasText;
+  }
+
+  .status-badge,
+  .boundary-banner,
+  .claim-boundary,
+  .comparison-boundary,
+  .withheld-panel {
+    border-color: CanvasText;
+    color: CanvasText;
   }
 }
 

@@ -7,9 +7,9 @@ import { DATA_BOUNDARY } from '../content/copy.js'
     <header class="page-heading page-heading--split">
       <div>
         <p class="eyebrow"><span>Field note 05</span> Credits / data policy</p>
-        <h1 tabindex="-1">Credit the work.<br><em>Keep the line clear.</em></h1>
+        <h1 class="focus-target" data-route-focus tabindex="-1">Credit the work.<br><em>Keep the line clear.</em></h1>
       </div>
-      <p>
+      <p class="page-lede">
         Code licensing, contributor credit, source attribution, and data publication rights are separate.
         This page states each one plainly.
       </p>
@@ -40,6 +40,24 @@ import { DATA_BOUNDARY } from '../content/copy.js'
         <span class="policy-grid__code">D / NO ENDORSEMENT</span>
         <h2>Independent interpretation</h2>
         <p>Neither Oak Ridge National Laboratory nor the U.S. Department of Energy endorses this project or its conclusions.</p>
+      </article>
+    </section>
+
+    <section class="policy-facts" aria-labelledby="public-runtime-policy-title">
+      <article>
+        <span class="policy-grid__code">E / PUBLIC GRAIN</span>
+        <h2 id="public-runtime-policy-title">Aggregate-only public content</h2>
+        <p>Public values are reviewed study-scale facts, broad event references, component states, and aggregate diagnostics. Fine-grained or reversible records stay outside the release.</p>
+      </article>
+      <article>
+        <span class="policy-grid__code">F / RUNTIME</span>
+        <h2>Local assets, no analytics</h2>
+        <p>The application loads no external fonts, maps, analytics, or runtime data. Attribution links above are user-activated exits; the app does not request them in the background.</p>
+      </article>
+      <article>
+        <span class="policy-grid__code">G / KNOWN LIMITS</span>
+        <h2>Technical checks are bounded</h2>
+        <p>The public artifact does not reproduce every withheld upstream input. Technical browser checks do not establish real-user understanding or complete screen-reader, speech-input, switch-access, and multi-browser support.</p>
       </article>
     </section>
 

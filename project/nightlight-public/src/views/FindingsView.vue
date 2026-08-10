@@ -25,9 +25,9 @@ const roleRows = Object.freeze([
     <header class="page-heading page-heading--split">
       <div>
         <p class="eyebrow"><span>Field note 03</span> Generalization Autopsy</p>
-        <h1 tabindex="-1">Useful here.<br><em>Unproven there.</em></h1>
+        <h1 class="focus-target" data-route-focus tabindex="-1">Useful here.<br><em>Unproven there.</em></h1>
       </div>
-      <p>
+      <p class="page-lede">
         A model can describe variation in a known sample and still fail the harder test of travelling
         to a held-out event. This page separates those roles instead of turning one favorable number
         into a forecast.
@@ -35,6 +35,15 @@ const roleRows = Object.freeze([
     </header>
 
     <p class="claim-boundary">This is an analysis of model transport failure, not a ranking of community recovery.</p>
+
+    <details class="definition-disclosure">
+      <summary>How to read R², AUC, admission, and recovery outcome</summary>
+      <div>
+        <p><strong>R²</strong> is the unitless [0–1] descriptive coefficient admitted for this fixed sample. It is not future-event accuracy.</p>
+        <p><strong>AUC</strong> is a unitless [0–1] ranking statistic; 0.50 is the no-ranking reference used here. It is not a calibrated probability or recovery-transport measure.</p>
+        <p><strong>Analysis admission/readiness</strong> describes whether declared evidence checks are available. A <strong>recovery outcome</strong> would describe what happened to a community; this page does not rank those outcomes.</p>
+      </div>
+    </details>
 
     <section class="autopsy-section" aria-labelledby="attractive-result-title">
       <div class="autopsy-section__heading">
@@ -50,7 +59,7 @@ const roleRows = Object.freeze([
         <div class="finding-hero__number">
           <span>{{ metrics['in-sample-r-squared'].modelFamily }}</span>
           <strong>{{ metrics['in-sample-r-squared'].value.toFixed(4) }}</strong>
-          <small>R² / explanatory description</small>
+          <small>R² / explanatory description · {{ metrics['in-sample-r-squared'].unit }}</small>
         </div>
         <div class="finding-hero__chart">
           <svg viewBox="0 0 760 270" role="img" aria-labelledby="fit-title fit-desc">
@@ -62,15 +71,17 @@ const roleRows = Object.freeze([
             <text class="fit-value" :x="128 + metrics['in-sample-r-squared'].value * 568" y="136">{{ metrics['in-sample-r-squared'].value.toFixed(4) }}</text>
             <text x="120" y="251">0</text><text x="671" y="251">1.0</text>
           </svg>
-          <figcaption id="fit-caption">The displayed bar is one descriptive R². It says nothing by itself about a new event.</figcaption>
+          <figcaption id="fit-caption">The displayed bar uses the artifact's unitless [0–1] range for this descriptive R². It says nothing by itself about a new event.</figcaption>
         </div>
       </figure>
 
-      <table class="evidence-table">
-        <caption>Text alternative for the descriptive fit chart</caption>
-        <thead><tr><th scope="col">Metric</th><th scope="col">Value</th><th scope="col">Role</th><th scope="col">Meaning</th></tr></thead>
-        <tbody><tr><td>R²</td><td>0.7603</td><td>Explanatory / description</td><td>Within-sample fixed-control fit, not future-event accuracy.</td></tr></tbody>
-      </table>
+      <div class="data-table-wrap">
+        <table class="evidence-table">
+          <caption>Text alternative for the descriptive fit chart</caption>
+          <thead><tr><th scope="col">Metric</th><th scope="col">Value and unit</th><th scope="col">Role</th><th scope="col">Meaning</th></tr></thead>
+          <tbody><tr><td>R²</td><td>0.7603 · unitless [0–1]</td><td>Explanatory / description</td><td>Within-sample fixed-control fit, not future-event accuracy.</td></tr></tbody>
+        </table>
+      </div>
     </section>
 
     <section class="autopsy-section autopsy-section--contrast" aria-labelledby="harder-test-title">
@@ -85,7 +96,7 @@ const roleRows = Object.freeze([
       <div class="transport-callout">
         <p class="eyebrow"><span>Held-out damage ranking</span> {{ metrics['cross-event-logit-auc'].validationDesign }}</p>
         <strong>{{ metrics['cross-event-logit-auc'].value.toFixed(4) }}</strong>
-        <p>AUC / damage ranking. The reviewed aggregate is below the 0.50 reference. It does not answer a recovery-transport task or provide a calibrated prediction.</p>
+        <p>AUC / damage ranking · {{ metrics['cross-event-logit-auc'].unit }}. The reviewed aggregate is below the 0.50 no-ranking reference. It does not answer a recovery-transport task or provide a calibrated prediction.</p>
       </div>
     </section>
 
@@ -94,11 +105,13 @@ const roleRows = Object.freeze([
         <p class="eyebrow"><span>03</span> What improved / what failed</p>
         <h2 id="role-matrix-title">The role matrix prevents a good answer from answering the wrong question.</h2>
       </div>
-      <table class="evidence-table role-matrix">
-        <caption>Model roles and what this public artifact can support</caption>
-        <thead><tr><th scope="col">Role</th><th scope="col">Metric type</th><th scope="col">Evaluation</th><th scope="col">Reading rule</th></tr></thead>
-        <tbody><tr v-for="row in roleRows" :key="row[0]"><th scope="row">{{ row[0] }}</th><td>{{ row[1] }}</td><td>{{ row[2] }}</td><td>{{ row[3] }}</td></tr></tbody>
-      </table>
+      <div class="data-table-wrap">
+        <table class="evidence-table role-matrix">
+          <caption>Model roles and what this public artifact can support</caption>
+          <thead><tr><th scope="col">Role</th><th scope="col">Metric type</th><th scope="col">Evaluation</th><th scope="col">Reading rule</th></tr></thead>
+          <tbody><tr v-for="row in roleRows" :key="row[0]"><th scope="row">{{ row[0] }}</th><td>{{ row[1] }}</td><td>{{ row[2] }}</td><td>{{ row[3] }}</td></tr></tbody>
+        </table>
+      </div>
     </section>
 
     <section class="autopsy-section" aria-labelledby="evidence-cards-title">
@@ -112,7 +125,8 @@ const roleRows = Object.freeze([
           <h3>{{ metric.metricName }} <strong>{{ metric.value.toFixed(4) }}</strong></h3>
           <dl>
             <div><dt>Task</dt><dd>{{ metric.validationDesign }}</dd></div>
-            <div><dt>Quality</dt><dd><span class="status-label">{{ metric.qualityStatus }}</span> · {{ metric.publicationStatus }}</dd></div>
+            <div><dt>Value / unit</dt><dd>{{ metric.value.toFixed(4) }} · {{ metric.unit }}</dd></div>
+            <div><dt>Quality</dt><dd><span class="status-badge status-label">{{ metric.qualityStatus }}</span> · {{ metric.publicationStatus }}</dd></div>
             <div><dt>Supports</dt><dd>{{ metric.supportedClaim }}</dd></div>
             <div><dt>Does not support</dt><dd>{{ metric.unsupportedClaim }}</dd></div>
             <div><dt>Cohort / lock</dt><dd>{{ metric.cohort }} · {{ metric.sampleLock }}</dd></div>

@@ -8,15 +8,22 @@ import { STUDY_SUMMARY } from '../content/study.js'
     <section class="hero">
       <div class="hero__copy">
         <p class="eyebrow"><span>Field note 00</span> Public research edition</p>
-        <h1 tabindex="-1">Reading recovery<br><em>in the dark.</em></h1>
-        <p class="hero__lead">
+        <h1 class="focus-target" data-route-focus tabindex="-1">Reading recovery<br><em>in the dark.</em></h1>
+        <p class="hero__lead page-lede">
           A two-stage study of disaster impacts, electricity outages, and changes in nighttime light—
           presented here as an inspectable portfolio without publishing restricted fine-grained records.
         </p>
         <div class="hero__actions">
           <RouterLink class="button button--primary" to="/atlas">Open the study atlas</RouterLink>
-          <RouterLink class="button button--quiet" to="/methods">Trace the method</RouterLink>
+          <RouterLink class="button button--quiet" to="/findings">Read the bounded findings</RouterLink>
         </div>
+        <details class="definition-disclosure hero__disclosure">
+          <summary>What this public research edition can—and cannot—show</summary>
+          <div>
+            <p>It exposes reviewed aggregate study facts, evidence states, methods, and source limits for inspection.</p>
+            <p>Technical and proxy checks can find interface risks; they are not human validation and do not prove that readers understand the science. Nighttime light is also not a household-level measure or a direct record of lived recovery.</p>
+          </div>
+        </details>
       </div>
 
       <div class="signal-panel" aria-label="Abstract nighttime recovery signal illustration">
@@ -58,7 +65,7 @@ import { STUDY_SUMMARY } from '../content/study.js'
       <div>
         <span class="metric-strip__index">M1+</span>
         <strong>{{ STUDY_SUMMARY.descriptiveModel.rSquared.toFixed(4) }}</strong>
-        <p>descriptive R², n = {{ STUDY_SUMMARY.descriptiveModel.n }}</p>
+        <p>descriptive R², unitless [0–1], n = {{ STUDY_SUMMARY.descriptiveModel.n }}; not future-event accuracy</p>
       </div>
     </section>
 
@@ -73,7 +80,7 @@ import { STUDY_SUMMARY } from '../content/study.js'
           measure nor a verdict on community resilience. The analysis asks how recovery patterns align with
           outage exposure and place-level characteristics inside the observed sample.
         </p>
-        <RouterLink class="text-link" to="/findings">Read the findings and their limits <span aria-hidden="true">→</span></RouterLink>
+        <RouterLink class="text-link" to="/methods">Trace the inputs, admission rules, and public artifact <span aria-hidden="true">→</span></RouterLink>
       </div>
     </section>
 

@@ -117,7 +117,7 @@ watch(comparisonLeftId, (eventId) => {
     <header class="page-heading page-heading--split">
       <div>
         <p class="eyebrow"><span>Field note 02</span> Study atlas</p>
-        <h1 tabindex="-1">Broad context,<br><em>bounded detail.</em></h1>
+        <h1 class="focus-target" data-route-focus tabindex="-1">Broad context,<br><em>bounded detail.</em></h1>
       </div>
       <p>
         Explore a hand-cleaned event index using names, years, broad locations, and centers rounded to one decimal.
@@ -125,19 +125,27 @@ watch(comparisonLeftId, (eventId) => {
       </p>
     </header>
 
-    <fieldset class="atlas-view-mode">
+    <fieldset class="atlas-view-mode" aria-describedby="atlas-view-help">
       <legend>Evidence view</legend>
       <label :class="{ 'is-active': viewMode === 'explore' }">
-        <input v-model="viewMode" type="radio" name="atlas-evidence-view" value="explore">
+        <input id="atlas-mode-explore" v-model="viewMode" type="radio" name="atlas-evidence-view" value="explore" aria-controls="atlas-explore-panel">
         <span><strong>Explore one event</strong><small>Map, index, and one Evidence Passport</small></span>
       </label>
       <label :class="{ 'is-active': viewMode === 'compare' }">
-        <input v-model="viewMode" type="radio" name="atlas-evidence-view" value="compare">
+        <input id="atlas-mode-compare" v-model="viewMode" type="radio" name="atlas-evidence-view" value="compare" aria-controls="atlas-compare-panel">
         <span><strong>Compare events</strong><small>Category-first evidence inspection</small></span>
       </label>
     </fieldset>
 
-    <template v-if="viewMode === 'explore'">
+    <details id="atlas-view-help" class="definition-disclosure">
+      <summary>Define the evidence states before exploring</summary>
+      <div>
+        <p><strong>Evidence Passport</strong> means five separate, reviewed analysis-admission rule outputs. Its band is not a recovery measure, event grade, or ranking.</p>
+        <p><strong>Not assessed</strong> means no reviewed public Passport exists. <strong>Unavailable</strong> means a specific component cannot support the current workflow. Neither state means zero or worse recovery.</p>
+      </div>
+    </details>
+
+    <div v-if="viewMode === 'explore'" id="atlas-explore-panel" class="atlas-mode-panel">
       <section class="atlas-controls" aria-label="Filter event index">
       <label>
         <span>Search the index</span>
@@ -239,13 +247,13 @@ watch(comparisonLeftId, (eventId) => {
 
       <template v-if="selectedPassport">
         <div class="evidence-passport__status">
-          <span :class="`passport-band passport-band--${selectedPassport.readinessBand}`">
+          <span :class="`status-badge passport-band passport-band--${selectedPassport.readinessBand}`">
             {{ selectedPassport.readinessLabel }}
           </span>
           <p>{{ PUBLIC_EVIDENCE_PASSPORT_ARTIFACT.bandDefinitions.find(({ id }) => id === selectedPassport.readinessBand)?.meaning }}</p>
         </div>
 
-        <div class="evidence-passport__table-wrap">
+        <div class="evidence-passport__table-wrap data-table-wrap">
           <table class="evidence-table passport-components">
             <caption>Reviewed component-level evidence; the displayed admission band was assigned upstream from a weighted sum, and Compare Mode computes no new overall score</caption>
             <thead>
@@ -261,7 +269,7 @@ watch(comparisonLeftId, (eventId) => {
                 <th scope="row">{{ componentDefinition(component.id)?.label }}</th>
                 <td><strong>{{ component.points }}</strong> / {{ component.maxPoints }}</td>
                 <td>
-                  <span :class="`component-state component-state--${component.status}`">
+                  <span :class="`status-badge component-state component-state--${component.status}`">
                     {{ componentStatusLabels[component.status] }}
                   </span>
                 </td>
@@ -290,8 +298,8 @@ watch(comparisonLeftId, (eventId) => {
         </footer>
       </template>
 
-      <div v-else class="evidence-passport__empty">
-        <span class="passport-band passport-band--unassessed">Not assessed in v1</span>
+      <div v-else class="evidence-passport__empty state-panel">
+        <span class="status-badge passport-band passport-band--unassessed">Not assessed in v1</span>
         <div>
           <h3>No reviewed Evidence Passport exists for this event.</h3>
           <p>
@@ -301,9 +309,9 @@ watch(comparisonLeftId, (eventId) => {
         </div>
       </div>
       </section>
-    </template>
+    </div>
 
-    <section v-else class="atlas-comparison" aria-labelledby="atlas-comparison-title">
+    <section v-else id="atlas-compare-panel" class="atlas-comparison" aria-labelledby="atlas-comparison-title">
       <header class="comparison-header">
         <div>
           <p class="eyebrow"><span>Comparison note</span> Evidence before outcome</p>
@@ -473,14 +481,14 @@ watch(comparisonLeftId, (eventId) => {
           <div class="comparison-component__event">
             <span>Event A</span>
             <strong>{{ pair.left.points }} / {{ pair.left.maxPoints }}</strong>
-            <em :class="`component-state component-state--${pair.left.status}`">
+            <em :class="`status-badge component-state component-state--${pair.left.status}`">
               {{ componentStatusLabels[pair.left.status] }}
             </em>
           </div>
           <div class="comparison-component__event">
             <span>Event B</span>
             <strong>{{ pair.right.points }} / {{ pair.right.maxPoints }}</strong>
-            <em :class="`component-state component-state--${pair.right.status}`">
+            <em :class="`status-badge component-state component-state--${pair.right.status}`">
               {{ componentStatusLabels[pair.right.status] }}
             </em>
           </div>
@@ -497,10 +505,10 @@ watch(comparisonLeftId, (eventId) => {
 
       <section
         v-else-if="comparison?.schemaStatus === 'not-comparable'"
-        class="comparison-unassessed"
+        class="comparison-unassessed state-panel"
         aria-labelledby="comparison-schema-title"
       >
-        <span class="passport-band passport-band--unassessed">Schema not comparable</span>
+        <span class="status-badge passport-band passport-band--unassessed">Schema not comparable</span>
         <div>
           <h3 id="comparison-schema-title">Component pairing was withheld.</h3>
           <p>The Passport version, component IDs, order, maxima, points, or states did not match the reviewed v1 schema.</p>
@@ -508,8 +516,8 @@ watch(comparisonLeftId, (eventId) => {
         </div>
       </section>
 
-      <section v-else class="comparison-unassessed" aria-labelledby="comparison-unassessed-title">
-        <span class="passport-band passport-band--unassessed">Component comparison unavailable</span>
+      <section v-else class="comparison-unassessed state-panel" aria-labelledby="comparison-unassessed-title">
+        <span class="status-badge passport-band passport-band--unassessed">Component comparison unavailable</span>
         <div>
           <h3 id="comparison-unassessed-title">One or both events are Not assessed in v1.</h3>
           <p v-if="comparisonLeftEvent && !comparisonLeftPassport">

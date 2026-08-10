@@ -36,7 +36,7 @@ function updateRouteContext() {
 }
 
 function focusRouteHeading() {
-  mainElement.value?.querySelector('h1')?.focus()
+  mainElement.value?.querySelector('[data-route-focus]')?.focus()
 }
 
 function handleRouteEnter() {
