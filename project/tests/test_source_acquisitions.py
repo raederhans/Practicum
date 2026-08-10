@@ -122,6 +122,27 @@ class SourceAcquisitionContractTests(unittest.TestCase):
         self.assertEqual("CC BY 4.0", release["license"])
         self.assertEqual(10, len(release["files_used_by_repository_year_range"]))
 
+    def test_p1_receipts_lock_worldpop_and_identify_historical_miami_source(self) -> None:
+        manifest = json.loads(SOURCE_MANIFEST.read_text(encoding="utf-8"))
+        sources = {item["id"]: item for item in manifest["sources"]}
+
+        worldpop = sources["worldpop"]
+        self.assertEqual("exact-files-verified-in-ignored-owner-cache", worldpop["status"])
+        self.assertEqual(
+            "Unconstrained individual countries 2000-2020; 100m; "
+            "population count; not UN-adjusted",
+            worldpop["variant"],
+        )
+        self.assertEqual(2, len(worldpop["p1_owner_cache"]["assets"]))
+        self.assertTrue(
+            all(len(item["sha256"]) == 64 for item in worldpop["p1_owner_cache"]["assets"])
+        )
+
+        miami = sources["miami_dade_open_data"]
+        self.assertEqual("31cd319f45544648b59f0418aea60091", miami["historical_item_id"])
+        self.assertIn("BuildingPermit_gdb/FeatureServer", miami["historical_service"])
+        self.assertFalse(miami["current_public_replacement"]["equivalent"])
+
 
 if __name__ == "__main__":
     unittest.main()

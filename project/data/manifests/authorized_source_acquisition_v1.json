@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "purpose": "Auditable P1 acquisition evidence gathered in an isolated owner cache. This manifest records evidence and blockers; it does not make ignored files available in a clean checkout.",
+  "base_commit": "ca8292040a402eae1d2e461708a4cc912867efcb",
+  "evidence_date": "2026-08-10",
+  "full_upstream_ready": false,
+  "authentication_preflight": {
+    "official_earth_engine_api_cli_installed_in_task_environment": true,
+    "earth_engine_api_version": "1.7.38",
+    "global_earth_engine_command_present": false,
+    "global_gcloud_command_present": false,
+    "relevant_cloud_environment_present": false,
+    "common_local_adc_file_present": false,
+    "common_local_earth_engine_credential_file_present": false,
+    "credential_content_read": false,
+    "earth_engine_initialization_attempted": false,
+    "status": "interactive-required"
+  },
+  "boundaries": [
+    {
+      "source_id": "nasa_vnp46a2",
+      "status": "blocked",
+      "authentication": "interactive-required",
+      "source_receipt": {
+        "earth_engine_collection": "NASA/VIIRS/002/VNP46A2",
+        "doi": "10.5067/VIIRS/VNP46A2.002",
+        "band": "Gap_Filled_DNB_BRDF-Corrected_NTL",
+        "spatial_resolution_m": 500,
+        "license": "NASA LP DAAC data; cite the VNP46A2 Collection 2 product and DOI",
+        "official_catalog": "https://developers.google.com/earth-engine/datasets/catalog/NASA_VIIRS_002_VNP46A2"
+      },
+      "export_receipt_present": false,
+      "blocker_code": "earth-engine-auth-project-and-date-selection-missing",
+      "proven_facts": [
+        "The repository export path names the Collection 2 Earth Engine collection.",
+        "The task-specific official API and command-line client import successfully.",
+        "No non-interactive local authentication or Cloud project was found without reading credential contents.",
+        "The repository does not contain the cloud-screening CSV files used to enumerate selected daily export dates."
+      ],
+      "gap": "No bounded export can be submitted or receipted until interactive authentication and a registered Cloud project exist; selected daily dates also lack their screening receipt.",
+      "minimum_authentication_action": "In the task-specific environment, complete the official Earth Engine browser authentication flow and select an already registered Cloud project; do not enable billing or broaden permissions for this task.",
+      "minimum_provenance_action": "Restore or regenerate the event cloud-screening CSV receipts that define the exact daily export dates before any bounded export submission."
+    },
+    {
+      "source_id": "nlcd",
+      "status": "blocked",
+      "authentication": "interactive-required",
+      "source_receipt": {
+        "conus_earth_engine_asset": "USGS/NLCD_RELEASES/2021_REL/NLCD/2021",
+        "puerto_rico_earth_engine_asset": "USGS/NLCD_RELEASES/2016_REL/NLCD/2016",
+        "band": "landcover",
+        "license": "U.S. Geological Survey public data; cite product, year, and release",
+        "official_catalog": "https://developers.google.com/earth-engine/datasets/catalog/USGS_NLCD_RELEASES_2021_REL_NLCD"
+      },
+      "export_receipt_present": false,
+      "blocker_code": "earth-engine-auth-project-and-export-receipt-missing",
+      "proven_facts": [
+        "The two repository-declared Earth Engine assets are precise and versioned.",
+        "No export task identifier, output file, output checksum, or completion timestamp is present."
+      ],
+      "gap": "The source identity is proven, but authenticated bounded exports are not.",
+      "minimum_authentication_action": "In the task-specific environment, complete the official Earth Engine browser authentication flow and select an already registered Cloud project; do not enable billing or broaden permissions for this task.",
+      "minimum_provenance_action": "Run only the declared event export set, then record task identifiers, asset identifiers, bounds, timestamps, byte sizes, and output checksums."
+    },
+    {
+      "source_id": "osm_overpass",
+      "status": "blocked",
+      "snapshot_as_of": "2026-08-09T00:00:00Z",
+      "event_scope_manifest": "project/data/manifests/osm_modeled_event_scope_v1.json",
+      "event_count": 26,
+      "endpoint": "https://overpass-api.de/api/interpreter",
+      "license": "ODbL 1.0",
+      "attribution": "OpenStreetMap contributors",
+      "blocker_code": "http-429-no-complete-receipt",
+      "proven_facts": [
+        "All event bounding boxes from the two active registries are pinned in one manifest.",
+        "Each generated Overpass query uses the attic date setting and a bounded facility selector set.",
+        "The first live response completed, but the next request returned HTTP 429.",
+        "The fail-closed acquisition removed partial files and wrote no verified snapshot receipt."
+      ],
+      "gap": "There is no complete immutable 26-event snapshot receipt.",
+      "minimum_provenance_action": "Re-run the same pinned manifest during an approved low-load window with a documented bounded rate policy, or acquire date-stamped Geofabrik regional PBFs after recording their aggregate size and storage ceiling; accept only 26-of-26 checksummed evidence."
+    },
+    {
+      "source_id": "census_tiger_zcta_county",
+      "status": "verified-local-cache",
+      "license": "U.S. Census Bureau public data; cite source and 2020 vintage",
+      "cache_root": "cache/p1-authorized-source-acquisition-20260810/downloads/tiger-2020",
+      "cache_git_state": "ignored",
+      "assets": [
+        {
+          "filename": "tl_2020_us_zcta520.zip",
+          "immutable_identifier": "TIGER/Line 2020 ZCTA520 national archive",
+          "url": "https://www2.census.gov/geo/tiger/TIGER2020/ZCTA520/tl_2020_us_zcta520.zip",
+          "bytes": 527995578,
+          "sha256": "fb91d692a3140a366aa0c188f081f44cc860cccd693859858f997cf14afead9b",
+          "retrieved_at": "2026-08-10T01:58:31.530712Z",
+          "receipt": "cache/p1-authorized-source-acquisition-20260810/downloads/tiger-2020/tl_2020_us_zcta520.zip.receipt.json"
+        },
+        {
+          "filename": "tl_2020_us_county.zip",
+          "immutable_identifier": "TIGER/Line 2020 County national archive",
+          "url": "https://www2.census.gov/geo/tiger/TIGER2020/COUNTY/tl_2020_us_county.zip",
+          "bytes": 80644766,
+          "sha256": "a490d33145b8cd308b0b53113d4bb31575b84a2b4cf6ec28fa5855be37559d8d",
+          "retrieved_at": "2026-08-10T01:58:46.871170Z",
+          "receipt": "cache/p1-authorized-source-acquisition-20260810/downloads/tiger-2020/tl_2020_us_county.zip.receipt.json"
+        }
+      ],
+      "integration_caveat": "The archives and receipts are task-local ignored files. A clean checkout is not full-upstream ready until an owner transfers this cache or repeats the checksummed acquisition."
+    },
+    {
+      "source_id": "miami_dade_open_data",
+      "status": "exact-historical-source-identified-access-blocked",
+      "historical_item_id": "31cd319f45544648b59f0418aea60091",
+      "historical_item_title": "psde2.MDC.BuildingPermit",
+      "historical_service": "https://services.arcgis.com/8Pc9XBTAsYuxx9Ny/arcgis/rest/services/BuildingPermit_gdb/FeatureServer",
+      "historical_access_status": "item permission denied; feature service requires an ArcGIS credential",
+      "license": "Miami-Dade County metadata disclaimer; data supplied as-is and County Building Department coverage excludes municipal permits",
+      "historical_artifact_match": {
+        "repository_commit": "acc4b2d",
+        "retained_rows_in_analysis_bbox": 169,
+        "retained_source_total": 592,
+        "matching_fields": ["FOLIO", "RESCOMM", "PROPUSE", "ADDRESS"],
+        "geometry": "point"
+      },
+      "current_public_replacement": {
+        "item_id": "6db5f56e886446df88313ca279e59120",
+        "service": "https://services.arcgis.com/8Pc9XBTAsYuxx9Ny/arcgis/rest/services/miamidade_permit_data/FeatureServer",
+        "scope": "two previous years to present",
+        "geometry": "table only",
+        "equivalent_to_historical_source": false
+      },
+      "blocker_code": "historical-service-access-or-owner-archive-required",
+      "proven_facts": [
+        "The exact historical item and feature service are identified from first-party ArcGIS metadata and schema fields matching the retained artifact.",
+        "The current public two-year table is not a substitute for the historical point layer."
+      ],
+      "gap": "The exact historical 2017-era source bytes and query receipt cannot be reacquired anonymously.",
+      "minimum_provenance_action": "Provide authorized read access to the historical service or an owner-exported archive plus the original query, retrieval time, row count, extent, and checksum."
+    },
+    {
+      "source_id": "worldpop",
+      "status": "verified-local-cache",
+      "variant": "Unconstrained individual countries 2000-2020; 100m; population count; not UN-adjusted",
+      "doi": "10.5258/SOTON/WP00645",
+      "license": "CC BY 4.0; dataset-specific ODbL obligations may apply to OSM or building-derived layers",
+      "cache_root": "cache/p1-authorized-source-acquisition-20260810/downloads/worldpop-2020",
+      "cache_git_state": "ignored",
+      "assets": [
+        {
+          "catalog_id": 6443,
+          "country": "TUR",
+          "filename": "tur_ppp_2020.tif",
+          "url": "https://data.worldpop.org/GIS/Population/Global_2000_2020/2020/TUR/tur_ppp_2020.tif",
+          "bytes": 535412088,
+          "sha256": "1cfa3f38d5daa81aeffb4d66d9b571cc26c7e9585335b25596b37f342d60d49e",
+          "verified_at": "2026-08-10T02:15:12.272058Z",
+          "receipt": "cache/p1-authorized-source-acquisition-20260810/downloads/worldpop-2020/tur_ppp_2020.tif.receipt.json"
+        },
+        {
+          "catalog_id": 6483,
+          "country": "BHS",
+          "filename": "bhs_ppp_2020.tif",
+          "url": "https://data.worldpop.org/GIS/Population/Global_2000_2020/2020/BHS/bhs_ppp_2020.tif",
+          "bytes": 13662543,
+          "sha256": "294e4af82f7ed836c7f6651705574555ef58978ee064ce91cc12301f0753a6ab",
+          "verified_at": "2026-08-10T02:15:12.280569Z",
+          "receipt": "cache/p1-authorized-source-acquisition-20260810/downloads/worldpop-2020/bhs_ppp_2020.tif.receipt.json"
+        }
+      ],
+      "immutability_note": "The year/country/filename URLs are version-selective but not content-addressed; the recorded SHA-256 values pin the bytes retrieved for this task.",
+      "integration_caveat": "The rasters and receipts are task-local ignored files. A clean checkout is not full-upstream ready until an owner transfers this cache or repeats the checksummed acquisition."
+    },
+    {
+      "source_id": "eagle_i",
+      "status": "blocked",
+      "official_parent": {
+        "figshare_article_id": 24237376,
+        "version": 4,
+        "doi": "10.6084/m9.figshare.24237376.v4",
+        "ornl_doi": "10.13139/ORNLNCCS/1975202",
+        "years": "2014-2023",
+        "license": "CC BY 4.0",
+        "estimated_total_size": "approximately 9 GB",
+        "official_api": "https://api.figshare.com/v2/articles/24237376"
+      },
+      "tracked_derivative_count": 52,
+      "tracked_tree_receipt": "project/data/manifests/reproducibility_inputs_v1.json#eagle-i-tracked-derivatives-v1",
+      "tracked_shapes": {
+        "year_group_files": 10,
+        "year_merged_files": 10,
+        "year_event_join_files": 10,
+        "year_event_join_8_hour_lag_files": 10,
+        "year_event_join_24_hour_lag_files": 10,
+        "cross_year_purged_files": 2
+      },
+      "blocker_code": "tracked-derived-lineage-unproven",
+      "proven_facts": [
+        "The public 2014-2023 parent release, version, DOI, license, file metadata, and publisher checksums are known.",
+        "Git tracks 52 local derived or event-joined files and the existing tree receipt verifies their repository bytes.",
+        "Repository consumers read these derivatives, but no tracked script or notebook deterministically generates the 52 filenames from the official parent files.",
+        "The event-joined and lagged columns imply additional severe-weather inputs whose exact parent receipt is not recorded."
+      ],
+      "gap": "Compatibility with the public parent is plausible but parent-to-derivative identity, transformation code, join inputs, and row-level regeneration are unproven.",
+      "regeneration_possible": false,
+      "minimum_provenance_action": "Recover the original transform and join code or notebook, identify the exact severe-weather parent, and record a per-file map from official parent version through parameters and row counts to each derivative checksum."
+    }
+  ]
+}

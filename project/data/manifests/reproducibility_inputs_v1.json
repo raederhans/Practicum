@@ -231,9 +231,9 @@
       "version": "source-manifest-v1",
       "license": "Metadata only; each source entry records its controlling license or terms.",
       "git_state": "tracked",
-      "sha256": "b53fddb5293edba9ef5b63d3dc9a0bac99bab7f0364c89673ac177944c5b2167",
+      "sha256": "78d7d3198e4d33e2011211ad96cfae6b55665e72c20193176f10ef57ea30d2df",
       "sha256_mode": "git-text-lf",
-      "canonical_bytes": 14739
+      "canonical_bytes": 18976
     },
     {
       "id": "acs-zcta-2022-output",
@@ -276,12 +276,12 @@
     {
       "source_id": "nasa_vnp46a2",
       "input_classes": ["public", "permission-gated", "missing"],
-      "availability": "Collection 2 and the active Earth Engine collection are identified, but event export assets and checksums are not receipted",
+      "availability": "Collection 2, the active Earth Engine collection, DOI, band, and official client are identified; local authentication, Cloud project, cloud-screening date receipts, and export receipts are absent",
       "full_rerun_ready": false,
-      "blocker_code": "earth-engine-export-receipt-missing",
-      "detail": "The active scripts identify NASA/VIIRS/002/VNP46A2 and DOI 10.5067/VIIRS/VNP46A2.002, but authorized export asset IDs, event windows, retrieval metadata, and checksums are not recorded.",
+      "blocker_code": "earth-engine-auth-project-and-date-selection-missing",
+      "detail": "The active scripts identify NASA/VIIRS/002/VNP46A2 and DOI 10.5067/VIIRS/VNP46A2.002, but no local authentication or registered Cloud project is available and the cloud-screening CSV receipts that select bounded daily exports are absent.",
       "disposition": "permission-gated",
-      "next_action": "An authorized Earth Engine owner must export or inventory every event asset and record asset IDs, windows, timestamps, and checksums without replacing existing raw caches.",
+      "next_action": "Complete official interactive Earth Engine authentication with an already registered Cloud project, restore the cloud-screening date receipts, then submit only bounded exports and record task IDs, windows, timestamps, sizes, and checksums.",
       "evidence": [
         "repository:project/script/stage3_export_all.py",
         "official:https://developers.google.com/earth-engine/datasets/catalog/NASA_VIIRS_002_VNP46A2",
@@ -310,14 +310,15 @@
     {
       "source_id": "osm_overpass",
       "input_classes": ["public", "mutable", "ignored", "missing"],
-      "availability": "mutable live source with one validation acquisition whose local evidence path is an ignored cache",
+      "availability": "The full 26-event scope, fixed attic timestamp, queries, and ODbL attribution are pinned, but the bounded live run stopped on HTTP 429 and produced no complete receipt",
       "full_rerun_ready": false,
-      "blocker_code": "mutable-source-snapshot-incomplete",
-      "detail": "The recorded one-event drift check is not a complete, immutable snapshot receipt for every event used by the active analyses.",
+      "blocker_code": "http-429-no-complete-receipt",
+      "detail": "The 26-event fixed-date snapshot run received HTTP 429 after the first response; fail-closed cleanup removed partial files and no verified aggregate receipt was written.",
       "disposition": "externally-actionable",
-      "next_action": "Record a dated OSM extract or per-event Overpass response receipt, query, endpoint, timestamp, checksum, and ODbL attribution for every modeled event.",
+      "next_action": "Re-run the same pinned 26-event manifest in an approved low-load window with a bounded rate policy, or preflight date-stamped Geofabrik regional PBF sizes; accept only complete checksummed evidence.",
       "evidence": [
-        "repository:project/data/manifests/source_manifest_v1.json#osm_overpass",
+        "repository:project/data/manifests/osm_modeled_event_scope_v1.json",
+        "repository:project/data/manifests/authorized_source_acquisition_v1.json#osm_overpass",
         "official:https://www.openstreetmap.org/copyright"
       ],
       "git_path": "cache/source-data/osm-20260805/zeta_atlanta/osm_retrieval_manifest.json",
@@ -325,13 +326,13 @@
     },
     {
       "source_id": "census_tiger_zcta_county",
-      "input_classes": ["public", "missing"],
-      "availability": "historical download receipts recorded; local archives absent from this checkout",
+      "input_classes": ["public", "ignored", "owner-cache"],
+      "availability": "Both immutable 2020 archives were freshly downloaded and SHA-256 verified in this task's ignored owner cache, which is not portable to a clean checkout",
       "full_rerun_ready": false,
-      "blocker_code": "verified-download-cache-not-present",
-      "detail": "The two archive receipts are recorded, but the corresponding ignored local archives are not present in this worktree.",
+      "blocker_code": "verified-owner-cache-not-portable",
+      "detail": "The ZCTA520 and County archives match the recorded sizes and SHA-256 values in the P1 owner cache, but ignored bytes are not part of the clean-checkout reproducibility contract.",
       "disposition": "externally-actionable",
-      "next_action": "An isolated data owner may re-download the two immutable TIGER/Line 2020 archives and verify the recorded byte counts and SHA-256 values in a lane-owned cache.",
+      "next_action": "Transfer the verified owner cache under an explicit data-owner handoff or repeat the exact checksummed acquisition in the integration environment; keep the archives ignored.",
       "evidence": [
         "official:https://www2.census.gov/geo/tiger/TIGER2020/ZCTA520/tl_2020_us_zcta520.zip",
         "official:https://www2.census.gov/geo/tiger/TIGER2020/COUNTY/tl_2020_us_county.zip"
@@ -373,27 +374,28 @@
     {
       "source_id": "miami_dade_open_data",
       "input_classes": ["public", "mutable", "missing"],
-      "availability": "public catalog without a selected immutable dataset receipt",
+      "availability": "The exact historical ArcGIS item and point feature service are identified, but anonymous item access is denied and the service requires authorized access",
       "full_rerun_ready": false,
-      "blocker_code": "catalog-selection-required",
-      "detail": "The repository mentions Miami-Dade generator permits but does not identify the ArcGIS item or service that produced the retained validation artifact.",
-      "disposition": "ambiguous",
-      "next_action": "A domain owner must identify the exact public item or service from the historical acquisition evidence before any new download or license claim.",
+      "blocker_code": "historical-service-access-or-owner-archive-required",
+      "detail": "Historical item 31cd319f45544648b59f0418aea60091 and BuildingPermit_gdb/FeatureServer match the retained point artifact schema, while the current public two-year table is not equivalent; source bytes and query receipt remain unavailable.",
+      "disposition": "permission-gated",
+      "next_action": "Provide authorized read access to the historical service or an owner-exported archive with the original query, retrieval time, row count, extent, and checksum.",
       "evidence": [
         "repository:project/script/regen_pre_figures.py",
         "repository:project/modeling/config/bug2_pilot_plan_v1.json",
-        "official:https://gis-mdc.opendata.arcgis.com/"
+        "official:https://www.arcgis.com/sharing/rest/content/items/31cd319f45544648b59f0418aea60091/info/metadata/metadata.xml?format=default&output=html",
+        "official:https://services.arcgis.com/8Pc9XBTAsYuxx9Ny/arcgis/rest/services/BuildingPermit_gdb/FeatureServer"
       ]
     },
     {
       "source_id": "nlcd",
       "input_classes": ["public", "permission-gated", "missing"],
-      "availability": "The active Earth Engine asset IDs are known, but the exported per-event files and checksums are absent",
+      "availability": "The CONUS 2021 and Puerto Rico 2016 Earth Engine asset IDs are known, but local authentication, a registered Cloud project, export task IDs, files, and checksums are absent",
       "full_rerun_ready": false,
-      "blocker_code": "earth-engine-export-receipt-missing",
-      "detail": "The export helper selects 2021 NLCD for CONUS and 2016 NLCD for Puerto Rico, but authorized export task IDs, files, timestamps, and checksums are not recorded.",
+      "blocker_code": "earth-engine-auth-project-and-export-receipt-missing",
+      "detail": "The export helper selects 2021 NLCD for CONUS and 2016 NLCD for Puerto Rico, but no local authentication or registered Cloud project is available and export task IDs, files, timestamps, and checksums are not recorded.",
       "disposition": "permission-gated",
-      "next_action": "An authorized Earth Engine owner must receipt the six event exports from the two recorded asset IDs and verify them against the derived panel.",
+      "next_action": "Complete official interactive Earth Engine authentication with an already registered Cloud project, run only the declared event export set, and receipt task IDs, assets, bounds, timestamps, sizes, and checksums.",
       "evidence": [
         "repository:project/modeling/gee/export_nlcd_500m.js",
         "repository:project/modeling_tracking/progress_record/01_phase2_nlcd_closure.md",
@@ -402,14 +404,15 @@
     },
     {
       "source_id": "worldpop",
-      "input_classes": ["public", "missing"],
-      "availability": "TUR 2020 and BHS 2020 are configured, but the API response file variant, immutable URL, license and checksum are not receipted",
+      "input_classes": ["public", "ignored", "owner-cache"],
+      "availability": "The exact TUR and BHS 2020 unconstrained 100m population-count files, DOI, URLs, license, sizes, and SHA-256 values are verified in this task's ignored owner cache",
       "full_rerun_ready": false,
-      "blocker_code": "immutable-layer-receipt-missing",
-      "detail": "Country and year are selected, but the downloader chooses the first API file without locking resolution, constrained variant, immutable URL, dataset-specific license, or checksum.",
+      "blocker_code": "verified-owner-cache-not-portable",
+      "detail": "The two exact files and their bytes are pinned, but the ignored owner cache is not part of a clean checkout and the URLs are version-selective rather than content-addressed.",
       "disposition": "externally-actionable",
-      "next_action": "Resolve and record the exact TUR 2020 and BHS 2020 file entries, variants, URLs, license terms, byte counts and checksums before rerunning international-stage repair.",
+      "next_action": "Transfer the verified owner cache under an explicit data-owner handoff or repeat the exact checksummed acquisition in the integration environment; keep the rasters ignored.",
       "evidence": [
+        "repository:project/data/manifests/authorized_source_acquisition_v1.json#worldpop",
         "repository:project/modeling/config/intl_stage_repair_v1.json",
         "repository:project/modeling/experimental/intl_stage_repair_v1.py",
         "official:https://www.worldpop.org/rest/data/pop/wpgp?iso3=TUR",

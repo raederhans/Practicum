@@ -228,10 +228,19 @@ def test_full_upstream_scope_reports_dispositioned_blockers() -> None:
     assert report["full_upstream_reproduction_established"] is False
     blocker_codes = {item["code"] for item in report["blockers"]}
     assert "restricted-input-git-tracked" not in blocker_codes
-    assert "tracked-derived-lineage-unproven" in blocker_codes
-    assert "earth-engine-export-receipt-missing" in blocker_codes
-    assert "mutable-source-snapshot-incomplete" in blocker_codes
-    assert "catalog-selection-required" in blocker_codes
+    assert blocker_codes.issuperset(
+        {
+            "earth-engine-auth-project-and-date-selection-missing",
+            "tracked-derived-lineage-unproven",
+            "http-429-no-complete-receipt",
+            "verified-owner-cache-not-portable",
+            "historical-service-access-or-owner-archive-required",
+            "earth-engine-auth-project-and-export-receipt-missing",
+        }
+    )
+    assert "earth-engine-export-receipt-missing" not in blocker_codes
+    assert "mutable-source-snapshot-incomplete" not in blocker_codes
+    assert "catalog-selection-required" not in blocker_codes
     eagle_blockers = [
         item
         for item in report["blockers"]

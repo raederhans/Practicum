@@ -15,12 +15,21 @@
       "license": "NASA LP DAAC data are freely accessible; dataset citation is requested for publications and derived works",
       "version": "Collection 2; Earth Engine image collection NASA/VIIRS/002/VNP46A2; DOI 10.5067/VIIRS/VNP46A2.002",
       "redistribution": "metadata-and-derived-products-review-required",
-      "reproducibility": "collection-identified-but-event-export-assets-and-checksums-not-receipted",
-      "status": "required-upstream-not-vendored",
+      "reproducibility": "collection-identified-auth-project-date-selection-and-export-receipts-missing",
+      "status": "source-identified-interactive-export-blocked",
       "immutable_identifiers": {
         "earth_engine_collection": "NASA/VIIRS/002/VNP46A2",
         "collection": "002",
         "doi": "10.5067/VIIRS/VNP46A2.002"
+      },
+      "p1_preflight": {
+        "evidence_date": "2026-08-10",
+        "official_api_cli_version": "1.7.38",
+        "authentication": "interactive-required",
+        "cloud_project_present": false,
+        "cloud_screening_date_receipts_present": false,
+        "credential_content_read": false,
+        "export_attempted": false
       },
       "local_targets": ["project/data/raw", "project/data/processed"]
     },
@@ -81,8 +90,18 @@
       "version": "record query, endpoint, and retrieval timestamp",
       "redistribution": "permitted-with-ODbL-attribution-and-share-alike-where-applicable",
       "reproducibility": "queries-reproducible-but-live-database-can-change",
-      "status": "public-live-source",
+      "status": "public-live-source-complete-snapshot-rate-limited",
       "local_targets": ["project/data/result/stage2/poi_cache", "project/data/result/stage3/poi_cache"],
+      "p1_snapshot_attempt": {
+        "evidence_date": "2026-08-10",
+        "event_scope_manifest": "project/data/manifests/osm_modeled_event_scope_v1.json",
+        "event_count": 26,
+        "snapshot_as_of": "2026-08-09T00:00:00Z",
+        "endpoint": "https://overpass-api.de/api/interpreter",
+        "result": "HTTP 429 after the first response",
+        "verified_receipt_written": false,
+        "partial_files_retained": 0
+      },
       "validation_acquisition": {
         "event_id": "zeta_atlanta",
         "endpoint": "https://overpass-api.de/api/interpreter",
@@ -143,6 +162,23 @@
         "county_id_field": "GEOID",
         "storage": "ignored-local-cache",
         "log": "cache/logs/census-tiger-2020-schema.log"
+      },
+      "p1_owner_cache": {
+        "evidence_date": "2026-08-10",
+        "path": "cache/p1-authorized-source-acquisition-20260810/downloads/tiger-2020",
+        "git_state": "ignored",
+        "assets": [
+          {
+            "filename": "tl_2020_us_zcta520.zip",
+            "bytes": 527995578,
+            "sha256": "fb91d692a3140a366aa0c188f081f44cc860cccd693859858f997cf14afead9b"
+          },
+          {
+            "filename": "tl_2020_us_county.zip",
+            "bytes": 80644766,
+            "sha256": "a490d33145b8cd308b0b53113d4bb31575b84a2b4cf6ec28fa5855be37559d8d"
+          }
+        ]
       }
     },
     {
@@ -222,20 +258,41 @@
     {
       "id": "miami_dade_open_data",
       "name": "Miami-Dade County Open Data",
-      "official_urls": ["https://gis-mdc.opendata.arcgis.com/"],
-      "auth": "normally none for public datasets; service limits may apply",
-      "license": "dataset-specific portal terms must be retained",
-      "version": "record item ID, service URL, and retrieval timestamp",
+      "official_urls": [
+        "https://gis-mdc.opendata.arcgis.com/",
+        "https://www.arcgis.com/sharing/rest/content/items/31cd319f45544648b59f0418aea60091/info/metadata/metadata.xml?format=default&output=html",
+        "https://services.arcgis.com/8Pc9XBTAsYuxx9Ny/arcgis/rest/services/BuildingPermit_gdb/FeatureServer"
+      ],
+      "auth": "historical item or service access is required; the current public replacement is anonymous but not equivalent",
+      "license": "Miami-Dade County metadata disclaimer; supplied as-is, with County Building Department coverage excluding municipal permits",
+      "version": "historical ArcGIS item 31cd319f45544648b59f0418aea60091 and BuildingPermit_gdb point service",
       "redistribution": "dataset-specific-review-required",
-      "reproducibility": "public-service-reproducible-while-item-remains-available",
-      "status": "public-catalog-dataset-selection-required",
+      "reproducibility": "historical-source-identified-but-source-bytes-and-query-receipt-access-blocked",
+      "status": "exact-historical-source-identified-access-blocked",
+      "historical_item_id": "31cd319f45544648b59f0418aea60091",
+      "historical_item_title": "psde2.MDC.BuildingPermit",
+      "historical_service": "https://services.arcgis.com/8Pc9XBTAsYuxx9Ny/arcgis/rest/services/BuildingPermit_gdb/FeatureServer",
+      "historical_artifact_match": {
+        "repository_commit": "acc4b2d",
+        "retained_rows_in_analysis_bbox": 169,
+        "retained_source_total": 592,
+        "matching_fields": ["FOLIO", "RESCOMM", "PROPUSE", "ADDRESS"],
+        "geometry": "point"
+      },
+      "current_public_replacement": {
+        "item_id": "6db5f56e886446df88313ca279e59120",
+        "service": "https://services.arcgis.com/8Pc9XBTAsYuxx9Ny/arcgis/rest/services/miamidade_permit_data/FeatureServer",
+        "scope": "two previous years to present",
+        "geometry": "table only",
+        "equivalent": false
+      },
       "local_targets": ["project/data/raw/miami_dade", "project/data/result/stage2"]
     },
     {
       "id": "nlcd",
       "name": "USGS Annual National Land Cover Database",
       "official_urls": ["https://www.mrlc.gov/data"],
-      "auth": "none for public downloads",
+      "auth": "public source; the repository export path requires interactive Earth Engine authentication and a registered Cloud project",
       "license": "U.S. Geological Survey data; cite product, year, and release",
       "version": "Active Earth Engine export helper selects USGS/NLCD_RELEASES/2021_REL/NLCD/2021 for CONUS and USGS/NLCD_RELEASES/2016_REL/NLCD/2016 for Puerto Rico",
       "redistribution": "permitted-with-source-citation",
@@ -245,6 +302,14 @@
         "conus_earth_engine_asset": "USGS/NLCD_RELEASES/2021_REL/NLCD/2021",
         "puerto_rico_earth_engine_asset": "USGS/NLCD_RELEASES/2016_REL/NLCD/2016",
         "current_annual_nlcd_collection_doi_for_catalog_context_only": "10.5066/P94UXNTS"
+      },
+      "p1_preflight": {
+        "evidence_date": "2026-08-10",
+        "official_api_cli_version": "1.7.38",
+        "authentication": "interactive-required",
+        "cloud_project_present": false,
+        "credential_content_read": false,
+        "export_attempted": false
       },
       "local_targets": ["project/data/raw/nlcd", "project/data/result/stage2"]
     },
@@ -259,14 +324,39 @@
       ],
       "auth": "none for public catalog downloads",
       "license": "WorldPop catalog datasets are generally CC BY 4.0, with ODbL applying to layers derived from OSM or specified building/road sources; the selected file license must be retained",
-      "version": "Repository configuration selects TUR 2020 and BHS 2020, but the download code selects the first API file without locking resolution or constrained/unconstrained variant",
+      "version": "WorldPop Global 2000-2020; TUR and BHS 2020 unconstrained individual-country population-count rasters at approximately 100m; not UN-adjusted",
       "redistribution": "dataset-specific-attribution-required",
-      "reproducibility": "country-and-year-selected-but-immutable-file-receipt-missing",
-      "status": "public-selection-partial-receipt-missing",
+      "reproducibility": "exact-files-and-byte-checksums-verified-in-an-ignored-owner-cache-not-a-clean-checkout",
+      "status": "exact-files-verified-in-ignored-owner-cache",
+      "variant": "Unconstrained individual countries 2000-2020; 100m; population count; not UN-adjusted",
+      "doi": "10.5258/SOTON/WP00645",
       "selected_parameters": [
         {"event_id": "earthquake_hatay", "iso3": "TUR", "year": 2020},
         {"event_id": "dorian_freeport", "iso3": "BHS", "year": 2020}
       ],
+      "p1_owner_cache": {
+        "evidence_date": "2026-08-10",
+        "path": "cache/p1-authorized-source-acquisition-20260810/downloads/worldpop-2020",
+        "git_state": "ignored",
+        "assets": [
+          {
+            "catalog_id": 6443,
+            "iso3": "TUR",
+            "filename": "tur_ppp_2020.tif",
+            "url": "https://data.worldpop.org/GIS/Population/Global_2000_2020/2020/TUR/tur_ppp_2020.tif",
+            "bytes": 535412088,
+            "sha256": "1cfa3f38d5daa81aeffb4d66d9b571cc26c7e9585335b25596b37f342d60d49e"
+          },
+          {
+            "catalog_id": 6483,
+            "iso3": "BHS",
+            "filename": "bhs_ppp_2020.tif",
+            "url": "https://data.worldpop.org/GIS/Population/Global_2000_2020/2020/BHS/bhs_ppp_2020.tif",
+            "bytes": 13662543,
+            "sha256": "294e4af82f7ed836c7f6651705574555ef58978ee064ce91cc12301f0753a6ab"
+          }
+        ]
+      },
       "local_targets": ["project/data/raw/worldpop", "project/data/result/stage2"]
     }
   ]
