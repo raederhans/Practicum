@@ -1,0 +1,26 @@
+# Task — authorized acquisition and solo evidence phase
+
+- [x] Confirm `main == origin/main == ca8292040a402eae1d2e461708a4cc912867efcb`.
+- [x] Confirm protected personal research WIP and unrelated `591a` worktree.
+- [x] Dispatch P1 authorized acquisition as an isolated Codex worktree task.
+- [x] Dispatch P2/P3 solo evidence and maintenance as an isolated Codex worktree task.
+- [x] Replace pending client identities with final task IDs and worktree paths.
+- [x] Confirm all execution tasks recorded their task/data/live-process contracts.
+- [x] Supervise P1 credential preflight and bounded official-source acquisition.
+- [x] Supervise P2 claim boundary, P3 throttled measurements, and Actions official-evidence decision.
+- [x] Receive UI, P2/P3, P1, and platform ready-for-integration delivery packages.
+- [x] Review package file sets, secret patterns, large files, raw-data exclusion, generated residue, and pairwise overlap.
+- [x] Integrate UI and run its targeted public gate (20/20).
+- [x] Integrate P2/P3 and run public 8/8, Dashboard 3/3, and official immutable workflow-pin gates.
+- [x] Integrate P1; rehash the four ignored cache assets; run 30/30 targeted tests.
+- [x] Reproduce and test-first repair bounded Overpass reads and minimal auth-environment access.
+- [x] Integrate platform last and run the combined platform/security/release-manifest gate (69/69).
+- [x] Run aggregate Python gates in the project `.venv` (130 passed, 7 subtests); confirm reviewed-modeling ready and full-upstream honestly blocked by seven named gaps.
+- [x] Run aggregate public gates (167/167, audit 0, build/verifier, deterministic schema-v2 Pages manifest).
+- [x] Run aggregate Dashboard gates (24/24, audit 0, bundle analysis, production build).
+- [x] Run single-owner browser, deferred-preview, real-map, console/origin, responsive, forced-colors, and six-sample Slow 4G smoke checks; close the owned browser/servers and release both ports.
+- [x] Re-scan the complete 54-file candidate: zero protected paths, zero secret-pattern files, zero files over 5 MiB, clean syntax and `git diff --check`.
+- [x] Run aggregate release review and first-principles simplification check; stop after the two known release-review findings were confirmed repaired and no additional reproducible defect was found.
+- [x] Fix only reproduced combined-candidate defects and freeze the reviewed working-tree candidate for Lore commits.
+- [ ] Create and push reviewed commits; observe triggered CI/Pages.
+- [ ] Reconcile registry, archive completed records, and clean task-owned worktrees/processes.
