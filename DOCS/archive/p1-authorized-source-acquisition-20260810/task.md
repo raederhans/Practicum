@@ -2,7 +2,7 @@
 
 ## Current status
 
-`ready-for-integration` — 小型 acquisition/receipt 实现、七边界审计 manifest、测试和任务证据已完成；未声称 full-upstream ready。
+`integrated` — 小型 acquisition/receipt 实现、七边界审计 manifest、测试和任务证据已作为 `75663d2` 合入 exact candidate `bd91194f85c6cc8ce1fc3d6ced80dd66d4bf6511`。四个 verified TIGER/WorldPop 文件已转存并复核到主工作树 ignored owner cache；full-upstream 仍诚实保留七个 blocker。
 
 ## Checklist
 

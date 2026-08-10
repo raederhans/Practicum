@@ -2,7 +2,7 @@
 
 ## Current status
 
-`ready-for-integration` — the five-route UI/component candidate is implemented and freshly verified from exact base `ca8292040a402eae1d2e461708a4cc912867efcb`. It is uncommitted, unmerged, undeployed, and not release-admitted; the supervisor/integration owner owns the combined-lane closeout.
+`integrated` — committed as `e45c5ab`, admitted in exact product candidate `bd91194f85c6cc8ce1fc3d6ced80dd66d4bf6511`, and published by successful Pages run `31352969379`. Combined and live browser gates passed; human and manual assistive-technology claims remain out of scope.
 
 ## Checklist
 

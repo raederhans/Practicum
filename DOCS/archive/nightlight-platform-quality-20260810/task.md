@@ -2,7 +2,7 @@
 
 ## Current status
 
-Ready for integration. B0-B8 are complete in the detached B worktree. No staging, commit, ref, worktree-topology, remote, workflow, deployment, or registry mutation was performed.
+Integrated as `0cfbc9c` and admitted in exact product candidate `bd91194f85c6cc8ce1fc3d6ced80dd66d4bf6511`. GitHub Actions run `31352969379` and live 11-file manifest verification succeeded. The source lane itself performed no Git or deployment mutation; the primary integration owner completed those steps.
 
 ## Checklist
 

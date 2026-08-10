@@ -2,7 +2,7 @@
 
 ## Current status
 
-`ready-for-integration` — P2 proxy evidence, P3 controlled measurements and retained preview deferral, official Actions pin maintenance, final validation, review, and owned-resource cleanup are complete. Nothing is staged, committed, pushed, merged, deployed, or registered.
+`integrated` — committed as `215bafe` and admitted in exact product candidate `bd91194f85c6cc8ce1fc3d6ced80dd66d4bf6511`. GitHub Actions run `31352969379` and live Pages verification passed. P2 remains non-human proxy evidence; P3 remains local/Chromium evidence rather than a field-performance claim.
 
 ## Checklist
 

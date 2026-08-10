@@ -22,5 +22,5 @@
 - [x] Re-scan the complete 54-file candidate: zero protected paths, zero secret-pattern files, zero files over 5 MiB, clean syntax and `git diff --check`.
 - [x] Run aggregate release review and first-principles simplification check; stop after the two known release-review findings were confirmed repaired and no additional reproducible defect was found.
 - [x] Fix only reproduced combined-candidate defects and freeze the reviewed working-tree candidate for Lore commits.
-- [ ] Create and push reviewed commits; observe triggered CI/Pages.
-- [ ] Reconcile registry, archive completed records, and clean task-owned worktrees/processes.
+- [x] Create and push reviewed commits; observe exact-SHA CI/Pages and verify the live artifact.
+- [x] Reconcile registry, archive completed records, preserve the verified P1 owner cache, and clean task-owned worktrees/processes.
