@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "test": "vitest run",
+    "test:platform": "vitest run tests/error-contract.test.js tests/platform-boundary.test.js tests/public-boundary.test.js tests/release-manifest.test.js",
     "build": "vite build && node scripts/release-manifest.mjs --write",
     "verify:public": "node scripts/verify-public.mjs",
     "validate": "npm run test && npm run build && npm run verify:public -- --require-dist",

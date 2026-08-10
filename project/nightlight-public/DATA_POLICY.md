@@ -22,6 +22,19 @@
 
 No synthetic substitute or hidden fallback is used when these materials are absent. The interface states the boundary directly.
 
+## Consumer value and error contract
+
+Public numeric consumers use `Public Aggregate Value schema v1`, enforced by `src/lib/aggregateValueContract.js` and its negative tests.
+
+- `available` carries a finite number. Numeric `0` is valid only in this explicit state.
+- `unavailable`, `not_assessed`, `not_applicable`, `suppressed`, `load_failure`, and `validation_failure` carry `null` plus a stable reason code.
+- A missing, withheld, failed, or invalid value must never be coerced, defaulted, or serialized as numeric zero.
+- Load and validation failures are operational states, not published measurements. Consumers must preserve the state or stop; they must not silently fall back to demo or mock content.
+
+Evidence Passport component points are reviewed workflow-rule outputs, not replacements for missing measurements. A zero-point rule output must remain paired with its explicit component status and must not be reused as an available measured value under the aggregate value schema.
+
+Schema changes require a version change, negative fixtures, exact public-allowlist updates, and a documented migration or explicit rejection of the older version. Breaking changes do not receive an indefinite compatibility fallback.
+
 ## Source rights and attribution
 
 The aggregated outage-related results were independently processed from ORNL EAGLE-I Recorded Electricity Outages, DOI `10.6084/m9.figshare.24237376`:
@@ -38,6 +51,6 @@ The Evidence Passport is also a non-reversible quality assessment derived from N
 
 ## Enforcement
 
-`npm run verify:public` fails closed on prohibited data and model formats, restricted artifact names, data directories, credential-shaped text, runtime network calls, and structural paths outside the release allowlist. A production verification also compares every built file against `dist/release-manifest.json` by relative path, byte length, and SHA-256.
+`npm run verify:public` fails closed on prohibited data and model formats, restricted artifact names, data directories, credential-shaped text, runtime network calls, non-reviewed runtime dependencies, weakened HTML security metadata, oversized files, and structural paths outside the release allowlist. A production verification also compares every built file against `dist/release-manifest.json` by relative path, byte length, SHA-256, base path, and static build contract.
 
 The artifact verifiers also reject a public metric or Evidence Passport when it lacks required source lineage, drifts from the reviewed manifest hash, uses an unreviewed component value or band, duplicates an event, adds a dedicated overall-score field, or introduces prohibited raw or reversible fields before the site can build a release.

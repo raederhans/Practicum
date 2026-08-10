@@ -68,6 +68,36 @@ describe('fail-closed public bundle scanner', () => {
     expect(result.violations.join('\n')).toMatch(/credential|network/i)
   })
 
+  it('rejects additional dynamic network entry points', async () => {
+    const root = await makeTree({
+      'src/App.vue': '<script>navigator.sendBeacon("/telemetry", "x")</script>',
+    })
+    const result = await scanPublicTree(root)
+
+    expect(result.ok).toBe(false)
+    expect(result.violations.join('\n')).toMatch(/network/i)
+  })
+
+  it('rejects an allowlisted asset path when the file exceeds the public size limit', async () => {
+    const root = await makeTree({
+      'public/observatory-mark.svg': 'x'.repeat(1_500_001),
+    })
+    const result = await scanPublicTree(root)
+
+    expect(result.ok).toBe(false)
+    expect(result.violations.join('\n')).toMatch(/1\.5 MB public limit/i)
+  })
+
+  it('rejects non-code assets from the generated dist asset directory', async () => {
+    const root = await makeTree({
+      'dist/assets/unexpected.svg': '<svg/>',
+    })
+    const result = await scanPublicTree(root)
+
+    expect(result.ok).toBe(false)
+    expect(result.violations.join('\n')).toMatch(/not allowlisted/i)
+  })
+
   it('allows official attribution hyperlinks but rejects external runtime resources', async () => {
     const attributionRoot = await makeTree({
       'src/views/CreditsView.vue': '<template><a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></template>',
