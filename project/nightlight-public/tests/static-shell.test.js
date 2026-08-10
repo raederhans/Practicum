@@ -1,6 +1,8 @@
 import { readFile } from 'node:fs/promises'
 import { describe, expect, it } from 'vitest'
 
+import createViteConfig, { applyDevelopmentCsp } from '../vite.config.js'
+
 describe('offline-first HTML shell', () => {
   it('sets a local-only CSP and no-referrer policy', async () => {
     const html = await readFile(new URL('../index.html', import.meta.url), 'utf8')
@@ -14,6 +16,42 @@ describe('offline-first HTML shell', () => {
   it('does not reference external runtime resources', async () => {
     const html = await readFile(new URL('../index.html', import.meta.url), 'utf8')
     expect(html).not.toMatch(/(?:src|href)\s*=\s*["']https?:\/\//i)
+  })
+
+  it('adds nonce-authorized Vite styles and HMR connections only for development', async () => {
+    const html = await readFile(new URL('../index.html', import.meta.url), 'utf8')
+    const developmentHtml = applyDevelopmentCsp(html, 'unit-test-nonce')
+    const developmentConfig = createViteConfig({
+      command: 'serve',
+      isPreview: false,
+      mode: 'development',
+    })
+    const buildConfig = createViteConfig({
+      command: 'build',
+      isPreview: false,
+      mode: 'production',
+    })
+    const previewConfig = createViteConfig({
+      command: 'serve',
+      isPreview: true,
+      mode: 'production',
+    })
+
+    expect(developmentHtml).toContain("style-src 'self' 'nonce-unit-test-nonce'")
+    expect(developmentHtml).toContain("connect-src 'self' ws:")
+    expect(developmentHtml).not.toContain("'unsafe-inline'")
+    expect(developmentConfig.html.cspNonce).toMatch(/^[A-Za-z0-9+/]{24}$/)
+    expect(buildConfig.html).toBeUndefined()
+    expect(previewConfig.html).toBeUndefined()
+    expect(html).toContain("style-src 'self'")
+    expect(html).toContain("connect-src 'none'")
+  })
+
+  it('fails closed when either production CSP directive drifts', () => {
+    expect(() => applyDevelopmentCsp("style-src 'self'", 'unit-test-nonce'))
+      .toThrow(/could not find the production policy/i)
+    expect(() => applyDevelopmentCsp("connect-src 'none'", 'unit-test-nonce'))
+      .toThrow(/could not find the production policy/i)
   })
 })
 
