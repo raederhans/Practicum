@@ -6,7 +6,7 @@ A standalone, aggregate-only personal research portfolio about disaster recovery
 
 This repository intentionally does not publish raw outage records, time-series extracts, facility locations, pixel-level surfaces, reversible fine-grained tables, or fitted model artifacts. The Atlas contains only the original study queue reduced to event names, years, broad locations, hazard families, and one-decimal centers.
 
-The site does not request external fonts, scripts, map tiles, analytics, or application data at runtime.
+The site does not request external fonts, scripts, map tiles, analytics services, or application data at runtime. An optional research log is off by default, stays inside the current tab after explicit opt-in, and can be viewed, exported, or cleared locally without a network request.
 
 ## Local use
 

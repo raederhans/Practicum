@@ -2,7 +2,9 @@
 
 ## Current architecture decision
 
-The public application remains a static build. Its release contract is `static-only`, `local-assets-only`, `aggregate-only`, with no analytics and no runtime external requests.
+The public application remains a static build. Its release contract is `static-only`, `local-assets-only`, `aggregate-only`, with an optional local-only research log, no analytics transport, no persistent identifier, and no runtime external requests.
+
+The local research log is a deliberately separate client-side responsibility. It is disabled until explicit consent, uses current-tab session storage only, accepts two fixed event schemas, records no timestamps or free text, and is capped at 100 events. Clear and withdrawal delete the local session; export is a user-initiated local file operation. The app contains no telemetry endpoint, background sender, cookie, fingerprint, or third-party analytics SDK. The privacy threat model treats arbitrary properties, exact route queries, device/network metadata, restricted fields, stale consent versions, storage corruption, and accidental runtime transport as fail-closed conditions covered by negative tests and the public scanner.
 
 The four conditions that could justify a server were reviewed against the current product:
 
@@ -13,7 +15,7 @@ The four conditions that could justify a server were reviewed against the curren
 | Queries are too large or sensitive for static distribution | Only a small allowlisted aggregate artifact is admitted. Restricted and reversible inputs must stay private. | Not triggered; withholding is safer than server-side exposure. |
 | License or access control must execute on a server | Published assets are already approved for public distribution; restricted sources are not served. | Not triggered; access control is not a substitute for the public boundary. |
 
-If one of these conditions is later proven, design review must precede implementation. The smallest acceptable service contract would use a versioned schema, return aggregate-only records, define cache and invalidation behavior, log auditable administrative changes without sensitive payloads, minimize retained personal data, distinguish load/validation failures from valid zero, publish explicit degraded behavior, and expose operational health without user analytics. This repository does not implement that service.
+If one of these conditions is later proven, design review must precede implementation. The smallest acceptable service contract would use a versioned schema, return aggregate-only records, define cache and invalidation behavior, log auditable administrative changes without sensitive payloads, minimize retained personal data, distinguish load/validation failures from valid zero, publish explicit degraded behavior, and keep operational health separate from participant research analytics. This repository does not implement that service.
 
 ## Code responsibilities
 

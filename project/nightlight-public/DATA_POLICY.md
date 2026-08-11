@@ -22,6 +22,18 @@
 
 No synthetic substitute or hidden fallback is used when these materials are absent. The interface states the boundary directly.
 
+## Optional local research log
+
+The app includes a narrowly allowlisted research log for two questions: which fixed evidence surfaces a consenting participant opens, and whether they select Atlas Explore or Compare. It is off by default and begins only after an explicit opt-in for the current browser tab.
+
+- Storage is limited to `sessionStorage` for the current tab, with an in-memory fallback when browser storage is unavailable. Closing the tab, choosing **Stop and clear**, or clearing browser session data removes it.
+- No cookie, account, participant identifier, cross-session identifier, IP address, user agent, referrer, exact URL/query, precise location, free text, model input, restricted source field, or timestamp is recorded.
+- Only the fixed `surface_viewed` and `atlas_mode_selected` schemas are admitted. Unknown event names, extra properties, and values outside the explicit enum are rejected. There is no custom payload channel.
+- The log is capped at 100 events. A participant can view the local list, export the same bounded JSON locally, clear events with one action, or withdraw consent and delete the session.
+- The application has no analytics endpoint or transport. Nothing is sent to the project owner or a third party. An exported file leaves the tab only when the participant chooses what to do with it.
+
+This is a research convenience, not representative usage evidence. Opt-in selection, small samples, and a page-open event do not establish comprehension or population behavior. A future server-side study would require a separate privacy, consent, retention, infrastructure-log, deletion, and research-design review; this release does not implement one.
+
 ## Consumer value and error contract
 
 Public numeric consumers use `Public Aggregate Value schema v1`, enforced by `src/lib/aggregateValueContract.js` and its negative tests.
@@ -51,6 +63,6 @@ The Evidence Passport is also a non-reversible quality assessment derived from N
 
 ## Enforcement
 
-`npm run verify:public` fails closed on prohibited data and model formats, restricted artifact names, data directories, credential-shaped text, runtime network calls, non-reviewed runtime dependencies, weakened HTML security metadata, oversized files, and structural paths outside the release allowlist. A production verification also compares every built file against `dist/release-manifest.json` by relative path, byte length, SHA-256, base path, and static build contract.
+`npm run verify:public` fails closed on prohibited data and model formats, restricted artifact names, data directories, credential-shaped text, runtime network calls, non-reviewed runtime dependencies, weakened HTML security metadata, oversized files, and structural paths outside the release allowlist. The release contract records `local-opt-in-only` analytics with no transport and no persistent identifier. A production verification also compares every built file against `dist/release-manifest.json` by relative path, byte length, SHA-256, base path, and static build contract.
 
 The artifact verifiers also reject a public metric or Evidence Passport when it lacks required source lineage, drifts from the reviewed manifest hash, uses an unreviewed component value or band, duplicates an event, adds a dedicated overall-score field, or introduces prohibited raw or reversible fields before the site can build a release.

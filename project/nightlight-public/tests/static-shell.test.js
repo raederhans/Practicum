@@ -207,11 +207,13 @@ describe('five-route task and interpretation contract', () => {
     expect(methods).toMatch(/local artifacts only and makes no runtime data request/)
   })
 
-  it('makes rights, aggregate grain, local runtime, analytics absence, and known limits scannable on Credits', async () => {
+  it('makes rights, aggregate grain, local runtime, explicit local analytics consent, and known limits scannable on Credits', async () => {
     const credits = await readFile(new URL('../src/views/CreditsView.vue', import.meta.url), 'utf8')
 
     expect(credits).toMatch(/Aggregate-only public content/)
-    expect(credits).toMatch(/Local assets, no analytics/)
+    expect(credits).toMatch(/Local assets, optional tab-only research log/)
+    expect(credits).toMatch(/off by default and records only after explicit opt-in/)
+    expect(credits).toMatch(/no cookie or persistent identifier/)
     expect(credits).toMatch(/does not request them in the background/)
     expect(credits).toMatch(/KNOWN LIMITS/)
     expect(credits).toMatch(/screen-reader, speech-input, switch-access, and multi-browser support/)

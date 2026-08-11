@@ -78,7 +78,7 @@ describe('public navigation contract', () => {
   it('puts Credits trust facts before detailed authorship, rights, runtime, limits, and license sections', async () => {
     const credits = await readFile(new URL('../src/views/CreditsView.vue', import.meta.url), 'utf8')
 
-    for (const fact of ['AGGREGATE-ONLY', 'LOCAL ASSETS', 'NO ANALYTICS', 'USER-ACTIVATED LINKS']) {
+    for (const fact of ['AGGREGATE-ONLY', 'LOCAL ASSETS', 'OPTIONAL LOCAL LOG', 'USER-ACTIVATED LINKS']) {
       expect(credits).toContain(fact)
     }
     expect(credits.indexOf('trust-facts-title')).toBeLessThan(credits.indexOf('credits-authorship-title'))

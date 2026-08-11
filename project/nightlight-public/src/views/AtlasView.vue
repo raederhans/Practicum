@@ -17,6 +17,7 @@ import {
 import { filterEvents } from '../domain/filterEvents.js'
 import { projectPoint } from '../domain/projectPoint.js'
 import { resolveSelectedId } from '../domain/resolveSelectedId.js'
+import { localResearchLog } from '../lib/localResearchAnalytics.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -215,6 +216,7 @@ function hydrateFromRoute(routeQuery) {
 function updateViewMode(nextMode) {
   if (!VIEW_MODES.includes(nextMode) || nextMode === viewMode.value) return
   viewMode.value = nextMode
+  localResearchLog.recordAtlasModeSelected(nextMode)
   navigateWithState()
 }
 

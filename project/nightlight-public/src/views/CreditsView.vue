@@ -32,8 +32,8 @@ function navigateToSection(event) {
         <p>No external fonts, maps, or runtime data are loaded.</p>
       </article>
       <article>
-        <span class="policy-grid__code">NO ANALYTICS</span>
-        <p>No analytics request or background tracking is made.</p>
+        <span class="policy-grid__code">OPTIONAL LOCAL LOG</span>
+        <p>A tab-only research log is off by default and records only after explicit opt-in. It never sends a request.</p>
       </article>
       <article>
         <span class="policy-grid__code">USER-ACTIVATED LINKS</span>
@@ -95,8 +95,8 @@ function navigateToSection(event) {
       </article>
       <article>
         <span class="policy-grid__code">F / RUNTIME</span>
-        <h3>Local assets, no analytics</h3>
-        <p>The application loads no external fonts, maps, analytics, or runtime data. Attribution links above are user-activated exits; the app does not request them in the background.</p>
+        <h3>Local assets, optional tab-only research log</h3>
+        <p>The application loads no external fonts, maps, analytics service, or runtime data. The optional research log uses only this tab, has no cookie or persistent identifier, and can be exported or cleared locally. Attribution links above are user-activated exits; the app does not request them in the background.</p>
       </article>
     </section>
 

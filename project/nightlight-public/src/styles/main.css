@@ -2445,6 +2445,85 @@ p.page-summary {
   margin: 0;
 }
 
+.local-research-log {
+  padding: 1rem var(--space-page-inline);
+  border-top: 1px solid var(--line-strong);
+  background: var(--surface-panel);
+}
+
+.local-research-log details {
+  max-width: 68rem;
+}
+
+.local-research-log summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--text-primary);
+  font-family: var(--mono);
+  font-size: var(--type-functional);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.local-research-log summary strong {
+  color: var(--acid);
+  font-weight: 400;
+}
+
+.local-research-log__panel {
+  max-width: 58rem;
+  padding: 1rem 0 0.5rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.local-research-log__events {
+  display: grid;
+  gap: 0.4rem;
+  max-height: 15rem;
+  margin: 1rem 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.local-research-log__events li {
+  display: grid;
+  grid-template-columns: 3rem minmax(10rem, 0.5fr) minmax(0, 1fr);
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: var(--type-functional);
+}
+
+.local-research-log__events :is(span, small) {
+  color: var(--muted);
+}
+
+.local-research-log__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.local-research-log button {
+  min-height: var(--control-min-size);
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--line-strong);
+  color: var(--paper);
+  background: var(--ink-raised);
+  cursor: pointer;
+}
+
+.local-research-log button:hover {
+  border-color: var(--acid);
+  color: var(--acid);
+}
+
 .route-enter-active,
 .route-leave-active {
   transition: opacity 180ms ease, transform 180ms ease;
@@ -2839,6 +2918,14 @@ p.page-summary {
     flex-direction: column;
     padding-right: max(1rem, env(safe-area-inset-right));
     padding-left: max(1rem, env(safe-area-inset-left));
+  }
+
+  .local-research-log__events li {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+  }
+
+  .local-research-log__events small {
+    grid-column: 2;
   }
 
   .evidence-table {

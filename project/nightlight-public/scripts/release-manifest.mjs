@@ -9,7 +9,9 @@ export const STATIC_RELEASE_CONTRACT = Object.freeze({
   deploymentModel: 'static-only',
   runtimeData: 'local-assets-only',
   dataGrain: 'aggregate-only',
-  analytics: false,
+  analytics: 'local-opt-in-only',
+  analyticsTransport: 'none',
+  persistentIdentifier: false,
   externalRequests: false,
   sourceMaps: false,
 })

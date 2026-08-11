@@ -2,6 +2,8 @@
 import { nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
+import LocalResearchLog from './components/LocalResearchLog.vue'
+
 const navigation = [
   { to: '/', label: 'Overview', index: '01' },
   { to: '/atlas', label: 'Study Atlas', index: '02' },
@@ -135,9 +137,11 @@ onMounted(updateRouteContext)
       </RouterView>
     </main>
 
+    <LocalResearchLog />
+
     <footer class="site-footer">
       <p>Independent student research portfolio · 2026</p>
-      <p>Local assets only · No analytics · No external requests</p>
+      <p>Local assets only · Optional tab-only research log · No external requests</p>
     </footer>
   </div>
 </template>
