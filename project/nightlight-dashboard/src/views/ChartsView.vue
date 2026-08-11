@@ -226,11 +226,12 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { EVENTS } from '@/data/events.js'
+import { resultsSummaryRepository } from '@/artifacts/repositories/resultsSummaryRepository'
 
-const BASE = import.meta.env.BASE_URL
 const results = ref(null)
 const dataError = ref('')
 const activeModel = ref('A')
+const resultsRequest = new AbortController()
 const modelOptions = [
   { key: 'A', label: 'Model A — Full' },
   { key: 'B', label: 'Model B — Post-only' },
@@ -240,12 +241,7 @@ const modelOptions = [
 
 onMounted(async () => {
   try {
-    const res = await fetch(`${BASE}data/results_summary.json`)
-    if (!res.ok) throw new Error(`results_summary.json returned HTTP ${res.status}`)
-    const value = await res.json()
-    if (!value?.loeo_by_model || typeof value.loeo_by_model !== 'object') {
-      throw new Error('results_summary.json is missing loeo_by_model')
-    }
+    const { data: value } = await resultsSummaryRepository.get({ signal: resultsRequest.signal })
     results.value = value
     const firstAvailable = modelOptions.find(option => Array.isArray(value.loeo_by_model[option.key]))
     activeModel.value = firstAvailable?.key ?? ''
@@ -262,7 +258,10 @@ onMounted(async () => {
 })
 
 let revealObs
-onUnmounted(() => revealObs?.disconnect())
+onUnmounted(() => {
+  resultsRequest.abort()
+  revealObs?.disconnect()
+})
 
 const modelDesc = {
   model_a: 'All 17 features: NTL behavior + spatial proximity + city controls',
