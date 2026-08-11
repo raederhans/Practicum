@@ -47,6 +47,18 @@ Evidence Passport component points are reviewed workflow-rule outputs, not repla
 
 Schema changes require a version change, negative fixtures, exact public-allowlist updates, and a documented migration or explicit rejection of the older version. Breaking changes do not receive an indefinite compatibility fallback.
 
+## Source freshness and failure contract spike
+
+`Public Source Value schema v1` is a testable future-carrier boundary. It is not wired to an external source in this release. Each record owns a stable source id and explicitly carries `version`, `effectiveDate`, `retrievedAt`, and `validatedAt`; those four fields are complete only for a validated snapshot. The value state distinguishes:
+
+- `available`: a validated finite value, including a legitimate zero.
+- `stale`: the last validated finite value after `offline`, `rate-limited`, `auth-required`, or `source-failure`, visibly labeled with its effective date.
+- `unavailable`, `offline`, `rate_limited`, `auth_required`, `source_failure`, and `validation_failure`: `null` value, null snapshot metadata, and an allowlisted reason code.
+
+A stale snapshot is displayable only when it has complete validated metadata, an admitted failure cause, a visible **as of** label, and an effective date no more than 30 days before the explicit evaluation time. At day 31 it fails closed and must not be displayed as a value. A snapshot that failed validation is never eligible for stale display. No status may turn a missing or failed value into numeric zero.
+
+The current adapter is bundled-static only. It validates reviewed in-memory records and returns `validation_failure` rather than leaking an invalid value. It does not acquire, retry, cache, or request data at runtime.
+
 ## Source rights and attribution
 
 The aggregated outage-related results were independently processed from ORNL EAGLE-I Recorded Electricity Outages, DOI `10.6084/m9.figshare.24237376`:

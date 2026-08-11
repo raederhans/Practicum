@@ -17,6 +17,22 @@ The four conditions that could justify a server were reviewed against the curren
 
 If one of these conditions is later proven, design review must precede implementation. The smallest acceptable service contract would use a versioned schema, return aggregate-only records, define cache and invalidation behavior, log auditable administrative changes without sensitive payloads, minimize retained personal data, distinguish load/validation failures from valid zero, publish explicit degraded behavior, and keep operational health separate from participant research analytics. This repository does not implement that service.
 
+## ADR NL-F01 — freshness carrier admission
+
+**Status:** contract spike accepted; runtime acquisition rejected for the current release.
+
+The app now has a pure `Public Source Value schema v1` and a bundled-static adapter seam. They define source/version/effective/retrieved/validated metadata, explicit stale display, a 30-day maximum stale age, and stable unavailable/failure states. No production artifact consumes this seam yet, and no runtime request capability was added. CSP remains `connect-src 'none'`; the release manifest still declares `externalRequests: false`.
+
+Future carriers have separate admission triggers:
+
+| Carrier | Minimum admission conditions | Current decision |
+| --- | --- | --- |
+| Build-time acquisition → reviewed static snapshot | Upstream changes are useful but page-open freshness is unnecessary; immutable source/version/license receipt; schema validation; reviewed aggregate output; rebuild and exact manifest gate. | Preferred future path; not implemented in this spike. |
+| Same-origin runtime aggregate API | Freshness is materially faster than the release cycle or static payload/query shape is no longer viable; named production owner/SLA; versioned aggregate-only response; server-side secret handling; cache/ETag/invalidation; health and rollback; full CSP/verifier/manifest/Data Policy re-admission. | Not triggered. |
+| Direct external source adapter | Same-origin/build-time paths are proven insufficient; upstream explicitly permits browser use; no client secret; stable CORS/license/quota/SLA; bounded user value; explicit timeout/payload/rate/error behavior; restricted data remains excluded. | Rejected until every condition is proven. |
+
+An old snapshot may be shown only as `stale`, never as current, only within the fixed age window, and never after validation failure. `offline`, `rate_limited`, `auth_required`, `source_failure`, and `validation_failure` with no admissible snapshot remain null. There is no retry, fallback-to-zero, hidden demo, or best-effort schema parsing.
+
 ## Code responsibilities
 
 - `src/router/`: static route names, paths, and lazy view entry points.

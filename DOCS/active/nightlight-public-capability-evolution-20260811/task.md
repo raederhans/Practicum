@@ -2,7 +2,7 @@
 
 ## Current status
 
-`IN_PROGRESS` — Stage 1 analytics 已实现并完成 targeted validation；正在准备独立 Lore commit，Stage 2 尚未开始。
+`IN_PROGRESS` — Stage 1 已提交；Stage 2 freshness/error contract spike 已实现并完成 targeted validation，正在准备独立提交。
 
 ## Checklist
 
@@ -11,9 +11,9 @@
 - [x] 完整读取数据产品/科学指标和技术架构/性能探索任务最终报告。
 - [x] 建立唯一 `plan.md`、`context.md`、`task.md`。
 - [x] Stage 1 analytics contract / UI / policy / tests。
-- [ ] Stage 1 targeted validation and Lore commit（targeted validation 已完成，commit 待创建）。
-- [ ] Stage 2 freshness/error contract / adapter seam / ADR / tests。
-- [ ] Stage 2 targeted validation and Lore commit。
+- [x] Stage 1 targeted validation and Lore commit — `2560fb0bf6e5b03a5ed8006152d094eaea6b1c5b`。
+- [x] Stage 2 freshness/error contract / adapter seam / ADR / tests。
+- [ ] Stage 2 targeted validation and Lore commit（targeted validation 已完成，commit 待创建）。
 - [ ] Stage 3 Atlas route-state/mounted seam。
 - [ ] 评估并记录 helper-only 或 conditional component split 的停止决定。
 - [ ] Stage 3 targeted validation and Lore commit(s)。
@@ -32,9 +32,11 @@
 | `npm ci` | PASS — 锁文件安装 73 packages，audit 0 vulnerabilities；仅有 allow-scripts 配置提示 |
 | `npm test -- tests/local-analytics.test.js tests/static-shell.test.js tests/routes.test.js tests/release-manifest.test.js tests/platform-boundary.test.js tests/public-boundary.test.js` | PASS — 6 files，84 tests |
 | `npm run verify:public` | PASS — `Public source boundary verified.` |
+| `npm test -- tests/source-freshness-contract.test.js tests/error-contract.test.js tests/platform-boundary.test.js tests/public-boundary.test.js` | PASS — 4 files，91 tests（最终 targeted run） |
 
 ## Open risks and remaining work
 
 - Analytics UI 已放在 global shell 与 footer 之间的默认折叠 disclosure；Credits/Policy 同步提供可扫描的 opt-in、tab-only、zero-transport 说明。
+- Freshness contract 目前没有 production consumer；这是刻意的 contract spike，不代表 runtime data 已启用或有 live freshness 保证。
 - Mounted Atlas behavior test 需要核对现有依赖能否真实 mount Vue/router；若现有工具不足，优先建立 browser-native harness，新增依赖仅在确实必要时准入。
 - 完整 validate 和 browser gate 尚未运行；历史 `180/180` 与 Pages 证据不能代替本任务 fresh validation。

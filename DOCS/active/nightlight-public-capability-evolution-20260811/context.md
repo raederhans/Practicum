@@ -19,6 +19,10 @@
 | 2026-08-11 | Atlas 先抽 pure route-state helper并补 mounted behavior harness | 组件拆分取决于 parent responsibility 与测试 seam 的实际改善 |
 | 2026-08-11 | Stage 1 使用 fixed methods `recordSurfaceViewed` / `recordAtlasModeSelected`，内部 schema 严格拒绝 unknown event/extra property | 不提供任意 custom payload API；研究事件只对应两项已声明问题 |
 | 2026-08-11 | consent 与 event log 只在当前 tab session storage；无存储时退回当前页面内存 | 默认关闭；版本漂移/损坏 envelope 删除并回到 not_granted |
+| 2026-08-11 | Stage 1 commit `2560fb0bf6e5b03a5ed8006152d094eaea6b1c5b` | Analytics 契约可独立回滚；完整 browser/full validate 仍保留到最终 gate |
+| 2026-08-11 | Freshness source envelope 与 aggregate value schema 分离 | source/transport failure 不改变既有科学值状态或 R²/AUC/Passport 语义 |
+| 2026-08-11 | stale display 使用 effective date 与显式 evaluation time，最大 30 天 | day 31、validation failure、缺 metadata 或未知原因一律 fail closed |
+| 2026-08-11 | Phase 2 targeted suite 4 files / 91 tests passed；source verifier 在该阶段实现后通过 | 证明 pure contract、adapter fail-closed 与 exact source boundary；未证明 live source 或 API |
 
 ## Live process ownership
 
@@ -34,4 +38,4 @@
 
 ## Next step
 
-创建 Stage 1 Lore commit，然后实施 Stage 2 freshness/version/error pure contract 与 bundled adapter seam。
+创建 Stage 2 Lore commit，然后开始 Stage 3 Atlas route-state helper 与真实 mounted behavior seam。
