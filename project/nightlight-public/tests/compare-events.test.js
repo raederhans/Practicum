@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises'
+
 import { describe, expect, it } from 'vitest'
 
 import {
@@ -7,6 +9,7 @@ import {
 import { EVENTS } from '../src/content/study.js'
 
 const compareModuleUrl = new URL('../src/domain/compareEvents.js', import.meta.url)
+const atlasViewUrl = new URL('../src/views/AtlasView.vue', import.meta.url)
 
 async function loadCompareModule() {
   try {
@@ -248,5 +251,64 @@ describe('Atlas event comparison rules', () => {
       expect(preset.note.length).toBeGreaterThan(40)
     }
     expect(module.PRESET_DISCLAIMER).toMatch(/editorial.*not.*representative/i)
+  })
+})
+
+describe('Atlas public URL and task-order contract', () => {
+  it('keeps the documented query state behind strict public enums and IDs', async () => {
+    const source = await readFile(atlasViewUrl, 'utf8')
+
+    expect(source).toMatch(/useRoute\(\)/)
+    expect(source).toMatch(/useRouter\(\)/)
+    expect(source).toMatch(/VIEW_MODES = Object\.freeze\(\['explore', 'compare'\]\)/)
+    expect(source).toMatch(/MOBILE_VIEWS = Object\.freeze\(\['list', 'map'\]\)/)
+    expect(source).toMatch(/EVENT_IDS\.has\(value\)/)
+    expect(source).toMatch(/PRESET_BY_ID\.get\(scalarQueryValue\(routeQuery\.preset\)\)/)
+    expect(source).toMatch(/validOption\(scalarQueryValue\(routeQuery\.hazard\), HAZARD_FAMILIES, 'All'\)/)
+    expect(source).toMatch(/const nextQuery = \{ mode: viewMode\.value \}/)
+    expect(source).toMatch(/nextQuery\.q = search/)
+    expect(source).toMatch(/nextQuery\.event = selectedId\.value/)
+    expect(source).toMatch(/nextQuery\.a = comparisonLeftId\.value/)
+    expect(source).toMatch(/nextQuery\.b = comparisonRightId\.value/)
+    expect(source).toMatch(/href="#evidence-passport-title" @click\.prevent="navigateToSection"/)
+    expect(source).toMatch(/id="evidence-passport-title" tabindex="-1"/)
+  })
+
+  it('uses replace for debounced search and push for discrete Atlas actions', async () => {
+    const source = await readFile(atlasViewUrl, 'utf8')
+
+    expect(source).toMatch(/SEARCH_DEBOUNCE_MS = 200/)
+    expect(source).toMatch(/window\.setTimeout\(\(\) => \{[\s\S]*navigateWithState\('replace'\)/)
+    expect(source).toMatch(/function updateViewMode[\s\S]*navigateWithState\(\)/)
+    expect(source).toMatch(/function selectEvent[\s\S]*navigateWithState\(\)/)
+    expect(source).toMatch(/watch\(\(\) => route\.query, hydrateFromRoute/)
+  })
+
+  it('orders Explore and Compare around the primary user tasks', async () => {
+    const source = await readFile(atlasViewUrl, 'utf8')
+    const orderedHooks = (hooks) => hooks.map((hook) => source.indexOf(hook))
+
+    const exploreOrder = orderedHooks([
+      'atlas-controls atlas-task-summary',
+      'event-selection-summary',
+      'atlas-mobile-view',
+      'atlas-workbench',
+      'class="evidence-passport"',
+    ])
+    const compareOrder = orderedHooks([
+      'comparison-selectors',
+      'comparison-compatibility',
+      'comparison-presets',
+      'comparison-key-result',
+      'comparison-components',
+      'comparison-measurement-boundary',
+    ])
+
+    expect(exploreOrder.every((index) => index >= 0)).toBe(true)
+    expect(exploreOrder).toEqual([...exploreOrder].sort((left, right) => left - right))
+    expect(compareOrder.every((index) => index >= 0)).toBe(true)
+    expect(compareOrder).toEqual([...compareOrder].sort((left, right) => left - right))
+    expect(source).toMatch(/Clear filters/)
+    expect(source).toMatch(/aria-live="polite"/)
   })
 })
