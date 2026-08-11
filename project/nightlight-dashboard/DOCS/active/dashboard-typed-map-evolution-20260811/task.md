@@ -2,7 +2,7 @@
 
 ## Current status
 
-Implementation complete. Final validation, audit, live-resource cleanup, and reversible commits remain.
+Committed and ready for integration from this isolated detached worktree. No merge, rebase, cherry-pick, push, deploy, main update, or topology change was performed.
 
 ## Checklist
 
@@ -15,8 +15,8 @@ Implementation complete. Final validation, audit, live-resource cleanup, and rev
 - [x] Complete the formal `NL-PERF-01` matrix with retained samples and failure evidence.
 - [x] Complete the `NL-PERF-02` CSS boundary and threshold-gated optimization decision.
 - [x] Complete `NL-CI-01` if equivalent Dashboard CI is absent.
-- [ ] Run final scoped verification, security/generated-file audit, and live-resource cleanup.
-- [ ] Create and inspect reversible Lore commits and hand off recommended integration order.
+- [x] Run final scoped verification, security/generated-file audit, and live-resource cleanup.
+- [x] Create and inspect reversible Lore commits and hand off recommended integration order.
 
 ## Validation evidence
 
@@ -40,6 +40,17 @@ Implementation complete. Final validation, audit, live-resource cleanup, and rev
 | Windows clean-install CI equivalent | Passed after `npm ci`: 49/49 tests, browser/Node typecheck, build, and bundle analyzer. Lockfile audit found 0 vulnerabilities; existing MapLibre >500 kB and esbuild install-script policy warnings remain explicit. |
 | Workflow parsing | Passed with temporary pinned `js-yaml@4.1.0`; matrix contains Ubuntu/Windows and has no deploy/Public coupling. A real Ubuntu runner was not available locally. |
 | Live teardown | Named CLI browser closed; all direct Playwright runners exited; last preview PID `252060` stopped; port `54741` confirmed free; transient raw/runtime/smoke files removed. |
+| Scoped audit | `git diff --check` passed; 40 changed/new files before commits contained zero credential-pattern hits and no file above 1 MiB; ignored `dist`/`node_modules` were excluded; all task-owned live processes are absent. |
+
+## Ready-for-integration commits
+
+1. `79943770f3402f67d996383ca8677d3a3130f0a7` — bounded diagnostics and legacy/producer-v1 schema contracts.
+2. `3b1308d31054423465f8a133fcdef858dbad4ee9` — app-local typed artifact repository and `ChartsView` consumer.
+3. `eb052b78a43d1365f1689a7d15318ed8c876c4d1` — MapLibre measurement tooling and retained pre-change/failure evidence.
+4. `220bcea8246ee983b8db030a295aa3067c78e7b8` — route-local CSS, threshold decisions, detail-ready race fix, and post evidence.
+5. `9f58f0519bd998501db96c4344f6f586e2d1844d` — independent non-deploy Dashboard CI.
+
+Integrate in the listed order. The first commit includes shared dev-tool pins used by later measurement work. The CI commit should be last so its full entry points exist when the workflow lands.
 
 ## Open risks and remaining work
 
@@ -47,4 +58,5 @@ Implementation complete. Final validation, audit, live-resource cleanup, and rev
 - Modeling/Data still owns the future producer representation for facility fallback. This lane preserves a permanent legacy limitation and does not reinterpret values.
 - Typed repository parity currently has one real consumer (`ChartsView`); shared-core admission is not met.
 - Memory and long-task thresholds were crossed, but no low-risk admitted worker/LRU/source-eviction action was supported. The shared MapLibre worker is retained for SPA warm reuse; page-level long-task attribution did not meet the worker-tuning ratio.
-- Ubuntu behavior is represented by parsed workflow configuration only; no real Ubuntu runner is available locally. Windows clean-install equivalent commands remain the final gate.
+- Ubuntu behavior is represented by parsed workflow configuration only; no real Ubuntu runner is available locally. The Windows clean-install equivalent gate passed.
+- GitHub-hosted Ubuntu/Windows jobs, a physical-device browser, and any Dashboard deployment remain unrun. The existing MapLibre >500 kB warning and npm esbuild install-script-policy warning remain open evidence, not hidden failures.

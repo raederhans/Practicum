@@ -28,7 +28,7 @@ The implementation follows the delegated six phases in strict order. A later pha
 - [x] Phase 4 — `NL-PERF-01`: extend ready-state instrumentation and run the owned cold/warm, network, CPU, viewport, DPR, route-cycle, basemap, memory, worker, long-task, layer/source, and failure matrix.
 - [x] Phase 5 — `NL-PERF-02`: move MapLibre CSS to the lazy route and implement no other optimization unless the retained measurements cross a documented threshold.
 - [x] Phase 6 — `NL-CI-01`: add independent non-deploy Ubuntu/Windows CI for Dashboard tests, typecheck, build, and bundle analysis when no equivalent workflow exists.
-- [ ] Delivery — run scoped verification and audits, remove task-owned live resources and temporary output, retain formal measurement evidence, and create reversible Lore commits.
+- [x] Delivery — run scoped verification and audits, remove task-owned live resources and temporary output, retain formal measurement evidence, and create reversible Lore commits.
 
 ## Acceptance criteria
 

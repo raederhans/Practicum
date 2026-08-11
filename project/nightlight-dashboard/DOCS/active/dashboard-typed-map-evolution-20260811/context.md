@@ -51,8 +51,8 @@
 
 ## Handoff
 
-No handoff yet. This task may commit within its isolated worktree but must not change main, merge, rebase, cherry-pick, push, deploy, or alter worktree topology.
+Ready for integration in this exact order: `79943770f3402f67d996383ca8677d3a3130f0a7`, `3b1308d31054423465f8a133fcdef858dbad4ee9`, `eb052b78a43d1365f1689a7d15318ed8c876c4d1`, `220bcea8246ee983b8db030a295aa3067c78e7b8`, then `9f58f0519bd998501db96c4344f6f586e2d1844d`. The required base `6b3de4ee97c5391084538bec84db3b1a1f4e05ed` remains an ancestor. No integration, ref update, remote operation, deployment, or topology change was performed.
 
 ## Next step
 
-Complete the scoped audit, create and inspect reversible Lore commits, and report the committed integration order without changing main, remotes, or worktree topology.
+Integration owner may apply the listed commits in order, then run the hosted CI matrix. Keep Dashboard deployment and base-path decisions separate until an explicit target exists.
