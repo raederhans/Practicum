@@ -27,7 +27,7 @@ Restore a versioned, testable scientific foundation for recovery outcomes, sourc
 - [x] Phase 4 — NL-L01 bounded label pilot or evidence-backed blocked decision.
 - [x] Verify, document handoff, and create reversible Lore commit(s).
 - [x] Phase 5 — NL-P01 facility-probability producer contract and legacy-v0 migration boundary.
-- [ ] Re-run the affected gates, record the Dashboard/Public handoff, and create a reversible continuation Lore commit.
+- [x] Re-run the affected gates, record the Dashboard/Public handoff, and create a reversible continuation Lore commit.
 
 ## Acceptance criteria
 

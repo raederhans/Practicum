@@ -2,7 +2,7 @@
 
 ## Current status
 
-`validated-awaiting-commit` — the original four-phase package remains committed and NL-P01 implementation plus affected validation are complete. The continuation Lore commit and post-commit readback remain; integration is still owned by the future integration owner.
+`ready-for-integration` — the original four-phase package and the NL-P01 producer-contract continuation are committed, validated, and read back. Integration remains owned by the future integration owner.
 
 ## Checklist
 
@@ -17,7 +17,7 @@
 - [x] Freeze and test the NL-P01 versioned facility-probability producer contract.
 - [x] Record the legacy-v0 compatibility/migration window without rewriting historical values.
 - [x] Assess `fillna(0)` as implementation behavior, current-panel evidence, and scientific-admissibility blocker.
-- [ ] Re-run affected gates, document Dashboard/Public handoffs, and create the continuation Lore commit.
+- [x] Re-run affected gates, document Dashboard/Public handoffs, and create the continuation Lore commit.
 
 ## Validation evidence
 
@@ -46,6 +46,7 @@
 | `reproducibility.py --scope reviewed-modeling --json` | Exit 0 and `ready`; reviewed-output consistency only. |
 | `reproducibility.py --scope full-upstream --json` | Exit 1 and `blocked` on the same seven external/source-lineage conditions; no blocker was mocked or guessed closed. |
 | Python compile plus contract/assessment JSON parse | Passed. |
+| NL-P01 continuation Lore commit | `c3b18c6613f8c915721021d5e45367f3b0ef5f02`, parent `a407de6474d678cbb0bd9e8566ffd66c451f6a52`; 8 authorized paths and 1,079 insertions / 3 deletions. Full message/stat, required-base ancestry, author scope, and clean post-commit state were read back before this docs-only closeout. |
 
 ## Open risks and remaining work
 

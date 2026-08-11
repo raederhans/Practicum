@@ -27,6 +27,7 @@
 | 2026-08-11 NL-P01 contract | A v1 probability is a discriminated observation: only `available` may carry a finite `[0,1]` value and it requires eligible/finite pixel counts; `unavailable`, `not_assessed`, `computation_failed`, and `validation_failed` use null plus a status-bound reason. Artifact-level source versions and receipts, event/facility provenance, and aggregation rules are required. | A true modeled `0.5` is now representable without collision. No legacy record is reclassified and no producer/Dashboard code is changed in this lane. |
 | 2026-08-11 legacy migration | The 25 arrays remain read-only `legacy-v0`; all numeric values, including the ten `0.5` values, remain unchanged and ambiguous. The v1 path requires regeneration from pinned facility, pixel-probability, preprocessing, model, and producer lineage. | Dual-read ends only after 25/25 regeneration, Dashboard adapter conformance, and one complete compatibility release; retirement is no earlier than the following major consumer release after a manifest proves no v0 production references. |
 | 2026-08-11 NL-P01 validation | Twelve targeted conformance/negative/round-trip tests passed. The affected science, readiness, Dashboard contract, modeling entrypoint, source/reproducibility, and stage group passed 90 tests with one existing private-output skip. Reviewed-modeling remained ready; full-upstream remained blocked on the same seven external/lineage gaps. | The contract and bounded assessment are validated locally. This is not producer migration, model recalibration, restored lineage, or scientific admission of zero-fill. |
+| 2026-08-11 NL-P01 commit | Continuation Lore commit `c3b18c6613f8c915721021d5e45367f3b0ef5f02` was created on detached HEAD with parent `a407de6474d678cbb0bd9e8566ffd66c451f6a52`; full message, stat, scope, ancestry, and clean post-commit status were read back. | NL-P01 implementation is committed and ready for integration. This docs-only closeout records exact delivery evidence without changing the producer contract. |
 
 ## Live process ownership
 
@@ -40,4 +41,4 @@ The future integration owner should apply this science-foundation candidate befo
 
 ## Next step
 
-Complete NL-P01, then the future integration owner applies the final detached-HEAD candidate range after the exact required base, preserves the active records until integration is complete, and runs the combined science plus Public/Dashboard validation in the recommended order.
+Future integration owner applies the final detached-HEAD candidate range after the exact required base, preserves the active records until integration is complete, and runs the combined science plus Public/Dashboard validation in the recommended order.
