@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "protocol_id": "evidence-passport-composite-research-v1",
+  "status": "research-only-not-public-admitted",
+  "comparability": {
+    "required_schema_family": "readiness-score-rules-v1",
+    "required_window_family": "reviewed-event-readiness-components-v1",
+    "same_schema_and_window_family_required": true
+  },
+  "normalization": {
+    "methods": ["fixed_component_max", "cohort_min_max"],
+    "constant_component_value": 0.5,
+    "out_of_range": "reject"
+  },
+  "weighting": {
+    "reference": "component_max_proportional",
+    "alternatives": ["equal_components", "monte_carlo_simplex"]
+  },
+  "missingness": {
+    "policy": "complete_case_only",
+    "imputation_allowed": false,
+    "missing_is_zero": false
+  },
+  "sensitivity": {
+    "leave_one_component_out": true,
+    "monte_carlo": {
+      "seed": 20260811,
+      "draws": 2000,
+      "weight_distribution": "symmetric_dirichlet_alpha_1"
+    }
+  },
+  "admission_thresholds": {
+    "minimum_complete_events": 12,
+    "minimum_scenario_spearman": 0.9,
+    "minimum_leave_one_out_spearman": 0.8,
+    "maximum_monte_carlo_rank_span": 2.0
+  },
+  "decision_contract": {
+    "admitted_value": "research_candidate",
+    "failed_value": "no_go",
+    "all_thresholds_required": true
+  },
+  "public_boundary": {
+    "export_to_public_allowed": false,
+    "score_allowed": false,
+    "rank_allowed": false,
+    "outcome_label_allowed": false,
+    "forecast_or_probability_allowed": false,
+    "meaning": "Sensitivity results diagnose whether a research composite is stable; they do not create an Evidence Passport score, ranking, grade, recovery outcome, forecast, or probability."
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "contract_id": "nightlight-recovery-outcomes-v1",
+  "status": "construct-frozen-not-empirically-admitted",
+  "target_construct": {
+    "phenomenon": "Post-event return of quality-screened nighttime radiance toward an event-specific pre-event reference",
+    "spatial_unit": "One VNP46A2 Collection 2 500 m pixel within a declared event geometry; aggregations must retain their pixel denominator and geometry version",
+    "temporal_unit": "UTC calendar day indexed as elapsed whole days after the event anchor",
+    "event_anchor": "A versioned external event timestamp in UTC; day 0 contains the anchor and post-event outcomes begin on day 1",
+    "prediction_moment": "Any future forecast must freeze predictors and eligibility at or before the event anchor. The observed outcomes in this contract are computed after follow-up and are not predictions.",
+    "horizon_days": 90,
+    "reference": "A separately receipted pre-event radiance baseline using the same product, quality mask, schema, spatial unit, and window family",
+    "normalized_signal": "quality-screened daily radiance divided by the declared pre-event reference; it is a radiance proxy, not percentage infrastructure, service, household, business, or social recovery"
+  },
+  "observation_policy": {
+    "eligible_days": "Elapsed days 1 through horizon_days with a finite normalized signal and a passing source quality flag",
+    "minimum_observed_fraction": 0.8,
+    "threshold_sustain_days": 3,
+    "calendar_gaps_break_sustained_runs": true,
+    "zero_is_observed": true,
+    "missing_is_zero": false,
+    "missing_is_censoring": false,
+    "no_retrieval_is_unavailable_observation": true
+  },
+  "outcomes": {
+    "t50_days": {
+      "type": "time_to_sustained_threshold",
+      "threshold": 0.5,
+      "unit": "elapsed_days_from_event_anchor",
+      "definition": "First day of the first threshold_sustain_days consecutive eligible calendar-day run at or above 50 percent of the radiance reference"
+    },
+    "t90_days": {
+      "type": "time_to_sustained_threshold",
+      "threshold": 0.9,
+      "unit": "elapsed_days_from_event_anchor",
+      "definition": "First day of the first threshold_sustain_days consecutive eligible calendar-day run at or above 90 percent of the radiance reference"
+    },
+    "deficit_burden_observed_day_sum": {
+      "type": "observed_deficit_burden",
+      "unit": "normalized_radiance_deficit_days",
+      "definition": "Sum over eligible post-event days of max(0, 1 - normalized_signal); missing days are not imputed and the outcome is unavailable below the observed-fraction gate"
+    }
+  },
+  "status_dictionary": {
+    "observed": "The outcome is computable under this contract and is not a forecast or probability.",
+    "right_censored": "The threshold was not reached by the fixed horizon despite sufficient eligible follow-up through the horizon.",
+    "unavailable": "Required baseline, denominator, source receipt, quality-screened observations, or follow-up coverage is insufficient; unavailable is never encoded as zero or right censoring."
+  },
+  "evidence_roles": {
+    "ground_truth": "An independently sourced and receipted service-restoration observation with pinned event time, denominator, geography, temporal grain, rights, and missingness semantics.",
+    "proxy": "A radiance-derived or contextual measure that may be compared with ground truth but cannot be relabeled as utility, infrastructure, household, business, or community recovery."
+  },
+  "semantic_classes": {
+    "admission_readiness": {
+      "allowed_measure_ids": ["readiness_band", "admission_status"],
+      "meaning": "Data-quality and analysis-admission evidence only"
+    },
+    "observed_recovery_outcome": {
+      "allowed_measure_ids": ["t50_days", "t90_days", "deficit_burden_observed_day_sum"],
+      "meaning": "Retrospectively observed proxy outcomes under sufficient follow-up"
+    },
+    "forecast": {
+      "allowed_measure_ids": ["recovery_time_forecast"],
+      "meaning": "A future estimate made from a frozen prediction moment; not implemented or admitted by this contract"
+    },
+    "probability": {
+      "allowed_measure_ids": ["recovery_threshold_probability"],
+      "meaning": "A calibrated probability for a declared event and horizon; not implemented or admitted by this contract"
+    }
+  },
+  "prohibited_interpretations": [
+    "Do not describe radiance return as restoration of electricity service without independent ground truth.",
+    "Do not describe T50, T90, or burden as household, business, infrastructure, economic, social, or community recovery.",
+    "Do not use readiness or admission bands as outcomes, forecasts, probabilities, grades, composite scores, or ranks.",
+    "Do not infer causality, future risk, safety, resilience, or a safer location from these outcomes.",
+    "Do not publish a forecast or probability because an observed retrospective outcome is available."
+  ]
+}

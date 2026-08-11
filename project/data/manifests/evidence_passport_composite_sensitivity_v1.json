@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "manifest_id": "evidence-passport-composite-sensitivity-v1",
+  "status": "research-only-no-go",
+  "source": {
+    "path": "project/nightlight-public/src/content/evidencePassportManifest.json",
+    "schema_version": 1,
+    "artifact_version": "1.0.0",
+    "generated_date": "2026-08-05",
+    "source_id": "event-readiness-public-components-v1",
+    "source_version": "readiness-score-rules-v1",
+    "publication_status": "reviewed-derived-aggregate"
+  },
+  "schema_family": "readiness-score-rules-v1",
+  "window_family": "reviewed-event-readiness-components-v1",
+  "snapshot_scope": {
+    "event_count": 9,
+    "component_count": 5,
+    "same_schema_and_window_family": true,
+    "public_artifact_modified": false
+  },
+  "component_maxima": {
+    "observation-quality": 30,
+    "post-event-coverage": 20,
+    "context-coverage": 20,
+    "covariate-completeness": 20,
+    "data-integrity": 10
+  },
+  "rows": [
+    {"event_id": "eq-pr", "components": {"observation-quality": 30, "post-event-coverage": 12, "context-coverage": 20, "covariate-completeness": 20, "data-integrity": 10}},
+    {"event_id": "ida", "components": {"observation-quality": 30, "post-event-coverage": 12, "context-coverage": 20, "covariate-completeness": 20, "data-integrity": 10}},
+    {"event_id": "ian-charlotte", "components": {"observation-quality": 30, "post-event-coverage": 20, "context-coverage": 20, "covariate-completeness": 20, "data-integrity": 10}},
+    {"event_id": "ian-fortmyers", "components": {"observation-quality": 30, "post-event-coverage": 20, "context-coverage": 20, "covariate-completeness": 20, "data-integrity": 10}},
+    {"event_id": "irma", "components": {"observation-quality": 30, "post-event-coverage": 12, "context-coverage": 20, "covariate-completeness": 20, "data-integrity": 10}},
+    {"event_id": "laura", "components": {"observation-quality": 30, "post-event-coverage": 20, "context-coverage": 12, "covariate-completeness": 20, "data-integrity": 10}},
+    {"event_id": "eq-hatay", "components": {"observation-quality": 24, "post-event-coverage": 0, "context-coverage": 12, "covariate-completeness": 20, "data-integrity": 10}},
+    {"event_id": "maria", "components": {"observation-quality": 0, "post-event-coverage": 12, "context-coverage": 20, "covariate-completeness": 20, "data-integrity": 10}},
+    {"event_id": "michael", "components": {"observation-quality": 0, "post-event-coverage": 12, "context-coverage": 6, "covariate-completeness": 20, "data-integrity": 10}}
+  ],
+  "analysis": {
+    "decision": "no_go",
+    "decision_reasons": [
+      "complete-event-count-below-minimum",
+      "monte-carlo-weight-rank-instability"
+    ],
+    "complete_event_count": 9,
+    "excluded_events": [],
+    "reference": {
+      "normalization": "fixed_component_max",
+      "weighting": "component_max_proportional",
+      "scores": {
+        "eq-hatay": 0.66,
+        "eq-pr": 0.92,
+        "ian-charlotte": 1.0,
+        "ian-fortmyers": 1.0,
+        "ida": 0.92,
+        "irma": 0.92,
+        "laura": 0.92,
+        "maria": 0.62,
+        "michael": 0.48
+      },
+      "ranks": {
+        "eq-hatay": 7.0,
+        "eq-pr": 4.5,
+        "ian-charlotte": 1.5,
+        "ian-fortmyers": 1.5,
+        "ida": 4.5,
+        "irma": 4.5,
+        "laura": 4.5,
+        "maria": 8.0,
+        "michael": 9.0
+      }
+    },
+    "scenarios": {
+      "fixed_component_max__component_max_proportional": {
+        "normalization": "fixed_component_max",
+        "weighting": "component_max_proportional",
+        "spearman_to_reference": 1.0
+      },
+      "fixed_component_max__equal_components": {
+        "normalization": "fixed_component_max",
+        "weighting": "equal_components",
+        "spearman_to_reference": 0.981651376146789
+      },
+      "cohort_min_max__equal_components": {
+        "normalization": "cohort_min_max",
+        "weighting": "equal_components",
+        "spearman_to_reference": 0.9557000495776197
+      }
+    },
+    "leave_one_component_out": {
+      "observation-quality": {"spearman_to_reference": 0.8567599570158965},
+      "post-event-coverage": {"spearman_to_reference": 0.8716219195512478},
+      "context-coverage": {"spearman_to_reference": 0.9273110467027609},
+      "covariate-completeness": {"spearman_to_reference": 1.0},
+      "data-integrity": {"spearman_to_reference": 1.0}
+    },
+    "monte_carlo": {
+      "seed": 20260811,
+      "draws": 2000,
+      "events": {
+        "eq-hatay": {"minimum_rank": 7.0, "maximum_rank": 9.0, "mean_rank": 7.9265, "top_three_frequency": 0.0},
+        "eq-pr": {"minimum_rank": 4.0, "maximum_rank": 5.0, "mean_rank": 4.505, "top_three_frequency": 0.0},
+        "ian-charlotte": {"minimum_rank": 1.5, "maximum_rank": 1.5, "mean_rank": 1.5, "top_three_frequency": 1.0},
+        "ian-fortmyers": {"minimum_rank": 1.5, "maximum_rank": 1.5, "mean_rank": 1.5, "top_three_frequency": 1.0},
+        "ida": {"minimum_rank": 4.0, "maximum_rank": 5.0, "mean_rank": 4.505, "top_three_frequency": 0.0},
+        "irma": {"minimum_rank": 4.0, "maximum_rank": 5.0, "mean_rank": 4.505, "top_three_frequency": 0.0},
+        "laura": {"minimum_rank": 3.0, "maximum_rank": 7.0, "mean_rank": 4.63, "top_three_frequency": 0.505},
+        "maria": {"minimum_rank": 6.0, "maximum_rank": 8.0, "mean_rank": 7.227, "top_three_frequency": 0.0},
+        "michael": {"minimum_rank": 8.0, "maximum_rank": 9.0, "mean_rank": 8.7015, "top_three_frequency": 0.0}
+      }
+    },
+    "diagnostics": {
+      "minimum_scenario_spearman": 0.9557000495776197,
+      "minimum_leave_one_out_spearman": 0.8567599570158965,
+      "maximum_monte_carlo_rank_span": 4.0
+    },
+    "public_export_allowed": false
+  },
+  "public_boundary": {
+    "exported_to_public": false,
+    "creates_score": false,
+    "creates_rank": false,
+    "creates_outcome_label": false
+  }
+}

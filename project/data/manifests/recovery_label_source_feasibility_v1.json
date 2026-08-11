@@ -1,0 +1,300 @@
+{
+  "schema_version": 1,
+  "manifest_id": "nightlight-recovery-label-source-feasibility-v1",
+  "assessed_at": "2026-08-11",
+  "status": "evidence-backed-blocked",
+  "purpose": "Fail-closed feasibility inventory for retrospective recovery labels; source publicity, access, and byte identity do not by themselves establish label validity or rebuildability.",
+  "evidence_policy": {
+    "official_metadata_only": true,
+    "external_data_downloaded": false,
+    "credential_content_read": false,
+    "raw_or_cache_bytes_added_to_git": false,
+    "metadata_probe_separate_from_deterministic_contract_tests": true
+  },
+  "sources": [
+    {
+      "id": "nasa_vnp46a2",
+      "role": "radiance_proxy",
+      "source_identity": {
+        "name": "VIIRS/NPP Gap-Filled Lunar BRDF-Adjusted Nighttime Lights Daily L3 Global 500m",
+        "producer": "NASA LAADS DAAC / LP DAAC catalog distribution",
+        "version": "Collection 2",
+        "identifiers": ["NASA/VIIRS/002/VNP46A2", "10.5067/VIIRS/VNP46A2.002"],
+        "official_urls": [
+          "https://developers.google.com/earth-engine/datasets/catalog/NASA_VIIRS_002_VNP46A2",
+          "https://doi.org/10.5067/VIIRS/VNP46A2.002"
+        ]
+      },
+      "grain": {
+        "spatial": "500 m global grid pixel",
+        "temporal": "daily",
+        "geography": "global"
+      },
+      "publication_rights": {
+        "publication_status": "public-source-metadata-verified",
+        "license_or_terms": "LP DAAC NASA data are freely accessible; dataset citation is requested for publications and derived works.",
+        "redistribution": "derived-output-review-required",
+        "evidence_status": "official-catalog-checked-2026-08-11"
+      },
+      "access": {
+        "mode": "Earth Engine collection or NASA distribution",
+        "auth_required": true,
+        "probe_status": "catalog-metadata-readable-export-not-attempted"
+      },
+      "receipts": {
+        "source_version_receipt": "identified",
+        "bounded_date_window_receipt": "missing",
+        "quality_mask_receipt": "missing",
+        "export_task_receipt": "missing",
+        "output_byte_receipt": "missing"
+      },
+      "missingness": {
+        "semantics": "Quality flags distinguish high quality, poor quality, and fill/no retrieval; fill or failed quality is unavailable, never zero.",
+        "zero_distinguishable_from_missing": true,
+        "known_risks": ["cloud contamination", "snow or ice", "no retrieval", "gap-filled values", "unreceipted date selection"]
+      },
+      "rebuildability": {
+        "ready": false,
+        "status": "permission-and-receipt-gated",
+        "blockers": ["earth-engine-auth-project-and-date-selection-missing", "quality-mask-and-export-receipts-missing"]
+      },
+      "label_eligibility": {
+        "status": "proxy-only",
+        "independent_ground_truth": false,
+        "reasons": ["Radiance is not electricity-service restoration.", "The bounded export and quality-screening lineage is absent."]
+      }
+    },
+    {
+      "id": "eagle_i",
+      "role": "candidate_service_outage_ground_truth",
+      "source_identity": {
+        "name": "EAGLE-I Power Outage Data",
+        "producer": "Oak Ridge National Laboratory",
+        "version": "ORNL historic 2014-2022 release; Figshare article 24237376 version 4 is recorded by the repository source manifest",
+        "identifiers": ["10.13139/ORNLNCCS/1975202", "10.6084/m9.figshare.24237376.v4"],
+        "official_urls": [
+          "https://doi.ccs.ornl.gov/dataset/ccec86f0-e144-5de8-aee0-fb26028b26e1",
+          "https://api.figshare.com/v2/articles/24237376",
+          "https://doi.org/10.1038/s41597-024-03095-5"
+        ]
+      },
+      "grain": {
+        "spatial": "U.S. county or county equivalent after ORNL geographic normalization",
+        "temporal": "15-minute collection runs in UTC",
+        "geography": "covered U.S. counties and county equivalents; coverage changes by utility and year"
+      },
+      "publication_rights": {
+        "publication_status": "upstream-public-local-derivative-lineage-unproven",
+        "license_or_terms": "Repository receipts record the upstream Figshare release as CC BY 4.0; attribution and exact parent-version verification remain required.",
+        "redistribution": "upstream-public-with-attribution-local-transforms-and-joins-require-lineage-review",
+        "evidence_status": "official-ORNL-metadata-checked-2026-08-11-existing-repository-Figshare-receipt-not-refreshed"
+      },
+      "access": {
+        "mode": "ORNL/Globus or Figshare public release",
+        "auth_required": false,
+        "probe_status": "official-metadata-readable-data-download-not-attempted"
+      },
+      "receipts": {
+        "source_version_receipt": "metadata-identified",
+        "exact_parent_file_receipt": "missing-for-tracked-derivatives",
+        "deterministic_transform_receipt": "missing",
+        "event_join_receipt": "missing",
+        "tracked_tree_byte_receipt": "present-but-insufficient-for-parent-lineage"
+      },
+      "missingness": {
+        "semantics": "The official data descriptor states that omitted records may mean zero customers out or a collection gap and does not distinguish those cases.",
+        "zero_distinguishable_from_missing": false,
+        "known_risks": ["changing utility coverage", "parser or connection gaps", "manual corrections not separately identified", "county allocation assumptions", "short outages may be missed"]
+      },
+      "rebuildability": {
+        "ready": false,
+        "status": "parent-and-transform-lineage-blocked",
+        "blockers": ["tracked-derived-lineage-unproven", "zero-versus-collection-gap-undistinguished", "event-join-and-denominator-receipts-missing"]
+      },
+      "label_eligibility": {
+        "status": "candidate-not-admitted",
+        "independent_ground_truth": true,
+        "reasons": ["The candidate is independent of radiance but the tracked derivative parent, join, denominator, and missingness lineage are not reproducible."]
+      }
+    },
+    {
+      "id": "doe_oe417",
+      "role": "event_anchor_and_major_incident_alternative",
+      "source_identity": {
+        "name": "Form DOE-417 Electric Emergency Incident and Disturbance Report",
+        "producer": "U.S. Department of Energy",
+        "version": "OMB 1901-0288 form approved through 2027-05-31",
+        "identifiers": ["DOE-417", "OMB-1901-0288"],
+        "official_urls": ["https://doe417.energy.gov/files/DOE-417_Form.pdf"]
+      },
+      "grain": {
+        "spatial": "reported county/state geographic area, sometimes broader",
+        "temporal": "event start/end report rather than continuous outage panel",
+        "geography": "reportable U.S. electric emergencies above form criteria"
+      },
+      "publication_rights": {
+        "publication_status": "form-public-individual-narratives-may-be-FOIA-exempt",
+        "license_or_terms": "Federal form and public summaries; Schedule 2 may contain confidential commercial, safety, or Critical Electric Infrastructure Information.",
+        "redistribution": "only-publicly-released-summary-fields-may-be-considered",
+        "evidence_status": "official-form-checked-2026-08-11"
+      },
+      "access": {
+        "mode": "public form and any separately published annual summaries",
+        "auth_required": false,
+        "probe_status": "form-readable-no-versioned-summary-artifact-selected"
+      },
+      "receipts": {
+        "source_version_receipt": "form-identified",
+        "selected_annual_summary_receipt": "missing",
+        "event_row_receipt": "missing",
+        "transform_receipt": "missing"
+      },
+      "missingness": {
+        "semantics": "Reporting thresholds exclude smaller incidents and some fields permit unknown; non-reporting is not zero.",
+        "zero_distinguishable_from_missing": false,
+        "known_risks": ["threshold selection", "update reports", "broad geography", "confidential or CEII narrative fields"]
+      },
+      "rebuildability": {
+        "ready": false,
+        "status": "selected-public-artifact-missing",
+        "blockers": ["versioned-public-summary-not-selected", "continuous-restoration-panel-unavailable"]
+      },
+      "label_eligibility": {
+        "status": "event-anchor-only-not-ground-truth-panel",
+        "independent_ground_truth": true,
+        "reasons": ["Event-based start/end reports do not provide a county-day customer restoration trajectory."]
+      }
+    },
+    {
+      "id": "eia_861",
+      "role": "utility_denominator_and_reliability_context_alternative",
+      "source_identity": {
+        "name": "Form EIA-861 Annual Electric Power Industry Report",
+        "producer": "U.S. Energy Information Administration",
+        "version": "2024 final data is listed by EIA; no exact release file is selected for this task",
+        "identifiers": ["EIA-861"],
+        "official_urls": ["https://www.eia.gov/electricity/data/eia861/index.php"]
+      },
+      "grain": {
+        "spatial": "utility, state, service territory, and selected balancing-authority fields",
+        "temporal": "annual",
+        "geography": "United States"
+      },
+      "publication_rights": {
+        "publication_status": "public-federal-statistical-release",
+        "license_or_terms": "Public EIA data; exact selected release and citation must be receipted.",
+        "redistribution": "public-source-citation-required",
+        "evidence_status": "official-data-page-checked-2026-08-11"
+      },
+      "access": {
+        "mode": "public annual ZIP releases",
+        "auth_required": false,
+        "probe_status": "release-list-readable-data-download-not-attempted"
+      },
+      "receipts": {
+        "source_version_receipt": "candidate-version-identified",
+        "selected_file_receipt": "missing",
+        "utility_county_crosswalk_receipt": "missing",
+        "event_denominator_receipt": "missing"
+      },
+      "missingness": {
+        "semantics": "Reliability metrics are annual, utility-reported, may use different methods, and are not event-level restoration observations.",
+        "zero_distinguishable_from_missing": false,
+        "known_risks": ["method variation", "annual lag", "service-territory crosswalk", "partial reliability reporting"]
+      },
+      "rebuildability": {
+        "ready": false,
+        "status": "candidate-file-and-crosswalk-not-receipted",
+        "blockers": ["exact-eia-release-not-pinned", "event-time-denominator-not-derived"]
+      },
+      "label_eligibility": {
+        "status": "denominator-context-only",
+        "independent_ground_truth": true,
+        "reasons": ["Annual SAIDI/SAIFI/CAIDI and customer counts cannot label a bounded event recovery trajectory."]
+      }
+    },
+    {
+      "id": "direct_utility_outage_maps",
+      "role": "utility_specific_alternative",
+      "source_identity": {
+        "name": "Individual utility public outage maps or feeds",
+        "producer": "Event-specific electric utilities",
+        "version": "unselected and mutable",
+        "identifiers": [],
+        "official_urls": []
+      },
+      "grain": {
+        "spatial": "utility-specific point, polygon, ZIP, county, or service territory",
+        "temporal": "mutable near-real-time snapshots",
+        "geography": "utility-specific"
+      },
+      "publication_rights": {
+        "publication_status": "public-display-does-not-establish-republication-rights",
+        "license_or_terms": "Utility-specific terms require event-by-event review.",
+        "redistribution": "unknown-until-source-specific-review",
+        "evidence_status": "no-source-selected"
+      },
+      "access": {
+        "mode": "utility-specific web map or feed",
+        "auth_required": null,
+        "probe_status": "not-probed-no-event-selected"
+      },
+      "receipts": {
+        "source_version_receipt": "missing",
+        "snapshot_receipt": "missing",
+        "terms_receipt": "missing",
+        "transform_receipt": "missing"
+      },
+      "missingness": {
+        "semantics": "Unknown until a feed and snapshot protocol are selected; page or feed unavailability is not zero outages.",
+        "zero_distinguishable_from_missing": false,
+        "known_risks": ["mutable feeds", "rate limits", "schema drift", "unclear denominator", "unclear republication terms"]
+      },
+      "rebuildability": {
+        "ready": false,
+        "status": "source-specific-protocol-absent",
+        "blockers": ["event-and-utility-not-selected", "rights-and-snapshot-protocol-missing"]
+      },
+      "label_eligibility": {
+        "status": "not-assessed",
+        "independent_ground_truth": true,
+        "reasons": ["No event-specific utility source, rights record, denominator, or immutable snapshot exists."]
+      }
+    }
+  ],
+  "existing_authorized_context_sources": [
+    {"source_id": "census_tiger_zcta_county", "role": "geography-crosswalk", "label_status": "context-only"},
+    {"source_id": "census_acs_zcta_2022", "role": "population-and-income-context", "label_status": "not-utility-customer-ground-truth"},
+    {"source_id": "noaa_hurdat2_atlantic", "role": "storm-track-and-event-context", "label_status": "not-restoration-ground-truth"},
+    {"source_id": "osm_overpass", "role": "mutable-facility-context", "label_status": "not-restoration-ground-truth"},
+    {"source_id": "nlcd", "role": "land-cover-context", "label_status": "not-restoration-ground-truth"},
+    {"source_id": "worldpop", "role": "population-proxy-context", "label_status": "not-utility-customer-ground-truth"}
+  ],
+  "label_pilot_gate": {
+    "decision": "blocked",
+    "required_gates": {
+      "outcome_contract_frozen": true,
+      "candidate_source_identity_pinned": true,
+      "rights_for_selected_parent_and_derivatives_verified": false,
+      "exact_parent_and_transform_receipts_complete": false,
+      "event_time_pinned": false,
+      "event_denominator_pinned": false,
+      "independent_ground_truth_rebuildable": false,
+      "missingness_zero_and_unavailable_distinguishable": false
+    },
+    "blocker_codes": [
+      "tracked-derived-lineage-unproven",
+      "earth-engine-auth-project-and-date-selection-missing",
+      "event-time-and-denominator-not-pinned",
+      "zero-versus-collection-gap-undistinguished",
+      "independent-ground-truth-pilot-not-rebuildable"
+    ],
+    "executable_handoff": [
+      "Select one candidate event and pin an authoritative UTC event anchor before examining post-event outcomes.",
+      "Receipt the exact EAGLE-I parent files and license, then provide deterministic transform and event-join code for the selected county set.",
+      "Pin an event-time customer denominator and document how changing utility coverage and zero-versus-gap ambiguity are handled without imputation.",
+      "Acquire only bounded VNP46A2 exports after approved Earth Engine authentication; record collection, dates, bands, quality mask, task IDs, sizes, and byte checksums outside Git raw/cache paths.",
+      "Re-run the deterministic gate; create labels only if every required gate becomes true."
+    ]
+  }
+}

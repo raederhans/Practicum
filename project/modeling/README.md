@@ -202,6 +202,67 @@ Repair first:
 - `maria_sanjuan`
 - `michael_panamacity`
 
+#### Recovery outcome foundation (contract only)
+
+`project/modeling/config/recovery_outcome_contract_v1.json` freezes a
+research-only recovery outcome dictionary. It defines the target as the
+post-event return of quality-screened nighttime radiance toward a receipted
+pre-event reference. The spatial unit is a declared VNP46A2 Collection 2
+500 m pixel, the time unit is a UTC calendar day, the event anchor is day 0,
+and the retrospective follow-up horizon is 90 days.
+
+The three contracted outcomes are:
+
+- `t50_days`: the first day of three consecutive eligible days at or above
+  50% of the radiance reference;
+- `t90_days`: the equivalent sustained 90% threshold;
+- `deficit_burden_observed_day_sum`: the observed-day sum of radiance deficit,
+  with no imputation for missing days and a minimum coverage gate.
+
+These are not empirically admitted results. A radiance outcome is a proxy, not
+electricity-service, infrastructure, household, business, economic, social, or
+community recovery. Missing and unavailable observations are not zero, and an
+outcome is right-censored only when sufficient follow-up reaches the fixed
+horizon without a threshold crossing.
+
+Readiness and admission remain separate from observed outcomes, forecasts, and
+probabilities. The current compatibility surface keeps the existing
+`recovery_days`, `R²`, `AUC`, and Evidence Passport names unchanged; this work
+does not train or publish a forecast or probability and does not turn Passport
+components into a public score, rank, grade, or recovery label.
+
+Source and label feasibility is tracked in
+`project/data/manifests/recovery_label_source_feasibility_v1.json`. The current
+decision is evidence-backed blocked:
+
+- EAGLE-I is an independent county/15-minute service-outage candidate, but the
+  tracked derivatives lack exact parent, transform, and event-join receipts;
+  the upstream data descriptor also says omitted records cannot distinguish
+  zero customers out from a collection gap.
+- VNP46A2 is a daily 500 m radiance proxy, not service-restoration ground
+  truth. The bounded Earth Engine dates, quality mask, export task, and output
+  receipts are absent in this worktree.
+- DOE-417 can support major-event timing but is event-based rather than a
+  continuous restoration panel. EIA-861 can support annual utility denominator
+  and reliability context but is not event-level ground truth. Direct utility
+  maps require event-specific rights, denominator, schema, and snapshot review.
+
+The research-only Evidence Passport sensitivity result is recorded in
+`project/data/manifests/evidence_passport_composite_sensitivity_v1.json`. It
+compares fixed-max and cohort normalization, component-max and equal weighting,
+leave-one-component-out scenarios, and 2,000 seeded Monte Carlo weight draws
+within one declared schema/window family. The result is `no_go`: only nine
+complete events are present against a minimum of twelve, and the maximum
+Monte Carlo rank span is four against a limit of two. This is a bounded
+stability diagnosis, not a scientific validation or permission to publish a
+score or rank.
+
+Because the source/rights/receipt/event-time/denominator/independence gates are
+not all satisfied, `project/data/manifests/recovery_label_pilot_v1.json` records
+an evidence-backed blocked pilot with zero selected events and zero labels. No
+mock label, forecast, probability, or headline-metric change is used to close
+that blocker.
+
 ### 7. Readiness-filtered HZ1 rerun
 
 We tested whether the hazard/exposure line should move from the full event pool to the cleaner readiness subset.

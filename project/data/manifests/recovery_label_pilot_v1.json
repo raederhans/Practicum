@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "pilot_id": "nightlight-recovery-label-pilot-v1",
+  "evaluated_at": "2026-08-11",
+  "status": "evidence-backed-blocked",
+  "decision_source": "project/data/manifests/recovery_label_source_feasibility_v1.json",
+  "upstream_gate_decision": "blocked",
+  "admission_invariant": "No event or label may be selected, derived, or QA-approved unless every required source, rights, receipt, event-time, denominator, independence, missingness, and rebuildability gate is true.",
+  "selected_events": [],
+  "labels": [],
+  "qa": {
+    "event_count": 0,
+    "label_count": 0,
+    "mock_or_synthetic_labels_used": false,
+    "ground_truth_rows_read": false,
+    "external_data_downloaded": false,
+    "credential_content_read": false,
+    "forecast_or_probability_trained": false,
+    "forecast_or_probability_published": false,
+    "headline_scientific_metric_changed": false,
+    "public_app_modified": false,
+    "dashboard_modified": false
+  },
+  "blocker_codes": [
+    "tracked-derived-lineage-unproven",
+    "earth-engine-auth-project-and-date-selection-missing",
+    "event-time-and-denominator-not-pinned",
+    "zero-versus-collection-gap-undistinguished",
+    "independent-ground-truth-pilot-not-rebuildable"
+  ],
+  "executable_handoff": [
+    "Select one candidate event and pin an authoritative UTC event anchor before examining post-event outcomes.",
+    "Receipt the exact EAGLE-I parent files and license, then provide deterministic transform and event-join code for the selected county set.",
+    "Pin an event-time customer denominator and document how changing utility coverage and zero-versus-gap ambiguity are handled without imputation.",
+    "Acquire only bounded VNP46A2 exports after approved Earth Engine authentication; record collection, dates, bands, quality mask, task IDs, sizes, and byte checksums outside Git raw/cache paths.",
+    "Re-run the deterministic gate; create labels only if every required gate becomes true."
+  ]
+}
