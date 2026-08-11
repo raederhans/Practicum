@@ -8,6 +8,8 @@ The source lockfile pins these MIT-licensed packages:
 - Vue Router 4.5.1 — Copyright (c) 2019-present Eduardo San Martin Morote.
 - Vite 6.4.3 — Copyright (c) 2019-present, VoidZero Inc. and Vite contributors.
 - @vitejs/plugin-vue 6.0.1 — Copyright (c) 2019-present, Yuxi (Evan) You and Vite contributors.
+- @vue/test-utils 2.4.11 — Copyright (c) 2017-present, Vue Test Utils contributors.
+- Happy DOM 20.11.2 — Copyright (c) 2019-present, David Ortiz.
 - Vitest 3.2.7 — Copyright (c) 2021-present Vitest Team.
 
 The full license text distributed with each package remains authoritative. The application bundle contains no MapLibre, map-tile client, analytics client, webfont, or CDN-loaded library.

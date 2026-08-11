@@ -23,6 +23,10 @@
 | 2026-08-11 | Freshness source envelope 与 aggregate value schema 分离 | source/transport failure 不改变既有科学值状态或 R²/AUC/Passport 语义 |
 | 2026-08-11 | stale display 使用 effective date 与显式 evaluation time，最大 30 天 | day 31、validation failure、缺 metadata 或未知原因一律 fail closed |
 | 2026-08-11 | Phase 2 targeted suite 4 files / 91 tests passed；source verifier 在该阶段实现后通过 | 证明 pure contract、adapter fail-closed 与 exact source boundary；未证明 live source 或 API |
+| 2026-08-11 | Stage 2 commit `adb2cc3da501945a25a20acefb85796d8a0bc280` | Freshness contract 可独立回滚；未启用任何 runtime source |
+| 2026-08-11 | 为真实 mounted Vue/router/DOM tests 准入 dev-only `@vue/test-utils@2.4.11` 与 `happy-dom@20.11.2` | exact versions、MIT notices、Node >=20 和 verifier dependency allowlist 同步；runtime dependencies 不变 |
+| 2026-08-11 | `AtlasView.vue` 从探索报告的 840 行降到 788 行；route parse/hydrate/serialize/match 由 pure codec 单独负责 | URL owner 仍只有 Atlas parent；route-state 可独立 unit test，mounted behavior 覆盖 push/replace/history/cross-seed/focus/schema failure |
+| 2026-08-11 | Conditional split 评估为 helper-only STOP | 788 行低于探索建议的约 1,000 行门槛；无重复 router owner、持续 merge conflicts 或并行 feature-owner 证据；拆 `ComparisonPanel`/`EvidencePassport` 当前不会再改善 seam，故不扩大 template/CSS/allowlist diff |
 
 ## Live process ownership
 
@@ -38,4 +42,4 @@
 
 ## Next step
 
-创建 Stage 2 Lore commit，然后开始 Stage 3 Atlas route-state helper 与真实 mounted behavior seam。
+创建 Stage 3 helper-only Lore commit，然后按 `$orchestrate-live-tests` 固化最终 validate/preview/browser gate 的唯一 owner、端口、日志、输出与停止条件。

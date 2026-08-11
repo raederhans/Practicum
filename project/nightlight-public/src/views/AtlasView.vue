@@ -14,6 +14,11 @@ import {
   buildEventComparison,
   resolveComparisonPeerId,
 } from '../domain/compareEvents.js'
+import {
+  ATLAS_SEARCH_MAX_LENGTH,
+  ATLAS_VIEW_MODES,
+  createAtlasRouteStateCodec,
+} from '../domain/atlasRouteState.js'
 import { filterEvents } from '../domain/filterEvents.js'
 import { projectPoint } from '../domain/projectPoint.js'
 import { resolveSelectedId } from '../domain/resolveSelectedId.js'
@@ -22,12 +27,10 @@ import { localResearchLog } from '../lib/localResearchAnalytics.js'
 const route = useRoute()
 const router = useRouter()
 
-const VIEW_MODES = Object.freeze(['explore', 'compare'])
-const MOBILE_VIEWS = Object.freeze(['list', 'map'])
-const EVENT_IDS = new Set(EVENTS.map(({ id }) => id))
 const PRESET_BY_ID = new Map(PRESET_COMPARISONS.map((preset) => [preset.id, preset]))
-const DEFAULT_LEFT_ID = EVENTS[0].id
-const DEFAULT_RIGHT_ID = resolveComparisonPeerId(EVENTS, DEFAULT_LEFT_ID, DEFAULT_LEFT_ID)
+const atlasRouteState = createAtlasRouteStateCodec({ events: EVENTS, hazardFamilies: HAZARD_FAMILIES, presets: PRESET_COMPARISONS })
+const DEFAULT_LEFT_ID = atlasRouteState.defaults.leftId
+const DEFAULT_RIGHT_ID = atlasRouteState.defaults.rightId
 const SEARCH_DEBOUNCE_MS = 200
 
 const viewMode = ref('explore')
@@ -105,22 +108,6 @@ function navigateToSection(event) {
   target.focus({ preventScroll: true })
 }
 
-function scalarQueryValue(value) {
-  return typeof value === 'string' ? value : ''
-}
-
-function validOption(value, options, fallback) {
-  return options.includes(value) ? value : fallback
-}
-
-function validEventId(value) {
-  return EVENT_IDS.has(value) ? value : null
-}
-
-function normalizedSearch(value) {
-  return scalarQueryValue(value).slice(0, 80).trim()
-}
-
 function clearSearchTimer() {
   if (searchTimer === null) return
   window.clearTimeout(searchTimer)
@@ -128,37 +115,16 @@ function clearSearchTimer() {
 }
 
 function atlasQuery() {
-  const nextQuery = { mode: viewMode.value }
-
-  if (viewMode.value === 'explore') {
-    const search = normalizedSearch(query.value)
-    if (search) nextQuery.q = search
-    if (selectedHazardFamily.value !== 'All') nextQuery.hazard = selectedHazardFamily.value
-    if (selectedId.value && EVENT_IDS.has(selectedId.value)) nextQuery.event = selectedId.value
-    if (atlasMobileView.value !== 'list') nextQuery.view = atlasMobileView.value
-    return nextQuery
-  }
-
-  nextQuery.a = comparisonLeftId.value
-  nextQuery.b = comparisonRightId.value
-  const preset = PRESET_BY_ID.get(selectedPresetId.value)
-  if (
-    preset
-    && preset.eventIds[0] === comparisonLeftId.value
-    && preset.eventIds[1] === comparisonRightId.value
-  ) {
-    nextQuery.preset = preset.id
-  }
-  return nextQuery
-}
-
-function queryMatchesRoute(expectedQuery, routeQuery) {
-  const routeKeys = Object.keys(routeQuery).sort()
-  const expectedKeys = Object.keys(expectedQuery).sort()
-  if (routeKeys.length !== expectedKeys.length) return false
-  return expectedKeys.every((key, index) => (
-    key === routeKeys[index] && scalarQueryValue(routeQuery[key]) === expectedQuery[key]
-  ))
+  return atlasRouteState.serialize({
+    viewMode: viewMode.value,
+    query: query.value,
+    selectedHazardFamily: selectedHazardFamily.value,
+    selectedId: selectedId.value,
+    atlasMobileView: atlasMobileView.value,
+    comparisonLeftId: comparisonLeftId.value,
+    comparisonRightId: comparisonRightId.value,
+    selectedPresetId: selectedPresetId.value,
+  })
 }
 
 function navigateWithState(method = 'push') {
@@ -173,55 +139,35 @@ function navigateWithState(method = 'push') {
 
 function hydrateFromRoute(routeQuery) {
   clearSearchTimer()
-  const nextMode = validOption(scalarQueryValue(routeQuery.mode), VIEW_MODES, 'explore')
-  const nextSearch = normalizedSearch(routeQuery.q)
-  const nextHazard = validOption(scalarQueryValue(routeQuery.hazard), HAZARD_FAMILIES, 'All')
-  const nextMobileView = validOption(scalarQueryValue(routeQuery.view), MOBILE_VIEWS, 'list')
-  const nextVisibleEvents = filterEvents(EVENTS, { hazardFamily: nextHazard, query: nextSearch })
-  const requestedSelectedId = validEventId(scalarQueryValue(routeQuery.event))
-  const nextSelectedId = resolveSelectedId(nextVisibleEvents, requestedSelectedId)
+  const nextState = atlasRouteState.hydrate(routeQuery)
 
-  const requestedPreset = PRESET_BY_ID.get(scalarQueryValue(routeQuery.preset)) ?? null
-  let nextLeftId = validEventId(scalarQueryValue(routeQuery.a))
-  let nextRightId = validEventId(scalarQueryValue(routeQuery.b))
-  if (requestedPreset && (!nextLeftId || !nextRightId)) {
-    [nextLeftId, nextRightId] = requestedPreset.eventIds
-  }
-  nextLeftId ??= DEFAULT_LEFT_ID
-  nextRightId = resolveComparisonPeerId(EVENTS, nextLeftId, nextRightId)
-  const nextPresetId = requestedPreset
-    && requestedPreset.eventIds[0] === nextLeftId
-    && requestedPreset.eventIds[1] === nextRightId
-    ? requestedPreset.id
-    : null
-
-  viewMode.value = nextMode
-  if (nextMode === 'explore') {
-    query.value = nextSearch
-    selectedHazardFamily.value = nextHazard
-    selectedId.value = nextSelectedId
-    atlasMobileView.value = nextMobileView
+  viewMode.value = nextState.viewMode
+  if (nextState.viewMode === 'explore') {
+    query.value = nextState.query
+    selectedHazardFamily.value = nextState.selectedHazardFamily
+    selectedId.value = nextState.selectedId
+    atlasMobileView.value = nextState.atlasMobileView
   } else {
-    comparisonLeftId.value = nextLeftId
-    comparisonRightId.value = nextRightId
-    selectedPresetId.value = nextPresetId
+    comparisonLeftId.value = nextState.comparisonLeftId
+    comparisonRightId.value = nextState.comparisonRightId
+    selectedPresetId.value = nextState.selectedPresetId
   }
 
   const canonicalQuery = atlasQuery()
-  if (!queryMatchesRoute(canonicalQuery, routeQuery)) {
+  if (!atlasRouteState.matches(canonicalQuery, routeQuery)) {
     void router.replace({ name: 'atlas', query: canonicalQuery })
   }
 }
 
 function updateViewMode(nextMode) {
-  if (!VIEW_MODES.includes(nextMode) || nextMode === viewMode.value) return
+  if (!ATLAS_VIEW_MODES.includes(nextMode) || nextMode === viewMode.value) return
   viewMode.value = nextMode
   localResearchLog.recordAtlasModeSelected(nextMode)
   navigateWithState()
 }
 
 function updateSearch(event) {
-  query.value = event.currentTarget.value.slice(0, 80)
+  query.value = event.currentTarget.value.slice(0, ATLAS_SEARCH_MAX_LENGTH)
   selectedId.value = resolveSelectedId(visibleEvents.value, selectedId.value)
   clearSearchTimer()
   searchTimer = window.setTimeout(() => {
@@ -231,7 +177,7 @@ function updateSearch(event) {
 }
 
 function updateHazardFamily(event) {
-  selectedHazardFamily.value = validOption(event.currentTarget.value, HAZARD_FAMILIES, 'All')
+  selectedHazardFamily.value = atlasRouteState.validHazardFamily(event.currentTarget.value)
   selectedId.value = resolveSelectedId(visibleEvents.value, selectedId.value)
   navigateWithState()
 }
@@ -275,7 +221,7 @@ function swapComparisonEvents() {
 }
 
 function updateComparisonLeft(event) {
-  const nextLeftId = validEventId(event.currentTarget.value) ?? DEFAULT_LEFT_ID
+  const nextLeftId = atlasRouteState.validEventId(event.currentTarget.value) ?? DEFAULT_LEFT_ID
   comparisonLeftId.value = nextLeftId
   comparisonRightId.value = resolveComparisonPeerId(EVENTS, nextLeftId, comparisonRightId.value)
   selectedPresetId.value = null
@@ -283,7 +229,7 @@ function updateComparisonLeft(event) {
 }
 
 function updateComparisonRight(event) {
-  const nextRightId = validEventId(event.currentTarget.value)
+  const nextRightId = atlasRouteState.validEventId(event.currentTarget.value)
   comparisonRightId.value = resolveComparisonPeerId(EVENTS, comparisonLeftId.value, nextRightId)
   selectedPresetId.value = null
   navigateWithState()

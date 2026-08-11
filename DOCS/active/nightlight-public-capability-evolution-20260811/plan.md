@@ -19,16 +19,16 @@
 
 ## Stages
 
-- [ ] Stage 1 — `NL-A01` local/explicit opt-in analytics contract。
+- [x] Stage 1 — `NL-A01` local/explicit opt-in analytics contract。
   - 预定义研究问题、allowlisted event/property schema、consent version/state。
   - 默认关闭、opt-in 前不记录、不发送网络；session-only storage，无 cookie/跨会话 identifier。
   - 本地查看、JSON export、一键 clear；禁止 free text、model inputs、精确位置和 restricted fields。
   - DATA_POLICY、SECURITY、UI copy 与 negative tests 同步。
-- [ ] Stage 2 — `NL-F01` runtime freshness/version/error contract spike。
+- [x] Stage 2 — `NL-F01` runtime freshness/version/error contract spike。
   - `source/version/effective/retrieved/validated` 与 `value/null/reasonCode` 的版本化契约。
   - 区分 stale/offline/rate_limited/auth_required/source_failure/validation_failure；失败不变零。
   - 只建立 pure adapter seam、ADR/trigger 和负向测试；不启用 external fetch、不改 CSP、不建 API/server/database。
-- [ ] Stage 3 — `NL-ATLAS-01/02` route-state and mounted behavior seams。
+- [x] Stage 3 — `NL-ATLAS-01/02` route-state and mounted behavior seams。
   - 先提取 pure route-state helper 并锁定 hydrate/canonicalize/push/replace/back-forward/cross-seed/selection/focus/schema failure。
   - 行为稳定后再按停止条件评估 `ComparisonPanel`、`EvidencePassport`；无明确 parent responsibility 减少则保留 helper-only。
 - [ ] Stage 4 — 单 owner 的完整验证与交付审计。

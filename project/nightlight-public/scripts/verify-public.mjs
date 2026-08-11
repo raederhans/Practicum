@@ -72,6 +72,7 @@ const allowedExactFiles = new Set([
   'src/content/generalizationArtifact.js',
   'src/content/study.js',
   'src/domain/compareEvents.js',
+  'src/domain/atlasRouteState.js',
   'src/domain/filterEvents.js',
   'src/domain/localAnalyticsContract.js',
   'src/domain/projectPoint.js',
@@ -89,6 +90,9 @@ const allowedExactFiles = new Set([
   'src/views/MethodsView.vue',
   'src/views/OverviewView.vue',
   'tests/copy.test.js',
+  'tests/atlas-route-state.test.js',
+  'tests/atlas-mounted.test.js',
+  'tests/atlas-schema-mounted.test.js',
   'tests/compare-events.test.js',
   'tests/evidence-passport.test.js',
   'tests/error-contract.test.js',
@@ -150,12 +154,14 @@ const localAnalysisPathPatterns = [
   /cache[\\/]experiments/i,
 ]
 const allowedRuntimeDependencies = new Set(['vue', 'vue-router'])
-const allowedDevelopmentDependencies = new Set(['@vitejs/plugin-vue', 'vite', 'vitest'])
+const allowedDevelopmentDependencies = new Set(['@vitejs/plugin-vue', '@vue/test-utils', 'happy-dom', 'vite', 'vitest'])
 const dependencyNoticeNames = new Map([
   ['vue', 'Vue'],
   ['vue-router', 'Vue Router'],
   ['vite', 'Vite'],
   ['@vitejs/plugin-vue', '@vitejs/plugin-vue'],
+  ['@vue/test-utils', '@vue/test-utils'],
+  ['happy-dom', 'Happy DOM'],
   ['vitest', 'Vitest'],
 ])
 const requiredCspDirectives = new Map([
