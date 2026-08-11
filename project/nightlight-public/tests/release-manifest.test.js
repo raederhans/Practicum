@@ -18,7 +18,7 @@ describe('immutable release manifest', () => {
     await writeFile(join(dist, 'index.html'), '<script src="/assets/app.js"></script>')
     await writeFile(join(dist, 'assets', 'app.js'), 'export const ready = true')
 
-    const manifest = await createReleaseManifest(dist)
+    const manifest = await createReleaseManifest(dist, { basePath: '/' })
     const persisted = JSON.parse(await readFile(join(dist, 'release-manifest.json'), 'utf8'))
 
     expect(manifest).toEqual(persisted)

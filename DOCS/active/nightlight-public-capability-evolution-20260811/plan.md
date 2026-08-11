@@ -31,7 +31,7 @@
 - [x] Stage 3 — `NL-ATLAS-01/02` route-state and mounted behavior seams。
   - 先提取 pure route-state helper 并锁定 hydrate/canonicalize/push/replace/back-forward/cross-seed/selection/focus/schema failure。
   - 行为稳定后再按停止条件评估 `ComparisonPanel`、`EvidencePassport`；无明确 parent responsibility 减少则保留 helper-only。
-- [ ] Stage 4 — 单 owner 的完整验证与交付审计。
+- [x] Stage 4 — 单 owner 的完整验证与交付审计。
   - CI 等价 `VITE_BASE_PATH=/Practicum/ npm run validate`、source/dist verifier、manifest/CSP/network negative tests。
   - Atlas route/query/focus 与 320/768/reflow/forced-colors browser gate。
   - analytics default-off/opt-in/clear/export/local-only 与 zero runtime network。

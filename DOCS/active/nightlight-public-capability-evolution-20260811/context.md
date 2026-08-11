@@ -27,12 +27,18 @@
 | 2026-08-11 | 为真实 mounted Vue/router/DOM tests 准入 dev-only `@vue/test-utils@2.4.11` 与 `happy-dom@20.11.2` | exact versions、MIT notices、Node >=20 和 verifier dependency allowlist 同步；runtime dependencies 不变 |
 | 2026-08-11 | `AtlasView.vue` 从探索报告的 840 行降到 788 行；route parse/hydrate/serialize/match 由 pure codec 单独负责 | URL owner 仍只有 Atlas parent；route-state 可独立 unit test，mounted behavior 覆盖 push/replace/history/cross-seed/focus/schema failure |
 | 2026-08-11 | Conditional split 评估为 helper-only STOP | 788 行低于探索建议的约 1,000 行门槛；无重复 router owner、持续 merge conflicts 或并行 feature-owner 证据；拆 `ComparisonPanel`/`EvidencePassport` 当前不会再改善 seam，故不扩大 template/CSS/allowlist diff |
+| 2026-08-11 | Stage 3 commit `260f92d706ce63ff2dbc23950ab2eb599ebf4215` | Atlas route-state/mounted behavior seam 可独立回滚；未拆分展示组件，未改变科学指标 |
+| 2026-08-11 | CI base-path validation 揭示 manifest unit test 隐式继承 `VITE_BASE_PATH` | 测试 fixture 显式传入 `/`，使 unit contract 与环境隔离；另有 `/Practicum/` 专项 fixture 验证 repository base |
+| 2026-08-11 | 首次 preview 未继承 `/Practicum/`，入口 200 但 JS asset 404 | 该 browser session 全部作废并关闭；只停止 PID `599880`，随后在同一构建 base 下重启并验证入口和 JS asset 均为 200 |
 
 ## Live process ownership
 
 | Process | Owner | Log path | State |
 | --- | --- | --- | --- |
-| Public CI-equivalent validate/build/preview/browser gate | 当前执行线程 `019fef3b-e7bc-75b2-b678-9b04987de081` | 待启动前写入 task-owned log path | Not started；唯一 owner，其他 agent 不得启动/轮询/停止 |
+| Public CI-equivalent validate/build | 当前执行线程 `019fef3b-e7bc-75b2-b678-9b04987de081` | `C:\Users\raede\AppData\Local\Temp\nightlight-public-c631-20260811\validate.stdout.log` 与 `validate.stderr.log` | Complete；PID `612336` exit 0，output=`dist` |
+| Public preview/browser gate | 当前执行线程 `019fef3b-e7bc-75b2-b678-9b04987de081` | 同一临时目录中的 `preview.*.log` 与 `.playwright-cli` artifacts | Stopped；accepted preview PID `133248` 已停止，browser session 已关闭，`41783` 已释放，无残留 browser |
+
+Success：validate exit 0、source/dist verifier 与 manifest contract 通过；preview listener PID 与记录一致；browser route/query/focus、320/768/reflow/forced-colors、analytics opt-in/clear/export/zero-network 通过。Failure：同一确定性失败复现后停止重试并保留日志。Stop：关闭 Playwright session、停止且仅停止已记录 PID、确认 `41783` 无 listener；其他 agent 只读日志，不启动、轮询或停止该 lane。
 
 ## Handoff
 
@@ -42,4 +48,4 @@
 
 ## Next step
 
-创建 Stage 3 helper-only Lore commit，然后按 `$orchestrate-live-tests` 固化最终 validate/preview/browser gate 的唯一 owner、端口、日志、输出与停止条件。
+Integration owner 按 `2560fb0b` → `adb2cc3d` → `260f92d7` → 最终 verification record 的顺序整合；Modeling/Data lane 未来只有在 source schema 和准入条件满足时才接入 freshness adapter seam。
