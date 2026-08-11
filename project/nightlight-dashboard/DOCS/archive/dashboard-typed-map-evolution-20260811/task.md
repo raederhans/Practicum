@@ -2,7 +2,7 @@
 
 ## Current status
 
-Committed and ready for integration from this isolated detached worktree. No merge, rebase, cherry-pick, push, deploy, main update, or topology change was performed.
+Integrated by the integration owner in the recorded six-commit order and included in pushed product candidate `53e243aff08f993e852fc1207e1fdfb547d59620`. The integrated checkout passed 49/49 tests, browser/Node typecheck, production build, and bundle analysis; GitHub-hosted Dashboard CI run `31476779175` also succeeded. Producer-v1 artifacts, a deployed Dashboard target, physical-device evidence, and a second shared-core consumer remain outside this completed lane.
 
 ## Checklist
 

@@ -2,7 +2,7 @@
 
 ## Current status
 
-`ready-for-integration` — the original four-phase package and the NL-P01 producer-contract continuation are committed, validated, and read back. Integration remains owned by the future integration owner.
+`integrated` — the exact four-commit science chain through `3b0401731a13f82509546eb769d68b89ecac5a56` was fast-forwarded into the Nightlight capability candidate, locally revalidated, and pushed in product candidate `53e243aff08f993e852fc1207e1fdfb547d59620`. The label pilot, generalized zero-fill admissibility, and `full-upstream` reconstruction remain explicitly blocked where the recorded evidence is incomplete.
 
 ## Checklist
 

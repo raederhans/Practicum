@@ -2,7 +2,7 @@
 
 ## Current status
 
-`READY_FOR_INTEGRATION` — 三个功能阶段均有独立 Lore commit；CI 等价 validate、真实 browser gate、live-process cleanup 与交付审计已完成。
+`INTEGRATED` — 四个交付提交已按原顺序 cherry-pick 到 Nightlight capability candidate；`VITE_BASE_PATH=/Practicum/ npm run validate` 在整合后通过 18 个 test files、221/221 tests、构建、11-file manifest 和 source/dist boundary。Product candidate `53e243aff08f993e852fc1207e1fdfb547d59620` 已正常推送，Pages run `31476779122` 成功；本任务仍未启用 runtime external fetch、数据库或第三方 analytics。
 
 ## Checklist
 
