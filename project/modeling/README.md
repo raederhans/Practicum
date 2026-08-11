@@ -263,6 +263,63 @@ an evidence-backed blocked pilot with zero selected events and zero labels. No
 mock label, forecast, probability, or headline-metric change is used to close
 that blocker.
 
+#### Facility probability producer boundary (contract only)
+
+`project/modeling/config/facility_probability_producer_contract_v1.json`
+defines the future wire contract for facility-buffer Model D probabilities. The
+contract is frozen, but the existing exporter and Dashboard artifacts have not
+been migrated by this work. A conforming v1 artifact is an object with
+`schemaVersion`, pinned producer/model/input source versions and receipts,
+event and facility catalog provenance/receipt, and records whose probability is a discriminated
+observation rather than a bare number.
+
+Only `status: available` may carry a finite `value` in `[0, 1]`. It must also
+carry nonzero eligible and finite pixel counts, so a genuine model output of
+`0.5` remains distinguishable and auditable. Every other status carries
+`value: null` and a status-bound reason:
+
+- `unavailable` distinguishes no eligible facility-type buffer pixels, all
+  eligible probabilities missing, and an unavailable pixel-probability source;
+- `not_assessed` distinguishes out-of-scope facilities and missing required
+  facility metadata;
+- `computation_failed` records the failed producer stage;
+- `validation_failed` records source/version/receipt or record validation
+  errors.
+
+The 25 existing `facilities_*.json` arrays are `legacy-v0`. Across 6,225
+records, 10 numeric values equal `0.5`; the exporter can write that number when
+its facility-buffer mean is `NaN`, while the artifact has no `schemaVersion`,
+status, reason, or count provenance. Those ten record-level meanings therefore
+cannot be recovered from the legacy bytes. The required limitation is
+`probability-0.5-may-be-an-exporter-fallback-without-missingness-provenance`.
+Consumers must preserve legacy values unchanged and must not guess whether
+`0.5` is modeled or fallback.
+
+Migration is regeneration, not wrapping or rewriting. The producer must pin the
+facility catalog, probability-map input, preprocessing, model, and producer
+versions and must emit eligible/finite pixel counts. The milestone-based
+dual-read window ends only after all 25 events are regenerated under v1, the
+Dashboard v1 adapter passes conformance, and one complete release retains
+explicit legacy-v0 read-only support. Legacy-reader retirement is no earlier
+than the following major consumer release after a manifest proves there are no
+remaining production references to v0.
+
+The current `fillna(0)` behavior is implementation-consistent across LOEO,
+full-panel training, probability-map regeneration, and Dashboard export. At the
+reviewed feature-matrix boundary, the tracked 61,903-row, 25-event panel has no
+missing values in the five inspected source columns or ten engineered Model D
+features, so zero-fill is a no-op for that bounded panel. This does not admit
+zero-fill as a general scientific preprocessing rule: no versioned
+preprocessing contract, missing indicators, fit-time matrix/model lineage
+receipt, or LOEO alternative-preprocessing sensitivity is available. Existing
+code and values remain unchanged, and scientific admissibility stays blocked
+until that evidence is produced.
+
+This producer contract does not turn Model D output into an observed recovery
+outcome, recovery forecast, service-restoration probability, readiness state,
+validation state, Evidence Passport score, or rank. It does not change current
+`recovery_days`, `R²`, `AUC`, or Public no-score/no-rank/no-outcome semantics.
+
 ### 7. Readiness-filtered HZ1 rerun
 
 We tested whether the hazard/exposure line should move from the full event pool to the cleaner readiness subset.

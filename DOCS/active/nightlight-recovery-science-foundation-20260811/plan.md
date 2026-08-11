@@ -10,6 +10,7 @@ Restore a versioned, testable scientific foundation for recovery outcomes, sourc
 - `NL-D01`: inventory label-source identity, version, grain, rights, access, receipts, missingness, and rebuildability.
 - `NL-C01`: evaluate research-only composite sensitivity and define a fail-closed admission decision.
 - `NL-L01`: build a one-to-two-event label/censoring pilot only if the earlier source and rights gates pass; otherwise preserve an evidence-backed blocked handoff.
+- `NL-P01`: freeze the versioned facility-probability producer contract, legacy-v0 migration boundary, and missing-value preprocessing evidence after the Dashboard ambiguity handoff.
 
 ## Sources of truth
 
@@ -25,6 +26,8 @@ Restore a versioned, testable scientific foundation for recovery outcomes, sourc
 - [x] Phase 3 — NL-C01 Evidence Passport composite sensitivity research.
 - [x] Phase 4 — NL-L01 bounded label pilot or evidence-backed blocked decision.
 - [x] Verify, document handoff, and create reversible Lore commit(s).
+- [x] Phase 5 — NL-P01 facility-probability producer contract and legacy-v0 migration boundary.
+- [ ] Re-run the affected gates, record the Dashboard/Public handoff, and create a reversible continuation Lore commit.
 
 ## Acceptance criteria
 
@@ -33,6 +36,9 @@ Restore a versioned, testable scientific foundation for recovery outcomes, sourc
 - A source feasibility manifest covers EAGLE-I, VNP46A2/Black Marble, utility alternatives, and already-authorized sources without adding raw data, credentials, caches, or restricted bytes to Git.
 - Composite research covers normalization, weighting, missingness, rank stability, leave-one-component-out, Monte Carlo sensitivity, and same-schema/window-family comparability; its output cannot authorize a Public score, rank, or outcome label.
 - Phase 4 runs only if source identity, rights, event time, denominator, independent ground truth, and rebuildability gates all pass. A failed gate produces an exact blocker and executable handoff, not mock labels.
+- A versioned producer contract distinguishes an available modeled value of `0.5` from no eligible pixels, all eligible probabilities missing, computation failure, not assessed, and validation failure. It requires `schemaVersion`, value/null, status/reason, source/version, and count/aggregation provenance.
+- Legacy-v0 values are never silently rewritten or inferred by a consumer. Migration is regeneration from pinned inputs and model lineage, with a bounded milestone-based dual-read window and explicit retirement gates.
+- The existing `fillna(0)` path is classified from repository evidence without changing values: implementation consistency, current-panel missingness, and scientific admissibility are reported separately.
 - Narrow tests and related modeling/reproducibility/source gates pass, or every unrun or blocked gate is recorded precisely.
 
 ## Non-goals

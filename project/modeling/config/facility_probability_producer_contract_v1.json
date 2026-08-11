@@ -1,0 +1,155 @@
+{
+  "schemaVersion": "1.0.0",
+  "contractId": "nightlight-facility-probability-producer-v1",
+  "artifactType": "nightlight-facility-probabilities",
+  "status": "contract-frozen-producer-not-yet-migrated",
+  "semanticClass": "probability",
+  "quantity": {
+    "name": "mean_modelD_buffer_membership_probability",
+    "range": [0.0, 1.0],
+    "aggregationMethod": "arithmetic_mean_of_finite_pixel_probabilities",
+    "facilityPixelRule": "pixel_nearest_facility_type_matches_record_type_and_pixel_is_in_strict_buffer",
+    "prohibitedInterpretations": [
+      "This probability is not an observed recovery outcome, recovery forecast, service-restoration probability, readiness state, validation state, score, or rank.",
+      "A numeric value of 0.5 is an available model output only when status is available and count provenance is conforming.",
+      "Null, unavailable, not assessed, computation failure, and validation failure must never be encoded as 0, 0.5, or another numeric sentinel."
+    ]
+  },
+  "artifactRequirements": {
+    "requiredFields": [
+      "schemaVersion",
+      "artifactType",
+      "source",
+      "provenance",
+      "records"
+    ],
+    "sourceRequiredFields": [
+      "producer",
+      "producerVersion",
+      "producerReceipt",
+      "model",
+      "modelVersion",
+      "modelReceipt",
+      "inputArtifact",
+      "inputVersion",
+      "inputReceipt"
+    ],
+    "forbiddenVersionValues": ["", "latest", "unknown", "unversioned"],
+    "provenanceRequiredFields": [
+      "generatedAtUtc",
+      "eventId",
+      "facilityCatalogVersion",
+      "facilityCatalogReceipt",
+      "facilityTypeMatchRule",
+      "bufferRuleVersion",
+      "aggregationMethod"
+    ]
+  },
+  "recordContract": {
+    "requiredFields": [
+      "facilityId",
+      "name",
+      "type",
+      "coordinates",
+      "radiusM",
+      "probability"
+    ],
+    "probabilityRequiredFields": ["value", "status", "reason", "provenance"],
+    "probabilityProvenanceRequiredFields": [
+      "eligiblePixelCount",
+      "finiteProbabilityCount",
+      "aggregationMethod"
+    ],
+    "statuses": {
+      "available": {
+        "value": "finite-number-in-closed-unit-interval",
+        "reason": null,
+        "counts": "eligiblePixelCount >= finiteProbabilityCount >= 1"
+      },
+      "unavailable": {
+        "value": null,
+        "reason": "required-from-reasonTaxonomy"
+      },
+      "not_assessed": {
+        "value": null,
+        "reason": "required-from-reasonTaxonomy"
+      },
+      "computation_failed": {
+        "value": null,
+        "reason": "required-from-reasonTaxonomy",
+        "additionalProvenance": ["failureStage"]
+      },
+      "validation_failed": {
+        "value": null,
+        "reason": "required-from-reasonTaxonomy",
+        "additionalProvenance": ["validationErrors"]
+      }
+    },
+    "reasonTaxonomy": {
+      "no_eligible_pixels_in_facility_type_buffer": {
+        "status": "unavailable",
+        "counts": "eligiblePixelCount == 0 and finiteProbabilityCount == 0"
+      },
+      "all_eligible_probabilities_missing": {
+        "status": "unavailable",
+        "counts": "eligiblePixelCount >= 1 and finiteProbabilityCount == 0"
+      },
+      "source_probability_pixels_unavailable": {
+        "status": "unavailable",
+        "counts": "both-null"
+      },
+      "facility_outside_assessment_scope": {
+        "status": "not_assessed",
+        "counts": "both-null"
+      },
+      "required_facility_metadata_missing": {
+        "status": "not_assessed",
+        "counts": "both-null"
+      },
+      "pixel_probability_computation_failed": {
+        "status": "computation_failed",
+        "counts": "known-valid-or-both-null"
+      },
+      "facility_aggregation_failed": {
+        "status": "computation_failed",
+        "counts": "known-valid-or-both-null"
+      },
+      "nonfinite_aggregate": {
+        "status": "computation_failed",
+        "counts": "known-valid-or-both-null"
+      },
+      "source_version_unverified": {
+        "status": "validation_failed",
+        "counts": "known-valid-or-both-null"
+      },
+      "source_receipt_missing": {
+        "status": "validation_failed",
+        "counts": "known-valid-or-both-null"
+      },
+      "probability_out_of_range": {
+        "status": "validation_failed",
+        "counts": "known-valid-or-both-null"
+      },
+      "producer_record_invalid": {
+        "status": "validation_failed",
+        "counts": "known-valid-or-both-null"
+      }
+    }
+  },
+  "legacyCompatibility": {
+    "legacySchema": "legacy-v0",
+    "limitationCode": "probability-0.5-may-be-an-exporter-fallback-without-missingness-provenance",
+    "rules": [
+      "Keep every legacy-v0 artifact and numeric value unchanged during the compatibility window.",
+      "Do not infer status or reason from a legacy numeric value; in particular, 0.5 remains ambiguous.",
+      "Do not convert legacy-v0 records to v1 in place or by wrapping existing values.",
+      "Create v1 only by regenerating from pinned facility, pixel-probability, model, preprocessing, and producer lineage."
+    ],
+    "window": {
+      "dualReadStarts": "when the first conforming v1 artifact is integrated",
+      "dualReadEnds": "after all 25 event artifacts are regenerated under v1, the Dashboard v1 adapter passes conformance, and one complete release retains explicit legacy-v0 read-only support",
+      "legacyReaderRetirementEarliest": "the next major consumer release after a manifest proves no production reference to legacy-v0",
+      "calendarDeadline": null
+    }
+  }
+}

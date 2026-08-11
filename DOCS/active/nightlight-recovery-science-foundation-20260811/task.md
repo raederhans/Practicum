@@ -2,7 +2,7 @@
 
 ## Current status
 
-`ready-for-integration` — all phase decisions, available validation, implementation commit, and post-commit scope verification are complete. Integration remains owned by the future integration owner.
+`validated-awaiting-commit` — the original four-phase package remains committed and NL-P01 implementation plus affected validation are complete. The continuation Lore commit and post-commit readback remain; integration is still owned by the future integration owner.
 
 ## Checklist
 
@@ -14,6 +14,10 @@
 - [x] Run or evidence-block NL-L01 label pilot under the Phase 1/2 gates.
 - [x] Run narrow and related gates; review diff, secrets, large/generated files, and prohibited paths.
 - [x] Update handoff evidence and create authorized Lore commit(s).
+- [x] Freeze and test the NL-P01 versioned facility-probability producer contract.
+- [x] Record the legacy-v0 compatibility/migration window without rewriting historical values.
+- [x] Assess `fillna(0)` as implementation behavior, current-panel evidence, and scientific-admissibility blocker.
+- [ ] Re-run affected gates, document Dashboard/Public handoffs, and create the continuation Lore commit.
 
 ## Validation evidence
 
@@ -35,6 +39,13 @@
 | Python compile plus five JSON parses | Passed for all new support modules, configs, and manifests. |
 | Scope, prohibited paths, secret-pattern filenames, changed-file size, generated/data suffix, and tracked diff checks | Passed; no prohibited path, secret pattern, file over 1 MiB, or untracked generated/data artifact found. |
 | Implementation Lore commit | `46dfab512e24402d70afce88729137281a7e44fa`, parent `6b3de4ee97c5391084538bec84db3b1a1f4e05ed`; 16 authorized paths and 1,866 insertions; post-commit worktree clean before this closeout-only record update. |
+| Read-only producer audit | Confirmed NaN-to-`0.5` fallback, versionless legacy arrays, 25 artifacts / 6,225 records / ten numeric `0.5` values, mirrored training/inference `fillna(0)`, and inventory receipts that establish byte identity but not record semantics or fit-time preprocessing lineage. |
+| Tracked feature-matrix audit | 61,903 rows across 25 events; zero missing values in the five reviewed source columns and ten engineered Model D features. This bounds zero-fill to a current-panel no-op and does not establish upstream or general admissibility. |
+| `py -m pytest project/tests/test_facility_probability_producer_contract.py -q` | 12 passed; v1 conformance, true `0.5`, five high-level states, reason/count rules, negative sentinels, unpinned sources, nonfinite values, round-trip, legacy counts, and preprocessing boundary verified. |
+| Affected science/modeling/source/stage pytest group | 90 passed, 1 skipped; the skip is the existing clean-clone absence of private readiness outputs. |
+| `reproducibility.py --scope reviewed-modeling --json` | Exit 0 and `ready`; reviewed-output consistency only. |
+| `reproducibility.py --scope full-upstream --json` | Exit 1 and `blocked` on the same seven external/source-lineage conditions; no blocker was mocked or guessed closed. |
+| Python compile plus contract/assessment JSON parse | Passed. |
 
 ## Open risks and remaining work
 
@@ -43,3 +54,7 @@
 - Label pilot is evidence-backed blocked until source rights, receipts, event-time, denominator, missingness, independence, and rebuildability gates are satisfied.
 - `project/tests/test_analysis_contracts.py` was not run: the Windows pytest environment lacks `statsmodels`, while the existing WSL modeling venv has `statsmodels` but lacks `pytest`; no dependency was installed for this task.
 - `full-upstream` remains blocked by seven pre-existing external/lineage conditions and was not represented as ready.
+- Legacy-v0 facility artifacts cannot distinguish a true model output of `0.5` from exporter fallback; their record-level semantics are not recoverable from the wire artifact alone.
+- The tracked panel has no observed missingness at the reviewed feature-matrix boundary, but the exact fitted models lack a fit-time preprocessing receipt and no missing indicators exist. General zero-fill admissibility therefore remains blocked pending per-event/fold missingness and alternative-preprocessing sensitivity evidence.
+- The v1 producer contract is frozen but not emitted by the prohibited-path legacy exporter. A producer owner must implement regeneration and exact lineage receipts before Dashboard adaptation.
+- Public needs no direct change. If it later needs freshness/error semantics, only the null-versus-available invariant and high-level status separation should be shared; facility-specific reasons remain producer-scoped.

@@ -1,0 +1,117 @@
+{
+  "schemaVersion": "1.0.0",
+  "manifestId": "nightlight-facility-probability-legacy-v0-assessment-v1",
+  "assessmentDate": "2026-08-11",
+  "assessmentParentRevision": "a407de6474d678cbb0bd9e8566ffd66c451f6a52",
+  "status": "legacy-values-not-recoverable-producer-v1-contract-frozen",
+  "scope": {
+    "artifactGlob": "project/nightlight-dashboard/public/data/facilities_*.json",
+    "artifactCount": 25,
+    "recordCount": 6225,
+    "numericPointFiveCount": 10,
+    "topLevelShape": "array",
+    "schemaVersionPresent": false,
+    "statusOrReasonPresent": false,
+    "pixelCountProvenancePresent": false
+  },
+  "producerEvidence": {
+    "exporter": "project/nightlight-dashboard/export_to_dashboard_modelD.py",
+    "aggregation": "Mean of _prob for rows whose nearest facility type matches the facility record type and whose in_buffer_strict flag equals 1.",
+    "fallback": "When that mean is NaN, the exporter writes numeric probability 0.5.",
+    "ambiguity": "The wire artifact cannot distinguish a genuine rounded model mean of 0.5 from that fallback. A NaN mean can arise from no eligible rows or from eligible rows with no finite probability; legacy-v0 has no counts to distinguish them.",
+    "inventoryReceipt": "project/data/manifests/sync_inventory_v1.json",
+    "receiptBoundary": "The inventory records byte identity and donor revision for the exporter, model artifacts, probability maps, and legacy JSON. It does not provide record-level missingness semantics or a fit-time preprocessing lineage receipt."
+  },
+  "limitation": {
+    "code": "probability-0.5-may-be-an-exporter-fallback-without-missingness-provenance",
+    "appliesTo": "every legacy-v0 facility artifact",
+    "consumerRule": "Do not classify legacy numeric 0.5 as available, unavailable, modeled, fallback, failure, or not assessed. Preserve the numeric value and display or retain the limitation until a conforming v1 artifact is regenerated.",
+    "recoverability": "Record-level status and reason cannot be recovered from legacy-v0 bytes alone."
+  },
+  "preprocessingAssessment": {
+    "implementationEvidence": [
+      {
+        "path": "project/script/run_modelD_loeo_25events.py",
+        "use": "fillna(0) for both training and held-out feature matrices"
+      },
+      {
+        "path": "project/script/regen_modelD_prob_maps.py",
+        "use": "fillna(0) for full-panel training and per-event inference"
+      },
+      {
+        "path": "project/nightlight-dashboard/export_to_dashboard_modelD.py",
+        "use": "fillna(0) before RF/XGB probability inference"
+      }
+    ],
+    "trackedPanelAudit": {
+      "path": "project/data/result/stage2/pixel_panel.parquet",
+      "rows": 61903,
+      "events": 25,
+      "sourceColumnsChecked": [
+        "pre_mean_ntl",
+        "post_mean_ntl",
+        "city_pre_mean",
+        "city_size",
+        "disaster_type"
+      ],
+      "engineeredFeaturesChecked": [
+        "drop_magnitude",
+        "delta_ntl",
+        "log_pre_ntl",
+        "log_post_ntl",
+        "log_city_pre_mean",
+        "ntl_relative",
+        "below_city_median",
+        "city_size_code",
+        "is_hurricane",
+        "is_earthquake"
+      ],
+      "rowsWithAnyCheckedFeatureMissing": 0,
+      "eventsWithAnyCheckedFeatureMissing": 0,
+      "interpretation": "At this reviewed matrix boundary, fillna(0) is a no-op for the tracked panel. This does not prove that upstream missing observations were absent, retained, or handled correctly before panel construction."
+    },
+    "decision": "implementation-consistent-current-panel-no-op-scientific-admissibility-blocked",
+    "blockedBecause": [
+      "No versioned preprocessing contract defines which source-level missing states may be zero-imputed.",
+      "No missing indicators distinguish an imputed zero from an observed numeric zero on future or alternate panels.",
+      "The fitted model artifacts and generated probability maps lack a fit-time receipt linking their exact training matrix, feature engineering, missingness audit, and preprocessing version.",
+      "No LOEO sensitivity compares current zero-fill with declared missing indicators or a fold-fitted imputer."
+    ],
+    "currentAction": "Preserve existing code and values. Do not call zero-fill scientifically admitted and do not change it from this contract-only lane.",
+    "evidenceRequiredToUnblock": [
+      "Version and receipt the pre-feature and post-feature missingness matrix by event and LOEO fold.",
+      "Declare which features have a scientifically meaningful observed zero and which require a missing indicator or a fold-fitted imputer.",
+      "Run a bounded LOEO calibration, discrimination, and per-record probability-shift comparison across the declared preprocessing alternatives.",
+      "Link the selected preprocessing version, training matrix receipt, fitted model versions, probability-map versions, and facility producer version."
+    ]
+  },
+  "migration": {
+    "legacyPolicy": "read-only-and-unchanged",
+    "v1WritePolicy": "producer-v1-only",
+    "inPlaceWrappingAllowed": false,
+    "silentValueRewriteAllowed": false,
+    "consumerInferenceAllowed": false,
+    "regenerationRequirements": [
+      "pinned facility catalog version",
+      "pinned pixel-probability input version",
+      "pinned model and preprocessing versions",
+      "eligible and finite pixel counts per record",
+      "explicit status and reason per record",
+      "producer conformance and round-trip tests"
+    ],
+    "dualReadWindow": {
+      "starts": "when the first conforming v1 artifact is integrated",
+      "ends": "after all 25 event artifacts are regenerated under v1, the Dashboard adapter passes v1 conformance, and one complete release retains explicit legacy-v0 read-only support",
+      "retirementEarliest": "the next major Dashboard release after a manifest proves no production reference to legacy-v0",
+      "calendarDeadline": null
+    }
+  },
+  "handoffs": {
+    "dashboard": [
+      "Keep the legacy limitation code unchanged and do not infer the meaning of numeric 0.5.",
+      "Add a v1 adapter only after producer artifacts conform; render available numeric 0.5 only when status is available, and render all null statuses from status/reason rather than a numeric sentinel.",
+      "Keep legacy-v0 and v1 paths explicit throughout the dual-read window; never auto-wrap a legacy array as v1."
+    ],
+    "public": "No direct Public change is required. If Public later consumes producer freshness/error states, reuse the status/reason separation but do not expose facility probabilities, recovery labels, scores, or ranks."
+  }
+}
