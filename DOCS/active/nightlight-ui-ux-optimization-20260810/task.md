@@ -2,7 +2,7 @@
 
 ## Status
 
-`parallel-implementation-in-progress`
+`integrated-and-validated-awaiting-main-push-cleanup`
 
 ## Checklist
 
@@ -15,22 +15,23 @@
 - [x] Dispatch Phase C task.
 - [x] Dispatch Phase D task.
 - [x] Record task/thread/worktree identities in the registry.
-- [ ] Collect four `ready-for-integration` deliveries.
-- [ ] Integrate A -> B -> C -> D with per-lane validation.
-- [ ] Run final public validation and controlled browser matrix.
+- [x] Collect four `ready-for-integration` deliveries.
+- [x] Integrate A -> B -> C -> D with per-lane validation.
+- [x] Run final public validation and controlled browser matrix.
 - [ ] Record commit/push/deployment/cleanup truth and archive only after all lanes are closed.
 
 ## Current validation
 
 | Check | Result |
 | --- | --- |
-| `git status --short --branch` | main synchronized; three task-owned changes plus protected untracked research WIP |
-| compatibility targeted tests | 26/26 passed |
-| production build | passed |
-| public verifier | passed |
-| development runtime | HTTP 200; nonce CSP active; port 5173 owned by primary task |
-| full validation | known unrelated missing-evidence-file blocker retained; no fabricated fix |
+| `git status --short --branch` | candidate branch contains only committed integration work plus protected untracked research WIP |
+| integrated targeted tests | A/B/C route and domain set 77/77; final platform/shell set 29/29; platform suite 70/70 |
+| production build | passed; 39 modules transformed and 11-file release manifest written |
+| public verifier | passed with `--require-dist` |
+| integrated browser matrix | 36 route/viewport cases; all 17 admission checks true; no console, request, external-network, overflow, focus, history, or responsive failures |
+| development runtime | final owner used isolated 5190 and released it; 5173 and lane ports have no current listener |
+| full validation | 176/180 passed; the same four proxy-evaluation tests remain blocked by missing `p2-evidence.md`; no fabricated evidence or weakened gate |
 
 ## Pending integration evidence
 
-No phase is `ready-for-integration` yet. A, B, C, and D are confirmed active from the exact baseline and have each reported initial in-progress work.
+Integrated commits: A `1061996`, B `683f454`, C `5dc247a`, D `d715f9d`. Integration review additionally repaired B's over-broad scroll assertion, Atlas hash-stable section navigation, live-region semantics, desktop Map/index placement, the 900px CSS/JS boundary, summary/list styling ownership, and 44px native summary controls.

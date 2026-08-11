@@ -13,13 +13,13 @@
 
 | Owner | Command/workdir | Resource | Log/output | Rule |
 | --- | --- | --- | --- | --- |
-| Primary task | `npm run dev -- --host 127.0.0.1 --port 5173 --strictPort` from `project/nightlight-public` | `127.0.0.1:5173` | `C:/Users/raede/.codex/visualizations/2026/08/10/019fec05-dfa3-7861-a020-c504de44cf5f/nightlight-public-runtime/vite-dev-fixed.log` | Remains running for the user; children must not poll/stop/retry/interpret it |
+| Primary task | historical `npm run dev -- --host 127.0.0.1 --port 5173 --strictPort` from `project/nightlight-public` | `127.0.0.1:5173` | `C:/Users/raede/.codex/visualizations/2026/08/10/019fec05-dfa3-7861-a020-c504de44cf5f/nightlight-public-runtime/vite-dev-fixed.log` | Previously preserved for the user; no listener existed at final integration inventory |
 | Phase A | lane-owned dev/preview/test command | port 5181 and isolated temp/log root | lane context/final response | A is sole owner |
 | Phase B | lane-owned dev/preview/test command | port 5182 and isolated temp/log root | lane context/final response | B is sole owner |
 | Phase C | lane-owned dev/preview/test command | port 5183 and isolated temp/log root | lane context/final response | C is sole owner |
 | Phase D | lane-owned dev/preview/test command | port 5184 and isolated temp/log root | lane context/final response | D is sole owner |
 
-Each child must verify its port is free and its process identity before starting. It must stop only its own process and preserve final commands/exit codes. Full validation, shared browser matrix, final build/dist interpretation, and port 5173 remain primary-owner duties.
+Each child had to verify its port and process identity before starting, stop only its own process, and preserve final commands/exit codes. Final validation, browser matrix, and build/dist interpretation remained primary-owner duties.
 
 ## Evidence already available
 
@@ -42,11 +42,24 @@ Exact shared baseline: `codex/nightlight-ui-ux-base@962431b680845a91b0b5b96807c7
 
 | Phase | Thread/client identity | Worktree | Dispatch state |
 | --- | --- | --- | --- |
-| A | `019fec40-8293-7eb3-b03c-224ddcd85e6f` | `C:\Users\raede\.codex\worktrees\f00e\Practicum` | active; confirmed initial repository and browser-verification work |
-| B | `019fec40-8293-7eb3-b03c-226d54ef8486` | `C:\Users\raede\.codex\worktrees\fd8e\Practicum` | active; confirmed initial hierarchy and disclosure-contract work |
-| C | `019fec42-d0b0-7c92-9ed3-15176c8c3785` | `C:\Users\raede\.codex\worktrees\2a26\Practicum` | active; confirmed initial Atlas workflow, URL-state, and mobile-view work |
-| D | `019fec40-b5ad-72b3-8be4-212c26dd35eb` | `C:\Users\raede\.codex\worktrees\feae\Practicum` | active; confirmed initial CSS-contract and baseline work |
+| A | `019fec40-8293-7eb3-b03c-224ddcd85e6f` | `C:\Users\raede\.codex\worktrees\f00e\Practicum` | delivered and integrated as `1061996` |
+| B | `019fec40-8293-7eb3-b03c-226d54ef8486` | `C:\Users\raede\.codex\worktrees\fd8e\Practicum` | delivered and integrated as `683f454` |
+| C | `019fec42-d0b0-7c92-9ed3-15176c8c3785` | `C:\Users\raede\.codex\worktrees\2a26\Practicum` | delivered and integrated as `5dc247a` |
+| D | `019fec40-b5ad-72b3-8be4-212c26dd35eb` | `C:\Users\raede\.codex\worktrees\feae\Practicum` | delivered and integrated as `d715f9d` |
 
 ## Handoff requirements for every child
 
 Return: exact base/HEAD, changed files, diff summary, new class hooks, behavior evidence, test commands and exit codes, browser evidence, live-process cleanup state, unverified risks, file/semantic overlap, and recommended integration method. Do not return only “done.”
+
+## Final integrated validation owner — 2026-08-11
+
+- Owner: primary integration task only.
+- Candidate branch before final admission: `codex/nightlight-ui-ux-base`.
+- Live command: `npm run dev -- --host 127.0.0.1 --port 5190 --strictPort` from `project/nightlight-public`.
+- Shared resource: `127.0.0.1:5190`; ports 5173 and 5181–5184 are not reused or interpreted by this run.
+- Logs and browser artifacts: `C:/Users/raede/.codex/visualizations/2026/08/10/019fec05-dfa3-7861-a020-c504de44cf5f/nightlight-ui-final/`.
+- Success: final integrated matrix passes Shell, long-page anchors, Atlas URL/history, responsive layout, overflow, focus, forced-colors, reduced-motion, console, and network checks.
+- Failure: any false matrix check, server startup failure, browser error, external request, or unowned resource conflict.
+- Stop: close the owned browser and stop only the verified 5190 process tree after evidence is written.
+
+Final result: Vite owner PID `583648` and listener PID `549428` were verified against the exact worktree/port, stopped after the matrix, and port 5190 was released. The second matrix run passed all 17 checks across 36 route/viewport cases. `npm run validate` remains non-zero only because four existing P2 proxy-evidence tests require the absent `DOCS/active/p2-p3-solo-evidence-performance-20260810/p2-evidence.md`; 176/180 tests passed, and build/public verification were rerun separately and passed.
