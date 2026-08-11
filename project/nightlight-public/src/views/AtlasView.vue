@@ -302,7 +302,7 @@ function syncMobileViewport(event) {
 watch(() => route.query, hydrateFromRoute, { deep: true, immediate: true })
 
 onMounted(() => {
-  mobileMediaQuery = window.matchMedia('(max-width: 899px)')
+  mobileMediaQuery = window.matchMedia('(max-width: 900px)')
   syncMobileViewport(mobileMediaQuery)
   mobileMediaQuery.addEventListener('change', syncMobileViewport)
 })

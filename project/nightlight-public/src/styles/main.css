@@ -13,6 +13,24 @@
   --acid: #e8ff75;
   --rust: #eb765f;
   --focus-ring: var(--acid);
+  --text-primary: var(--paper);
+  --text-secondary: #becac4;
+  --text-metadata: var(--muted);
+  --surface-page: var(--ink);
+  --surface-panel: var(--ink-raised);
+  --surface-active: rgba(232, 255, 117, 0.055);
+  --state-available: var(--acid);
+  --state-limited: var(--amber);
+  --state-unavailable: var(--rust);
+  --state-unassessed: var(--muted);
+  --space-page-inline: clamp(1.25rem, 4.5vw, 5rem);
+  --header-height: 82px;
+  --control-min-size: 44px;
+  --focus-interactive: var(--focus-ring);
+  --focus-route: var(--amber);
+  --type-functional: 0.75rem;
+  --type-supporting: 0.8125rem;
+  --type-decorative: 0.6875rem;
   --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
   --sans: Aptos, "Segoe UI", Candara, sans-serif;
   --mono: "Cascadia Mono", "IBM Plex Mono", Consolas, monospace;
@@ -28,8 +46,10 @@
 }
 
 html {
-  background: var(--ink);
+  color-scheme: dark;
+  background: var(--surface-page);
   scroll-behavior: smooth;
+  scroll-padding-block-start: calc(var(--header-height) + 1rem);
 }
 
 body {
@@ -39,7 +59,7 @@ body {
     radial-gradient(circle at 82% 10%, rgba(255, 180, 84, 0.065), transparent 28rem),
     linear-gradient(rgba(154, 185, 172, 0.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(154, 185, 172, 0.018) 1px, transparent 1px),
-    var(--ink);
+    var(--surface-page);
   background-size: auto, 48px 48px, 48px 48px, auto;
 }
 
@@ -59,8 +79,13 @@ select {
 }
 
 button,
-a {
+a,
+input,
+select,
+summary {
   -webkit-tap-highlight-color: transparent;
+  min-height: var(--control-min-size);
+  touch-action: manipulation;
 }
 
 a {
@@ -90,12 +115,20 @@ a {
 }
 
 :focus-visible {
-  outline: 2px solid var(--focus-ring);
+  outline: 2px solid var(--focus-interactive);
   outline-offset: 4px;
+}
+
+:where(.focus-target, .route-focus-target, [data-route-focus]):focus-visible {
+  outline: 1px solid transparent;
+  outline-offset: 0;
+  background: linear-gradient(90deg, rgba(255, 180, 84, 0.09), transparent 62%);
+  box-shadow: -4px 0 0 var(--focus-route);
 }
 
 .site-shell {
   width: min(100%, 1600px);
+  min-width: 0;
   min-height: 100vh;
   margin: 0 auto;
   border-right: 1px solid var(--line);
@@ -158,7 +191,7 @@ a {
   margin-top: 0.12rem;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.59rem;
+  font-size: var(--type-decorative);
   letter-spacing: 0.15em;
   text-transform: uppercase;
 }
@@ -174,6 +207,19 @@ a {
   scrollbar-width: thin;
 }
 
+img,
+svg {
+  max-width: 100%;
+}
+
+:where(.page h1, .page h2, .page h3, .page p, .page li, .page dd, button, a) {
+  overflow-wrap: anywhere;
+}
+
+.mobile-nav-toggle {
+  display: none;
+}
+
 .site-nav a {
   display: flex;
   align-items: center;
@@ -183,7 +229,7 @@ a {
   border-right: 1px solid var(--line);
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.67rem;
+  font-size: var(--type-functional);
   letter-spacing: 0.08em;
   text-decoration: none;
   text-transform: uppercase;
@@ -192,7 +238,7 @@ a {
 
 .site-nav a span {
   color: var(--faint);
-  font-size: 0.54rem;
+  font-size: var(--type-decorative);
 }
 
 .site-nav a:hover,
@@ -212,7 +258,7 @@ a {
   padding: 0 1.3rem;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: var(--type-functional);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -222,8 +268,7 @@ a {
   height: 7px;
   border-radius: 50%;
   background: var(--acid);
-  box-shadow: 0 0 0 5px rgba(232, 255, 117, 0.08), 0 0 14px rgba(232, 255, 117, 0.7);
-  animation: status-pulse 2.4s ease-in-out infinite;
+  box-shadow: 0 0 0 4px rgba(232, 255, 117, 0.09);
 }
 
 main:focus-visible {
@@ -232,14 +277,14 @@ main:focus-visible {
 
 .page {
   min-height: calc(100vh - 143px);
-  padding: clamp(2.5rem, 6vw, 7rem) clamp(1.25rem, 4.5vw, 5rem) 6rem;
+  padding: clamp(2rem, 4vw, 5rem) var(--space-page-inline) 6rem;
 }
 
 .eyebrow {
   margin: 0 0 1.1rem;
-  color: var(--muted);
+  color: var(--text-metadata);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--type-functional);
   line-height: 1.5;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -257,11 +302,15 @@ main:focus-visible {
 }
 
 .focus-target {
-  scroll-margin-block-start: 1rem;
+  scroll-margin-block-start: calc(var(--header-height) + 1rem);
+}
+
+:where(.page section[id], .page h2[id], .page h3[id]) {
+  scroll-margin-block-start: calc(var(--header-height) + 1rem);
 }
 
 .page-lede {
-  color: #becac4;
+  color: var(--text-secondary);
   font-family: var(--serif);
   line-height: 1.65;
 }
@@ -318,7 +367,7 @@ main:focus-visible {
   padding: 0.8rem 1.1rem;
   border: 1px solid var(--line-strong);
   font-family: var(--mono);
-  font-size: 0.67rem;
+  font-size: var(--type-functional);
   letter-spacing: 0.1em;
   text-decoration: none;
   text-transform: uppercase;
@@ -348,10 +397,11 @@ main:focus-visible {
 }
 
 .definition-disclosure summary {
+  min-height: var(--control-min-size);
   padding: 0.9rem 1rem;
   color: var(--paper);
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: var(--type-functional);
   font-weight: 700;
   letter-spacing: 0.05em;
   line-height: 1.5;
@@ -392,8 +442,7 @@ main:focus-visible {
   inset: 0;
   background: linear-gradient(115deg, transparent, rgba(232, 255, 117, 0.035), transparent 65%);
   content: "";
-  transform: translateX(-100%);
-  animation: scan 7s linear infinite;
+  opacity: 0.72;
   pointer-events: none;
 }
 
@@ -456,7 +505,6 @@ main:focus-visible {
 
 .event-pulse {
   fill: var(--rust);
-  animation: event-pulse 2.2s ease-in-out infinite;
 }
 
 .signal-panel text,
@@ -509,7 +557,7 @@ main:focus-visible {
   right: 1rem;
   color: var(--faint);
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: var(--type-decorative);
 }
 
 .metric-strip strong {
@@ -571,7 +619,7 @@ main:focus-visible {
 .boundary-banner a {
   color: var(--amber);
   font-family: var(--mono);
-  font-size: 0.69rem;
+  font-size: var(--type-functional);
   letter-spacing: 0.06em;
   text-underline-offset: 0.3rem;
   text-transform: uppercase;
@@ -595,7 +643,7 @@ main:focus-visible {
 
 .boundary-banner strong {
   font-family: var(--mono);
-  font-size: 0.69rem;
+  font-size: var(--type-functional);
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
@@ -608,7 +656,7 @@ main:focus-visible {
 }
 
 .page-heading {
-  margin-bottom: clamp(3rem, 7vw, 7rem);
+  margin-bottom: clamp(2.5rem, 5vw, 5rem);
 }
 
 .page-heading--split {
@@ -628,15 +676,15 @@ main:focus-visible {
 }
 
 .page-heading h1 {
-  font-size: clamp(3.5rem, 7.2vw, 8rem);
-  line-height: 0.84;
+  font-size: clamp(4rem, 6.2vw, 5.5rem);
+  line-height: 0.92;
 }
 
 .page-heading--split > p {
   margin: 0;
   padding-top: 1.5rem;
   border-top: 1px solid var(--line-strong);
-  color: #becac4;
+  color: var(--text-secondary);
   font-family: var(--serif);
   font-size: 1.15rem;
   line-height: 1.65;
@@ -664,7 +712,7 @@ main:focus-visible {
   margin-bottom: 0.45rem;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.57rem;
+  font-size: var(--type-functional);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -672,6 +720,7 @@ main:focus-visible {
 .atlas-controls input,
 .atlas-controls select {
   width: 100%;
+  min-height: var(--control-min-size);
   border: 0;
   border-bottom: 1px solid var(--line-strong);
   border-radius: 0;
@@ -680,11 +729,11 @@ main:focus-visible {
 }
 
 .atlas-controls input {
-  padding: 0.25rem 0;
+  padding: 0.6rem 0;
 }
 
 .atlas-controls select {
-  padding: 0.25rem 1.5rem 0.25rem 0;
+  padding: 0.6rem 1.5rem 0.6rem 0;
 }
 
 .atlas-controls input:focus,
@@ -698,7 +747,7 @@ main:focus-visible {
   gap: 0.6rem;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.65rem;
+  font-size: var(--type-supporting);
 }
 
 .atlas-controls > p strong {
@@ -711,6 +760,16 @@ main:focus-visible {
   grid-template-columns: minmax(0, 1fr) minmax(300px, 0.38fr);
   min-height: 680px;
   border: 1px solid var(--line-strong);
+}
+
+.atlas-workbench > .atlas-map {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.atlas-workbench > .atlas-index {
+  grid-column: 2;
+  grid-row: 1;
 }
 
 .atlas-map {
@@ -839,6 +898,7 @@ main:focus-visible {
   grid-template-columns: 32px 1fr auto;
   gap: 0.65rem;
   width: 100%;
+  min-height: var(--control-min-size);
   padding: 0.85rem 1rem;
   border: 0;
   border-bottom: 1px solid var(--line);
@@ -858,7 +918,7 @@ main:focus-visible {
 .atlas-index__list time {
   color: var(--faint);
   font-family: var(--mono);
-  font-size: 0.57rem;
+  font-size: var(--type-functional);
 }
 
 .atlas-index__list strong,
@@ -875,7 +935,7 @@ main:focus-visible {
 .atlas-index__list small {
   margin-top: 0.2rem;
   color: var(--muted);
-  font-size: 0.7rem;
+  font-size: var(--type-supporting);
 }
 
 .atlas-index__list button.is-selected strong {
@@ -909,7 +969,7 @@ main:focus-visible {
   color: var(--muted);
   background: var(--ink-raised);
   font-family: var(--mono);
-  font-size: 0.67rem;
+  font-size: var(--type-functional);
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
@@ -927,7 +987,8 @@ main:focus-visible {
 }
 
 .atlas-view-mode label:hover,
-.atlas-view-mode label.is-active {
+.atlas-view-mode label.is-active,
+.atlas-view-mode label:focus-within {
   background: rgba(232, 255, 117, 0.055);
 }
 
@@ -960,7 +1021,7 @@ main:focus-visible {
   margin-top: 0.15rem;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.65rem;
+  font-size: var(--type-supporting);
   line-height: 1.45;
 }
 
@@ -1026,7 +1087,7 @@ main:focus-visible {
 .comparison-presets p {
   margin-top: 0.35rem;
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: var(--type-supporting);
   line-height: 1.55;
 }
 
@@ -1133,7 +1194,7 @@ main:focus-visible {
   color: var(--amber);
   background: var(--ink-raised);
   font-family: var(--mono);
-  font-size: 0.61rem;
+  font-size: var(--type-functional);
   cursor: pointer;
   transition: background 160ms ease;
 }
@@ -1535,27 +1596,27 @@ main:focus-visible {
 
 .passport-band {
   padding: 0.55rem 0.65rem;
-  color: var(--acid);
+  color: var(--state-available);
 }
 
 .passport-band--sensitivity_only,
 .component-state--limited {
-  color: var(--amber);
+  color: var(--state-limited);
 }
 
 .passport-band--repair_first,
 .component-state--unavailable {
-  color: var(--rust);
+  color: var(--state-unavailable);
 }
 
 .passport-band--unassessed {
-  color: var(--muted);
+  color: var(--state-unassessed);
 }
 
 .component-state {
   padding: 0.35rem 0.45rem;
-  color: var(--acid);
-  font-size: 0.56rem;
+  color: var(--state-available);
+  font-size: var(--type-functional);
 }
 
 .evidence-passport__table-wrap {
@@ -1672,7 +1733,7 @@ main:focus-visible {
   border: 1px solid var(--rust);
   color: var(--rust);
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: var(--type-functional);
   letter-spacing: 0.12em;
   transform: rotate(-2deg);
 }
@@ -1729,7 +1790,7 @@ main:focus-visible {
 .finding-hero__number small {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: var(--type-functional);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   overflow-wrap: anywhere;
@@ -1851,7 +1912,7 @@ main:focus-visible {
   color: var(--paper);
   background: var(--ink-raised);
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: var(--type-functional);
   letter-spacing: 0.06em;
   text-align: left;
   text-transform: uppercase;
@@ -1935,7 +1996,7 @@ main:focus-visible {
   margin-bottom: 0.28rem;
   color: var(--amber);
   font-family: var(--mono);
-  font-size: 0.64rem;
+  font-size: var(--type-functional);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -1954,7 +2015,7 @@ main:focus-visible {
   border: 1px solid var(--acid);
   color: var(--paper);
   font-family: var(--mono);
-  font-size: 0.63rem;
+  font-size: var(--type-functional);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -2054,7 +2115,7 @@ main:focus-visible {
 .method-timeline__number {
   color: var(--faint);
   font-family: var(--mono);
-  font-size: 0.73rem;
+  font-size: var(--type-decorative);
 }
 
 .method-timeline h2 {
@@ -2114,7 +2175,7 @@ main:focus-visible {
 .method-principles li > span {
   color: var(--faint);
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: var(--type-decorative);
 }
 
 .method-principles li > strong {
@@ -2147,7 +2208,7 @@ main:focus-visible {
 .policy-grid__code {
   color: var(--amber);
   font-family: var(--mono);
-  font-size: 0.59rem;
+  font-size: var(--type-decorative);
   letter-spacing: 0.09em;
 }
 
@@ -2211,15 +2272,171 @@ main:focus-visible {
   overflow-wrap: anywhere;
 }
 
+/* Shared UI contracts for the shell, long-form pages, and Atlas lanes. */
+.page-summary:not(p),
+.atlas-task-summary,
+.event-selection-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 1px;
+  margin: 0 0 1.5rem;
+  border: 1px solid var(--line-strong);
+  background: var(--line);
+}
+
+.page-summary:not(p) > *,
+.atlas-task-summary > *,
+.event-selection-summary > * {
+  min-width: 0;
+  margin: 0;
+  padding: 1rem 1.1rem;
+  background: var(--surface-panel);
+  overflow-wrap: anywhere;
+}
+
+p.page-summary {
+  display: block;
+  margin: 0 0 1.5rem;
+  padding: 1rem 1.1rem;
+  border-left: 3px solid var(--amber);
+  color: var(--text-secondary);
+  background: var(--surface-panel);
+}
+
+.page-summary :is(strong, dt),
+.atlas-task-summary :is(strong, dt),
+.event-selection-summary :is(strong, dt) {
+  color: var(--text-primary);
+}
+
+.page-summary :is(p, dd),
+.atlas-task-summary :is(p, dd),
+.event-selection-summary :is(p, dd) {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.in-page-nav {
+  position: sticky;
+  top: calc(var(--header-height) + 1rem);
+  z-index: 5;
+  max-width: 24rem;
+  padding: 1rem;
+  border: 1px solid var(--line-strong);
+  background: rgba(11, 24, 21, 0.96);
+}
+
+.in-page-nav :is(ul, ol),
+.content-section-nav {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.in-page-nav a,
+.content-section-nav a {
+  display: flex;
+  min-height: var(--control-min-size);
+  align-items: center;
+  padding: 0.55rem 0.7rem;
+  border-left: 2px solid var(--line-strong);
+  color: var(--text-secondary);
+  font-family: var(--mono);
+  font-size: var(--type-functional);
+  line-height: 1.45;
+  text-decoration: none;
+}
+
+.in-page-nav a:hover,
+.in-page-nav a[aria-current],
+.content-section-nav a:hover,
+.content-section-nav a[aria-current] {
+  border-left-color: var(--acid);
+  color: var(--text-primary);
+  background: var(--surface-active);
+}
+
+.atlas-mobile-view {
+  display: none;
+}
+
+:where(button, .button, .site-nav a, .mobile-nav-toggle) {
+  min-height: var(--control-min-size);
+}
+
+:where(input:not([type="radio"]):not([type="checkbox"]), select) {
+  min-height: var(--control-min-size);
+}
+
+:is(.atlas-controls label, .comparison-selectors label):focus-within {
+  background: var(--surface-active);
+  box-shadow: inset 0 0 0 1px var(--focus-interactive);
+}
+
+:is(
+  .signal-panel__meta,
+  .atlas-map__legend,
+  .atlas-index__header,
+  .atlas-readout span,
+  .atlas-readout p,
+  .comparison-presets__grid span,
+  .comparison-selectors label > span,
+  .comparison-compatibility span,
+  .comparison-preset-note span,
+  .comparison-component span,
+  .comparison-boundary > span,
+  .comparison-events span,
+  .comparison-events p,
+  .comparison-events strong,
+  .comparison-selector-note,
+  .comparison-summary dt,
+  .comparison-summary > div > span,
+  .status-badge,
+  .evidence-passport__claims h3,
+  .evidence-passport__source,
+  .withheld-panel ul,
+  .method-timeline__output,
+  .limits-ledger dt,
+  .site-footer
+) {
+  font-size: var(--type-functional);
+}
+
+:is(
+  .signal-panel > p,
+  .comparison-summary p,
+  .comparison-component p,
+  .evidence-card dd,
+  .method-principles li > p
+) {
+  font-size: var(--type-supporting);
+}
+
+:where(
+  .metric-strip strong,
+  .metric-strip__index,
+  .finding-hero__number strong,
+  .finding-grid__number,
+  .transport-callout strong,
+  .comparison-summary,
+  .comparison-component__event strong,
+  .evidence-table,
+  .atlas-controls > p strong
+) {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
 .site-footer {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1.4rem clamp(1.25rem, 4.5vw, 5rem);
+  padding: 1.4rem var(--space-page-inline);
   border-top: 1px solid var(--line-strong);
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: var(--type-functional);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -2241,18 +2458,6 @@ main:focus-visible {
 .route-leave-to {
   opacity: 0;
   transform: translateY(-6px);
-}
-
-@keyframes scan {
-  to { transform: translateX(100%); }
-}
-
-@keyframes status-pulse {
-  50% { opacity: 0.45; transform: scale(0.82); }
-}
-
-@keyframes event-pulse {
-  50% { opacity: 0.65; r: 12px; }
 }
 
 @media (max-width: 1180px) {
@@ -2278,22 +2483,100 @@ main:focus-visible {
 }
 
 @media (max-width: 900px) {
+  :root {
+    --header-height: 0px;
+    --space-page-inline: 1rem;
+  }
+
   .site-header {
     position: relative;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   .identity {
+    min-width: 0;
+    padding-left: max(1rem, env(safe-area-inset-left));
     border-right: 0;
     border-bottom: 1px solid var(--line);
   }
 
+  .site-header:not(:has(.mobile-nav-toggle)) .identity {
+    grid-column: 1 / -1;
+  }
+
+  .mobile-nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    align-self: stretch;
+    justify-content: center;
+    margin: 0;
+    padding: 0.75rem max(1rem, env(safe-area-inset-right));
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+    color: var(--paper);
+    background: var(--ink-raised);
+    font-family: var(--mono);
+    font-size: var(--type-functional);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .mobile-nav-toggle:hover,
+  .mobile-nav-toggle[aria-expanded="true"] {
+    color: var(--acid);
+    background: var(--surface-active);
+  }
+
   .site-nav {
-    grid-template-columns: repeat(5, minmax(128px, max-content));
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr;
+    overflow: visible;
+    overscroll-behavior-inline: auto;
   }
 
   .site-nav a {
-    min-height: 56px;
+    justify-content: flex-start;
+    min-height: var(--control-min-size);
+    padding-right: max(1rem, env(safe-area-inset-right));
+    padding-left: max(1rem, env(safe-area-inset-left));
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .page {
+    padding-right: max(var(--space-page-inline), env(safe-area-inset-right));
+    padding-left: max(var(--space-page-inline), env(safe-area-inset-left));
+  }
+
+  .site-footer {
+    padding-right: max(var(--space-page-inline), env(safe-area-inset-right));
+    padding-left: max(var(--space-page-inline), env(safe-area-inset-left));
+  }
+
+  .site-header:has(.mobile-nav-toggle) .site-nav {
+    display: none;
+  }
+
+  .site-header:has(.mobile-nav-toggle) .site-nav.site-nav--open,
+  .site-header.site-nav--open .site-nav {
+    display: grid;
+  }
+
+  .in-page-nav,
+  .content-section-nav {
+    position: static;
+    max-width: none;
+  }
+
+  .atlas-mobile-view {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    margin-bottom: 1rem;
+    border: 1px solid var(--line-strong);
+    background: var(--line);
   }
 
   .page-heading--split,
@@ -2391,6 +2674,11 @@ main:focus-visible {
     grid-template-columns: 1fr;
   }
 
+  .atlas-workbench > :is(.atlas-index, .atlas-map) {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
   .atlas-map,
   .finding-hero__number {
     border-right: 0;
@@ -2420,13 +2708,18 @@ main:focus-visible {
 
 @media (max-width: 620px) {
   .page {
-    padding-right: 1rem;
-    padding-left: 1rem;
+    padding-right: max(1rem, env(safe-area-inset-right));
+    padding-left: max(1rem, env(safe-area-inset-left));
   }
 
-  .hero h1,
+  .hero h1 {
+    font-size: clamp(3rem, 16vw, 4rem);
+    line-height: 0.86;
+  }
+
   .page-heading h1 {
-    font-size: clamp(3rem, 17vw, 5.5rem);
+    font-size: clamp(2.75rem, 13vw, 3.25rem);
+    line-height: 0.98;
   }
 
   .section-intro h2,
@@ -2544,6 +2837,8 @@ main:focus-visible {
 
   .site-footer {
     flex-direction: column;
+    padding-right: max(1rem, env(safe-area-inset-right));
+    padding-left: max(1rem, env(safe-area-inset-left));
   }
 
   .evidence-table {
@@ -2571,6 +2866,8 @@ main:focus-visible {
     --acid: Highlight;
     --rust: Mark;
     --focus-ring: Highlight;
+    --focus-interactive: Highlight;
+    --focus-route: Highlight;
   }
 
   body,
@@ -2588,6 +2885,12 @@ main:focus-visible {
   :focus-visible {
     outline-width: 3px;
     outline-color: Highlight;
+  }
+
+  :where(.focus-target, .route-focus-target, [data-route-focus]):focus-visible {
+    border-left: 4px solid Highlight;
+    background: Canvas;
+    box-shadow: none;
   }
 
   .status-light,
@@ -2616,7 +2919,12 @@ main:focus-visible {
   .boundary-banner,
   .claim-boundary,
   .comparison-boundary,
-  .withheld-panel {
+  .withheld-panel,
+  .page-summary,
+  .atlas-task-summary,
+  .event-selection-summary,
+  .in-page-nav,
+  .content-section-nav {
     border-color: CanvasText;
     color: CanvasText;
   }

@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 import { describe, expect, it } from 'vitest'
@@ -14,6 +14,44 @@ async function writeFixture(root, relativePath, contents) {
 }
 
 describe('static platform boundary', () => {
+  it('keeps the Phase D visual contract local, responsive, and motion-safe', async () => {
+    const [styles, html, atlas] = await Promise.all([
+      readFile(new URL('../src/styles/main.css', import.meta.url), 'utf8'),
+      readFile(new URL('../index.html', import.meta.url), 'utf8'),
+      readFile(new URL('../src/views/AtlasView.vue', import.meta.url), 'utf8'),
+    ])
+
+    for (const hook of [
+      'mobile-nav-toggle',
+      'site-nav--open',
+      'page-summary',
+      'in-page-nav',
+      'content-section-nav',
+      'atlas-task-summary',
+      'atlas-mobile-view',
+      'event-selection-summary',
+    ]) {
+      expect(styles).toContain(`.${hook}`)
+    }
+
+    expect(styles).toMatch(/@media\s*\(max-width:\s*900px\)/)
+    expect(atlas).toContain("window.matchMedia('(max-width: 900px)')")
+    expect(styles).toMatch(/--control-min-size:\s*44px/)
+    expect(styles).toMatch(/summary\s*\{[\s\S]*?min-height:\s*var\(--control-min-size\)/)
+    expect(styles).toMatch(/\.site-header:has\(\.mobile-nav-toggle\)\s+\.site-nav/)
+    expect(styles).toMatch(/\[data-route-focus\]\):focus-visible/)
+    expect(styles).toMatch(/@media\s*\(forced-colors:\s*active\)/)
+    expect(styles).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)/)
+    expect(styles).toMatch(/touch-action:\s*manipulation/)
+    expect(styles).toMatch(/\.atlas-workbench > \.atlas-map\s*\{[\s\S]*?grid-column:\s*1/)
+    expect(styles).toMatch(/\.atlas-workbench > \.atlas-index\s*\{[\s\S]*?grid-column:\s*2/)
+    expect(styles).toMatch(/\.page-summary:not\(p\)/)
+    expect(styles).toMatch(/p\.page-summary\s*\{/)
+    expect(styles).not.toMatch(/animation:\s*[^;]*\binfinite\b/)
+    expect(html).toContain('<meta name="color-scheme" content="dark">')
+    expect(html).not.toMatch(/https?:\/\//)
+  })
+
   it('rejects runtime dependencies outside the reviewed static application allowlist', async () => {
     const root = await makeTemporaryRoot()
     await writeFixture(root, 'package.json', JSON.stringify({
