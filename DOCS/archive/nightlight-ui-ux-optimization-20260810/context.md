@@ -63,3 +63,12 @@ Return: exact base/HEAD, changed files, diff summary, new class hooks, behavior 
 - Stop: close the owned browser and stop only the verified 5190 process tree after evidence is written.
 
 Final result: Vite owner PID `583648` and listener PID `549428` were verified against the exact worktree/port, stopped after the matrix, and port 5190 was released. The second matrix run passed all 17 checks across 36 route/viewport cases. `npm run validate` remains non-zero only because four existing P2 proxy-evidence tests require the absent `DOCS/active/p2-p3-solo-evidence-performance-20260810/p2-evidence.md`; 176/180 tests passed, and build/public verification were rerun separately and passed.
+
+## Git and cleanup truth — 2026-08-11
+
+- `main` was fast-forwarded from `d0ef4c3` to product/evidence candidate `a63d733` and pushed normally to `origin/main`.
+- Integrated lane commits remain recoverable through main: A `1061996`, B `683f454`, C `5dc247a`, D `d715f9d`.
+- Git worktrees `f00e`, `fd8e`, `2a26`, and `feae` were removed with `git worktree remove --force` only after fixed-path, exact-HEAD, no-listener, and main-integration checks. The force flag was required because each detached lane intentionally retained its now-integrated unstaged delivery diff.
+- Codex tasks for A, B, C, and D were archived after their final handoffs were captured.
+- `git worktree list --porcelain` now contains only the main checkout and excluded `591a`; the protected personal research directory remains untracked in main.
+- This archive closeout is docs-only and follows the pushed product candidate. No production or Pages success is inferred from the Git push.

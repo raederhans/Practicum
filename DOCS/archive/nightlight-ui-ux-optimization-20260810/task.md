@@ -2,7 +2,7 @@
 
 ## Status
 
-`integrated-and-validated-awaiting-main-push-cleanup`
+`complete-pushed-cleaned`
 
 ## Checklist
 
@@ -18,7 +18,7 @@
 - [x] Collect four `ready-for-integration` deliveries.
 - [x] Integrate A -> B -> C -> D with per-lane validation.
 - [x] Run final public validation and controlled browser matrix.
-- [ ] Record commit/push/deployment/cleanup truth and archive only after all lanes are closed.
+- [x] Record commit/push/deployment/cleanup truth and archive only after all lanes are closed.
 
 ## Current validation
 
@@ -35,3 +35,18 @@
 ## Pending integration evidence
 
 Integrated commits: A `1061996`, B `683f454`, C `5dc247a`, D `d715f9d`. Integration review additionally repaired B's over-broad scroll assertion, Atlas hash-stable section navigation, live-region semantics, desktop Map/index placement, the 900px CSS/JS boundary, summary/list styling ownership, and 44px native summary controls.
+
+## Closeout
+
+- Product and evidence candidate `a63d733` was fast-forwarded to `main` and pushed normally to `origin/main`; no history rewrite or force-push occurred.
+- Worktrees `f00e`, `fd8e`, `2a26`, and `feae` were removed only after their recoverable integrated commits existed. Their four Codex tasks were archived.
+- Retained worktree `591a` and protected untracked `DOCS/archive/personal-project-evolution-research/` remain untouched.
+- Final owner resources were released: ports 5173, 5181–5184, and 5190 have no listener from this task.
+- This task makes no deployment-success claim. GitHub Actions/Pages status must be checked against the exact pushed revision separately.
+
+## Next steps
+
+1. Produce the missing P2 solo evidence through its evidence workflow, then rerun `npm run validate`; do not create the file merely to satisfy four tests.
+2. Add Firefox/Edge and manual NVDA or equivalent assistive-technology coverage for the final integrated artifact.
+3. Run a small real-reader comprehension study for the R²/AUC/Passport boundaries; browser and proxy checks do not establish understanding.
+4. Use field evidence, not decorative scope expansion, to decide whether the next product increment should prioritize Atlas comparison guidance or public source-lineage inspection.
