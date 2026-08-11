@@ -13,6 +13,39 @@ describe('Public Generalization Artifact v1', () => {
     expect(PUBLIC_GENERALIZATION_ARTIFACT.version).toBe('1.0.0')
     expect(PUBLIC_GENERALIZATION_ARTIFACT.metrics).toHaveLength(3)
 
+    expect(PUBLIC_GENERALIZATION_ARTIFACT.metrics).toMatchObject([
+      {
+        id: 'in-sample-r-squared',
+        validationDesign: 'in-sample, fixed-control descriptive fit',
+        modelRole: 'explanatory',
+        metricType: 'description',
+        value: 0.7603,
+        unit: 'coefficient-of-determination [0–1]',
+        supportedClaim: 'The specified model describes variation within the analyzed, fixed-control sample.',
+        unsupportedClaim: 'Future-event accuracy, causation, or a ranking of community recovery.',
+      },
+      {
+        id: 'cross-event-logit-auc',
+        validationDesign: 'leave-one-event-out cross-event damage-ranking',
+        modelRole: 'damage-ranking',
+        metricType: 'ranking',
+        value: 0.4814,
+        unit: 'area-under-curve [0–1]',
+        supportedClaim: 'In this held-out-event damage-ranking design, the admitted ranking result is below a 0.50 reference.',
+        unsupportedClaim: 'A recovery-transport result, calibrated probability, future-event readiness, or a community recovery ranking.',
+      },
+      {
+        id: 'descriptive-sensitivity-ratio',
+        validationDesign: 'descriptive sensitivity; not a cross-event validation',
+        modelRole: 'secondary-interpretation',
+        metricType: 'description',
+        value: 0.551,
+        unit: 'ratio [unitless]',
+        supportedClaim: 'A descriptive sensitivity value under its stated analysis conditions.',
+        unsupportedClaim: 'A fairness conclusion, causal mechanism, or transport improvement.',
+      },
+    ])
+
     const crossEventDamageRanking = PUBLIC_GENERALIZATION_ARTIFACT.metrics.find((metric) => metric.id === 'cross-event-logit-auc')
     expect(crossEventDamageRanking.modelFamily).toBe('Cross-event logit damage-ranking model')
     expect(crossEventDamageRanking.validationDesign).toBe('leave-one-event-out cross-event damage-ranking')
@@ -68,9 +101,11 @@ describe('Generalization Autopsy accessibility shell', () => {
   it('keeps five routes reachable without moving the sequential focus start point', async () => {
     const app = await readFile(new URL('../src/App.vue', import.meta.url), 'utf8')
     const styles = await readFile(new URL('../src/styles/main.css', import.meta.url), 'utf8')
+    const navigationReveal = app.match(/function revealActiveNavigation\(\) \{([\s\S]*?)\n\}/)?.[1]
 
     expect(app).toMatch(/navigation\.scrollLeft\s*=/)
-    expect(app).not.toMatch(/scrollIntoView/)
+    expect(navigationReveal).toBeDefined()
+    expect(navigationReveal).not.toMatch(/scrollIntoView/)
     expect(app).toMatch(/function updateRouteContext\(\)[\s\S]*?revealActiveNavigation\(\)[\s\S]*?onMounted\(updateRouteContext\)/)
     expect(app).toMatch(/aria-current/)
     expect(styles).toMatch(/\.site-nav\s*\{[\s\S]*overflow-x:\s*auto/)
@@ -89,7 +124,27 @@ describe('Generalization Autopsy accessibility shell', () => {
     expect(findings).toMatch(/What improved \/ what failed/)
     expect(findings).toMatch(/Evidence cards/)
     expect(findings).toMatch(/The cross-event damage-ranking check trains without one event/)
+    expect(findings).toMatch(/Description, damage ranking, and recovery transport are separate roles/)
+    expect(findings).toMatch(/Recovery transport[\s\S]{0,160}<h3>Unavailable<\/h3>/)
+    expect(findings).toMatch(/R² \{\{ metrics\['in-sample-r-squared'\]\.value\.toFixed\(4\) \}\}/)
+    expect(findings).toMatch(/AUC \{\{ metrics\['cross-event-logit-auc'\]\.value\.toFixed\(4\) \}\}/)
+    expect(findings).toMatch(/R² and AUC[\s\S]{0,160}never placed on one shared score scale/)
+    expect(findings).toMatch(/<\/div>\s*<figcaption id="fit-caption">/)
+    expect(findings.match(/<figcaption/g)).toHaveLength(1)
     expect(findings).not.toMatch(/The transport check trains/)
+  })
+
+  it('keeps the findings summary, navigation, and lineage disclosure semantically distinct', async () => {
+    const findings = await readFile(new URL('../src/views/FindingsView.vue', import.meta.url), 'utf8')
+
+    expect(findings).toMatch(/class="page-lede page-summary"/)
+    expect(findings).toMatch(/<nav class="in-page-nav"/)
+    expect(findings).toMatch(/<ol class="content-section-nav">/)
+    for (const id of ['attractive-result-title', 'harder-test-title', 'role-matrix-title', 'evidence-cards-title']) {
+      expect(findings).toContain(`href="#${id}"`)
+      expect(findings).toContain(`id="${id}" tabindex="-1"`)
+    }
+    expect(findings).toMatch(/<details class="evidence-card__lineage">[\s\S]*Cohort \/ lock[\s\S]*Source/)
   })
 
   it('documents metric-role and lineage limits at the public contract boundary', async () => {

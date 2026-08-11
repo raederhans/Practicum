@@ -9,21 +9,30 @@ import { STUDY_SUMMARY } from '../content/study.js'
       <div class="hero__copy">
         <p class="eyebrow"><span>Field note 00</span> Public research edition</p>
         <h1 class="focus-target" data-route-focus tabindex="-1">Reading recovery<br><em>in the dark.</em></h1>
-        <p class="hero__lead page-lede">
-          A two-stage study of disaster impacts, electricity outages, and changes in nighttime light—
-          presented here as an inspectable portfolio without publishing restricted fine-grained records.
+        <p class="hero__lead page-lede page-summary">
+          Explore events, compare evidence states, and inspect where the model does not travel.
         </p>
         <div class="hero__actions">
           <RouterLink class="button button--primary" to="/atlas">Open the study atlas</RouterLink>
           <RouterLink class="button button--quiet" to="/findings">Read the bounded findings</RouterLink>
         </div>
-        <details class="definition-disclosure hero__disclosure">
-          <summary>What this public research edition can—and cannot—show</summary>
+        <section class="metric-strip" aria-label="Study scale summary">
           <div>
-            <p>It exposes reviewed aggregate study facts, evidence states, methods, and source limits for inspection.</p>
-            <p>Technical and proxy checks can find interface risks; they are not human validation and do not prove that readers understand the science. Nighttime light is also not a household-level measure or a direct record of lived recovery.</p>
+            <span class="metric-strip__index">S2</span>
+            <strong>{{ STUDY_SUMMARY.stage2.events }}</strong>
+            <p>disaster events across {{ STUDY_SUMMARY.stage2.jurisdictions }} jurisdictions</p>
           </div>
-        </details>
+          <div>
+            <span class="metric-strip__index">S3</span>
+            <strong>{{ STUDY_SUMMARY.stage3.observations.toLocaleString() }}</strong>
+            <p>ZIP-event observations across {{ STUDY_SUMMARY.stage3.events }} events</p>
+          </div>
+          <div>
+            <span class="metric-strip__index">M1+</span>
+            <strong>{{ STUDY_SUMMARY.descriptiveModel.rSquared.toFixed(4) }}</strong>
+            <p>descriptive R², unitless [0–1], n = {{ STUDY_SUMMARY.descriptiveModel.n }}; not future-event accuracy</p>
+          </div>
+        </section>
       </div>
 
       <div class="signal-panel" aria-label="Abstract nighttime recovery signal illustration">
@@ -51,23 +60,14 @@ import { STUDY_SUMMARY } from '../content/study.js'
       </div>
     </section>
 
-    <section class="metric-strip" aria-label="Study scale summary">
+    <details class="definition-disclosure hero__disclosure">
+      <summary>What this public research edition can—and cannot—show</summary>
       <div>
-        <span class="metric-strip__index">S2</span>
-        <strong>{{ STUDY_SUMMARY.stage2.events }}</strong>
-        <p>disaster events across {{ STUDY_SUMMARY.stage2.jurisdictions }} jurisdictions</p>
+        <p>A two-stage study of disaster impacts, electricity outages, and changes in nighttime light is presented here as an inspectable portfolio without publishing restricted fine-grained records.</p>
+        <p>It exposes reviewed aggregate study facts, evidence states, methods, and source limits for inspection.</p>
+        <p>Technical and proxy checks can find interface risks; they are not human validation and do not prove that readers understand the science. Nighttime light is also not a household-level measure or a direct record of lived recovery.</p>
       </div>
-      <div>
-        <span class="metric-strip__index">S3</span>
-        <strong>{{ STUDY_SUMMARY.stage3.observations.toLocaleString() }}</strong>
-        <p>ZIP-event observations across {{ STUDY_SUMMARY.stage3.events }} events</p>
-      </div>
-      <div>
-        <span class="metric-strip__index">M1+</span>
-        <strong>{{ STUDY_SUMMARY.descriptiveModel.rSquared.toFixed(4) }}</strong>
-        <p>descriptive R², unitless [0–1], n = {{ STUDY_SUMMARY.descriptiveModel.n }}; not future-event accuracy</p>
-      </div>
-    </section>
+    </details>
 
     <section class="overview-grid">
       <div class="section-intro">
