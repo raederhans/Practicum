@@ -21,6 +21,7 @@
 | 2026-08-11 NL-L01 | Deterministic admission evaluation remained blocked and the pilot manifest contains zero events and labels. | No mock labels or forecast/probability training occurred; the five-step handoff is executable after external evidence is restored. |
 | 2026-08-11 validation | 21 passed/1 existing private-output skip, 37 related gate passes, 6 stage gate passes, reviewed-modeling ready, and full-upstream blocked on seven known gaps. | Available gates support the bounded contracts; `test_analysis_contracts.py` remains unrun because no current interpreter combines pytest with statsmodels. |
 | 2026-08-11 overlap audit | The current Public capability worktree changes only `project/nightlight-public/**` plus its own task records; it has no exact path overlap with this lane. No base-aligned sibling showed Dashboard changes at audit time. | Relationship is semantic, not textual: integrate science definitions first, then Public/Dashboard copy or UI, and rerun combined boundary tests. |
+| 2026-08-11 commit | Implementation Lore commit `46dfab512e24402d70afce88729137281a7e44fa` was created directly on detached HEAD with the required baseline as parent; message, stat, author scope, and clean post-commit status were read back. | Science implementation is committed and ready for integration; this subsequent docs-only closeout records that fact without changing implementation behavior. |
 
 ## Live process ownership
 
@@ -34,4 +35,4 @@ The future integration owner should apply this science-foundation commit before 
 
 ## Next step
 
-Stage only the sixteen delegated paths, inspect the cached diff under the Lore protocol, commit, then verify commit message/stat and clean worktree state.
+Future integration owner applies the final detached-HEAD candidate range after the exact required base, preserves the active records until integration is complete, and runs the combined science plus Public/Dashboard validation in the recommended order.

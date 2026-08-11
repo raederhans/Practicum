@@ -24,7 +24,7 @@ Restore a versioned, testable scientific foundation for recovery outcomes, sourc
 - [x] Phase 2 — NL-D01 source, rights, and label feasibility.
 - [x] Phase 3 — NL-C01 Evidence Passport composite sensitivity research.
 - [x] Phase 4 — NL-L01 bounded label pilot or evidence-backed blocked decision.
-- [ ] Verify, document handoff, and create reversible Lore commit(s).
+- [x] Verify, document handoff, and create reversible Lore commit(s).
 
 ## Acceptance criteria
 

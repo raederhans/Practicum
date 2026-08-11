@@ -2,7 +2,7 @@
 
 ## Current status
 
-`in_progress` — all phase decisions and available validation are complete; Lore commit and post-commit handoff verification remain.
+`ready-for-integration` — all phase decisions, available validation, implementation commit, and post-commit scope verification are complete. Integration remains owned by the future integration owner.
 
 ## Checklist
 
@@ -13,7 +13,7 @@
 - [x] Implement and test NL-C01 composite sensitivity protocol and decision.
 - [x] Run or evidence-block NL-L01 label pilot under the Phase 1/2 gates.
 - [x] Run narrow and related gates; review diff, secrets, large/generated files, and prohibited paths.
-- [ ] Update handoff evidence and create authorized Lore commit(s).
+- [x] Update handoff evidence and create authorized Lore commit(s).
 
 ## Validation evidence
 
@@ -34,6 +34,7 @@
 | `reproducibility.py --scope full-upstream --json` | Exit 1 and `blocked` on seven existing source/lineage gaps; full upstream reproduction is not established. |
 | Python compile plus five JSON parses | Passed for all new support modules, configs, and manifests. |
 | Scope, prohibited paths, secret-pattern filenames, changed-file size, generated/data suffix, and tracked diff checks | Passed; no prohibited path, secret pattern, file over 1 MiB, or untracked generated/data artifact found. |
+| Implementation Lore commit | `46dfab512e24402d70afce88729137281a7e44fa`, parent `6b3de4ee97c5391084538bec84db3b1a1f4e05ed`; 16 authorized paths and 1,866 insertions; post-commit worktree clean before this closeout-only record update. |
 
 ## Open risks and remaining work
 
