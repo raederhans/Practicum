@@ -12,7 +12,7 @@ States: `in-progress`, `blocked`, `ready-for-review`, `ready-for-integration`, `
 - Candidate `a63d733` was fast-forwarded to main and pushed normally before cleanup.
 - Integrated worktree registrations `f00e`, `fd8e`, `2a26`, and `feae` were removed; their exact recovery commits remain reachable through main.
 - Four corresponding Codex tasks were archived. Worktree `591a` remains excluded and untouched.
-- Final Chromium evidence covered 36 route/viewport cases with all 17 checks true. Build and public verifier passed; full validation remains 176/180 because the existing P2 evidence record is absent.
+- Final Chromium evidence covered 36 route/viewport cases with all 17 checks true. The first Pages run exposed a stale pre-archive test path; the real P2 evidence remains tracked under `DOCS/archive/p2-p3-solo-evidence-performance-20260810/`. Updating only that path produced 180/180 local tests, build, and public-verifier success without changing evidence content or gate assertions.
 
 ## Four-lane evidence/platform closeout — 2026-08-10
 

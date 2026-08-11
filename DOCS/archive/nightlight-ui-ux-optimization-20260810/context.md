@@ -62,7 +62,7 @@ Return: exact base/HEAD, changed files, diff summary, new class hooks, behavior 
 - Failure: any false matrix check, server startup failure, browser error, external request, or unowned resource conflict.
 - Stop: close the owned browser and stop only the verified 5190 process tree after evidence is written.
 
-Final result: Vite owner PID `583648` and listener PID `549428` were verified against the exact worktree/port, stopped after the matrix, and port 5190 was released. The second matrix run passed all 17 checks across 36 route/viewport cases. `npm run validate` remains non-zero only because four existing P2 proxy-evidence tests require the absent `DOCS/active/p2-p3-solo-evidence-performance-20260810/p2-evidence.md`; 176/180 tests passed, and build/public verification were rerun separately and passed.
+Final result: Vite owner PID `583648` and listener PID `549428` were verified against the exact worktree/port, stopped after the matrix, and port 5190 was released. The second matrix run passed all 17 checks across 36 route/viewport cases. The initial `npm run validate` result was 176/180 because four P2 proxy-evidence tests retained a stale `DOCS/active/.../p2-evidence.md` path after `d0ef4c3` archived the real record. The evidence still exists under `DOCS/archive/`; changing only the test path produced 180/180 plus a passing build and public verifier in the same fresh `npm run validate` invocation.
 
 ## Git and cleanup truth — 2026-08-11
 
@@ -71,4 +71,4 @@ Final result: Vite owner PID `583648` and listener PID `549428` were verified ag
 - Git worktrees `f00e`, `fd8e`, `2a26`, and `feae` were removed with `git worktree remove --force` only after fixed-path, exact-HEAD, no-listener, and main-integration checks. The force flag was required because each detached lane intentionally retained its now-integrated unstaged delivery diff.
 - Codex tasks for A, B, C, and D were archived after their final handoffs were captured.
 - `git worktree list --porcelain` now contains only the main checkout and excluded `591a`; the protected personal research directory remains untracked in main.
-- This archive closeout is docs-only and follows the pushed product candidate. No production or Pages success is inferred from the Git push.
+- Pages run `31452027267` for `a63d733` reproduced the same stale test-path failure before build. Git history confirmed the evidence was created in `215bafe` and archived in `d0ef4c3`; validation now reads that preserved archive path and is locally 180/180. No production or Pages success is inferred until a new exact-revision run succeeds.

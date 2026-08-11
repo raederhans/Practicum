@@ -30,7 +30,7 @@
 | public verifier | passed with `--require-dist` |
 | integrated browser matrix | 36 route/viewport cases; all 17 admission checks true; no console, request, external-network, overflow, focus, history, or responsive failures |
 | development runtime | final owner used isolated 5190 and released it; 5173 and lane ports have no current listener |
-| full validation | 176/180 passed; the same four proxy-evaluation tests remain blocked by missing `p2-evidence.md`; no fabricated evidence or weakened gate |
+| full validation | 180/180 passed after repairing the stale active-path reference to the preserved archived P2 evidence; build and public verifier also passed in the same `npm run validate` invocation |
 
 ## Pending integration evidence
 
@@ -42,11 +42,10 @@ Integrated commits: A `1061996`, B `683f454`, C `5dc247a`, D `d715f9d`. Integrat
 - Worktrees `f00e`, `fd8e`, `2a26`, and `feae` were removed only after their recoverable integrated commits existed. Their four Codex tasks were archived.
 - Retained worktree `591a` and protected untracked `DOCS/archive/personal-project-evolution-research/` remain untouched.
 - Final owner resources were released: ports 5173, 5181–5184, and 5190 have no listener from this task.
-- This task makes no deployment-success claim. GitHub Actions/Pages status must be checked against the exact pushed revision separately.
+- Pages run `31452027267` for `a63d733` failed before build because the proxy test still referenced the pre-archive evidence path. The existing evidence was traced to `215bafe` and `d0ef4c3`; changing only the test path produced a fresh 180/180 local validation without changing evidence content or weakening assertions. A new exact-revision Pages run is still required.
 
 ## Next steps
 
-1. Produce the missing P2 solo evidence through its evidence workflow, then rerun `npm run validate`; do not create the file merely to satisfy four tests.
-2. Add Firefox/Edge and manual NVDA or equivalent assistive-technology coverage for the final integrated artifact.
-3. Run a small real-reader comprehension study for the R²/AUC/Passport boundaries; browser and proxy checks do not establish understanding.
-4. Use field evidence, not decorative scope expansion, to decide whether the next product increment should prioritize Atlas comparison guidance or public source-lineage inspection.
+1. Add Firefox/Edge and manual NVDA or equivalent assistive-technology coverage for the final integrated artifact.
+2. Run a small real-reader comprehension study for the R²/AUC/Passport boundaries; browser and proxy checks do not establish understanding.
+3. Use field evidence, not decorative scope expansion, to decide whether the next product increment should prioritize Atlas comparison guidance or public source-lineage inspection.

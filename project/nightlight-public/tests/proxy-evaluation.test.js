@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 
 const phaseRoot = new URL('../DOCS/archive/proxy-evidence-phase-20260809/', import.meta.url)
 const soloEvidenceUrl = new URL(
-  '../../../DOCS/active/p2-p3-solo-evidence-performance-20260810/p2-evidence.md',
+  '../../../DOCS/archive/p2-p3-solo-evidence-performance-20260810/p2-evidence.md',
   import.meta.url,
 )
 
