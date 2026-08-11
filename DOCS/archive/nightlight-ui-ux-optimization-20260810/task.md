@@ -42,7 +42,7 @@ Integrated commits: A `1061996`, B `683f454`, C `5dc247a`, D `d715f9d`. Integrat
 - Worktrees `f00e`, `fd8e`, `2a26`, and `feae` were removed only after their recoverable integrated commits existed. Their four Codex tasks were archived.
 - Retained worktree `591a` and protected untracked `DOCS/archive/personal-project-evolution-research/` remain untouched.
 - Final owner resources were released: ports 5173, 5181–5184, and 5190 have no listener from this task.
-- Pages run `31452027267` for `a63d733` failed before build because the proxy test still referenced the pre-archive evidence path. The existing evidence was traced to `215bafe` and `d0ef4c3`; changing only the test path produced a fresh 180/180 local validation without changing evidence content or weakening assertions. A new exact-revision Pages run is still required.
+- Pages run `31452027267` for `a63d733` failed before build because the proxy test still referenced the pre-archive evidence path. The existing evidence was traced to `215bafe` and `d0ef4c3`; changing only the test path produced 180/180 locally. Exact-revision run `31452320148` for `75e40a6` then passed build and deploy; its CI artifact, live manifest, and 11/11 served files matched by path, bytes, and SHA-256 with zero mismatch.
 
 ## Next steps
 
