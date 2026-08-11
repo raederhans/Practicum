@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
-import { collectManifestFiles, resolveRouteBoundaries } from './report-bundle.mjs'
+import {
+  assertNoExternalMapLibreCss,
+  collectManifestFiles,
+  resolveRouteBoundaries,
+} from './report-bundle.mjs'
 
 const createManifest = () => ({
   '_maplibre.js': {
@@ -54,5 +58,14 @@ describe('bundle route boundaries', () => {
     expect(() => resolveRouteBoundaries(manifest)).toThrow(
       'MapLibre leaked into the initial home-route payload',
     )
+  })
+
+  it('rejects an external MapLibre stylesheet in the application shell', () => {
+    expect(() => assertNoExternalMapLibreCss(`
+      <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+    `)).toThrow('External MapLibre CSS leaked into the application shell')
+
+    expect(() => assertNoExternalMapLibreCss('<link rel="stylesheet" href="/assets/index.css">'))
+      .not.toThrow()
   })
 })

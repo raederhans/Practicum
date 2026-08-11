@@ -93,7 +93,7 @@ describe('dashboard view regressions', () => {
     expect(source.match(/installMapInteractions\((?:map|replacementMap)\)/g)).toHaveLength(2)
     expect(source.match(/installOverviewInteractions\((?:map|replacementMap)\)/g)).toHaveLength(2)
     expect(source).toContain('async function tryAddEventLayers(ev, mapInstance = map)')
-    expect(source).toContain('if (!mapInstance || map !== mapInstance || !mapInstance.isStyleLoaded()) return false')
+    expect(source).toContain('if (!mapInstance || map !== mapInstance) return false')
     expect(source).toContain('tryAddEventLayers(event, replacementMap)')
 
     registrations.length = 0
@@ -159,5 +159,16 @@ describe('dashboard view regressions', () => {
 
     expect(source).toContain("map.on('error', handleMapError)")
     expect(unmount.indexOf('map = null')).toBeLessThan(unmount.indexOf('mapToRelease?.remove()'))
+  })
+
+  it('does not confuse in-flight overview sources with an unavailable map style', async () => {
+    const source = await readView('MapView.vue')
+    const addEventLayers = source.slice(
+      source.indexOf('async function addEventLayers'),
+      source.indexOf('// Skip if source already exists'),
+    )
+
+    expect(addEventLayers).toContain('if (!mapInstance || map !== mapInstance) return false')
+    expect(addEventLayers).not.toMatch(/if\s*\([^)]*isStyleLoaded/)
   })
 })

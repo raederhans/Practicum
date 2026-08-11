@@ -40,6 +40,13 @@ export function collectManifestFiles(manifest, roots) {
   return files
 }
 
+/** @param {string} indexHtml */
+export function assertNoExternalMapLibreCss(indexHtml) {
+  if (/<link\b[^>]*href=["']https?:\/\/[^"']*maplibre[^"']*\.css[^"']*["'][^>]*>/i.test(indexHtml)) {
+    throw new Error('External MapLibre CSS leaked into the application shell')
+  }
+}
+
 /** @param {ViteManifest} manifest */
 export function resolveRouteBoundaries(manifest) {
   const entryKey = Object.keys(manifest).find(key => manifest[key].isEntry)
@@ -94,6 +101,8 @@ async function measureFiles(distDirectory, files) {
 
 export async function createBundleReport(distDirectory = 'dist') {
   const absoluteDistDirectory = resolve(distDirectory)
+  const indexHtml = await readFile(resolve(absoluteDistDirectory, 'index.html'), 'utf8')
+  assertNoExternalMapLibreCss(indexHtml)
   const manifest = JSON.parse(await readFile(
     resolve(absoluteDistDirectory, '.vite/manifest.json'),
     'utf8',

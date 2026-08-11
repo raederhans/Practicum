@@ -26,6 +26,7 @@ describe('dashboard runtime performance signals', () => {
     expect(source).toMatch(/tryAddEventLayers[\s\S]*?detailReady\.value\s*=\s*true/)
     expect(source).toMatch(/replacementMap\.on\('load',[\s\S]*?mapReady\.value\s*=\s*true[\s\S]*?basemapRestored\.value\s*=\s*true/)
     expect(source).toMatch(/onUnmounted\([\s\S]*?resetMapPerformanceSignals/)
+    expect(source).toContain("import 'maplibre-gl/dist/maplibre-gl.css'")
   })
 
   it('keeps throttled preview, MapLibre-ready, external-settle, and p95 evidence distinct', async () => {

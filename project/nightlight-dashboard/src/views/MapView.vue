@@ -273,6 +273,7 @@ export function configureOverviewInteractions(
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import maplibregl from 'maplibre-gl'
+import 'maplibre-gl/dist/maplibre-gl.css'
 import RecoveryChart from '@/components/RecoveryChart.vue'
 import {
   EVENTS as RAW_EVENTS,
@@ -944,8 +945,11 @@ async function addEventLayers(ev, mapInstance) {
   const { probGeoJSON, facilityGeoJSON, bufferGeoJSON, probStats } = dataCache[ev.id]
 
   // Data fetching may finish after a basemap replacement. Never attach the
-  // result to a stale or not-yet-loaded MapLibre instance.
-  if (!mapInstance || map !== mapInstance || !mapInstance.isStyleLoaded()) return false
+  // result to a stale MapLibre instance. Do not use isStyleLoaded() here:
+  // overview sources may still be loading after the map load event, which
+  // makes that aggregate status false even though the current style accepts
+  // app-owned sources and layers.
+  if (!mapInstance || map !== mapInstance) return false
 
   // Skip if source already exists
   if (mapInstance.getSource(`prob-${ev.id}`)) return true
