@@ -12,9 +12,35 @@ const navigation = [
 
 const route = useRoute()
 const navigationElement = ref(null)
+const navigationToggleElement = ref(null)
 const mainElement = ref(null)
+const isMobileNavigationOpen = ref(false)
 const siteTitle = 'Nightlight Disaster Observatory'
 let enteredRoutePath = route.path
+
+function closeMobileNavigation() {
+  isMobileNavigationOpen.value = false
+}
+
+function toggleMobileNavigation() {
+  isMobileNavigationOpen.value = !isMobileNavigationOpen.value
+}
+
+function handleNavigationEscape(event) {
+  if (!isMobileNavigationOpen.value) return
+
+  event.stopPropagation()
+  closeMobileNavigation()
+  nextTick(() => navigationToggleElement.value?.focus({ preventScroll: true }))
+}
+
+function focusMainContent() {
+  const main = mainElement.value
+  if (!main) return
+
+  main.focus({ preventScroll: true })
+  main.scrollIntoView({ block: 'start' })
+}
 
 function revealActiveNavigation() {
   nextTick(() => {
@@ -36,7 +62,11 @@ function updateRouteContext() {
 }
 
 function focusRouteHeading() {
-  mainElement.value?.querySelector('[data-route-focus]')?.focus()
+  const heading = mainElement.value?.querySelector('[data-route-focus]')
+  if (!heading) return
+
+  heading.classList.add('focus-target--route')
+  heading.focus({ preventScroll: true })
 }
 
 function handleRouteEnter() {
@@ -48,13 +78,14 @@ function handleRouteEnter() {
 }
 
 watch(() => route.path, updateRouteContext, { flush: 'post' })
+watch(() => route.fullPath, () => closeMobileNavigation(), { flush: 'post' })
 onMounted(updateRouteContext)
 </script>
 
 <template>
-  <a class="skip-link" href="#main-content">Skip to research content</a>
+  <a class="skip-link" href="#main-content" @click.prevent="focusMainContent">Skip to research content</a>
   <div class="site-shell">
-    <header class="site-header">
+    <header class="site-header" @keydown.esc="handleNavigationEscape">
       <RouterLink class="identity" to="/" aria-label="Nightlight Disaster Observatory overview">
         <svg class="identity__mark" viewBox="0 0 48 48" aria-hidden="true">
           <circle cx="24" cy="24" r="17" />
@@ -67,7 +98,24 @@ onMounted(updateRouteContext)
         </span>
       </RouterLink>
 
-      <nav ref="navigationElement" class="site-nav" aria-label="Primary navigation">
+      <button
+        ref="navigationToggleElement"
+        class="mobile-nav-toggle"
+        type="button"
+        :aria-expanded="isMobileNavigationOpen ? 'true' : 'false'"
+        aria-controls="primary-navigation"
+        @click="toggleMobileNavigation"
+      >
+        {{ isMobileNavigationOpen ? 'Close menu' : 'Menu' }}
+      </button>
+
+      <nav
+        id="primary-navigation"
+        ref="navigationElement"
+        class="site-nav"
+        :class="{ 'site-nav--open': isMobileNavigationOpen }"
+        aria-label="Primary navigation"
+      >
         <RouterLink v-for="item in navigation" :key="item.to" :to="item.to" :aria-current="route.path === item.to ? 'page' : undefined">
           <span aria-hidden="true">{{ item.index }}</span>{{ item.label }}
         </RouterLink>

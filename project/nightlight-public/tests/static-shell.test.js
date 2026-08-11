@@ -90,7 +90,9 @@ describe('route-change focus contract', () => {
       '../src/views/CreditsView.vue',
     ]
 
-    expect(app).toMatch(/querySelector\(['"]\[data-route-focus\]['"]\)\?\.focus\(\)/)
+    expect(app).toMatch(/querySelector\(['"]\[data-route-focus\]['"]\)/)
+    expect(app).toMatch(/heading\.classList\.add\(['"]focus-target--route['"]\)/)
+    expect(app).toMatch(/heading\.focus\(\{ preventScroll: true \}\)/)
     for (const viewPath of viewPaths) {
       const view = await readFile(new URL(viewPath, import.meta.url), 'utf8')
       expect(view).toMatch(/<h1[^>]*class="focus-target"[^>]*data-route-focus[^>]*tabindex="-1">/)
@@ -121,10 +123,41 @@ describe('route-change focus contract', () => {
 
   it('preserves the Skip-link-first focus origin without scrolling a focusable route link into view', async () => {
     const app = await readFile(new URL('../src/App.vue', import.meta.url), 'utf8')
+    const navigationReveal = app.match(/function revealActiveNavigation\(\) \{([\s\S]*?)\n\}/)?.[1]
 
-    expect(app).toMatch(/<a class="skip-link" href="#main-content">/)
+    expect(app).toMatch(/<a class="skip-link" href="#main-content" @click\.prevent="focusMainContent">/)
     expect(app).toMatch(/navigation\.scrollLeft =/)
-    expect(app).not.toMatch(/scrollIntoView/)
+    expect(navigationReveal).toBeDefined()
+    expect(navigationReveal).not.toMatch(/scrollIntoView/)
+  })
+})
+
+describe('accessible shell navigation contract', () => {
+  it('keeps the hash route stable while Skip explicitly focuses and scrolls main content', async () => {
+    const app = await readFile(new URL('../src/App.vue', import.meta.url), 'utf8')
+    const skipHandler = app.match(/function focusMainContent\(\) \{([\s\S]*?)\n\}/)?.[1]
+    const routeFocusHandler = app.match(/function focusRouteHeading\(\) \{([\s\S]*?)\n\}/)?.[1]
+
+    expect(skipHandler).toBeDefined()
+    expect(skipHandler).toMatch(/main\.focus\(\{ preventScroll: true \}\)/)
+    expect(skipHandler).toMatch(/main\.scrollIntoView\(\{ block: 'start' \}\)/)
+    expect(skipHandler).not.toMatch(/(?:location|history|route|router)/)
+    expect(routeFocusHandler).toBeDefined()
+    expect(routeFocusHandler).toMatch(/focus\(\{ preventScroll: true \}\)/)
+    expect(routeFocusHandler).not.toMatch(/scrollIntoView|scrollTo/)
+  })
+
+  it('exposes a controllable mobile menu that closes on Escape and route changes', async () => {
+    const app = await readFile(new URL('../src/App.vue', import.meta.url), 'utf8')
+
+    expect(app).toMatch(/class="mobile-nav-toggle"/)
+    expect(app).toMatch(/:aria-expanded="isMobileNavigationOpen \? 'true' : 'false'"/)
+    expect(app).toMatch(/aria-controls="primary-navigation"/)
+    expect(app).toMatch(/id="primary-navigation"/)
+    expect(app).toMatch(/:class="\{ 'site-nav--open': isMobileNavigationOpen \}"/)
+    expect(app).toMatch(/@keydown\.esc="handleNavigationEscape"/)
+    expect(app).toMatch(/watch\(\(\) => route\.fullPath, \(\) => closeMobileNavigation\(\)/)
+    expect(app).toMatch(/:aria-current="route\.path === item\.to \? 'page' : undefined"/)
   })
 })
 
