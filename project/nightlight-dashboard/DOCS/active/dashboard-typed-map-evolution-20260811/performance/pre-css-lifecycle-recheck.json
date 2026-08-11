@@ -1,0 +1,1913 @@
+{
+  "schemaVersion": 2,
+  "measuredAt": "2026-08-11T07:56:12.615Z",
+  "targetKind": "dashboard",
+  "baseUrl": "http://127.0.0.1:54741/Practicum/",
+  "protocol": {
+    "requestedRunsPerScenario": 3,
+    "viewport": {
+      "width": 1365,
+      "height": 768
+    },
+    "devicePixelRatio": 1,
+    "cpuThrottleRate": 1,
+    "eventId": "uri-houston",
+    "routeCycles": 3,
+    "basemapSwitches": 5,
+    "failureProfile": "none",
+    "browserName": "chromium",
+    "browserVersion": "151.0.7922.34",
+    "cacheMethod": "CDP Network.clearBrowserCache; warm measurements follow one unmeasured warm-up",
+    "networkProfile": "none",
+    "measurementScope": "home",
+    "emulatedNetwork": null,
+    "quietWindowMs": 750,
+    "quietTimeoutMs": 15000,
+    "signalLimitations": {
+      "homeAttached": "DOM attachment of .hero__title",
+      "bodyAttached": "DOM attachment of body for non-equivalent deployment context only",
+      "mapCanvasAttached": "DOM attachment of .maplibregl-canvas; this is not MapLibre style load",
+      "mapReady": "data-map-ready=true set synchronously inside the active MapLibre load event handler",
+      "mapStyleReady": "same MapLibre style load boundary as mapReady, retained under an explicit name",
+      "mapOverviewReady": "overview source/layers and interactions installed after style load",
+      "mapDetailReady": "selected event sources/layers validated and installed; external tiles may still be settling",
+      "mapBasemapRestored": "replacement style plus cached app-owned layers and visibility restored",
+      "mapPreviewLoaded": "load completion of map_preview.png when the browser requests it; null means it was not fetched in the measured phase",
+      "networkQuiet": "No tracked HTTP(S) request in flight for the quiet window; third-party map traffic may affect it",
+      "scriptAttribution": "CDP task/script duration and Long Tasks are page-level, not per-chunk execution attribution"
+    }
+  },
+  "environment": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.7922.34 Safari/537.36",
+    "language": "zh-CN",
+    "timeZone": "Asia/Singapore",
+    "devicePixelRatio": 1
+  },
+  "deploymentInspection": null,
+  "samples": [
+    {
+      "scenario": "home-direct-cold",
+      "iteration": 1,
+      "cacheState": "cold",
+      "navigationKind": "direct",
+      "metrics": {
+        "navigation": {
+          "responseStartMs": 2,
+          "responseEndMs": 2.200000047683716,
+          "domInteractiveMs": 6.700000047683716,
+          "domContentLoadedMs": 74.70000004768372,
+          "loadEventEndMs": 104.39999997615814,
+          "transferSize": 886,
+          "encodedBodySize": 586,
+          "decodedBodySize": 1136
+        },
+        "signalMs": 81.70000004768372,
+        "signalName": "homeAttached",
+        "signals": {
+          "bodyAttachedMs": 6.5,
+          "homeAttachedMs": 81.70000004768372
+        },
+        "resources": {
+          "count": 6,
+          "transferSize": 69628,
+          "encodedBodySize": 68128,
+          "decodedBodySize": 292225,
+          "homeView": {
+            "name": "http://127.0.0.1:54741/Practicum/assets/HomeView-CS08oNhN.js",
+            "initiatorType": "script",
+            "startTimeMs": 74.39999997615814,
+            "durationMs": 3.600000023841858,
+            "responseStartMs": 77.89999997615814,
+            "responseEndMs": 78,
+            "transferSize": 3397,
+            "encodedBodySize": 3097,
+            "decodedBodySize": 7035
+          },
+          "mapView": null,
+          "maplibre": null,
+          "mapPreview": null,
+          "largestResources": [
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/index-DqYX-UYa.js",
+              "initiatorType": "script",
+              "startTimeMs": 5,
+              "durationMs": 5.300000071525574,
+              "responseStartMs": 7.800000071525574,
+              "responseEndMs": 10.300000071525574,
+              "transferSize": 59936,
+              "encodedBodySize": 59636,
+              "decodedBodySize": 250832
+            },
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/HomeView-CS08oNhN.js",
+              "initiatorType": "script",
+              "startTimeMs": 74.39999997615814,
+              "durationMs": 3.600000023841858,
+              "responseStartMs": 77.89999997615814,
+              "responseEndMs": 78,
+              "transferSize": 3397,
+              "encodedBodySize": 3097,
+              "decodedBodySize": 7035
+            },
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/index-wDXI4UG6.css",
+              "initiatorType": "link",
+              "startTimeMs": 5,
+              "durationMs": 2,
+              "responseStartMs": 6.800000071525574,
+              "responseEndMs": 7,
+              "transferSize": 2553,
+              "encodedBodySize": 2253,
+              "decodedBodySize": 8110
+            },
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/HomeView-BrBzco7q.css",
+              "initiatorType": "link",
+              "startTimeMs": 74.5,
+              "durationMs": 3.399999976158142,
+              "responseStartMs": 77.60000002384186,
+              "responseEndMs": 77.89999997615814,
+              "transferSize": 2400,
+              "encodedBodySize": 2100,
+              "decodedBodySize": 8887
+            },
+            {
+              "name": "https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Jost:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap",
+              "initiatorType": "link",
+              "startTimeMs": 4.899999976158142,
+              "durationMs": 12.200000047683716,
+              "responseStartMs": 16.800000071525574,
+              "responseEndMs": 17.100000023841858,
+              "transferSize": 1342,
+              "encodedBodySize": 1042,
+              "decodedBodySize": 17361
+            },
+            {
+              "name": "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css",
+              "initiatorType": "link",
+              "startTimeMs": 4.899999976158142,
+              "durationMs": 61.700000047683716,
+              "responseStartMs": 0,
+              "responseEndMs": 66.60000002384186,
+              "transferSize": 0,
+              "encodedBodySize": 0,
+              "decodedBodySize": 0
+            }
+          ],
+          "externalHosts": [
+            "fonts.googleapis.com",
+            "unpkg.com"
+          ]
+        },
+        "mainThread": {
+          "longTaskCount": 0,
+          "longTaskTotalMs": 0,
+          "maxLongTaskMs": 0,
+          "longTasks": [],
+          "longTaskUnsupported": false,
+          "taskDurationDeltaMs": 67.53899999999999,
+          "scriptDurationDeltaMs": 7.64
+        },
+        "mapRuntime": {
+          "canvasCount": 0,
+          "sourceCount": 0,
+          "layerCount": 0,
+          "styleReady": false,
+          "overviewReady": false,
+          "detailReady": false,
+          "basemapRestored": false
+        },
+        "documentTitle": "NightLight — Overview",
+        "url": "http://127.0.0.1:54741/Practicum/#/",
+        "memory": {
+          "before": {
+            "usedSize": 712376,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 336328,
+            "backingStorageSize": 255
+          },
+          "afterBeforeGc": {
+            "usedSize": 3793980,
+            "totalSize": 5619712,
+            "embedderHeapUsedSize": 2954488,
+            "backingStorageSize": 264413
+          },
+          "afterPostGc": {
+            "usedSize": 3069736,
+            "totalSize": 3784704,
+            "embedderHeapUsedSize": 1586344,
+            "backingStorageSize": 262309
+          },
+          "usedDeltaBeforeGc": 3081604,
+          "usedDeltaPostGc": 2357360
+        },
+        "workerCount": 0,
+        "networkQuiet": {
+          "durationMs": 953,
+          "timedOut": false,
+          "failedUrls": []
+        }
+      }
+    },
+    {
+      "scenario": "home-direct-warm",
+      "iteration": 1,
+      "cacheState": "warm",
+      "navigationKind": "direct",
+      "metrics": {
+        "navigation": {
+          "responseStartMs": 1.5,
+          "responseEndMs": 1.7000000476837158,
+          "domInteractiveMs": 7.100000023841858,
+          "domContentLoadedMs": 18.700000047683716,
+          "loadEventEndMs": 20.899999976158142,
+          "transferSize": 300,
+          "encodedBodySize": 586,
+          "decodedBodySize": 1136
+        },
+        "signalMs": 24.399999976158142,
+        "signalName": "homeAttached",
+        "signals": {
+          "bodyAttachedMs": 8,
+          "homeAttachedMs": 24.399999976158142
+        },
+        "resources": {
+          "count": 11,
+          "transferSize": 1200,
+          "encodedBodySize": 155960,
+          "decodedBodySize": 380057,
+          "homeView": {
+            "name": "http://127.0.0.1:54741/Practicum/assets/HomeView-CS08oNhN.js",
+            "initiatorType": "script",
+            "startTimeMs": 18.399999976158142,
+            "durationMs": 1.4000000953674316,
+            "responseStartMs": 19.5,
+            "responseEndMs": 19.800000071525574,
+            "transferSize": 300,
+            "encodedBodySize": 3097,
+            "decodedBodySize": 7035
+          },
+          "mapView": null,
+          "maplibre": null,
+          "mapPreview": null,
+          "largestResources": [
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/index-DqYX-UYa.js",
+              "initiatorType": "script",
+              "startTimeMs": 4.5,
+              "durationMs": 1.600000023841858,
+              "responseStartMs": 5.399999976158142,
+              "responseEndMs": 6.100000023841858,
+              "transferSize": 300,
+              "encodedBodySize": 59636,
+              "decodedBodySize": 250832
+            },
+            {
+              "name": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwg.woff2",
+              "initiatorType": "css",
+              "startTimeMs": 8.700000047683716,
+              "durationMs": 0,
+              "responseStartMs": 8.700000047683716,
+              "responseEndMs": 8.700000047683716,
+              "transferSize": 0,
+              "encodedBodySize": 31432,
+              "decodedBodySize": 31432
+            },
+            {
+              "name": "https://fonts.gstatic.com/s/jost/v20/92zatBhPNqw73oTd4g.woff2",
+              "initiatorType": "css",
+              "startTimeMs": 8.800000071525574,
+              "durationMs": 0,
+              "responseStartMs": 8.800000071525574,
+              "responseEndMs": 8.800000071525574,
+              "transferSize": 0,
+              "encodedBodySize": 26576,
+              "decodedBodySize": 26576
+            },
+            {
+              "name": "https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkeQI51R5_F.woff2",
+              "initiatorType": "css",
+              "startTimeMs": 8.600000023841858,
+              "durationMs": 0,
+              "responseStartMs": 8.600000023841858,
+              "responseEndMs": 8.600000023841858,
+              "transferSize": 0,
+              "encodedBodySize": 9968,
+              "decodedBodySize": 9968
+            },
+            {
+              "name": "https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkebIl1R5_F.woff2",
+              "initiatorType": "css",
+              "startTimeMs": 8.5,
+              "durationMs": 0,
+              "responseStartMs": 8.5,
+              "responseEndMs": 8.5,
+              "transferSize": 0,
+              "encodedBodySize": 9956,
+              "decodedBodySize": 9956
+            },
+            {
+              "name": "https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkeJI91R5_F.woff2",
+              "initiatorType": "css",
+              "startTimeMs": 8.600000023841858,
+              "durationMs": 0,
+              "responseStartMs": 8.600000023841858,
+              "responseEndMs": 8.600000023841858,
+              "transferSize": 0,
+              "encodedBodySize": 9900,
+              "decodedBodySize": 9900
+            },
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/HomeView-CS08oNhN.js",
+              "initiatorType": "script",
+              "startTimeMs": 18.399999976158142,
+              "durationMs": 1.4000000953674316,
+              "responseStartMs": 19.5,
+              "responseEndMs": 19.800000071525574,
+              "transferSize": 300,
+              "encodedBodySize": 3097,
+              "decodedBodySize": 7035
+            },
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/index-wDXI4UG6.css",
+              "initiatorType": "link",
+              "startTimeMs": 4.600000023841858,
+              "durationMs": 1.2999999523162842,
+              "responseStartMs": 5.800000071525574,
+              "responseEndMs": 5.899999976158142,
+              "transferSize": 300,
+              "encodedBodySize": 2253,
+              "decodedBodySize": 8110
+            },
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/HomeView-BrBzco7q.css",
+              "initiatorType": "link",
+              "startTimeMs": 18.5,
+              "durationMs": 1.600000023841858,
+              "responseStartMs": 19.899999976158142,
+              "responseEndMs": 20.100000023841858,
+              "transferSize": 300,
+              "encodedBodySize": 2100,
+              "decodedBodySize": 8887
+            },
+            {
+              "name": "https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Jost:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap",
+              "initiatorType": "link",
+              "startTimeMs": 4.399999976158142,
+              "durationMs": 0,
+              "responseStartMs": 4.399999976158142,
+              "responseEndMs": 4.399999976158142,
+              "transferSize": 0,
+              "encodedBodySize": 1042,
+              "decodedBodySize": 17361
+            },
+            {
+              "name": "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css",
+              "initiatorType": "link",
+              "startTimeMs": 4.399999976158142,
+              "durationMs": 0,
+              "responseStartMs": 0,
+              "responseEndMs": 4.399999976158142,
+              "transferSize": 0,
+              "encodedBodySize": 0,
+              "decodedBodySize": 0
+            }
+          ],
+          "externalHosts": [
+            "fonts.googleapis.com",
+            "fonts.gstatic.com",
+            "unpkg.com"
+          ]
+        },
+        "mainThread": {
+          "longTaskCount": 0,
+          "longTaskTotalMs": 0,
+          "maxLongTaskMs": 0,
+          "longTasks": [],
+          "longTaskUnsupported": false,
+          "taskDurationDeltaMs": 66.945,
+          "scriptDurationDeltaMs": 6.941
+        },
+        "mapRuntime": {
+          "canvasCount": 0,
+          "sourceCount": 0,
+          "layerCount": 0,
+          "styleReady": false,
+          "overviewReady": false,
+          "detailReady": false,
+          "basemapRestored": false
+        },
+        "documentTitle": "NightLight — Overview",
+        "url": "http://127.0.0.1:54741/Practicum/#/",
+        "memory": {
+          "before": {
+            "usedSize": 838176,
+            "totalSize": 1835008,
+            "embedderHeapUsedSize": 508256,
+            "backingStorageSize": 260
+          },
+          "afterBeforeGc": {
+            "usedSize": 3805656,
+            "totalSize": 5881856,
+            "embedderHeapUsedSize": 2305568,
+            "backingStorageSize": 264852
+          },
+          "afterPostGc": {
+            "usedSize": 3071064,
+            "totalSize": 3522560,
+            "embedderHeapUsedSize": 1117256,
+            "backingStorageSize": 262303
+          },
+          "usedDeltaBeforeGc": 2967480,
+          "usedDeltaPostGc": 2232888
+        },
+        "workerCount": 0,
+        "networkQuiet": {
+          "durationMs": 779,
+          "timedOut": false,
+          "failedUrls": []
+        }
+      }
+    },
+    {
+      "scenario": "home-direct-cold",
+      "iteration": 2,
+      "cacheState": "cold",
+      "navigationKind": "direct",
+      "metrics": {
+        "navigation": {
+          "responseStartMs": 3.600000023841858,
+          "responseEndMs": 4,
+          "domInteractiveMs": 9.900000095367432,
+          "domContentLoadedMs": 75.30000007152557,
+          "loadEventEndMs": 98.70000004768372,
+          "transferSize": 886,
+          "encodedBodySize": 586,
+          "decodedBodySize": 1136
+        },
+        "signalMs": 82.60000002384186,
+        "signalName": "homeAttached",
+        "signals": {
+          "bodyAttachedMs": 9.700000047683716,
+          "homeAttachedMs": 82.60000002384186
+        },
+        "resources": {
+          "count": 6,
+          "transferSize": 69628,
+          "encodedBodySize": 68128,
+          "decodedBodySize": 292225,
+          "homeView": {
+            "name": "http://127.0.0.1:54741/Practicum/assets/HomeView-CS08oNhN.js",
+            "initiatorType": "script",
+            "startTimeMs": 75.10000002384186,
+            "durationMs": 3.3000000715255737,
+            "responseStartMs": 78,
+            "responseEndMs": 78.40000009536743,
+            "transferSize": 3397,
+            "encodedBodySize": 3097,
+            "decodedBodySize": 7035
+          },
+          "mapView": null,
+          "maplibre": null,
+          "mapPreview": null,
+          "largestResources": [
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/index-DqYX-UYa.js",
+              "initiatorType": "script",
+              "startTimeMs": 7.900000095367432,
+              "durationMs": 6.099999904632568,
+              "responseStartMs": 10.600000023841858,
+              "responseEndMs": 14,
+              "transferSize": 59936,
+              "encodedBodySize": 59636,
+              "decodedBodySize": 250832
+            },
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/HomeView-CS08oNhN.js",
+              "initiatorType": "script",
+              "startTimeMs": 75.10000002384186,
+              "durationMs": 3.3000000715255737,
+              "responseStartMs": 78,
+              "responseEndMs": 78.40000009536743,
+              "transferSize": 3397,
+              "encodedBodySize": 3097,
+              "decodedBodySize": 7035
+            },
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/index-wDXI4UG6.css",
+              "initiatorType": "link",
+              "startTimeMs": 7.900000095367432,
+              "durationMs": 1.899999976158142,
+              "responseStartMs": 9.600000023841858,
+              "responseEndMs": 9.800000071525574,
+              "transferSize": 2553,
+              "encodedBodySize": 2253,
+              "decodedBodySize": 8110
+            },
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/HomeView-BrBzco7q.css",
+              "initiatorType": "link",
+              "startTimeMs": 75.10000002384186,
+              "durationMs": 3.200000047683716,
+              "responseStartMs": 78.20000004768372,
+              "responseEndMs": 78.30000007152557,
+              "transferSize": 2400,
+              "encodedBodySize": 2100,
+              "decodedBodySize": 8887
+            },
+            {
+              "name": "https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Jost:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap",
+              "initiatorType": "link",
+              "startTimeMs": 7.800000071525574,
+              "durationMs": 10,
+              "responseStartMs": 17.5,
+              "responseEndMs": 17.800000071525574,
+              "transferSize": 1342,
+              "encodedBodySize": 1042,
+              "decodedBodySize": 17361
+            },
+            {
+              "name": "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css",
+              "initiatorType": "link",
+              "startTimeMs": 7.900000095367432,
+              "durationMs": 59.199999928474426,
+              "responseStartMs": 0,
+              "responseEndMs": 67.10000002384186,
+              "transferSize": 0,
+              "encodedBodySize": 0,
+              "decodedBodySize": 0
+            }
+          ],
+          "externalHosts": [
+            "fonts.googleapis.com",
+            "unpkg.com"
+          ]
+        },
+        "mainThread": {
+          "longTaskCount": 0,
+          "longTaskTotalMs": 0,
+          "maxLongTaskMs": 0,
+          "longTasks": [],
+          "longTaskUnsupported": false,
+          "taskDurationDeltaMs": 67.156,
+          "scriptDurationDeltaMs": 8.158
+        },
+        "mapRuntime": {
+          "canvasCount": 0,
+          "sourceCount": 0,
+          "layerCount": 0,
+          "styleReady": false,
+          "overviewReady": false,
+          "detailReady": false,
+          "basemapRestored": false
+        },
+        "documentTitle": "NightLight — Overview",
+        "url": "http://127.0.0.1:54741/Practicum/#/",
+        "memory": {
+          "before": {
+            "usedSize": 836468,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 731784,
+            "backingStorageSize": 260
+          },
+          "afterBeforeGc": {
+            "usedSize": 3811880,
+            "totalSize": 6406144,
+            "embedderHeapUsedSize": 2945264,
+            "backingStorageSize": 264407
+          },
+          "afterPostGc": {
+            "usedSize": 3070612,
+            "totalSize": 3522560,
+            "embedderHeapUsedSize": 1545288,
+            "backingStorageSize": 262303
+          },
+          "usedDeltaBeforeGc": 2975412,
+          "usedDeltaPostGc": 2234144
+        },
+        "workerCount": 0,
+        "networkQuiet": {
+          "durationMs": 863,
+          "timedOut": false,
+          "failedUrls": []
+        }
+      }
+    },
+    {
+      "scenario": "home-direct-warm",
+      "iteration": 2,
+      "cacheState": "warm",
+      "navigationKind": "direct",
+      "metrics": {
+        "navigation": {
+          "responseStartMs": 2.100000023841858,
+          "responseEndMs": 2.600000023841858,
+          "domInteractiveMs": 6.399999976158142,
+          "domContentLoadedMs": 19,
+          "loadEventEndMs": 21.800000071525574,
+          "transferSize": 300,
+          "encodedBodySize": 586,
+          "decodedBodySize": 1136
+        },
+        "signalMs": 26,
+        "signalName": "homeAttached",
+        "signals": {
+          "bodyAttachedMs": 6.5,
+          "homeAttachedMs": 26
+        },
+        "resources": {
+          "count": 11,
+          "transferSize": 1200,
+          "encodedBodySize": 155960,
+          "decodedBodySize": 380057,
+          "homeView": {
+            "name": "http://127.0.0.1:54741/Practicum/assets/HomeView-CS08oNhN.js",
+            "initiatorType": "script",
+            "startTimeMs": 18.700000047683716,
+            "durationMs": 1.5,
+            "responseStartMs": 20,
+            "responseEndMs": 20.200000047683716,
+            "transferSize": 300,
+            "encodedBodySize": 3097,
+            "decodedBodySize": 7035
+          },
+          "mapView": null,
+          "maplibre": null,
+          "mapPreview": null,
+          "largestResources": [
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/index-DqYX-UYa.js",
+              "initiatorType": "script",
+              "startTimeMs": 4.700000047683716,
+              "durationMs": 1.5,
+              "responseStartMs": 5.700000047683716,
+              "responseEndMs": 6.200000047683716,
+              "transferSize": 300,
+              "encodedBodySize": 59636,
+              "decodedBodySize": 250832
+            },
+            {
+              "name": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwg.woff2",
+              "initiatorType": "css",
+              "startTimeMs": 8.300000071525574,
+              "durationMs": 0,
+              "responseStartMs": 8.300000071525574,
+              "responseEndMs": 8.300000071525574,
+              "transferSize": 0,
+              "encodedBodySize": 31432,
+              "decodedBodySize": 31432
+            },
+            {
+              "name": "https://fonts.gstatic.com/s/jost/v20/92zatBhPNqw73oTd4g.woff2",
+              "initiatorType": "css",
+              "startTimeMs": 8.300000071525574,
+              "durationMs": 0,
+              "responseStartMs": 8.300000071525574,
+              "responseEndMs": 8.300000071525574,
+              "transferSize": 0,
+              "encodedBodySize": 26576,
+              "decodedBodySize": 26576
+            },
+            {
+              "name": "https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkeQI51R5_F.woff2",
+              "initiatorType": "css",
+              "startTimeMs": 8.200000047683716,
+              "durationMs": 0,
+              "responseStartMs": 8.200000047683716,
+              "responseEndMs": 8.200000047683716,
+              "transferSize": 0,
+              "encodedBodySize": 9968,
+              "decodedBodySize": 9968
+            },
+            {
+              "name": "https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkebIl1R5_F.woff2",
+              "initiatorType": "css",
+              "startTimeMs": 8.100000023841858,
+              "durationMs": 0,
+              "responseStartMs": 8.100000023841858,
+              "responseEndMs": 8.100000023841858,
+              "transferSize": 0,
+              "encodedBodySize": 9956,
+              "decodedBodySize": 9956
+            },
+            {
+              "name": "https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkeJI91R5_F.woff2",
+              "initiatorType": "css",
+              "startTimeMs": 8.200000047683716,
+              "durationMs": 0,
+              "responseStartMs": 8.200000047683716,
+              "responseEndMs": 8.200000047683716,
+              "transferSize": 0,
+              "encodedBodySize": 9900,
+              "decodedBodySize": 9900
+            },
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/HomeView-CS08oNhN.js",
+              "initiatorType": "script",
+              "startTimeMs": 18.700000047683716,
+              "durationMs": 1.5,
+              "responseStartMs": 20,
+              "responseEndMs": 20.200000047683716,
+              "transferSize": 300,
+              "encodedBodySize": 3097,
+              "decodedBodySize": 7035
+            },
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/index-wDXI4UG6.css",
+              "initiatorType": "link",
+              "startTimeMs": 4.800000071525574,
+              "durationMs": 1.5999999046325684,
+              "responseStartMs": 6.200000047683716,
+              "responseEndMs": 6.399999976158142,
+              "transferSize": 300,
+              "encodedBodySize": 2253,
+              "decodedBodySize": 8110
+            },
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/HomeView-BrBzco7q.css",
+              "initiatorType": "link",
+              "startTimeMs": 18.800000071525574,
+              "durationMs": 1.7999999523162842,
+              "responseStartMs": 20.399999976158142,
+              "responseEndMs": 20.600000023841858,
+              "transferSize": 300,
+              "encodedBodySize": 2100,
+              "decodedBodySize": 8887
+            },
+            {
+              "name": "https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Jost:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap",
+              "initiatorType": "link",
+              "startTimeMs": 4.600000023841858,
+              "durationMs": 0,
+              "responseStartMs": 4.600000023841858,
+              "responseEndMs": 4.600000023841858,
+              "transferSize": 0,
+              "encodedBodySize": 1042,
+              "decodedBodySize": 17361
+            },
+            {
+              "name": "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css",
+              "initiatorType": "link",
+              "startTimeMs": 4.700000047683716,
+              "durationMs": 0,
+              "responseStartMs": 0,
+              "responseEndMs": 4.700000047683716,
+              "transferSize": 0,
+              "encodedBodySize": 0,
+              "decodedBodySize": 0
+            }
+          ],
+          "externalHosts": [
+            "fonts.googleapis.com",
+            "fonts.gstatic.com",
+            "unpkg.com"
+          ]
+        },
+        "mainThread": {
+          "longTaskCount": 0,
+          "longTaskTotalMs": 0,
+          "maxLongTaskMs": 0,
+          "longTasks": [],
+          "longTaskUnsupported": false,
+          "taskDurationDeltaMs": 58.206,
+          "scriptDurationDeltaMs": 7.086
+        },
+        "mapRuntime": {
+          "canvasCount": 0,
+          "sourceCount": 0,
+          "layerCount": 0,
+          "styleReady": false,
+          "overviewReady": false,
+          "detailReady": false,
+          "basemapRestored": false
+        },
+        "documentTitle": "NightLight — Overview",
+        "url": "http://127.0.0.1:54741/Practicum/#/",
+        "memory": {
+          "before": {
+            "usedSize": 839088,
+            "totalSize": 2097152,
+            "embedderHeapUsedSize": 508256,
+            "backingStorageSize": 260
+          },
+          "afterBeforeGc": {
+            "usedSize": 3821216,
+            "totalSize": 5619712,
+            "embedderHeapUsedSize": 2301160,
+            "backingStorageSize": 264852
+          },
+          "afterPostGc": {
+            "usedSize": 3071064,
+            "totalSize": 3784704,
+            "embedderHeapUsedSize": 1116808,
+            "backingStorageSize": 262303
+          },
+          "usedDeltaBeforeGc": 2982128,
+          "usedDeltaPostGc": 2231976
+        },
+        "workerCount": 0,
+        "networkQuiet": {
+          "durationMs": 777,
+          "timedOut": false,
+          "failedUrls": []
+        }
+      }
+    },
+    {
+      "scenario": "home-direct-cold",
+      "iteration": 3,
+      "cacheState": "cold",
+      "navigationKind": "direct",
+      "metrics": {
+        "navigation": {
+          "responseStartMs": 2.5,
+          "responseEndMs": 2.799999952316284,
+          "domInteractiveMs": 7,
+          "domContentLoadedMs": 75.10000002384186,
+          "loadEventEndMs": 101,
+          "transferSize": 886,
+          "encodedBodySize": 586,
+          "decodedBodySize": 1136
+        },
+        "signalMs": 82.69999992847443,
+        "signalName": "homeAttached",
+        "signals": {
+          "bodyAttachedMs": 6.799999952316284,
+          "homeAttachedMs": 82.69999992847443
+        },
+        "resources": {
+          "count": 6,
+          "transferSize": 69628,
+          "encodedBodySize": 68128,
+          "decodedBodySize": 292225,
+          "homeView": {
+            "name": "http://127.0.0.1:54741/Practicum/assets/HomeView-CS08oNhN.js",
+            "initiatorType": "script",
+            "startTimeMs": 74.79999995231628,
+            "durationMs": 4,
+            "responseStartMs": 78,
+            "responseEndMs": 78.79999995231628,
+            "transferSize": 3397,
+            "encodedBodySize": 3097,
+            "decodedBodySize": 7035
+          },
+          "mapView": null,
+          "maplibre": null,
+          "mapPreview": null,
+          "largestResources": [
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/index-DqYX-UYa.js",
+              "initiatorType": "script",
+              "startTimeMs": 5.399999976158142,
+              "durationMs": 5.399999976158142,
+              "responseStartMs": 8,
+              "responseEndMs": 10.799999952316284,
+              "transferSize": 59936,
+              "encodedBodySize": 59636,
+              "decodedBodySize": 250832
+            },
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/HomeView-CS08oNhN.js",
+              "initiatorType": "script",
+              "startTimeMs": 74.79999995231628,
+              "durationMs": 4,
+              "responseStartMs": 78,
+              "responseEndMs": 78.79999995231628,
+              "transferSize": 3397,
+              "encodedBodySize": 3097,
+              "decodedBodySize": 7035
+            },
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/index-wDXI4UG6.css",
+              "initiatorType": "link",
+              "startTimeMs": 5.399999976158142,
+              "durationMs": 2.200000047683716,
+              "responseStartMs": 7,
+              "responseEndMs": 7.600000023841858,
+              "transferSize": 2553,
+              "encodedBodySize": 2253,
+              "decodedBodySize": 8110
+            },
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/HomeView-BrBzco7q.css",
+              "initiatorType": "link",
+              "startTimeMs": 74.89999997615814,
+              "durationMs": 3.600000023841858,
+              "responseStartMs": 78.39999997615814,
+              "responseEndMs": 78.5,
+              "transferSize": 2400,
+              "encodedBodySize": 2100,
+              "decodedBodySize": 8887
+            },
+            {
+              "name": "https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Jost:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap",
+              "initiatorType": "link",
+              "startTimeMs": 5.299999952316284,
+              "durationMs": 9.399999976158142,
+              "responseStartMs": 14.399999976158142,
+              "responseEndMs": 14.699999928474426,
+              "transferSize": 1342,
+              "encodedBodySize": 1042,
+              "decodedBodySize": 17361
+            },
+            {
+              "name": "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css",
+              "initiatorType": "link",
+              "startTimeMs": 5.399999976158142,
+              "durationMs": 60.5,
+              "responseStartMs": 0,
+              "responseEndMs": 65.89999997615814,
+              "transferSize": 0,
+              "encodedBodySize": 0,
+              "decodedBodySize": 0
+            }
+          ],
+          "externalHosts": [
+            "fonts.googleapis.com",
+            "unpkg.com"
+          ]
+        },
+        "mainThread": {
+          "longTaskCount": 0,
+          "longTaskTotalMs": 0,
+          "maxLongTaskMs": 0,
+          "longTasks": [],
+          "longTaskUnsupported": false,
+          "taskDurationDeltaMs": 62.82600000000001,
+          "scriptDurationDeltaMs": 7.455
+        },
+        "mapRuntime": {
+          "canvasCount": 0,
+          "sourceCount": 0,
+          "layerCount": 0,
+          "styleReady": false,
+          "overviewReady": false,
+          "detailReady": false,
+          "basemapRestored": false
+        },
+        "documentTitle": "NightLight — Overview",
+        "url": "http://127.0.0.1:54741/Practicum/#/",
+        "memory": {
+          "before": {
+            "usedSize": 836468,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 823856,
+            "backingStorageSize": 260
+          },
+          "afterBeforeGc": {
+            "usedSize": 3770444,
+            "totalSize": 6406144,
+            "embedderHeapUsedSize": 2964440,
+            "backingStorageSize": 264407
+          },
+          "afterPostGc": {
+            "usedSize": 3076216,
+            "totalSize": 3522560,
+            "embedderHeapUsedSize": 1101880,
+            "backingStorageSize": 262303
+          },
+          "usedDeltaBeforeGc": 2933976,
+          "usedDeltaPostGc": 2239748
+        },
+        "workerCount": 0,
+        "networkQuiet": {
+          "durationMs": 857,
+          "timedOut": false,
+          "failedUrls": []
+        }
+      }
+    },
+    {
+      "scenario": "home-direct-warm",
+      "iteration": 3,
+      "cacheState": "warm",
+      "navigationKind": "direct",
+      "metrics": {
+        "navigation": {
+          "responseStartMs": 2.0999999046325684,
+          "responseEndMs": 2.1999999284744263,
+          "domInteractiveMs": 6.099999904632568,
+          "domContentLoadedMs": 19.799999952316284,
+          "loadEventEndMs": 21.699999928474426,
+          "transferSize": 300,
+          "encodedBodySize": 586,
+          "decodedBodySize": 1136
+        },
+        "signalMs": 25,
+        "signalName": "homeAttached",
+        "signals": {
+          "bodyAttachedMs": 6.199999928474426,
+          "homeAttachedMs": 25
+        },
+        "resources": {
+          "count": 11,
+          "transferSize": 1200,
+          "encodedBodySize": 155960,
+          "decodedBodySize": 380057,
+          "homeView": {
+            "name": "http://127.0.0.1:54741/Practicum/assets/HomeView-CS08oNhN.js",
+            "initiatorType": "script",
+            "startTimeMs": 19.5,
+            "durationMs": 1.399999976158142,
+            "responseStartMs": 20.59999990463257,
+            "responseEndMs": 20.899999976158142,
+            "transferSize": 300,
+            "encodedBodySize": 3097,
+            "decodedBodySize": 7035
+          },
+          "mapView": null,
+          "maplibre": null,
+          "mapPreview": null,
+          "largestResources": [
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/index-DqYX-UYa.js",
+              "initiatorType": "script",
+              "startTimeMs": 4.599999904632568,
+              "durationMs": 1.4000000953674316,
+              "responseStartMs": 5.399999976158142,
+              "responseEndMs": 6,
+              "transferSize": 300,
+              "encodedBodySize": 59636,
+              "decodedBodySize": 250832
+            },
+            {
+              "name": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwg.woff2",
+              "initiatorType": "css",
+              "startTimeMs": 8,
+              "durationMs": 0,
+              "responseStartMs": 8,
+              "responseEndMs": 8,
+              "transferSize": 0,
+              "encodedBodySize": 31432,
+              "decodedBodySize": 31432
+            },
+            {
+              "name": "https://fonts.gstatic.com/s/jost/v20/92zatBhPNqw73oTd4g.woff2",
+              "initiatorType": "css",
+              "startTimeMs": 8,
+              "durationMs": 0,
+              "responseStartMs": 8,
+              "responseEndMs": 8,
+              "transferSize": 0,
+              "encodedBodySize": 26576,
+              "decodedBodySize": 26576
+            },
+            {
+              "name": "https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkeQI51R5_F.woff2",
+              "initiatorType": "css",
+              "startTimeMs": 7.799999952316284,
+              "durationMs": 0,
+              "responseStartMs": 7.799999952316284,
+              "responseEndMs": 7.799999952316284,
+              "transferSize": 0,
+              "encodedBodySize": 9968,
+              "decodedBodySize": 9968
+            },
+            {
+              "name": "https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkebIl1R5_F.woff2",
+              "initiatorType": "css",
+              "startTimeMs": 7.699999928474426,
+              "durationMs": 0,
+              "responseStartMs": 7.699999928474426,
+              "responseEndMs": 7.699999928474426,
+              "transferSize": 0,
+              "encodedBodySize": 9956,
+              "decodedBodySize": 9956
+            },
+            {
+              "name": "https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkeJI91R5_F.woff2",
+              "initiatorType": "css",
+              "startTimeMs": 7.899999976158142,
+              "durationMs": 0,
+              "responseStartMs": 7.899999976158142,
+              "responseEndMs": 7.899999976158142,
+              "transferSize": 0,
+              "encodedBodySize": 9900,
+              "decodedBodySize": 9900
+            },
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/HomeView-CS08oNhN.js",
+              "initiatorType": "script",
+              "startTimeMs": 19.5,
+              "durationMs": 1.399999976158142,
+              "responseStartMs": 20.59999990463257,
+              "responseEndMs": 20.899999976158142,
+              "transferSize": 300,
+              "encodedBodySize": 3097,
+              "decodedBodySize": 7035
+            },
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/index-wDXI4UG6.css",
+              "initiatorType": "link",
+              "startTimeMs": 4.699999928474426,
+              "durationMs": 1.2000000476837158,
+              "responseStartMs": 5.799999952316284,
+              "responseEndMs": 5.899999976158142,
+              "transferSize": 300,
+              "encodedBodySize": 2253,
+              "decodedBodySize": 8110
+            },
+            {
+              "name": "http://127.0.0.1:54741/Practicum/assets/HomeView-BrBzco7q.css",
+              "initiatorType": "link",
+              "startTimeMs": 19.59999990463257,
+              "durationMs": 1.5,
+              "responseStartMs": 21.09999990463257,
+              "responseEndMs": 21.09999990463257,
+              "transferSize": 300,
+              "encodedBodySize": 2100,
+              "decodedBodySize": 8887
+            },
+            {
+              "name": "https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Jost:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap",
+              "initiatorType": "link",
+              "startTimeMs": 4.5,
+              "durationMs": 0,
+              "responseStartMs": 4.5,
+              "responseEndMs": 4.5,
+              "transferSize": 0,
+              "encodedBodySize": 1042,
+              "decodedBodySize": 17361
+            },
+            {
+              "name": "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css",
+              "initiatorType": "link",
+              "startTimeMs": 4.599999904632568,
+              "durationMs": 0,
+              "responseStartMs": 0,
+              "responseEndMs": 4.599999904632568,
+              "transferSize": 0,
+              "encodedBodySize": 0,
+              "decodedBodySize": 0
+            }
+          ],
+          "externalHosts": [
+            "fonts.googleapis.com",
+            "fonts.gstatic.com",
+            "unpkg.com"
+          ]
+        },
+        "mainThread": {
+          "longTaskCount": 0,
+          "longTaskTotalMs": 0,
+          "maxLongTaskMs": 0,
+          "longTasks": [],
+          "longTaskUnsupported": false,
+          "taskDurationDeltaMs": 56.001000000000005,
+          "scriptDurationDeltaMs": 6.760000000000001
+        },
+        "mapRuntime": {
+          "canvasCount": 0,
+          "sourceCount": 0,
+          "layerCount": 0,
+          "styleReady": false,
+          "overviewReady": false,
+          "detailReady": false,
+          "basemapRestored": false
+        },
+        "documentTitle": "NightLight — Overview",
+        "url": "http://127.0.0.1:54741/Practicum/#/",
+        "memory": {
+          "before": {
+            "usedSize": 839088,
+            "totalSize": 2097152,
+            "embedderHeapUsedSize": 508256,
+            "backingStorageSize": 260
+          },
+          "afterBeforeGc": {
+            "usedSize": 3819900,
+            "totalSize": 6144000,
+            "embedderHeapUsedSize": 2301448,
+            "backingStorageSize": 264852
+          },
+          "afterPostGc": {
+            "usedSize": 3071064,
+            "totalSize": 3260416,
+            "embedderHeapUsedSize": 1117288,
+            "backingStorageSize": 262303
+          },
+          "usedDeltaBeforeGc": 2980812,
+          "usedDeltaPostGc": 2231976
+        },
+        "workerCount": 0,
+        "networkQuiet": {
+          "durationMs": 793,
+          "timedOut": false,
+          "failedUrls": []
+        }
+      }
+    }
+  ],
+  "summaries": {
+    "home-direct-cold": {
+      "successfulSamples": 3,
+      "networkQuietTimeouts": 0,
+      "metrics": {
+        "navigation.responseStartMs": {
+          "count": 3,
+          "median": 2.5,
+          "p95": 3.600000023841858,
+          "min": 2,
+          "max": 3.600000023841858,
+          "p25": 2.25,
+          "p75": 3.050000011920929,
+          "iqr": 0.800000011920929
+        },
+        "navigation.responseEndMs": {
+          "count": 3,
+          "median": 2.799999952316284,
+          "p95": 4,
+          "min": 2.200000047683716,
+          "max": 4,
+          "p25": 2.5,
+          "p75": 3.399999976158142,
+          "iqr": 0.8999999761581421
+        },
+        "navigation.domInteractiveMs": {
+          "count": 3,
+          "median": 7,
+          "p95": 9.900000095367432,
+          "min": 6.700000047683716,
+          "max": 9.900000095367432,
+          "p25": 6.850000023841858,
+          "p75": 8.450000047683716,
+          "iqr": 1.600000023841858
+        },
+        "navigation.domContentLoadedMs": {
+          "count": 3,
+          "median": 75.10000002384186,
+          "p95": 75.30000007152557,
+          "min": 74.70000004768372,
+          "max": 75.30000007152557,
+          "p25": 74.90000003576279,
+          "p75": 75.20000004768372,
+          "iqr": 0.30000001192092896
+        },
+        "navigation.loadEventEndMs": {
+          "count": 3,
+          "median": 101,
+          "p95": 104.39999997615814,
+          "min": 98.70000004768372,
+          "max": 104.39999997615814,
+          "p25": 99.85000002384186,
+          "p75": 102.69999998807907,
+          "iqr": 2.849999964237213
+        },
+        "signalMs": {
+          "count": 3,
+          "median": 82.60000002384186,
+          "p95": 82.69999992847443,
+          "min": 81.70000004768372,
+          "max": 82.69999992847443,
+          "p25": 82.15000003576279,
+          "p75": 82.64999997615814,
+          "iqr": 0.4999999403953552
+        },
+        "signals.homeAttachedMs": {
+          "count": 3,
+          "median": 82.60000002384186,
+          "p95": 82.69999992847443,
+          "min": 81.70000004768372,
+          "max": 82.69999992847443,
+          "p25": 82.15000003576279,
+          "p75": 82.64999997615814,
+          "iqr": 0.4999999403953552
+        },
+        "signals.mapPreviewLoadedMs": null,
+        "signals.mapCanvasAttachedMs": null,
+        "signals.mapReadyMs": null,
+        "signals.mapStyleReadyMs": null,
+        "signals.mapOverviewReadyMs": null,
+        "signals.mapDetailReadyMs": null,
+        "signals.mapBasemapRestoredMs": null,
+        "networkQuiet.durationMs": {
+          "count": 3,
+          "median": 863,
+          "p95": 953,
+          "min": 857,
+          "max": 953,
+          "p25": 860,
+          "p75": 908,
+          "iqr": 48
+        },
+        "resources.transferSize": {
+          "count": 3,
+          "median": 69628,
+          "p95": 69628,
+          "min": 69628,
+          "max": 69628,
+          "p25": 69628,
+          "p75": 69628,
+          "iqr": 0
+        },
+        "resources.mapView.durationMs": null,
+        "resources.mapView.responseEndMs": null,
+        "resources.maplibre.durationMs": null,
+        "resources.maplibre.responseEndMs": null,
+        "resources.maplibre.transferSize": null,
+        "mainThread.longTaskCount": {
+          "count": 3,
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0,
+          "p25": 0,
+          "p75": 0,
+          "iqr": 0
+        },
+        "mainThread.longTaskTotalMs": {
+          "count": 3,
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0,
+          "p25": 0,
+          "p75": 0,
+          "iqr": 0
+        },
+        "mainThread.maxLongTaskMs": {
+          "count": 3,
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0,
+          "p25": 0,
+          "p75": 0,
+          "iqr": 0
+        },
+        "mainThread.taskDurationDeltaMs": {
+          "count": 3,
+          "median": 67.156,
+          "p95": 67.53899999999999,
+          "min": 62.82600000000001,
+          "max": 67.53899999999999,
+          "p25": 64.99100000000001,
+          "p75": 67.3475,
+          "iqr": 2.3564999999999827
+        },
+        "mainThread.scriptDurationDeltaMs": {
+          "count": 3,
+          "median": 7.64,
+          "p95": 8.158,
+          "min": 7.455,
+          "max": 8.158,
+          "p25": 7.547499999999999,
+          "p75": 7.898999999999999,
+          "iqr": 0.3514999999999997
+        },
+        "memory.usedDeltaBeforeGc": {
+          "count": 3,
+          "median": 2975412,
+          "p95": 3081604,
+          "min": 2933976,
+          "max": 3081604,
+          "p25": 2954694,
+          "p75": 3028508,
+          "iqr": 73814
+        },
+        "memory.usedDeltaPostGc": {
+          "count": 3,
+          "median": 2239748,
+          "p95": 2357360,
+          "min": 2234144,
+          "max": 2357360,
+          "p25": 2236946,
+          "p75": 2298554,
+          "iqr": 61608
+        },
+        "workerCount": {
+          "count": 3,
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0,
+          "p25": 0,
+          "p75": 0,
+          "iqr": 0
+        },
+        "mapRuntime.sourceCount": {
+          "count": 3,
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0,
+          "p25": 0,
+          "p75": 0,
+          "iqr": 0
+        },
+        "mapRuntime.layerCount": {
+          "count": 3,
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0,
+          "p25": 0,
+          "p75": 0,
+          "iqr": 0
+        }
+      }
+    },
+    "home-direct-warm": {
+      "successfulSamples": 3,
+      "networkQuietTimeouts": 0,
+      "metrics": {
+        "navigation.responseStartMs": {
+          "count": 3,
+          "median": 2.0999999046325684,
+          "p95": 2.100000023841858,
+          "min": 1.5,
+          "max": 2.100000023841858,
+          "p25": 1.7999999523162842,
+          "p75": 2.099999964237213,
+          "iqr": 0.30000001192092896
+        },
+        "navigation.responseEndMs": {
+          "count": 3,
+          "median": 2.1999999284744263,
+          "p95": 2.600000023841858,
+          "min": 1.7000000476837158,
+          "max": 2.600000023841858,
+          "p25": 1.949999988079071,
+          "p75": 2.399999976158142,
+          "iqr": 0.44999998807907104
+        },
+        "navigation.domInteractiveMs": {
+          "count": 3,
+          "median": 6.399999976158142,
+          "p95": 7.100000023841858,
+          "min": 6.099999904632568,
+          "max": 7.100000023841858,
+          "p25": 6.249999940395355,
+          "p75": 6.75,
+          "iqr": 0.5000000596046448
+        },
+        "navigation.domContentLoadedMs": {
+          "count": 3,
+          "median": 19,
+          "p95": 19.799999952316284,
+          "min": 18.700000047683716,
+          "max": 19.799999952316284,
+          "p25": 18.850000023841858,
+          "p75": 19.399999976158142,
+          "iqr": 0.5499999523162842
+        },
+        "navigation.loadEventEndMs": {
+          "count": 3,
+          "median": 21.699999928474426,
+          "p95": 21.800000071525574,
+          "min": 20.899999976158142,
+          "max": 21.800000071525574,
+          "p25": 21.299999952316284,
+          "p75": 21.75,
+          "iqr": 0.4500000476837158
+        },
+        "signalMs": {
+          "count": 3,
+          "median": 25,
+          "p95": 26,
+          "min": 24.399999976158142,
+          "max": 26,
+          "p25": 24.69999998807907,
+          "p75": 25.5,
+          "iqr": 0.800000011920929
+        },
+        "signals.homeAttachedMs": {
+          "count": 3,
+          "median": 25,
+          "p95": 26,
+          "min": 24.399999976158142,
+          "max": 26,
+          "p25": 24.69999998807907,
+          "p75": 25.5,
+          "iqr": 0.800000011920929
+        },
+        "signals.mapPreviewLoadedMs": null,
+        "signals.mapCanvasAttachedMs": null,
+        "signals.mapReadyMs": null,
+        "signals.mapStyleReadyMs": null,
+        "signals.mapOverviewReadyMs": null,
+        "signals.mapDetailReadyMs": null,
+        "signals.mapBasemapRestoredMs": null,
+        "networkQuiet.durationMs": {
+          "count": 3,
+          "median": 779,
+          "p95": 793,
+          "min": 777,
+          "max": 793,
+          "p25": 778,
+          "p75": 786,
+          "iqr": 8
+        },
+        "resources.transferSize": {
+          "count": 3,
+          "median": 1200,
+          "p95": 1200,
+          "min": 1200,
+          "max": 1200,
+          "p25": 1200,
+          "p75": 1200,
+          "iqr": 0
+        },
+        "resources.mapView.durationMs": null,
+        "resources.mapView.responseEndMs": null,
+        "resources.maplibre.durationMs": null,
+        "resources.maplibre.responseEndMs": null,
+        "resources.maplibre.transferSize": null,
+        "mainThread.longTaskCount": {
+          "count": 3,
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0,
+          "p25": 0,
+          "p75": 0,
+          "iqr": 0
+        },
+        "mainThread.longTaskTotalMs": {
+          "count": 3,
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0,
+          "p25": 0,
+          "p75": 0,
+          "iqr": 0
+        },
+        "mainThread.maxLongTaskMs": {
+          "count": 3,
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0,
+          "p25": 0,
+          "p75": 0,
+          "iqr": 0
+        },
+        "mainThread.taskDurationDeltaMs": {
+          "count": 3,
+          "median": 58.206,
+          "p95": 66.945,
+          "min": 56.001000000000005,
+          "max": 66.945,
+          "p25": 57.103500000000004,
+          "p75": 62.5755,
+          "iqr": 5.471999999999994
+        },
+        "mainThread.scriptDurationDeltaMs": {
+          "count": 3,
+          "median": 6.941,
+          "p95": 7.086,
+          "min": 6.760000000000001,
+          "max": 7.086,
+          "p25": 6.8505,
+          "p75": 7.0135000000000005,
+          "iqr": 0.16300000000000026
+        },
+        "memory.usedDeltaBeforeGc": {
+          "count": 3,
+          "median": 2980812,
+          "p95": 2982128,
+          "min": 2967480,
+          "max": 2982128,
+          "p25": 2974146,
+          "p75": 2981470,
+          "iqr": 7324
+        },
+        "memory.usedDeltaPostGc": {
+          "count": 3,
+          "median": 2231976,
+          "p95": 2232888,
+          "min": 2231976,
+          "max": 2232888,
+          "p25": 2231976,
+          "p75": 2232432,
+          "iqr": 456
+        },
+        "workerCount": {
+          "count": 3,
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0,
+          "p25": 0,
+          "p75": 0,
+          "iqr": 0
+        },
+        "mapRuntime.sourceCount": {
+          "count": 3,
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0,
+          "p25": 0,
+          "p75": 0,
+          "iqr": 0
+        },
+        "mapRuntime.layerCount": {
+          "count": 3,
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0,
+          "p25": 0,
+          "p75": 0,
+          "iqr": 0
+        }
+      }
+    }
+  },
+  "stressEvidence": {
+    "lifecycle": {
+      "status": "completed",
+      "evidence": {
+        "routeCycles": 3,
+        "snapshots": [
+          {
+            "label": "baseline-home",
+            "heap": {
+              "usedSize": 3126196,
+              "totalSize": 3522560,
+              "embedderHeapUsedSize": 1115904,
+              "backingStorageSize": 262258
+            },
+            "workerCount": 0,
+            "runtime": {
+              "url": "http://127.0.0.1:54741/Practicum/#/",
+              "canvasCount": 0,
+              "sourceCount": 0,
+              "layerCount": 0,
+              "dataError": null
+            }
+          },
+          {
+            "label": "cycle-1-detail",
+            "heap": {
+              "usedSize": 13730192,
+              "totalSize": 14270464,
+              "embedderHeapUsedSize": 2696136,
+              "backingStorageSize": 15128846
+            },
+            "workerCount": 1,
+            "runtime": {
+              "url": "http://127.0.0.1:54741/Practicum/#/map?event=uri-houston",
+              "canvasCount": 1,
+              "sourceCount": 6,
+              "layerCount": 104,
+              "dataError": null
+            }
+          },
+          {
+            "label": "cycle-1-home",
+            "heap": {
+              "usedSize": 10666428,
+              "totalSize": 11911168,
+              "embedderHeapUsedSize": 1884216,
+              "backingStorageSize": 4786409
+            },
+            "workerCount": 1,
+            "runtime": {
+              "url": "http://127.0.0.1:54741/Practicum/#/",
+              "canvasCount": 0,
+              "sourceCount": 0,
+              "layerCount": 0,
+              "dataError": null
+            }
+          },
+          {
+            "label": "cycle-2-detail",
+            "heap": {
+              "usedSize": 17617260,
+              "totalSize": 18464768,
+              "embedderHeapUsedSize": 2885320,
+              "backingStorageSize": 22094216
+            },
+            "workerCount": 1,
+            "runtime": {
+              "url": "http://127.0.0.1:54741/Practicum/#/map?event=uri-houston",
+              "canvasCount": 1,
+              "sourceCount": 6,
+              "layerCount": 104,
+              "dataError": null
+            }
+          },
+          {
+            "label": "cycle-2-home",
+            "heap": {
+              "usedSize": 13982932,
+              "totalSize": 15581184,
+              "embedderHeapUsedSize": 2538624,
+              "backingStorageSize": 8887853
+            },
+            "workerCount": 1,
+            "runtime": {
+              "url": "http://127.0.0.1:54741/Practicum/#/",
+              "canvasCount": 0,
+              "sourceCount": 0,
+              "layerCount": 0,
+              "dataError": null
+            }
+          },
+          {
+            "label": "cycle-3-detail",
+            "heap": {
+              "usedSize": 20993092,
+              "totalSize": 21872640,
+              "embedderHeapUsedSize": 3149568,
+              "backingStorageSize": 27107672
+            },
+            "workerCount": 1,
+            "runtime": {
+              "url": "http://127.0.0.1:54741/Practicum/#/map?event=uri-houston",
+              "canvasCount": 1,
+              "sourceCount": 6,
+              "layerCount": 104,
+              "dataError": null
+            }
+          },
+          {
+            "label": "cycle-3-home",
+            "heap": {
+              "usedSize": 17225508,
+              "totalSize": 18989056,
+              "embedderHeapUsedSize": 2653728,
+              "backingStorageSize": 13107769
+            },
+            "workerCount": 1,
+            "runtime": {
+              "url": "http://127.0.0.1:54741/Practicum/#/",
+              "canvasCount": 0,
+              "sourceCount": 0,
+              "layerCount": 0,
+              "dataError": null
+            }
+          }
+        ],
+        "postGcHomeDriftBytes": 14099312,
+        "postGcHomeDriftRatio": 4.510053752227948,
+        "monotonicHomeGrowth": true
+      }
+    },
+    "basemaps": {
+      "status": "completed",
+      "evidence": {
+        "requestedSwitches": 5,
+        "switches": [
+          {
+            "id": "satellite",
+            "restoredMs": 1046.2000000476837,
+            "networkQuiet": {
+              "durationMs": 1044,
+              "timedOut": false,
+              "failedUrls": []
+            },
+            "snapshot": {
+              "label": "basemap-satellite",
+              "heap": {
+                "usedSize": 20572628,
+                "totalSize": 21610496,
+                "embedderHeapUsedSize": 2966944,
+                "backingStorageSize": 17531128
+              },
+              "workerCount": 1,
+              "runtime": {
+                "url": "http://127.0.0.1:54741/Practicum/#/map?event=uri-houston",
+                "canvasCount": 1,
+                "sourceCount": 3,
+                "layerCount": 3,
+                "dataError": null
+              }
+            }
+          },
+          {
+            "id": "positron",
+            "restoredMs": 1129.2999999523163,
+            "networkQuiet": {
+              "durationMs": 1128,
+              "timedOut": false,
+              "failedUrls": []
+            },
+            "snapshot": {
+              "label": "basemap-positron",
+              "heap": {
+                "usedSize": 22391548,
+                "totalSize": 23445504,
+                "embedderHeapUsedSize": 3007544,
+                "backingStorageSize": 20898039
+              },
+              "workerCount": 1,
+              "runtime": {
+                "url": "http://127.0.0.1:54741/Practicum/#/map?event=uri-houston",
+                "canvasCount": 1,
+                "sourceCount": 3,
+                "layerCount": 96,
+                "dataError": null
+              }
+            }
+          },
+          {
+            "id": "voyager",
+            "restoredMs": 1136.5,
+            "networkQuiet": {
+              "durationMs": 1134,
+              "timedOut": false,
+              "failedUrls": []
+            },
+            "snapshot": {
+              "label": "basemap-voyager",
+              "heap": {
+                "usedSize": 23546756,
+                "totalSize": 24494080,
+                "embedderHeapUsedSize": 2992144,
+                "backingStorageSize": 21974976
+              },
+              "workerCount": 1,
+              "runtime": {
+                "url": "http://127.0.0.1:54741/Practicum/#/map?event=uri-houston",
+                "canvasCount": 1,
+                "sourceCount": 3,
+                "layerCount": 96,
+                "dataError": null
+              }
+            }
+          },
+          {
+            "id": "dark-nolbl",
+            "restoredMs": 1010.2999999523163,
+            "networkQuiet": {
+              "durationMs": 1008,
+              "timedOut": false,
+              "failedUrls": []
+            },
+            "snapshot": {
+              "label": "basemap-dark-nolbl",
+              "heap": {
+                "usedSize": 24214176,
+                "totalSize": 25280512,
+                "embedderHeapUsedSize": 3078528,
+                "backingStorageSize": 22817193
+              },
+              "workerCount": 1,
+              "runtime": {
+                "url": "http://127.0.0.1:54741/Practicum/#/map?event=uri-houston",
+                "canvasCount": 1,
+                "sourceCount": 3,
+                "layerCount": 69,
+                "dataError": null
+              }
+            }
+          },
+          {
+            "id": "dark",
+            "restoredMs": 842,
+            "networkQuiet": {
+              "durationMs": 839,
+              "timedOut": false,
+              "failedUrls": []
+            },
+            "snapshot": {
+              "label": "basemap-dark",
+              "heap": {
+                "usedSize": 25484696,
+                "totalSize": 26591232,
+                "embedderHeapUsedSize": 3050104,
+                "backingStorageSize": 23619099
+              },
+              "workerCount": 1,
+              "runtime": {
+                "url": "http://127.0.0.1:54741/Practicum/#/map?event=uri-houston",
+                "canvasCount": 1,
+                "sourceCount": 3,
+                "layerCount": 96,
+                "dataError": null
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "failureEvidence": null,
+  "errors": [],
+  "browserLogs": [
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x67fc02051800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+      "url": "http://127.0.0.1:54741/Practicum/#/map?event=uri-houston"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x67fc02051800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+      "url": "http://127.0.0.1:54741/Practicum/#/map?event=uri-houston"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x67fc02051800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+      "url": "http://127.0.0.1:54741/Practicum/#/map?event=uri-houston"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x67fc02051800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+      "url": "http://127.0.0.1:54741/Practicum/#/map?event=uri-houston"
+    }
+  ]
+}

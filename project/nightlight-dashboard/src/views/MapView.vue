@@ -6,6 +6,12 @@
       class="map-container"
       :class="{ 'map-container--fading': mapFading }"
       :data-map-ready="mapReady ? 'true' : 'false'"
+      :data-map-style-ready="mapReady ? 'true' : 'false'"
+      :data-map-overview-ready="overviewReady ? 'true' : 'false'"
+      :data-map-detail-ready="detailReady ? 'true' : 'false'"
+      :data-map-basemap-restored="basemapRestored ? 'true' : 'false'"
+      :data-map-source-count="mapSourceCount"
+      :data-map-layer-count="mapLayerCount"
     />
 
     <div v-if="dataError" class="map-data-error" role="alert">
@@ -52,6 +58,7 @@
               v-for="bm in basemaps"
               :key="bm.id"
               class="basemap-btn"
+              :data-basemap-id="bm.id"
               :class="{ active: activeBasemap === bm.id }"
               @click="switchBasemap(bm.id)"
             >{{ bm.label }}</button>
@@ -319,6 +326,11 @@ function buildBufferFromGeoJSON(facilityGeoJSON) {
 const route        = useRoute()
 const mapContainer = ref(null)
 const mapReady     = ref(false)
+const overviewReady = ref(false)
+const detailReady = ref(false)
+const basemapRestored = ref(false)
+const mapSourceCount = ref(0)
+const mapLayerCount = ref(0)
 let map            = null
 let overviewFlyTimer = null
 let lastMapView = { center: [-40, 33], zoom: 1.3 }
@@ -327,6 +339,22 @@ function handleMapError(event) {
   const error = event?.error
   if (error?.name === 'AbortError' || error?.message === 'AbortError') return
   console.error(error)
+}
+
+function resetMapPerformanceSignals() {
+  mapReady.value = false
+  overviewReady.value = false
+  detailReady.value = false
+  basemapRestored.value = false
+  mapSourceCount.value = 0
+  mapLayerCount.value = 0
+}
+
+function updateMapInventory(mapInstance) {
+  if (!mapInstance || map !== mapInstance) return
+  const style = mapInstance.getStyle()
+  mapSourceCount.value = Object.keys(style?.sources ?? {}).length
+  mapLayerCount.value = style?.layers?.length ?? 0
 }
 
 const activeEventId    = ref(null)
@@ -718,7 +746,7 @@ function installMapInteractions(mapInstance) {
 }
 
 function releaseMapInstance(mapInstance) {
-  mapReady.value = false
+  resetMapPerformanceSignals()
   if (map === mapInstance) map = null
   try {
     mapInstance?.stop()
@@ -730,7 +758,7 @@ function releaseMapInstance(mapInstance) {
 
 // ── Initialize map ──
 onMounted(() => {
-  mapReady.value = false
+  resetMapPerformanceSignals()
   // Auto-collapse sidebars on mobile
   if (window.innerWidth <= 768) {
     sidebarCollapsed.value = true
@@ -801,6 +829,8 @@ onMounted(() => {
     })
 
     installOverviewInteractions(map)
+    overviewReady.value = true
+    updateMapInventory(map)
     // Lazy load: only load detail layers when needed (not all 15 at once)
     const qEvent = route.query.event
     if (qEvent) {
@@ -828,7 +858,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  mapReady.value = false
+  resetMapPerformanceSignals()
   if (overviewFlyTimer !== null) clearTimeout(overviewFlyTimer)
   const mapToRelease = map
   map = null
@@ -840,9 +870,16 @@ onUnmounted(() => {
 const dataCache = {}
 
 async function tryAddEventLayers(ev, mapInstance = map) {
+  if (map === mapInstance) detailReady.value = false
   try {
     const added = await addEventLayers(ev, mapInstance)
-    if (added) dataError.value = ''
+    if (added) {
+      dataError.value = ''
+      if (map === mapInstance) {
+        detailReady.value = true
+        updateMapInventory(mapInstance)
+      }
+    }
     return added
   } catch (error) {
     const detail = error instanceof Error ? error.message : 'The selected event export could not be loaded.'
@@ -1199,7 +1236,7 @@ function switchBasemap(id) {
   lastMapView = resolveBasemapView(previousMap, lastMapView)
   const container = mapContainer.value
   mapFading.value = true
-  mapReady.value = false
+  resetMapPerformanceSignals()
   activeBasemap.value = id
   if (previousMap) {
     previousMap.stop()
@@ -1284,6 +1321,8 @@ function switchBasemap(id) {
           },
         })
         installOverviewInteractions(replacementMap)
+        overviewReady.value = true
+        updateMapInventory(replacementMap)
 
         const loadedIds = Object.keys(dataCache)
         await Promise.all(
@@ -1314,6 +1353,8 @@ function switchBasemap(id) {
 
         dataError.value = ''
         mapFading.value = false
+        basemapRestored.value = true
+        updateMapInventory(replacementMap)
       } catch (error) {
         const detail = error instanceof Error ? error.message : 'The selected basemap could not be initialized.'
         dataError.value = detail

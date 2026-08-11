@@ -6,13 +6,29 @@ async page => {
     runCount: new URLSearchParams(location.search).get('p3Runs') ?? '7',
     networkProfile: new URLSearchParams(location.search).get('p3Profile') ?? 'none',
     measurementScope: new URLSearchParams(location.search).get('p3Scope') ?? 'all',
+    viewport: new URLSearchParams(location.search).get('p3Viewport') ?? '1365x768',
+    devicePixelRatio: new URLSearchParams(location.search).get('p3Dpr') ?? '1',
+    cpuThrottleRate: new URLSearchParams(location.search).get('p3Cpu') ?? '1',
+    eventId: new URLSearchParams(location.search).get('p3Event') ?? 'uri-houston',
+    routeCycles: new URLSearchParams(location.search).get('p3Cycles') ?? '3',
+    basemapSwitches: new URLSearchParams(location.search).get('p3BasemapSwitches') ?? '5',
+    failureProfile: new URLSearchParams(location.search).get('p3Failure') ?? 'none',
   }))
   const targetKind = invocation.targetKind
   const runCount = Number(invocation.runCount)
   const baseUrl = invocation.baseUrl
   const networkProfile = invocation.networkProfile
   const measurementScope = invocation.measurementScope
-  const viewport = { width: 1365, height: 768 }
+  const viewportMatch = /^(\d+)x(\d+)$/.exec(invocation.viewport)
+  const viewport = viewportMatch
+    ? { width: Number(viewportMatch[1]), height: Number(viewportMatch[2]) }
+    : null
+  const devicePixelRatio = Number(invocation.devicePixelRatio)
+  const cpuThrottleRate = Number(invocation.cpuThrottleRate)
+  const routeCycles = Number(invocation.routeCycles)
+  const basemapSwitches = Number(invocation.basemapSwitches)
+  const eventId = invocation.eventId
+  const failureProfile = invocation.failureProfile
   const quietWindowMs = 750
   const quietTimeoutMs = 15_000
   const navigationTimeoutMs = 30_000
@@ -31,6 +47,24 @@ async page => {
   }
   if (!['all', 'home', 'map'].includes(measurementScope)) {
     throw new Error('P3_PERF_SCOPE must be all, home, or map')
+  }
+  if (!viewport || viewport.width < 280 || viewport.height < 480) {
+    throw new Error('P3_PERF_VIEWPORT must be WIDTHxHEIGHT and at least 280x480')
+  }
+  if (!Number.isFinite(devicePixelRatio) || devicePixelRatio < 1 || devicePixelRatio > 4) {
+    throw new Error('P3_PERF_DPR must be between 1 and 4')
+  }
+  if (!Number.isFinite(cpuThrottleRate) || cpuThrottleRate < 1 || cpuThrottleRate > 20) {
+    throw new Error('P3_PERF_CPU must be between 1 and 20')
+  }
+  if (!Number.isInteger(routeCycles) || routeCycles < 3 || routeCycles > 5) {
+    throw new Error('P3_PERF_CYCLES must be between 3 and 5')
+  }
+  if (!Number.isInteger(basemapSwitches) || basemapSwitches !== 5) {
+    throw new Error('P3_PERF_BASEMAP_SWITCHES must be exactly 5')
+  }
+  if (!['none', 'external', 'webgl'].includes(failureProfile)) {
+    throw new Error('P3_PERF_FAILURE must be none, external, or webgl')
   }
 
   const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`
@@ -54,6 +88,16 @@ async page => {
   page.on('pageerror', error => {
     browserLogs.push({ type: 'pageerror', text: error.message, url: page.url() })
   })
+  page.on('response', response => {
+    if (response.status() >= 400) {
+      browserLogs.push({
+        type: 'http-error',
+        status: response.status(),
+        resourceUrl: response.url(),
+        url: page.url(),
+      })
+    }
+  })
 
   const shouldTrackRequest = request => /^https?:/.test(request.url())
   page.on('request', request => {
@@ -70,7 +114,14 @@ async page => {
   page.on('requestfinished', request => finishRequest(request, false))
   page.on('requestfailed', request => finishRequest(request, true))
 
-  await page.addInitScript(() => {
+  await page.addInitScript(profile => {
+    if (profile === 'webgl') {
+      const originalGetContext = HTMLCanvasElement.prototype.getContext
+      HTMLCanvasElement.prototype.getContext = function getContext(type, ...args) {
+        if (type === 'webgl' || type === 'webgl2' || type === 'experimental-webgl') return null
+        return originalGetContext.call(this, type, ...args)
+      }
+    }
     const state = {
       longTasks: [],
       signals: {},
@@ -101,6 +152,17 @@ async page => {
       if (state.signals.mapReady == null && document.querySelector('[data-map-ready="true"]')) {
         state.signals.mapReady = performance.now()
       }
+      const mapSignalSelectors = {
+        mapStyleReady: '[data-map-style-ready="true"]',
+        mapOverviewReady: '[data-map-overview-ready="true"]',
+        mapDetailReady: '[data-map-detail-ready="true"]',
+        mapBasemapRestored: '[data-map-basemap-restored="true"]',
+      }
+      for (const [name, selector] of Object.entries(mapSignalSelectors)) {
+        if (state.signals[name] == null && document.querySelector(selector)) {
+          state.signals[name] = performance.now()
+        }
+      }
       const preview = document.querySelector('img[src*="map_preview.png"]')
       if (state.signals.mapPreviewLoaded == null && preview?.complete && preview.naturalWidth > 0) {
         state.signals.mapPreviewLoaded = performance.now()
@@ -111,7 +173,13 @@ async page => {
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ['data-map-ready'],
+      attributeFilter: [
+        'data-map-ready',
+        'data-map-style-ready',
+        'data-map-overview-ready',
+        'data-map-detail-ready',
+        'data-map-basemap-restored',
+      ],
     })
     document.addEventListener('DOMContentLoaded', detectSignals, { once: true })
     document.addEventListener('load', event => {
@@ -119,12 +187,20 @@ async page => {
         state.signals.mapPreviewLoaded = performance.now()
       }
     }, true)
-  })
+  }, failureProfile)
 
   const context = page.context()
   const cdp = await context.newCDPSession(page)
   await cdp.send('Network.enable')
   await cdp.send('Performance.enable')
+  await cdp.send('HeapProfiler.enable')
+  await cdp.send('Emulation.setDeviceMetricsOverride', {
+    width: viewport.width,
+    height: viewport.height,
+    deviceScaleFactor: devicePixelRatio,
+    mobile: viewport.width <= 768,
+  })
+  await cdp.send('Emulation.setCPUThrottlingRate', { rate: cpuThrottleRate })
   const emulatedNetwork = networkProfile === 'slow4g' ? {
     offline: false,
     latency: 150,
@@ -135,6 +211,11 @@ async page => {
   if (emulatedNetwork) {
     await cdp.send('Network.emulateNetworkConditions', emulatedNetwork)
   }
+  if (failureProfile === 'external') {
+    await page.route(/^https:\/\/(?:basemaps\.cartocdn\.com|server\.arcgisonline\.com)\//, route => (
+      route.abort('failed')
+    ))
+  }
 
   const clearBrowserCache = async () => {
     await cdp.send('Network.setCacheDisabled', { cacheDisabled: false })
@@ -144,6 +225,17 @@ async page => {
   const readCdpMetrics = async () => {
     const result = await cdp.send('Performance.getMetrics')
     return Object.fromEntries(result.metrics.map(metric => [metric.name, metric.value]))
+  }
+
+  const readHeapUsage = async ({ collectGarbage = false } = {}) => {
+    if (collectGarbage) await cdp.send('HeapProfiler.collectGarbage')
+    const usage = await cdp.send('Runtime.getHeapUsage')
+    return {
+      usedSize: usage.usedSize,
+      totalSize: usage.totalSize,
+      embedderHeapUsedSize: usage.embedderHeapUsedSize ?? null,
+      backingStorageSize: usage.backingStorageSize ?? null,
+    }
   }
 
   const metricDeltaMs = (before, after, name) => {
@@ -191,7 +283,7 @@ async page => {
     return performance.now()
   }, Array.isArray(signalNames) ? signalNames : [signalNames])
 
-  const collectPageMetrics = async ({ phaseStart, signalName, beforeCdp, networkQuiet }) => {
+  const collectPageMetrics = async ({ phaseStart, signalName, beforeCdp, beforeHeap, networkQuiet }) => {
     const browserMetrics = await page.evaluate(({ start, signal }) => {
       const probe = window.__p3PerformanceProbe ?? { longTasks: [], signals: {} }
       const navigation = performance.getEntriesByType('navigation')[0]
@@ -256,6 +348,18 @@ async page => {
           longTasks,
           longTaskUnsupported: Boolean(probe.longTaskUnsupported),
         },
+        mapRuntime: (() => {
+          const container = document.querySelector('.map-container')
+          return {
+            canvasCount: document.querySelectorAll('.maplibregl-canvas').length,
+            sourceCount: Number(container?.getAttribute('data-map-source-count') ?? 0),
+            layerCount: Number(container?.getAttribute('data-map-layer-count') ?? 0),
+            styleReady: container?.getAttribute('data-map-style-ready') === 'true',
+            overviewReady: container?.getAttribute('data-map-overview-ready') === 'true',
+            detailReady: container?.getAttribute('data-map-detail-ready') === 'true',
+            basemapRestored: container?.getAttribute('data-map-basemap-restored') === 'true',
+          }
+        })(),
         documentTitle: document.title,
         url: location.href,
       }
@@ -264,6 +368,16 @@ async page => {
     const afterCdp = await readCdpMetrics()
     browserMetrics.mainThread.taskDurationDeltaMs = metricDeltaMs(beforeCdp, afterCdp, 'TaskDuration')
     browserMetrics.mainThread.scriptDurationDeltaMs = metricDeltaMs(beforeCdp, afterCdp, 'ScriptDuration')
+    const heapBeforeGc = await readHeapUsage()
+    const heapPostGc = await readHeapUsage({ collectGarbage: true })
+    browserMetrics.memory = {
+      before: beforeHeap,
+      afterBeforeGc: heapBeforeGc,
+      afterPostGc: heapPostGc,
+      usedDeltaBeforeGc: heapBeforeGc.usedSize - beforeHeap.usedSize,
+      usedDeltaPostGc: heapPostGc.usedSize - beforeHeap.usedSize,
+    }
+    browserMetrics.workerCount = page.workers().length
     browserMetrics.networkQuiet = networkQuiet
     return browserMetrics
   }
@@ -284,6 +398,7 @@ async page => {
     }
 
     const beforeCdp = await readCdpMetrics()
+    const beforeHeap = await readHeapUsage({ collectGarbage: true })
     const tracker = beginNetworkTracking()
     await page.goto(routeUrl(route), { waitUntil: 'domcontentloaded' })
     await page.waitForSelector(selector, { state: 'attached' })
@@ -293,6 +408,7 @@ async page => {
       phaseStart: 0,
       signalName,
       beforeCdp,
+      beforeHeap,
       networkQuiet,
     })
     return { scenario, iteration, cacheState, navigationKind: 'direct', metrics }
@@ -314,23 +430,32 @@ async page => {
 
     if (cacheState === 'warm') {
       const warmupTracker = beginNetworkTracking()
-      await navigateHashAndWait({ route: '/map', selector: '[data-map-ready="true"]' })
+      await navigateHashAndWait({ route: '/map', selector: '[data-map-overview-ready="true"]' })
       await waitForNetworkQuiet(warmupTracker)
       currentNetworkTracker = null
       await navigateHashAndWait({ route: '/', selector: '.hero__title' })
       await page.waitForFunction(() => !document.querySelector('.maplibregl-canvas'))
     }
 
-    const phaseStart = await resetDocumentProbe(['mapCanvasAttached', 'mapReady'])
+    const phaseStart = await resetDocumentProbe([
+      'mapCanvasAttached',
+      'mapReady',
+      'mapStyleReady',
+      'mapOverviewReady',
+      'mapDetailReady',
+      'mapBasemapRestored',
+    ])
     const beforeCdp = await readCdpMetrics()
+    const beforeHeap = await readHeapUsage({ collectGarbage: true })
     const tracker = beginNetworkTracking()
-    await navigateHashAndWait({ route: '/map', selector: '[data-map-ready="true"]' })
+    await navigateHashAndWait({ route: '/map', selector: '[data-map-overview-ready="true"]' })
     const networkQuiet = await waitForNetworkQuiet(tracker)
     currentNetworkTracker = null
     const metrics = await collectPageMetrics({
       phaseStart,
-      signalName: 'mapReady',
+      signalName: 'mapOverviewReady',
       beforeCdp,
+      beforeHeap,
       networkQuiet,
     })
     return { scenario, iteration, cacheState, navigationKind: 'spa', metrics }
@@ -374,6 +499,10 @@ async page => {
     'signals.mapPreviewLoadedMs',
     'signals.mapCanvasAttachedMs',
     'signals.mapReadyMs',
+    'signals.mapStyleReadyMs',
+    'signals.mapOverviewReadyMs',
+    'signals.mapDetailReadyMs',
+    'signals.mapBasemapRestoredMs',
     'networkQuiet.durationMs',
     'resources.transferSize',
     'resources.mapView.durationMs',
@@ -386,6 +515,11 @@ async page => {
     'mainThread.maxLongTaskMs',
     'mainThread.taskDurationDeltaMs',
     'mainThread.scriptDurationDeltaMs',
+    'memory.usedDeltaBeforeGc',
+    'memory.usedDeltaPostGc',
+    'workerCount',
+    'mapRuntime.sourceCount',
+    'mapRuntime.layerCount',
   ]
 
   const buildSummaries = () => Object.fromEntries(
@@ -407,11 +541,90 @@ async page => {
       samples.push(await operation())
     } catch (error) {
       currentNetworkTracker = null
+      const mapState = await page.evaluate(() => {
+        const container = document.querySelector('.map-container')
+        return {
+          styleReady: container?.getAttribute('data-map-style-ready') === 'true',
+          overviewReady: container?.getAttribute('data-map-overview-ready') === 'true',
+          detailReady: container?.getAttribute('data-map-detail-ready') === 'true',
+          visibleError: document.querySelector('.map-data-error')?.textContent?.trim() ?? null,
+        }
+      }).catch(() => null)
       errors.push({
         message: error instanceof Error ? error.message : String(error),
         url: page.url(),
+        mapState,
       })
     }
+  }
+
+  const collectStressSnapshot = async label => {
+    const heap = await readHeapUsage({ collectGarbage: true })
+    const runtime = await page.evaluate(() => {
+      const container = document.querySelector('.map-container')
+      return {
+        url: location.href,
+        canvasCount: document.querySelectorAll('.maplibregl-canvas').length,
+        sourceCount: Number(container?.getAttribute('data-map-source-count') ?? 0),
+        layerCount: Number(container?.getAttribute('data-map-layer-count') ?? 0),
+        dataError: document.querySelector('.map-data-error')?.textContent?.trim() ?? null,
+      }
+    })
+    return { label, heap, workerCount: page.workers().length, runtime }
+  }
+
+  const runLifecycleStress = async () => {
+    await clearBrowserCache()
+    await page.goto(routeUrl('/'), { waitUntil: 'domcontentloaded' })
+    await page.waitForSelector('.hero__title')
+    const snapshots = [await collectStressSnapshot('baseline-home')]
+    for (let cycle = 1; cycle <= routeCycles; cycle += 1) {
+      await navigateHashAndWait({
+        route: `/map?event=${encodeURIComponent(eventId)}`,
+        selector: '[data-map-detail-ready="true"]',
+      })
+      snapshots.push(await collectStressSnapshot(`cycle-${cycle}-detail`))
+      await navigateHashAndWait({ route: '/', selector: '.hero__title' })
+      await page.waitForFunction(() => !document.querySelector('.maplibregl-canvas'))
+      await page.waitForFunction(() => document.querySelector('.map-container') === null)
+      snapshots.push(await collectStressSnapshot(`cycle-${cycle}-home`))
+    }
+    const homeSnapshots = snapshots.filter(snapshot => snapshot.label.endsWith('-home'))
+    const first = homeSnapshots[0].heap.usedSize
+    const last = homeSnapshots.at(-1).heap.usedSize
+    return {
+      routeCycles,
+      snapshots,
+      postGcHomeDriftBytes: last - first,
+      postGcHomeDriftRatio: first > 0 ? (last - first) / first : null,
+      monotonicHomeGrowth: homeSnapshots.every((snapshot, index) => (
+        index === 0 || snapshot.heap.usedSize >= homeSnapshots[index - 1].heap.usedSize
+      )),
+    }
+  }
+
+  const runBasemapStress = async () => {
+    await page.goto(routeUrl(`/map?event=${encodeURIComponent(eventId)}`), { waitUntil: 'domcontentloaded' })
+    await page.waitForSelector('[data-map-detail-ready="true"]')
+    const sequence = ['satellite', 'positron', 'voyager', 'dark-nolbl', 'dark']
+    const switches = []
+    for (const id of sequence) {
+      const phaseStart = await resetDocumentProbe('mapBasemapRestored')
+      const tracker = beginNetworkTracking()
+      const clicked = await page.evaluate(basemapId => {
+        const button = document.querySelector(`[data-basemap-id="${basemapId}"]`)
+        if (!(button instanceof HTMLButtonElement)) return false
+        button.click()
+        return true
+      }, id)
+      if (!clicked) throw new Error(`Could not find basemap control: ${id}`)
+      await page.waitForSelector('[data-map-basemap-restored="true"]')
+      const networkQuiet = await waitForNetworkQuiet(tracker)
+      currentNetworkTracker = null
+      const restoredMs = await page.evaluate(start => performance.now() - start, phaseStart)
+      switches.push({ id, restoredMs, networkQuiet, snapshot: await collectStressSnapshot(`basemap-${id}`) })
+    }
+    return { requestedSwitches: basemapSwitches, switches }
   }
 
   const inspectDeployment = async () => {
@@ -451,7 +664,32 @@ async page => {
   }
 
   const dashboardEquivalent = targetKind === 'dashboard' || deploymentInspection.dashboardEquivalent
-  if (dashboardEquivalent) {
+  let failureEvidence = null
+  if (dashboardEquivalent && failureProfile !== 'none') {
+    await clearBrowserCache()
+    const tracker = beginNetworkTracking()
+    await page.goto(routeUrl(`/map?event=${encodeURIComponent(eventId)}`), { waitUntil: 'domcontentloaded' })
+    await page.waitForSelector('body')
+    const networkQuiet = await waitForNetworkQuiet(tracker)
+    currentNetworkTracker = null
+    const mapState = await page.evaluate(() => {
+      const container = document.querySelector('.map-container')
+      return {
+        canvasCount: document.querySelectorAll('.maplibregl-canvas').length,
+        styleReady: container?.getAttribute('data-map-style-ready') === 'true',
+        overviewReady: container?.getAttribute('data-map-overview-ready') === 'true',
+        detailReady: container?.getAttribute('data-map-detail-ready') === 'true',
+        visibleError: document.querySelector('.map-data-error')?.textContent?.trim() ?? null,
+      }
+    })
+    await navigateHashAndWait({ route: '/', selector: '.hero__title' })
+    failureEvidence = {
+      profile: failureProfile,
+      observationWindow: networkQuiet,
+      mapState,
+      recoveredToHome: await page.locator('.hero__title').isVisible(),
+    }
+  } else if (dashboardEquivalent) {
     for (let iteration = 1; iteration <= runCount; iteration += 1) {
       if (measurementScope !== 'map') {
         await runAndRecord(() => runDirectPhase({
@@ -465,12 +703,22 @@ async page => {
       }
       if (measurementScope !== 'home') {
         await runAndRecord(() => runDirectPhase({
-          scenario: 'map-direct-cold', route: '/map', cacheState: 'cold',
-          selector: '[data-map-ready="true"]', signalName: 'mapReady', iteration,
+          scenario: 'map-overview-direct-cold', route: '/map', cacheState: 'cold',
+          selector: '[data-map-overview-ready="true"]', signalName: 'mapOverviewReady', iteration,
         }))
         await runAndRecord(() => runDirectPhase({
-          scenario: 'map-direct-warm', route: '/map', cacheState: 'warm',
-          selector: '[data-map-ready="true"]', signalName: 'mapReady', iteration,
+          scenario: 'map-overview-direct-warm', route: '/map', cacheState: 'warm',
+          selector: '[data-map-overview-ready="true"]', signalName: 'mapOverviewReady', iteration,
+        }))
+        await runAndRecord(() => runDirectPhase({
+          scenario: 'map-detail-direct-cold', route: `/map?event=${encodeURIComponent(eventId)}`,
+          cacheState: 'cold', selector: '[data-map-detail-ready="true"]',
+          signalName: 'mapDetailReady', iteration,
+        }))
+        await runAndRecord(() => runDirectPhase({
+          scenario: 'map-detail-direct-warm', route: `/map?event=${encodeURIComponent(eventId)}`,
+          cacheState: 'warm', selector: '[data-map-detail-ready="true"]',
+          signalName: 'mapDetailReady', iteration,
         }))
         await runAndRecord(() => runSpaMapPhase({
           scenario: 'home-to-map-spa-cold', cacheState: 'cold', iteration,
@@ -493,6 +741,27 @@ async page => {
     }
   }
 
+  let stressEvidence = null
+  if (dashboardEquivalent && targetKind === 'dashboard' && failureProfile === 'none') {
+    const collectStressEvidence = async (phase, operation) => {
+      try {
+        return { status: 'completed', evidence: await operation() }
+      } catch (error) {
+        const failure = {
+          phase,
+          message: error instanceof Error ? error.message : String(error),
+          url: page.url(),
+        }
+        errors.push(failure)
+        return { status: 'failed', failure }
+      }
+    }
+    stressEvidence = {
+      lifecycle: await collectStressEvidence('lifecycle-stress', runLifecycleStress),
+      basemaps: await collectStressEvidence('basemap-stress', runBasemapStress),
+    }
+  }
+
   const browser = context.browser()
   const environment = await page.evaluate(() => ({
     userAgent: navigator.userAgent,
@@ -504,13 +773,19 @@ async page => {
   await cdp.detach()
 
   return JSON.stringify({
-    schemaVersion: 1,
+    schemaVersion: 2,
     measuredAt: new Date().toISOString(),
     targetKind,
     baseUrl: normalizedBaseUrl,
     protocol: {
       requestedRunsPerScenario: runCount,
       viewport,
+      devicePixelRatio,
+      cpuThrottleRate,
+      eventId,
+      routeCycles,
+      basemapSwitches,
+      failureProfile,
       browserName: browser?.browserType().name() ?? 'unknown',
       browserVersion: browser?.version() ?? 'unknown',
       cacheMethod: 'CDP Network.clearBrowserCache; warm measurements follow one unmeasured warm-up',
@@ -524,6 +799,10 @@ async page => {
         bodyAttached: 'DOM attachment of body for non-equivalent deployment context only',
         mapCanvasAttached: 'DOM attachment of .maplibregl-canvas; this is not MapLibre style load',
         mapReady: 'data-map-ready=true set synchronously inside the active MapLibre load event handler',
+        mapStyleReady: 'same MapLibre style load boundary as mapReady, retained under an explicit name',
+        mapOverviewReady: 'overview source/layers and interactions installed after style load',
+        mapDetailReady: 'selected event sources/layers validated and installed; external tiles may still be settling',
+        mapBasemapRestored: 'replacement style plus cached app-owned layers and visibility restored',
         mapPreviewLoaded: 'load completion of map_preview.png when the browser requests it; null means it was not fetched in the measured phase',
         networkQuiet: 'No tracked HTTP(S) request in flight for the quiet window; third-party map traffic may affect it',
         scriptAttribution: 'CDP task/script duration and Long Tasks are page-level, not per-chunk execution attribution',
@@ -533,6 +812,8 @@ async page => {
     deploymentInspection,
     samples,
     summaries: buildSummaries(),
+    stressEvidence,
+    failureEvidence,
     errors,
     browserLogs,
   }, null, 2)

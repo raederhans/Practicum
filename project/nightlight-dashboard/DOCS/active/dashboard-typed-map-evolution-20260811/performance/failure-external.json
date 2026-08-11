@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 2,
+  "measuredAt": "2026-08-11T07:51:56.645Z",
+  "targetKind": "dashboard",
+  "baseUrl": "http://127.0.0.1:54741/Practicum/",
+  "protocol": {
+    "requestedRunsPerScenario": 3,
+    "viewport": {
+      "width": 1365,
+      "height": 768
+    },
+    "devicePixelRatio": 1,
+    "cpuThrottleRate": 1,
+    "eventId": "uri-houston",
+    "routeCycles": 3,
+    "basemapSwitches": 5,
+    "failureProfile": "external",
+    "browserName": "chromium",
+    "browserVersion": "151.0.7922.34",
+    "cacheMethod": "CDP Network.clearBrowserCache; warm measurements follow one unmeasured warm-up",
+    "networkProfile": "none",
+    "measurementScope": "map",
+    "emulatedNetwork": null,
+    "quietWindowMs": 750,
+    "quietTimeoutMs": 15000,
+    "signalLimitations": {
+      "homeAttached": "DOM attachment of .hero__title",
+      "bodyAttached": "DOM attachment of body for non-equivalent deployment context only",
+      "mapCanvasAttached": "DOM attachment of .maplibregl-canvas; this is not MapLibre style load",
+      "mapReady": "data-map-ready=true set synchronously inside the active MapLibre load event handler",
+      "mapStyleReady": "same MapLibre style load boundary as mapReady, retained under an explicit name",
+      "mapOverviewReady": "overview source/layers and interactions installed after style load",
+      "mapDetailReady": "selected event sources/layers validated and installed; external tiles may still be settling",
+      "mapBasemapRestored": "replacement style plus cached app-owned layers and visibility restored",
+      "mapPreviewLoaded": "load completion of map_preview.png when the browser requests it; null means it was not fetched in the measured phase",
+      "networkQuiet": "No tracked HTTP(S) request in flight for the quiet window; third-party map traffic may affect it",
+      "scriptAttribution": "CDP task/script duration and Long Tasks are page-level, not per-chunk execution attribution"
+    }
+  },
+  "environment": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.7922.34 Safari/537.36",
+    "language": "zh-CN",
+    "timeZone": "Asia/Singapore",
+    "devicePixelRatio": 1
+  },
+  "deploymentInspection": null,
+  "samples": [],
+  "summaries": {},
+  "stressEvidence": null,
+  "failureEvidence": {
+    "profile": "external",
+    "observationWindow": {
+      "durationMs": 968,
+      "timedOut": false,
+      "failedUrls": [
+        "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
+      ]
+    },
+    "mapState": {
+      "canvasCount": 1,
+      "styleReady": false,
+      "overviewReady": false,
+      "detailReady": false,
+      "visibleError": null
+    },
+    "recoveredToHome": true
+  },
+  "errors": [],
+  "browserLogs": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED",
+      "url": "http://127.0.0.1:54741/Practicum/#/map?event=uri-houston"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Failed to fetch\n    at http://127.0.0.1:54741/Practicum/assets/maplibre-BbqsL0sN.js:4:7482\n    at Generator.next (<anonymous>)\n    at http://127.0.0.1:54741/Practicum/assets/maplibre-BbqsL0sN.js:4:748\n    at new Promise (<anonymous>)\n    at p (http://127.0.0.1:54741/Practicum/assets/maplibre-BbqsL0sN.js:4:493)\n    at http://127.0.0.1:54741/Practicum/assets/maplibre-BbqsL0sN.js:4:7197\n    at Or (http://127.0.0.1:54741/Practicum/assets/maplibre-BbqsL0sN.js:4:7810)\n    at Dp.L.h (http://127.0.0.1:54741/Practicum/assets/maplibre-BbqsL0sN.js:5:211728)\n    at Cn.loadURL (http://127.0.0.1:54741/Practicum/assets/maplibre-BbqsL0sN.js:5:364500)\n    at Dp.L.Map._updateStyle (http://127.0.0.1:54741/Practicum/assets/maplibre-BbqsL0sN.js:580:202719)",
+      "url": "http://127.0.0.1:54741/Practicum/#/map?event=uri-houston"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x3bd400fb5400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+      "url": "http://127.0.0.1:54741/Practicum/#/map?event=uri-houston"
+    }
+  ]
+}
