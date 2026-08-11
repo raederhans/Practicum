@@ -1,6 +1,13 @@
 # Repository-root Vercel import: deny by default and upload only the public app.
 /*
 !/vercel.json
+!/DOCS
+/DOCS/*
+!/DOCS/archive
+/DOCS/archive/*
+!/DOCS/archive/p2-p3-solo-evidence-performance-20260810
+/DOCS/archive/p2-p3-solo-evidence-performance-20260810/*
+!/DOCS/archive/p2-p3-solo-evidence-performance-20260810/p2-evidence.md
 !/project
 /project/*
 !/project/nightlight-public
@@ -13,6 +20,14 @@
 !/project/nightlight-public/scripts/**
 !/project/nightlight-public/tests
 !/project/nightlight-public/tests/**
+!/project/nightlight-public/DOCS
+/project/nightlight-public/DOCS/*
+!/project/nightlight-public/DOCS/archive
+/project/nightlight-public/DOCS/archive/*
+!/project/nightlight-public/DOCS/archive/proxy-evidence-phase-20260809
+/project/nightlight-public/DOCS/archive/proxy-evidence-phase-20260809/*
+!/project/nightlight-public/DOCS/archive/proxy-evidence-phase-20260809/plan.md
+!/project/nightlight-public/DOCS/archive/proxy-evidence-phase-20260809/proxy-evaluation-report.md
 !/project/nightlight-public/index.html
 !/project/nightlight-public/package.json
 !/project/nightlight-public/package-lock.json
