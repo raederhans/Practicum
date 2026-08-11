@@ -8,16 +8,24 @@ const ROUTE_SOURCES = {
   map: 'src/views/MapView.vue',
 }
 
+/**
+ * @typedef {{ file?: string, name?: string, isEntry?: boolean, css?: string[], imports?: string[] }} ManifestItem
+ * @typedef {Record<string, ManifestItem>} ViteManifest
+ */
+
+/** @param {ViteManifest} manifest @param {string} key */
 function requireManifestItem(manifest, key) {
   const item = manifest[key]
   if (!item) throw new Error(`Bundle manifest is missing ${key}`)
   return item
 }
 
+/** @param {ViteManifest} manifest @param {string[]} roots */
 export function collectManifestFiles(manifest, roots) {
   const visitedKeys = new Set()
   const files = new Set()
 
+  /** @param {string} key */
   const visit = key => {
     if (visitedKeys.has(key)) return
     visitedKeys.add(key)
@@ -32,6 +40,7 @@ export function collectManifestFiles(manifest, roots) {
   return files
 }
 
+/** @param {ViteManifest} manifest */
 export function resolveRouteBoundaries(manifest) {
   const entryKey = Object.keys(manifest).find(key => manifest[key].isEntry)
   if (!entryKey) throw new Error('Bundle manifest has no application entry')
@@ -43,6 +52,9 @@ export function resolveRouteBoundaries(manifest) {
   }
 
   const [[, maplibreItem]] = maplibreEntries
+  if (!maplibreItem.file) {
+    throw new Error('The isolated MapLibre chunk has no emitted file')
+  }
   const homeFiles = collectManifestFiles(manifest, [entryKey, ROUTE_SOURCES.home])
   const mapFiles = collectManifestFiles(manifest, [entryKey, ROUTE_SOURCES.map])
 
@@ -62,6 +74,7 @@ export function resolveRouteBoundaries(manifest) {
   }
 }
 
+/** @param {string} distDirectory @param {Set<string>} files */
 async function measureFiles(distDirectory, files) {
   const details = await Promise.all([...files].sort().map(async file => {
     const contents = await readFile(resolve(distDirectory, file))

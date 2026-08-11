@@ -1,8 +1,20 @@
 const BASE = import.meta.env.BASE_URL
 
+/**
+ * @typedef {{ id: string }} DashboardEvent
+ * @typedef {{ type: 'Feature', geometry: object, properties?: Record<string, unknown> }} GeoJsonFeature
+ * @typedef {{ type: 'FeatureCollection', features: GeoJsonFeature[] }} GeoJsonFeatureCollection
+ * @typedef {{ name: string, type: string, coords: [number, number], probability: number, radiusM?: number }} FacilityRow
+ * @typedef {{ day: number, R_buffer: number | null, R_nonBuffer: number | null, isPostDisaster?: boolean }} TimeSeriesRow
+ * @typedef {{ held_out: string, rf_auc: number, xgb_auc: number, logit_auc: number }} LoeoRow
+ */
 
 export class DataLoadError extends Error {
-  constructor(message, { path, eventId = null, status = null, cause = null } = {}) {
+  /**
+   * @param {string} message
+   * @param {{ path: string, eventId?: string | null, status?: number | null, cause?: unknown }} options
+   */
+  constructor(message, { path, eventId = null, status = null, cause = null }) {
     super(message, cause ? { cause } : undefined)
     this.name = 'DataLoadError'
     this.path = path
@@ -12,22 +24,30 @@ export class DataLoadError extends Error {
 }
 
 
+/** @param {unknown} value @returns {value is number} */
 function isFiniteNumber(value) {
   return typeof value === 'number' && Number.isFinite(value)
 }
 
 
+/**
+ * @param {unknown} value
+ * @param {string} [label]
+ * @returns {GeoJsonFeatureCollection}
+ */
 export function validateFeatureCollection(value, label = 'GeoJSON') {
-  if (value?.type !== 'FeatureCollection' || !Array.isArray(value.features)) {
+  if (!value || typeof value !== 'object' || !('type' in value) || !('features' in value)
+    || value.type !== 'FeatureCollection' || !Array.isArray(value.features)) {
     throw new Error(`${label} must be a GeoJSON FeatureCollection`)
   }
   if (!value.features.every(feature => feature?.type === 'Feature' && feature.geometry)) {
     throw new Error(`${label} contains an invalid feature`)
   }
-  return value
+  return /** @type {GeoJsonFeatureCollection} */ (value)
 }
 
 
+/** @param {unknown} value @returns {GeoJsonFeatureCollection} */
 export function validateProbabilityFeatureCollection(value) {
   const collection = validateFeatureCollection(value, 'probability export')
   if (collection.features.length === 0) {
@@ -44,6 +64,7 @@ export function validateProbabilityFeatureCollection(value) {
 }
 
 
+/** @param {unknown} value @returns {FacilityRow[]} */
 function validateFacilityRows(value) {
   if (!Array.isArray(value)) throw new Error('facility export must be an array')
   if (!value.every(row => (
@@ -60,6 +81,7 @@ function validateFacilityRows(value) {
 }
 
 
+/** @param {unknown} value @returns {TimeSeriesRow[]} */
 export function validateTimeSeries(value) {
   if (!Array.isArray(value) || value.length === 0) {
     throw new Error('recovery time series must be a non-empty array')
@@ -75,6 +97,7 @@ export function validateTimeSeries(value) {
 }
 
 
+/** @param {unknown} value @returns {LoeoRow[]} */
 function validateLoeoRows(value) {
   if (!Array.isArray(value) || !value.every(row => (
     typeof row?.held_out === 'string'
@@ -88,7 +111,13 @@ function validateLoeoRows(value) {
 }
 
 
-async function loadJson(path, { eventId = null, validate = value => value } = {}) {
+/**
+ * @template T
+ * @param {string} path
+ * @param {{ eventId?: string | null, validate: (value: unknown) => T }} options
+ * @returns {Promise<T>}
+ */
+async function loadJson(path, { eventId = null, validate }) {
   let response
   try {
     response = await fetch(`${BASE}${path}`)
@@ -108,7 +137,8 @@ async function loadJson(path, { eventId = null, validate = value => value } = {}
     return validate(await response.json())
   } catch (cause) {
     if (cause instanceof DataLoadError) throw cause
-    throw new DataLoadError(`Data unavailable: ${path} has an invalid schema (${cause.message})`, {
+    const reason = cause instanceof Error ? cause.message : String(cause)
+    throw new DataLoadError(`Data unavailable: ${path} has an invalid schema (${reason})`, {
       path,
       eventId,
       status: response.status,
@@ -118,6 +148,7 @@ async function loadJson(path, { eventId = null, validate = value => value } = {}
 }
 
 
+/** @param {DashboardEvent} event */
 export function loadProbabilityGeoJSON(event) {
   return loadJson(`data/prob_${event.id}.geojson`, {
     eventId: event.id,
@@ -126,6 +157,7 @@ export function loadProbabilityGeoJSON(event) {
 }
 
 
+/** @param {DashboardEvent} event */
 export async function loadFacilityGeoJSON(event) {
   const facilities = await loadJson(`data/facilities_${event.id}.json`, {
     eventId: event.id,
@@ -146,6 +178,7 @@ export async function loadFacilityGeoJSON(event) {
 }
 
 
+/** @param {DashboardEvent} event */
 export function loadTimeSeries(event) {
   return loadJson(`data/ts_${event.id}.json`, {
     eventId: event.id,
